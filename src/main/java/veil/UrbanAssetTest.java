@@ -10,7 +10,7 @@ public final class UrbanAssetTest {
     public static void main(String[] args)throws Exception{
         World world=new World(20261020L);
         UrbanScene city=new UrbanScene(world);
-        check(city.models().size()==5,"all five curated models loaded");
+        check(city.models().size()>25,"seed must use many unique original models");
         int triangles=0;
         for(var asset:city.models().entrySet()){
             GlbMesh model=asset.getValue();
@@ -18,8 +18,17 @@ public final class UrbanAssetTest {
             check(model.bounds()[1]>=0,asset.getKey()+" invalid floor");
             triangles+=model.triangleCount();
         }
-        check(triangles>150,"incomplete source geometry");
-        check(city.instances().size()>35,"seeded city lacks meaningful prop density");
+        check(triangles>1200,"seed must parse substantial original source geometry");
+        check(city.instances().size()>90,"seeded city lacks meaningful prop density");
+        KenneyAssetPack pack=KenneyAssetPack.load();
+        check(pack.modelNames().size()==124,"all source models included");
+        check(pack.textureNames().size()==22,"all original palettes bundled");
+        for(String id:pack.modelNames()){
+            GlbMesh parsed=GlbMesh.read(pack.model(id),pack::texture);
+            check(parsed.triangleCount()>0,id+" has no triangles");
+        }
+        // The ZIP must load as a bundled classpath resource in the runnable JAR as well.
+        check(pack.model("road-asphalt-straight.glb").length>1000,"source archive truncated");
         check(!world.canWalk(5.2,1.5),"actual barricade should be solid to players");
         check(!world.lineClear(4.4,1.5,6.4,1.5),"barricade should occlude projectile ray");
         check(world.canWalk(world.spawns[0][0],world.spawns[0][1]),"spawn blocked by decorations");

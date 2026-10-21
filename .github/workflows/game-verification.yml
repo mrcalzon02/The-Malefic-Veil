@@ -41,7 +41,7 @@ jobs:
       - name: Authoritative combat, regeneration, pickups, medicine, turrets, structures
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArenaSystemsTest
-      - name: Import and render five real CC0 urban meshes
+      - name: Import all 124 CC0 GLBs and render seeded district models
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
       - name: QoL gate for confirmed hits and obstacle-aware construction
@@ -62,7 +62,7 @@ jobs:
           echo 'Main-Class: veil.MaleficVeil' > build/manifest.mf
           jar cfm build/MaleficVeil.jar build/manifest.mf -C build/classes .
           jar uf build/MaleficVeil.jar -C assets/game kenney
-          jar tf build/MaleficVeil.jar | grep 'kenney/detail-bench.glb'
+          jar tf build/MaleficVeil.jar | grep 'kenney/retro-urban-kit-2.0.zip'
       - name: Validate self-contained runnable JAR model resources
         shell: bash
         run: |

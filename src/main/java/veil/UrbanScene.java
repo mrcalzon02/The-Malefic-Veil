@@ -13,7 +13,15 @@ public final class UrbanScene {
     private final Map<String,GlbMesh> models=new LinkedHashMap<>();
     private final List<ModelInstance> positions;
     public UrbanScene(World city)throws IOException{
-        for(String id:IDS)models.put(id,GlbMesh.asset(id));
+        // Expand only source mesh IDs that the authoritative world actually places.
+        KenneyAssetPack pack=KenneyAssetPack.load();
+        Set<String> used=new LinkedHashSet<>(Arrays.asList(IDS));
+        for(World.UrbanProp p:city.urbanProps)used.add(p.model());
+        for(String id:used){
+            if(!pack.modelNames().contains(id+".glb"))
+                throw new IOException("Generated unlicensed/unavailable urban model "+id);
+            models.put(id,GlbMesh.asset(id));
+        }
         List<ModelInstance> items=new ArrayList<>();
         for(World.UrbanProp p:city.urbanProps)
             items.add(new ModelInstance(p.model(),p.x(),p.y(),p.heading(),p.scale()));

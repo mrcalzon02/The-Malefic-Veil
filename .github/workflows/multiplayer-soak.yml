@@ -34,7 +34,7 @@ jobs:
             timeout 35s java -Djava.awt.headless=true -cp build/classes veil.ArenaSystemsTest
             echo "::endgroup::"
           done
-      - name: Licensed model import and renderer regression
+      - name: Licensed 124-model archive import and renderer regression
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
       - name: Seeded city collision and spawn properties
         run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest

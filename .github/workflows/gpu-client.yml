@@ -62,6 +62,7 @@ jobs:
           test -s build/test-visuals/gpu-kenney-city.png
           test -s build/test-visuals/gpu-kenney-night.png
           test -s build/test-visuals/gpu-psx-menu.png
+          test -s build/test-visuals/gpu-continental-edge.png
           file build/test-visuals/gpu-kenney-city.png
       - uses: actions/upload-artifact@v4
         if: always()
@@ -72,4 +73,5 @@ jobs:
             build/test-visuals/gpu-kenney-city.png
             build/test-visuals/gpu-kenney-night.png
             build/test-visuals/gpu-psx-menu.png
+            build/test-visuals/gpu-continental-edge.png
           if-no-files-found: warn

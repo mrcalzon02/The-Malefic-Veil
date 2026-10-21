@@ -43,6 +43,12 @@ public final class CharacterProgression {
         if(ms<=0||ms>1000)throw new IllegalArgumentException("Unbounded host progression tick");
         aliveMs=Math.min(Long.MAX_VALUE-ms,aliveMs)+ms;
     }
+    /** A hardcore character loses every earned rank and all streak progress. */
+    public synchronized void resetCharacter(){
+        aliveMs=0;
+        for(Skill skill:Skill.values())experience.put(skill,0L);
+        lastReward.clear();
+    }
     public synchronized void died(){aliveMs=0;}
     /** Meaningful server-verified event only; debounces repeated triggers. */
     public synchronized long reward(Skill skill,long base,long hostClock,long minimumInterval){

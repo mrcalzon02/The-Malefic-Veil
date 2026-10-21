@@ -197,6 +197,7 @@ public final class LanServer implements AutoCloseable {
             socket.setSoTimeout(30000);
             peer.out=out;
             ArenaSystems.Player actor=match.join(peer.id);
+            match.beginLoading(peer.id);
             peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|3");
             peer.send("SERVER_MODE|"+(match.hardcore?"HARDCORE":"NORMAL"));
             connections.put(peer.id,peer);

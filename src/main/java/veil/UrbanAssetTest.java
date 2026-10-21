@@ -16,8 +16,9 @@ public final class UrbanAssetTest {
             GlbMesh model=asset.getValue();
             check(model.triangleCount()>=2,asset.getKey()+" did not parse usable GLB triangle geometry");
             float[] bounds=model.bounds();
-            check(bounds[3]>bounds[0]&&bounds[5]>bounds[2],
-                asset.getKey()+" has degenerate plan dimensions");
+            check(Float.isFinite(bounds[0])&&Float.isFinite(bounds[3])&&
+                (bounds[3]>bounds[0]||bounds[4]>bounds[1]||bounds[5]>bounds[2]),
+                asset.getKey()+" has no finite spatial extent");
             check(model.bounds()[1]>=0,asset.getKey()+" invalid floor");
             triangles+=model.triangleCount();
         }

@@ -57,7 +57,7 @@ public final class World {
             pickups.add(new Pickup(p[0],p[1],kind));
         }
         for(int i=0;i<45;i++) {
-            double[] p=randomOpen(r,i%4==0?null:CityLayout.Category.HAZARD);
+            double[] p=randomOpen(r,i%4==0?CityLayout.Category.OPEN:CityLayout.Category.HAZARD);
             npcs.add(new Npc(p[0],p[1]));
         }
     }

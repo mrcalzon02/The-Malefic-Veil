@@ -123,6 +123,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private SpriteBatch sprites;
     private BitmapFont font;
     private GpuSkybox skybox;
+    private GpuContinentTerrain terrain;
     private UrbanLighting lighting;
     private PsxHorrorMenu menu;
     private final Map<String,List<GpuModel>> models=new LinkedHashMap<>();
@@ -144,8 +145,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     @Override public void create() {
         if(Gdx.gl30==null)throw new IllegalStateException("GPU client requires OpenGL 3.3 instancing");
         world=new World(seed);
-        try{scene=new UrbanScene(world);}
+        // Same seed and continent city anchors as the authoritative world
+        // blueprint. Outside-city surfaces are visible, not yet walkable.
+        ContinentVista continental=new ContinentVista(world);
+        try{scene=new UrbanScene(world,continental.foliage());}
         catch(Exception ex){throw new IllegalStateException("Kenney source pack unavailable",ex);}
+        terrain=new GpuContinentTerrain(continental);
         lighting=new UrbanLighting(world);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
@@ -285,6 +290,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         camera.up.set(Vector3.Y);
         camera.far=visualDistance+12;
         camera.update();
+        int visibleTerrain=terrain.render(camera,environment,visualDistance+10);
 
         visible.clear();
         visibleInstances=0;drawCalls=0;
@@ -338,7 +344,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         sprites.begin();
         if(menu.running()){
             font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),5,195);
-            font.draw(sprites,"TILES "+visibleInstances+"  DRAWS "+drawCalls+
+            font.draw(sprites,"TILES "+visibleInstances+"  LAND "+visibleTerrain+"  DRAWS "+drawCalls+
                 "  LAMPS "+activeLights+"  VIEW "+(int)visualDistance,5,183);
             font.draw(sprites,"WASD MOVE   [ ] TIME   F10 GRAPHICS   ESC MENU",5,10);
         }else{
@@ -383,6 +389,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 menu.showMain();
             }else if(frames==36){
                 saveFrame("gpu-psx-menu.png");
+                menu.showRunning();
+                heading=Math.PI*1.25;
+                visualDistance=65;
+                worldTimeMs=WorldDayNight.DAY_MS/2;
+            }else if(frames==48){
+                saveFrame("gpu-continental-edge.png");
                 framebuffer.end();
                 Gdx.app.exit();
                 return;
@@ -411,5 +423,6 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(menu!=null)menu.close();
         else if(font!=null)font.dispose();
         if(skybox!=null)skybox.close();
+        if(terrain!=null)terrain.close();
     }
 }

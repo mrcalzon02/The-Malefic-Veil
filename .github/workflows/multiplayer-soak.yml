@@ -36,5 +36,7 @@ jobs:
           done
       - name: Licensed 124-model archive import and renderer regression
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
+      - name: Run 18 gameplay mesh and visibility tests
+        run: java -Djava.awt.headless=true -cp build/classes veil.GameplayAssetTest
       - name: Seeded city collision and spawn properties
         run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest

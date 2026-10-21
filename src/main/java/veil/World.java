@@ -12,6 +12,7 @@ public final class World {
     public final CityLayout city;
     private volatile ContinentLayout continent;
     public final List<Npc> npcs = new ArrayList<>();
+    public final LostSpawnSites lostSites;
     public final List<Pickup> pickups = new ArrayList<>();
     public final List<Device> devices = new ArrayList<>();
     /** Same deterministic prop placements used by the client renderer and host collision. */
@@ -29,6 +30,8 @@ public final class World {
     public static final class Npc {
         public double x, y, cooldown;
         public int hp = 80;
+        public int sourceSite=-1;
+        public String kind="lost-drifter";
         Npc(double x, double y) {this.x=x; this.y=y;}
     }
     public static final class Pickup {
@@ -64,10 +67,9 @@ public final class World {
             double[] p=randomOpen(r,preferred);
             pickups.add(new Pickup(p[0],p[1],kind));
         }
-        for(int i=0;i<45;i++) {
-            double[] p=randomOpen(r,i%4==0?CityLayout.Category.OPEN:CityLayout.Category.HAZARD);
-            npcs.add(new Npc(p[0],p[1]));
-        }
+        // Every initial hostile Lost NPC now belongs to a concrete ruin site.
+        // Site-local caps, persistent slot identity and cooldowns govern respawns.
+        lostSites=new LostSpawnSites(this);
     }
     private void generateUrbanProps() {
         // Kenney's original modular assets are the physical city construction grammar.

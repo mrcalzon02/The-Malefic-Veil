@@ -59,6 +59,15 @@ jobs:
       - name: Two-resource truck cargo pickup damage and LAN recovery
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.CargoHaulageTest
+      - name: Atomic cargo v2 realm save and restart compatibility
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.CargoRealmPersistenceTest
+      - name: Wilderness resource regeneration and city immunity
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WildernessResourcesTest
+      - name: Bounded hunger thirst, two bulk resources and crafting no-duplication
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.SurvivalCraftingTest
       - name: Kenney foliage and derelict vehicle collision verification
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanDressingTest

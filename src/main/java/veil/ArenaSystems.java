@@ -257,6 +257,8 @@ public final class ArenaSystems {
         for(Player other:players.values())if(other.id!=id)before.put(other.id,other.hp);
         int[] deviceHealth=new int[world.devices.size()];
         for(int i=0;i<deviceHealth.length;i++)deviceHealth[i]=world.devices.get(i).hp;
+        int[] vehicleHealth=new int[vehicles.states().size()];
+        for(Vehicles.State car:vehicles.states())vehicleHealth[car.id()]=car.hp();
         int[] npcHealth=new int[world.npcs.size()];
         for(int i=0;i<npcHealth.length;i++)npcHealth[i]=world.npcs.get(i).hp;
         if(!fire(id,weapon))return new ShotReport(sequence,false,"REJECTED",0,0,ammo(shooter,weapon));
@@ -268,6 +270,11 @@ public final class ArenaSystems {
         for(int i=0;i<npcHealth.length;i++){
             if(world.npcs.get(i).hp<npcHealth[i])
                 return new ShotReport(sequence,true,"NPC",i,npcHealth[i]-world.npcs.get(i).hp,ammo(shooter,weapon));
+        }
+        for(Vehicles.State car:vehicles.states()){
+            if(car.hp()<vehicleHealth[car.id()])
+                return new ShotReport(sequence,true,"VEHICLE",car.id(),
+                    vehicleHealth[car.id()]-car.hp(),ammo(shooter,weapon));
         }
         for(int i=0;i<deviceHealth.length;i++){
             if(world.devices.get(i).hp<deviceHealth[i])
@@ -316,6 +323,14 @@ public final class ArenaSystems {
                 Math.cos(Math.atan2(d.y-p.y,d.x-p.x)-p.angle));
             if(Math.abs(diff)<=Math.atan2(.43,range)){nearest=range;target=d;}
         }
+        for(Vehicles.State car:vehicles.states()){
+            if(car.hp()<=0)continue;
+            double range=Math.hypot(car.x()-p.x,car.y()-p.y);
+            if(range>=nearest||range<.2||!clear(p.x,p.y,car.x(),car.y()))continue;
+            double diff=Math.atan2(Math.sin(Math.atan2(car.y()-p.y,car.x()-p.x)-p.angle),
+                                   Math.cos(Math.atan2(car.y()-p.y,car.x()-p.x)-p.angle));
+            if(Math.abs(diff)<=Math.atan2(.65,range)){nearest=range;target=car;}
+        }
         int amount=weapon==0?25:Math.max(18,70-(int)(nearest*8));
         if(target instanceof Player victim){
             boolean wasAlive=!victim.dead;damage(victim,amount,weapon==1?6:2);
@@ -328,6 +343,8 @@ public final class ArenaSystems {
         } else if(target instanceof World.Npc npc){
             npc.hp-=amount;
             if(npc.hp<=0){p.frags++;p.cash+=25;}
+        } else if(target instanceof Vehicles.State car){
+            if(vehicles.damageCar(car.id(),amount))cargo.advance(0);
         }
         return true;
     }

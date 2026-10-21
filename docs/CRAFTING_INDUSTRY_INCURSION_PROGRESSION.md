@@ -5,6 +5,12 @@
 
 **Core pacing rule:** *Surviving your first night should be achievable; constructing self-sufficient industry should be a massive cooperative undertaking.* The player should feel the transformation from scavenger to builder to industrialist to territorial nightmare. No intentionally inescapable soft locks. Recovering after complete inventory loss must be feasible naked, **but recovering an industrial economy is not easy**.
 
+## New v2 farming, equipment and three-faction cooperation dependencies
+
+The [city miasma / settlement economy / upgrade and trade specification](CITY_MIASMA_SETTLEMENT_ECONOMY_AND_TRADE.md) is the binding companion to this era progression. `CraftingEraRegistry.SCHEMA_VERSION=2` adds early facilities for shelter, plots, seed nursery, compost, herbal propagation, roots/cellar storage, smoking, weaving, watch posts and palisades, with later grain mills, irrigation, animal pens, recyclers, controlled greenhouses, fuel refineries and vehicle depots. The initial recipes consume finite ingredients and time; **none currently instantiates growing plants, animals or usable equipment**.
+
+`CrudeStructureIndex` is a full blueprint-to-primitive-geometry plan and may later be replaced with faction-native PSX models without changing collision and save IDs. `EquipmentUpgrades` describes paid single-rank upgrades through **level 50** across facilities, vehicles and defenses, increasing both benefit and upkeep. `SettlementSupplyBalance` asserts that a single founder's maxed **28-normal-facility** site cannot alone sustain ten level-50 defenses indefinitely; regional trade is nonoptional at maximum fortification. `FactionTradeNetworks` requires different collaboration shapes: bulky stable Unraveled serial factory shipping, Penitent parallel rites with actual concurrent performers and expiring commitments, and Begotten living stocks with maturation and decay. Do not claim a trade transaction happened because a data graph contains a recipe.
+
 ## Two layered progression tracks
 
 The **Era** measures economic capability; the **Facility Tier** (T0–T4 in `FACTION_FACILITIES_BASE_CONSTRUCTION.md`) measures base complexity and footprint. They are not interchangeable. A temporary camp can precede the Claim Heart, while expensive T4 graveyards may coexist with late-Era infrastructure.

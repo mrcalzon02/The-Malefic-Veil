@@ -7,7 +7,7 @@ public final class CrudeStructureIndexTest {
     public static void main(String[] args){
         Map<String,CrudeStructureIndex.Proxy> index=CrudeStructureIndex.entries();
         var facilities=CraftingEraRegistry.facilities();
-        check(index.size()==facilities.size(),"no missing primitive building art plan");
+        check(index.size()==facilities.size()+3,"no missing factory or defense primitive art plan");
         Set<CrudeStructureIndex.Primitive> forms=
             EnumSet.noneOf(CrudeStructureIndex.Primitive.class);
         for(var facility:facilities.values()){
@@ -24,6 +24,11 @@ public final class CrudeStructureIndexTest {
             "irrigation-works","controlled-greenhouse","motor-pool")){
             check(index.containsKey(id),"missing farm/survival/industrial asset "+id);
         }
+        check(index.get("aa-fast").primitive()==CrudeStructureIndex.Primitive.ROTARY_TOWER,
+            "tracking tower cannot use a generic field asset");
+        check(index.get("aa-heavy").primitive()==CrudeStructureIndex.Primitive.HEAVY_AA_PEDESTAL,
+            "heavy anti-air must have a distinct silhouette");
+        check(index.get("automated-turret")!=null,"ground defense index preserved");
         check(index.get("forager-garden").primitive()==
               CrudeStructureIndex.Primitive.RAISED_BEDS,"gardens not generic huts");
         check(index.get("palisade-section").primitive()==

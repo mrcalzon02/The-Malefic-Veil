@@ -75,16 +75,28 @@ public final class UrbanTileAssembler {
                     for(int sx=0;sx<CELL;sx++)for(int sy=0;sy<CELL;sy++){
                         int tx=mx*CELL+sx,ty=my*CELL+sy;
                         long n=roll(seed,tx,ty,91);
+                        // Plot archetypes own their surface palette: the whole
+                        // block reads as a court, park, yard or building lot.
+                        // Rare scars interrupt that base; never random checkerboard.
                         String ground=switch(category){
-                            case HAZARD -> from(n,"road-dirt-center","road-dirt-pavement","road-dirt-damaged");
-                            case RESOURCE -> from(n,"road-asphalt-pavement","road-dirt-center");
-                            case SAFE -> from(n,"road-asphalt-pavement","road-asphalt-center");
-                            case OPEN -> from(n,"grass","road-asphalt-pavement","road-dirt-center");
+                            case HAZARD -> (n&31)==0?"road-dirt-damaged":"road-dirt-center";
+                            case RESOURCE -> (variant==3||variant==4||variant==7)
+                                ?"road-asphalt-pavement":"road-dirt-center";
+                            case SAFE -> (n&63)==0?"road-asphalt-damaged":"road-asphalt-pavement";
+                            case OPEN -> switch(variant){
+                                case 0,1,4,6 -> "road-asphalt-pavement";
+                                case 3,7 -> "grass";
+                                case 2,5 -> (n&15)==0?"grass":"road-dirt-center";
+                                default -> "grass";
+                            };
                         };
                         add(assembled,ground,tx+.5,ty+.5,0,1,0);
                         // The modular roof is also only ~1x1 source units;
                         // one roof section per interior tile, not one giant wedge.
-                        if(!vacant&&category!=CityLayout.Category.OPEN&&
+                        boolean roofIntact=category==CityLayout.Category.SAFE||
+                            category==CityLayout.Category.RESOURCE&&(n&7)!=0||
+                            category==CityLayout.Category.HAZARD&&(n&3)==0;
+                        if(!vacant&&category!=CityLayout.Category.OPEN&&roofIntact&&
                            city.tile(tx,ty)==0){
                             String roof=from(n>>>7,"roof-metal-type-a","roof-metal-type-b",
                                 "wall-a-roof","wall-b-roof");
@@ -130,12 +142,31 @@ public final class UrbanTileAssembler {
             };
             // No new obstruction without an agreed game collider: authoring the
             // visual kit is separate from changing legal movement and spawn routes.
-            if(!vacant && city.tile((int)ix,(int)iy)==0 &&
-               clearSpawns(ix,iy,spawns,3.0)){
-                double scale=detail.contains("light")?2.5:
-                    detail.contains("tree")?2.0:detail.contains("truck")?2.0:
-                    detail.contains("scaffolding")?1.8:1.6;
-                add(assembled,detail,ix,iy,(n&3)*Math.PI/2,scale,0);
+            // Dressed plots get a small reproducible composition, not just
+            // one prop in the middle of an otherwise empty 12x12 parcel.
+            int area=(plot.right()-plot.x())*(plot.bottom()-plot.y());
+            int desired=Math.max(1,Math.min(5,area+1));
+            int minX=plot.x()*CELL+1,maxX=plot.right()*CELL-2;
+            int minY=plot.y()*CELL+1,maxY=plot.bottom()*CELL-2;
+            for(int piece=0;piece<desired&&!vacant;piece++){
+                long local=roll(seed,plot.x(),plot.y(),187+piece*19);
+                int dx=Math.max(1,maxX-minX+1),dy=Math.max(1,maxY-minY+1);
+                double ox=minX+Math.floorMod(local,dx)+.5;
+                double oy=minY+Math.floorMod(local>>>17,dy)+.5;
+                if(city.tile((int)ox,(int)oy)!=0||!clearSpawns(ox,oy,spawns,3.0))continue;
+                String model=piece==0?detail:switch(category){
+                    case HAZARD -> from(local,"detail-bricks-type-a","planks",
+                        "detail-cables-type-b","detail-barrier-strong-damaged");
+                    case RESOURCE -> from(local,"pallet","pallet-small",
+                        "detail-beam","detail-dumpster-closed","scaffolding-poles");
+                    case SAFE -> from(local,"detail-bench","detail-light-single",
+                        "detail-barrier-type-b","detail-awning-small");
+                    case OPEN -> from(local,"tree-small","tree-shrub",
+                        "detail-bench","tree-pine-small");
+                };
+                double scale=model.contains("light")?1.35:model.contains("tree")?1.65:
+                    model.contains("truck")?1.5:model.contains("scaffolding")?1.25:1.1;
+                add(assembled,model,ox,oy,(local&3)*Math.PI/2,scale,0);
             }
         }
         // The old invisible tile wall map is still authoritative for collision.

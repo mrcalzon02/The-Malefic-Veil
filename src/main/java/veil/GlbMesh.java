@@ -14,9 +14,15 @@ import java.util.*;
 public final class GlbMesh {
     public record Triangle(float ax,float ay,float az,float bx,float by,float bz,
         float cx,float cy,float cz,int rgb){}
+    /** GPU source material record. UVs are preserved; Java2D still uses sampled RGB. */
+    public record Surface(Triangle triangle,String texture,float au,float av,
+                          float bu,float bv,float cu,float cv,int tintRgb) {}
     private final List<Triangle> triangles;
+    private final List<Surface> surfaces;
     private final float[] bounds;
-    private GlbMesh(List<Triangle> tris,float[] b){triangles=List.copyOf(tris);bounds=b.clone();}
+    private GlbMesh(List<Triangle> tris,float[] b,List<Surface> materials){
+        triangles=List.copyOf(tris);bounds=b.clone();surfaces=List.copyOf(materials);
+    }
     public static GlbMesh authored(List<Triangle> faces){
         if(faces.isEmpty())throw new IllegalArgumentException("Empty mesh");
         float[] b={Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,
@@ -25,9 +31,12 @@ public final class GlbMesh {
             float[] v={t.ax(),t.ay(),t.az(),t.bx(),t.by(),t.bz(),t.cx(),t.cy(),t.cz()};
             for(int i=0;i<9;i++){int ax=i%3;b[ax]=Math.min(b[ax],v[i]);b[ax+3]=Math.max(b[ax+3],v[i]);}
         }
-        return new GlbMesh(faces,b);
+        List<Surface> plain=new ArrayList<>();
+        for(Triangle face:faces)plain.add(new Surface(face,null,0,0,0,0,0,0,0xffffff));
+        return new GlbMesh(faces,b,plain);
     }
     public List<Triangle> triangles(){return triangles;}
+    public List<Surface> surfaces(){return surfaces;}
     public float[] bounds(){return bounds.clone();}
     public int triangleCount(){return triangles.size();}
     // The urban source pack is immutable for the lifetime of a game process.
@@ -103,6 +112,7 @@ public final class GlbMesh {
         Map<String,Integer> palette=new HashMap<>();
         Map<String,java.awt.image.BufferedImage> sourceImages=new HashMap<>();
         List<Triangle> triangles=new ArrayList<>();
+        List<Surface> surfaces=new ArrayList<>();
         float[] bounds={Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,
             Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY};
         ByteBuffer data=ByteBuffer.wrap(bin).order(ByteOrder.LITTLE_ENDIAN);
@@ -233,13 +243,21 @@ public final class GlbMesh {
                             }
                         }
                     }
-                    triangles.add(new Triangle(v[0],v[1],v[2],w[0],w[1],w[2],
-                        z[0],z[1],z[2],faceColor));
+                    Triangle tri=new Triangle(v[0],v[1],v[2],w[0],w[1],w[2],
+                        z[0],z[1],z[2],faceColor);
+                    triangles.add(tri);
+                    int tint=(Math.max(0,Math.min(255,Math.round(factorTint[0]*255)))<<16)|
+                        (Math.max(0,Math.min(255,Math.round(factorTint[1]*255)))<<8)|
+                        Math.max(0,Math.min(255,Math.round(factorTint[2]*255)));
+                    surfaces.add(new Surface(tri,uv==null?null:faceTexture,
+                        uv==null?0:uv[a][0],uv==null?0:uv[a][1],
+                        uv==null?0:uv[b][0],uv==null?0:uv[b][1],
+                        uv==null?0:uv[c][0],uv==null?0:uv[c][1],tint));
                 }
             }
         }
         if(triangles.isEmpty()||triangles.size()>500_000)throw new IOException("GLB has no usable triangles");
-        return new GlbMesh(triangles,bounds);
+        return new GlbMesh(triangles,bounds,surfaces);
     }
     /** Source-pixel average fallback when UVs are absent; normal triangles sample actual UV texels. */
     private static int samplePalette(byte[] raw)throws IOException{

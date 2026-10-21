@@ -13,6 +13,10 @@ public final class NetLink implements AutoCloseable {
             this.x=x;this.y=y;this.angle=a;this.hp=hp;this.opacity=opacity;this.classId=classId;
         }
     }
+    public record Rpg(int level,long experience,long next,long aliveMs,double streak,
+                      int marksmanship,int athletics,int engineering,int scavenging,int survival,
+                      long protectionMs,int hunger,int hydration){}
+    public record NpcRank(int level,String archetype){}
     public record Self(int health,int sanity,int cash,int supplies,int medkits,
         int pistolReserve,int shellReserve,int pistolClip,int shellClip,boolean dead,int frags,
         double x,double y,double angle,double visibility){}
@@ -30,6 +34,17 @@ public final class NetLink implements AutoCloseable {
     public final int id;
     public final ConcurrentHashMap<Integer,Remote> others=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,Car> cars=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,NpcRank> npcRanks=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<String,Integer> survivalInventory=new ConcurrentHashMap<>();
+    private volatile Rpg rpg;
+    private volatile boolean hardcore;
+    private volatile String faction="NONE",crew="NONE",crewRole="NONE";
+    public Rpg rpg(){return rpg;}
+    public boolean hardcore(){return hardcore;}
+    public String faction(){return faction;}
+    public String crew(){return crew;}
+    public String crewRole(){return crewRole;}
+
     public final ConcurrentHashMap<Integer,String> truckCargo=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,CargoYard> cargoYards=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,CargoDrop> cargoDrops=new ConcurrentHashMap<>();
@@ -87,6 +102,35 @@ public final class NetLink implements AutoCloseable {
                             case "DEVICE" -> {
                                 if(s.length==6)structures.add(new DeviceEvent(Integer.parseInt(s[1]),
                                     Integer.parseInt(s[2]),Double.parseDouble(s[3]),Double.parseDouble(s[4]),Integer.parseInt(s[5])));
+                            }
+                            case "SERVER_MODE" -> {
+                                if(s.length==2)hardcore=s[1].equals("HARDCORE");
+                            }
+                            case "FACTION_STATE" -> {
+                                if(s.length==4){faction=s[1];crew=s[2];crewRole=s[3];}
+                            }
+                            case "NPC_RANK" -> {
+                                if(s.length==4)npcRanks.put(Integer.parseInt(s[1]),
+                                    new NpcRank(Integer.parseInt(s[2]),s[3]));
+                            }
+                            case "RPG" -> {
+                                if(s.length==14)rpg=new Rpg(Integer.parseInt(s[1]),
+                                    Long.parseLong(s[2]),Long.parseLong(s[3]),
+                                    Long.parseLong(s[4]),Double.parseDouble(s[5]),
+                                    Integer.parseInt(s[6]),Integer.parseInt(s[7]),
+                                    Integer.parseInt(s[8]),Integer.parseInt(s[9]),
+                                    Integer.parseInt(s[10]),Long.parseLong(s[11]),
+                                    Integer.parseInt(s[12]),Integer.parseInt(s[13]));
+                            }
+                            case "INVENTORY" -> {
+                                if(s.length==2){
+                                    survivalInventory.clear();
+                                    if(!s[1].equals("-"))for(String pair:s[1].split(",")){
+                                        String[] pairData=pair.split("=");
+                                        if(pairData.length==2)survivalInventory.put(
+                                            pairData[0],Integer.parseInt(pairData[1]));
+                                    }
+                                }
                             }
                             case "NPC" -> {
                                 if(s.length==5)npcs.add(new NpcEvent(Integer.parseInt(s[1]),
@@ -221,6 +265,14 @@ public final class NetLink implements AutoCloseable {
     public void ability(){send("ABILITY");}
     public void build(int kind){send("BUILD|"+kind);}
     public void respawn(int index){send("RESPAWN|"+index);}
+    public void sceneReady(){send("SCENE_READY");}
+    public void selectFaction(CharacterRoster.Faction chosen){send("FACTION_JOIN|"+chosen.name());}
+    public void createCrew(String name){send("CREW_CREATE|"+name);}
+    public void inviteCrew(int targetPlayerId){send("CREW_INVITE|"+targetPlayerId);}
+    public void acceptCrew(){send("CREW_ACCEPT");}
+    public void leaveCrew(){send("CREW_LEAVE");}
+    public void transferCrew(int successorId){send("CREW_TRANSFER|"+successorId);}
+    public void disbandCrew(){send("CREW_DISBAND");}
     public int drivenCar(){
         for(Car car:cars.values())if(car.driverId()==id)return car.id();
         return -1;

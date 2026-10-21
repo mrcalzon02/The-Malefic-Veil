@@ -76,6 +76,16 @@ public final class Vehicles {
         Car car=cars.get(carId);
         String result=car.cargo;car.cargo=null;return result;
     }
+    /** Trusted persistence replay only, after positions and health have been validated. */
+    synchronized boolean restoreCargo(int carId,String type){
+        if(carId<0||carId>=cars.size())return false;
+        Car car=cars.get(carId);
+        if(type==null){car.cargo=null;return true;}
+        if(!type.equals("METAL_STOCK")&&!type.equals("MACHINE_PARTS")||
+            car.hp<=CARGO_MIN_HP||car.driverId>=0||car.cargo!=null)return false;
+        car.cargo=type;return true;
+    }
+    private static final int CARGO_MIN_HP=80;
     /** Host-controlled health damage; never allows a client-authored HP value. */
     public synchronized boolean damageCar(int carId,int amount){
         if(carId<0||carId>=cars.size()||amount<1||amount>200)return false;

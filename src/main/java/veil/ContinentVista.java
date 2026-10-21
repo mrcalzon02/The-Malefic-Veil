@@ -37,6 +37,28 @@ public final class ContinentVista {
         return interp(interp(layout.elevation(ax,ay),layout.elevation(ax+1,ay),tx),
             interp(layout.elevation(ax,ay+1),layout.elevation(ax+1,ay+1),tx),ty);
     }
+    /** Seeded smooth value noise; blended octaves avoid lattice-shaped hills. */
+    private double noise(int ix,int iy,int salt){
+        long mixed=World.mix(seed ^ ((long)ix*0x9e3779b97f4a7c15L) ^
+            ((long)iy*0x632be59bd9b4e019L) ^ ((long)salt*0x5f3759dfL));
+        return (mixed>>>11)*0x1.0p-53;
+    }
+    private double smoothNoise(double x,double y,int salt){
+        int ix=(int)Math.floor(x),iy=(int)Math.floor(y);
+        double fx=x-ix,fy=y-iy;
+        fx=fx*fx*(3-2*fx);fy=fy*fy*(3-2*fy);
+        return interp(interp(noise(ix,iy,salt),noise(ix+1,iy,salt),fx),
+            interp(noise(ix,iy+1,salt),noise(ix+1,iy+1,salt),fx),fy);
+    }
+    private double terrainVariation(double x,double y){
+        // Low-frequency rolling hills plus finer scarred relief; all phases
+        // come from world seed, never from cell-grid sprite assignments.
+        double base=smoothNoise(x*.018,y*.018,100)*.56+
+            smoothNoise(x*.049,y*.049,101)*.29+
+            smoothNoise(x*.115,y*.115,102)*.15;
+        double ridges=Math.abs(smoothNoise(x*.036+18,y*.036-12,103)-.5);
+        return (base-.5)*4.8+ridges*.9;
+    }
     private static double cityDistance(double x,double y){
         double dx=x<0?-x:x>World.SIZE?x-World.SIZE:0;
         double dy=y<0?-y:y>World.SIZE?y-World.SIZE:0;
@@ -49,8 +71,12 @@ public final class ContinentVista {
         int xx=(int)Math.floor(px),yy=(int)Math.floor(py);
         var biome=layout.biome(xx,yy);
         boolean road=layout.road(xx,yy);
+        double raw=level(px,py)*10.0;
+        double relief=terrainVariation(x,y);
         double target=biome==ContinentLayout.Biome.WATER?-2.8:
-            Math.max(.03,Math.min(12.0,level(px,py)*10.0));
+            Math.max(.03,Math.min(12.0,raw+
+                relief*(biome==ContinentLayout.Biome.BEACH?.18:
+                    biome==ContinentLayout.Biome.MOUNTAINS?1.65:1.0)));
         // City street elevations remain exactly zero at the handoff.
         double border=cityDistance(x,y);
         double smooth=Math.max(0,Math.min(1,border/13.0));

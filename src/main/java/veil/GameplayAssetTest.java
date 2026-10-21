@@ -28,7 +28,24 @@ public final class GameplayAssetTest {
     }
     public static void main(String[] ignored)throws Exception{
         GameplayMeshes lib=new GameplayMeshes();
-        check(lib.meshes().size()==18,"four heroes + enemy + two weapons + seven pickups + four devices");
+        // Preserve every legacy gameplay model while accepting actual
+        // resource nodes and nine new static airframes in the same atlas.
+        java.util.Set<String> required=new java.util.HashSet<>();
+        Collections.addAll(required,GameplayMeshes.HERO);
+        Collections.addAll(required,GameplayMeshes.WEAPON);
+        Collections.addAll(required,GameplayMeshes.PICKUP);
+        Collections.addAll(required,GameplayMeshes.DEVICE);
+        required.add("enemy-walker");
+        required.addAll(java.util.List.of(
+            "resource-tree-broadleaf","resource-tree-conifer","resource-stone",
+            "resource-ore","resource-fiber","resource-edibles",
+            "resource-herbs","resource-water"));
+        for(var aircraft:AirPowerMeshes.specs())required.add(aircraft.id());
+        check(required.size()==35,"Complete 18 legacy + 8 resources + 9 aircraft catalog");
+        check(lib.meshes().keySet().containsAll(required),
+            "No prior gameplay mesh may disappear during aircraft integration");
+        check(lib.meshes().size()>=required.size(),
+            "Static airframes and harvested-resource meshes must be registered");
         int triangles=0;
         for(var entry:lib.meshes().entrySet()){
             GlbMesh mesh=entry.getValue();int count=mesh.triangleCount();

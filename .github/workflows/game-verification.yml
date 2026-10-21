@@ -53,6 +53,12 @@ jobs:
       - name: Kenney modular city assembly and screenshot gate
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.KenneyCityAssemblyTest
+      - name: Lost NPC origin, lifetime and cooldown population tests
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.LostSpawnSitesTest
+      - name: Two-resource truck cargo pickup damage and LAN recovery
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.CargoHaulageTest
       - name: Kenney foliage and derelict vehicle collision verification
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanDressingTest

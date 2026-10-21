@@ -806,7 +806,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private void crewDialog(){
         if(net==null){toast("CREWS REQUIRE A MULTIPLAYER ACCOUNT");return;}
         String[] choices={"CREATE","INVITE PLAYER ID","ACCEPT INVITE",
-            "LEAVE CREW","TRANSFER LEADERSHIP","DISBAND CREW","CANCEL"};
+            "PROMOTE OFFICER","REMOVE MEMBER","LEAVE CREW",
+            "TRANSFER LEADERSHIP","DISBAND CREW","CANCEL"};
         String choice=(String)JOptionPane.showInputDialog(window,
             "FACTION "+net.faction()+" / CREW "+net.crew()+" / "+net.crewRole(),
             "Crew Management",JOptionPane.PLAIN_MESSAGE,null,choices,choices[0]);
@@ -820,6 +821,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 case "INVITE PLAYER ID" -> {
                     String id=JOptionPane.showInputDialog(window,"Same-faction player ID");
                     if(id!=null)net.inviteCrew(Integer.parseInt(id));
+                }
+                case "PROMOTE OFFICER" -> {
+                    String id=JOptionPane.showInputDialog(window,"Current member player ID");
+                    if(id!=null)net.promoteCrew(Integer.parseInt(id));
+                }
+                case "REMOVE MEMBER" -> {
+                    String id=JOptionPane.showInputDialog(window,"Member player ID to remove");
+                    if(id!=null)net.kickCrew(Integer.parseInt(id));
                 }
                 case "ACCEPT INVITE" -> net.acceptCrew();
                 case "LEAVE CREW" -> net.leaveCrew();

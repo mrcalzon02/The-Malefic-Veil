@@ -1,0 +1,45 @@
+# The Malefic Veil — continental world generation contract
+
+## Intent
+
+Generate a reproducible continent surrounded by a water plane, with an irregular coast, mountains, forests, plains, hills, marshes and beaches, containing multiple distinct cities. City boundaries are **templates**, not all squares: the reference sketch has A–G including angular/L-shaped settlements and a near-square City C. Build the road graph **inside each city** before tessellating its vacant ground into hazard/resource/safe/open plots. Join the cities by terrain-aware intercity highways, then populate transitional wilderness.
+
+The implementation is layered so the existing fast multiplayer city renderer can remain functional while a larger streamed world is developed. **Do not confuse the new 224×224 parcel-scale continental blueprint with a fully traversable, rendered continent**; the current combat renderer still uses the 132×132-tile `World` sector.
+
+## Deterministic order of generation
+
+1. **Landmass:** Sample multi-octave, smoothly interpolated seeded value noise on a radial/elliptical elevation field. Multiple angular lobes distort the coastline; sea level clips the terrain to a surrounding water plane. Keep the center-connected continental landmass and discard detached artifacts. `ContinentLayout.SIZE=224` indexes coarse generation parcel cells, not final world meters.
+2. **Climate and geography:** Derive beach/marsh bands close to sea level, elevated hill/mountain regions from height and ridge noise, and forest/plains from humidity noise. These are distinct seeded classification fields, not arbitrary random squares. Long-term: add rivers, coastal erosion, elevation-conditioned slopes, cliffs, wetland buffers and regional biome continuity metrics.
+3. **City siting:** Apply A–G normalized settlement anchors based on the sketch, with bounded seed variation in location and footprint. Shapes: `L_WEST`, `SPIRE`, `SQUARE` (C), `L_SOUTH`, `IRREGULAR`, `COMPACT`, and `HORSESHOE`. Clip against actual land, remove disconnected boundary fragments, and maintain non-overlapping city IDs. Future city templates will come from a configurable shape library rather than seven baked anchors.
+4. **Intercity roads:** Build a weighted graph over city centers, choose a minimum-cost spanning backbone plus up to two alternative links, and find a walkable tile route between each selected pair. Path costs discourage mountains, hills, marshes and crossing developed city interiors. Every generated highway belongs to the protected pre-existing world.
+5. **Internal road network:** Starting at each center, connect seed-selected arterial endpoints within that site's footprint. The arterial roads remain connected to the intercity system and the city center. This macro network will later bind to the established `CityLayout.Road` tile grammar (straight, corner, T, crossroads, dead-end, branches, alleys).
+6. **Plots:** Reserve roads first. Place preferred 2×2 lots in each city, covering all four HAZARD/RESOURCE/SAFE/OPEN categories, then fill leftovers with legal 1×1, 1×2, 2×1, 2×3, 3×2 and 3×3 lot footprints. Seeded assignment must cover each city cell exactly once, with no overlap or road collision. This is macro lot metadata; the existing city uses its 104-element template library for local collision geometries.
+7. **Wilderness:** The cells outside cities/roads retain biome identities and ground availability. Scatter protected natural obstacles (rock outcrops/trees) sparsely rather than marking whole forests as unbuildable. Future passes should use explicit forest edges, foothill gradients, suburban frontage, industrial outskirts, rural holdings, streams and roadside points of interest with minimum separation rules.
+
+## Construction ownership — non-negotiable
+
+Every generated feature is owned by the **world**, not by an individual player. World-owned geometry is immutable to the player construction system unless an explicit later demolition/reclamation mechanic changes its ownership.
+
+- **Forbidden:** city streets, intercity highways, generated buildings, ruins and developed sites, fixed road props, terrain obstacles, any solid wall, and their actual collider footprints. Block player placement *inside, on top of, or overlapping* those footprints. Never infer permission from a tile merely being walkable.
+- **Allowed:** unoccupied undeveloped ground, with sufficient clearance for the proposed footprint, provided it is navigable and host rules, resource costs, placement limits, spawn protection and route availability are satisfied.
+- **Server authority:** use the same deterministic masks for the host and clients. `World.worldStructureAt(x,y,radius)` checks the active arena's authored land/roads/structures/props. `ArenaSystems.reviewBuild` returns `WORLD_STRUCTURE` before any payment or mutation; the solo client also rejects the same forbidden footprint. Player-owned devices remain a separate mutable layer and are never baked into the world-generation map.
+- **Planning authority:** `ContinentLayout.worldStructureAt` and `buildableGround` expose the analogous mask at macro parcel resolution. **This is not yet a fully-sized building-footprint test**: streamed chunks must translate the coarse protected mask to fine colliders, include height/floors and slopes, check every occupied cell of each rotated placement, and independently validate large building extents. Do not claim global large-structure placement implemented before those checks exist.
+
+Within the existing arena, `CityLayout` protects all roads and previously developed plot footprints. The `OPEN` / `empty-lot` variant is explicitly bare ground and usable for player-built infrastructure; public squares, parks, paved courts and other pre-existing sites remain protected.
+
+## Multiplayer, storage and performance
+
+The host owns the continental seed, generation version, city template IDs, road edges and materialized chunk revisions. Clients may derive static geometry from the seed, but the host remains authoritative for collision, structures, pickups, NPCs, damage and per-chunk modifications. A later chunk scheme should keep sparse player buildings and destroyed/repaired structures as an overlay keyed by stable world+chunk+structure IDs. Use deterministic per-chunk random substreams and boundary contracts so streaming order never changes the map.
+
+The current continental blueprint is generated **lazily** through `World.continent()`. The new `N` overview displays macro geography and city sites; `M` keeps the legacy local city map. The overview does **not** imply players can yet walk from City A to City G. Existing lane/host authority, actor positions and renderer limits are deliberately unchanged until chunk streaming and coordinate migration have acceptance tests.
+
+## Release gates
+
+- **G0 — deterministic blueprint (implemented):** Java 17 compile; six extreme and representative seeds; same-seed exact geography/city/lot/route results; island surrounded by water; all seven biomes represented; all seven cities on land; City C square template; 6+ intercity links; road continuity between city centers; every city cell either road or exactly one plot; standard 2×2 categories present; protected roads/developed lots and significant buildable land.
+- **G1 — site geometry and biome edges (next):** Visual map artifact per seed, coast/hydrology checks, no accidental short bridges across water, city frontage orientation, transition band widths, city shape catalog expansion, actual intercity road tile models.
+- **G2 — streamed playable land:** Convert macro parcels into hierarchical sectors of collision tiles; load/unload adjacent chunks with no seams; city-to-wilderness-to-city traversal; stable coordinates and host/client chunk version checks; benchmark traversal, spawn safety and memory.
+- **G3 — full construction:** Rotated multiblock buildings, terrain grading, full 3D footprint checks, world-owned object registry, floors and vertical clearance, obstruction preview, persistence/rollback and multiplayer concurrency proof. Reject placement across protected footprints *before* deducting resources.
+- **G4 — art and encounter realization:** License-verified forest/mountain/coast/road/city assets; sound, physics, materials, vegetation, transit encounters, hazards and worthwhile exploration between settlements.
+- **G5 — long-session acceptance:** 20+ world seeds, pathfinding through all city sites, 2+ players, build/exploit/rejoin scenarios, reproducibility across Windows/Linux Java 17/21, real rendered playtest and frame/memory evidence.
+
+Run locally: `javac --release 17 -d out src/main/java/veil/*.java`; `java -cp out veil.ContinentLayoutTest`; `java -cp out veil.CityLayoutTest`; `java -cp out veil.QualityGateTest`; `java -cp out veil.LanSmokeTest`. The existing verification workflow includes continent/city test gates; CI success must be established from a finished run, not presumed.

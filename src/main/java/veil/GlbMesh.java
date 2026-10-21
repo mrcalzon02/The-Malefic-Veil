@@ -17,6 +17,16 @@ public final class GlbMesh {
     private final List<Triangle> triangles;
     private final float[] bounds;
     private GlbMesh(List<Triangle> tris,float[] b){triangles=List.copyOf(tris);bounds=b.clone();}
+    public static GlbMesh authored(List<Triangle> faces){
+        if(faces.isEmpty())throw new IllegalArgumentException("Empty mesh");
+        float[] b={Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,
+            Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY};
+        for(Triangle t:faces){
+            float[] v={t.ax(),t.ay(),t.az(),t.bx(),t.by(),t.bz(),t.cx(),t.cy(),t.cz()};
+            for(int i=0;i<9;i++){int ax=i%3;b[ax]=Math.min(b[ax],v[i]);b[ax+3]=Math.max(b[ax+3],v[i]);}
+        }
+        return new GlbMesh(faces,b);
+    }
     public List<Triangle> triangles(){return triangles;}
     public float[] bounds(){return bounds.clone();}
     public int triangleCount(){return triangles.size();}
@@ -27,11 +37,10 @@ public final class GlbMesh {
         if(Files.isRegularFile(local))bytes=Files.readAllBytes(local);
         else {
             try(InputStream in=GlbMesh.class.getResourceAsStream("/kenney/"+name+".glb")){
-                if(in==null)throw new FileNotFoundException("Missing curated GLB: "+name);
-                bytes=in.readAllBytes();
+                bytes=in==null?KenneyAssetPack.load().model(name+".glb"):in.readAllBytes();
             }
         }
-        return read(bytes);
+        return read(bytes,fileName->KenneyAssetPack.load().texture(fileName));
     }
     @SuppressWarnings("unchecked")
     private static Map<String,Object> obj(Object v)throws IOException {
@@ -58,7 +67,9 @@ public final class GlbMesh {
     private static int val(Map<String,Object> m,String k,int fallback)throws IOException {
         return m.containsKey(k)?num(m.get(k)):fallback;
     }
-    public static GlbMesh read(byte[] file)throws IOException {
+    @FunctionalInterface public interface TextureSource{byte[] open(String name)throws IOException;}
+    public static GlbMesh read(byte[] file)throws IOException{return read(file,null);}
+    public static GlbMesh read(byte[] file,TextureSource source)throws IOException {
         if(file.length<28||file.length>100_000_000)throw new IOException("Invalid GLB size");
         ByteBuffer glb=ByteBuffer.wrap(file).order(ByteOrder.LITTLE_ENDIAN);
         if(glb.getInt()!=0x46546c67||glb.getInt()!=2||glb.getInt()!=file.length)
@@ -77,6 +88,9 @@ public final class GlbMesh {
         List<Object> views=list(root.get("bufferViews"));
         List<Object> meshes=list(root.get("meshes"));
         List<Object> materials=root.containsKey("materials")?list(root.get("materials")):List.of();
+        List<Object> images=root.containsKey("images")?list(root.get("images")):List.of();
+        List<Object> textures=root.containsKey("textures")?list(root.get("textures")):List.of();
+        Map<String,Integer> palette=new HashMap<>();
         List<Triangle> triangles=new ArrayList<>();
         float[] bounds={Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,
             Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY};
@@ -125,18 +139,33 @@ public final class GlbMesh {
                     Map<String,Object> material=obj(get(materials,mat));
                     Object pbr=material.get("pbrMetallicRoughness");
                     if(pbr!=null){
-                        Object factor=obj(pbr).get("baseColorFactor");
+                        Map<String,Object> params=obj(pbr);
+                        if(source!=null&&params.containsKey("baseColorTexture")){
+                            int texId=num(obj(params.get("baseColorTexture")).get("index"));
+                            Map<String,Object> ref=obj(get(textures,texId));
+                            Map<String,Object> image=obj(get(images,val(ref,"source",0)));
+                            String uri=String.valueOf(image.getOrDefault("uri",""));
+                            if(uri.startsWith("Textures/")&&uri.lastIndexOf('/')==8&&uri.endsWith(".png")){
+                                String tex=uri.substring(9);
+                                Integer color=palette.get(tex);
+                                if(color==null){
+                                    color=samplePalette(source.open(tex));
+                                    palette.put(tex,color);
+                                }
+                                rgb=color;
+                            }
+                        }
+                        Object factor=params.get("baseColorFactor");
                         if(factor!=null){
                             List<Object> color=list(factor);
                             if(color.size()>=3){
-                                rgb=(Math.max(0,Math.min(255,(int)(number(color.get(0))*255)))<<16)|
-                                    (Math.max(0,Math.min(255,(int)(number(color.get(1))*255)))<<8)|
-                                    Math.max(0,Math.min(255,(int)(number(color.get(2))*255)));
+                                rgb=(Math.max(0,Math.min(255,(int)(((rgb>>>16)&255)*number(color.get(0)))))<<16)|
+                                    (Math.max(0,Math.min(255,(int)(((rgb>>>8)&255)*number(color.get(1)))))<<8)|
+                                    Math.max(0,Math.min(255,(int)((rgb&255)*number(color.get(2)))));
                             }
                         }
                     }
-                    if(!material.containsKey("pbrMetallicRoughness")||
-                        !obj(material.get("pbrMetallicRoughness")).containsKey("baseColorFactor")){
+                    if(rgb==0x7f8084){
                         // Authoritative material association remains present. Neutral tint by material name
                         // distinguishes low-poly surfaces until image textures are wired.
                         String n=String.valueOf(material.getOrDefault("name",""));
@@ -156,6 +185,21 @@ public final class GlbMesh {
         }
         if(triangles.isEmpty()||triangles.size()>500_000)throw new IOException("GLB has no usable triangles");
         return new GlbMesh(triangles,bounds);
+    }
+    /** Palette-based PSX rendering from the original texture pixels; UV sampling is a separate gate. */
+    private static int samplePalette(byte[] raw)throws IOException{
+        java.awt.image.BufferedImage image=javax.imageio.ImageIO.read(new ByteArrayInputStream(raw));
+        if(image==null||image.getWidth()>4096||image.getHeight()>4096)throw new IOException("Bad source texture");
+        long r=0,g=0,b=0,total=0;
+        for(int y=0;y<image.getHeight();y++)for(int x=0;x<image.getWidth();x++){
+            int rgb=image.getRGB(x,y),alpha=rgb>>>24;
+            r+=((rgb>>>16)&255)*(long)alpha;
+            g+=((rgb>>>8)&255)*(long)alpha;
+            b+=(rgb&255)*(long)alpha;
+            total+=alpha;
+        }
+        if(total==0)return 0x7f8084;
+        return ((int)(r/total)<<16)|((int)(g/total)<<8)|(int)(b/total);
     }
     private static int stride(Map<String,Object> accessor,List<Object> views,int width)throws IOException {
         Map<String,Object> view=obj(get(views,num(accessor.get("bufferView"))));

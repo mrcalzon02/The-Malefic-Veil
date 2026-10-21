@@ -14,9 +14,9 @@ public final class HostPersistenceTest {
             double y=(lot.y()+lot.bottom())*CityLayout.CELL/2.0+.5;
             if(!game.world.canWalk(x-1.1,y)||!game.world.canWalk(x,y))continue;
             p.x=x-1.1;p.y=y;p.angle=0;p.moveAt=game.time();
-            if(game.reviewBuild(id,ArenaSystems.BARRICADE).allowed())return;
+            return;
         }
-        throw new AssertionError("No valid lot");
+        throw new AssertionError("No vacant city lot for immutable-build test");
     }
     public static void main(String[] args)throws Exception {
         RaidProtection protection=new RaidProtection(30);
@@ -42,8 +42,18 @@ public final class HostPersistenceTest {
             check(game.assignAccount(1,owner),"stable account ownership");
             game.player(1).cash=999;game.player(1).scrap=999;
             aim(game,1);
-            check(game.build(1,ArenaSystems.BARRICADE),"build before snapshot");
-            check(owner.equals(game.world.devices.get(0).ownerKey),"ownership not tied only to transient peer ID");
+            check(game.reviewBuild(1,ArenaSystems.BARRICADE).reason().equals("CITY_PROTECTED"),
+                "empty lot is also fixed city land");
+            check(!game.build(1,ArenaSystems.BARRICADE),"persistent host must reject city building");
+            check(game.world.devices.isEmpty(),"rejected city build not saved");
+            // Import a legacy structure fixture to verify existing saves remain
+            // recoverable. This fixture is not constructible via player actions.
+            World.Device historic=new World.Device(game.player(1).x+1.1,
+                game.player(1).y,ArenaSystems.BARRICADE);
+            historic.ownerId=1;historic.ownerKey=owner;
+            game.world.devices.add(historic);
+            check(owner.equals(game.world.devices.get(0).ownerKey),
+                "legacy structure ownership not tied only to transient peer ID");
             game.world.pickups.get(0).taken=true;
             game.world.npcs.get(0).hp=44;
             game.leave(1);
@@ -53,7 +63,7 @@ public final class HostPersistenceTest {
             ArenaSystems restored=new ArenaSystems(99913);
             check(DurableRealm.load(restored,dir),"load saved world");
             check(restored.world.devices.size()==1&&owner.equals(restored.world.devices.get(0).ownerKey),
-                "persisted player-owned structure");
+                "persisted legacy player-owned structure");
             check(restored.world.pickups.get(0).taken&&restored.world.npcs.get(0).hp==44,
                 "pickups and NPC mutation persist");
             restored.join(2);
@@ -64,7 +74,7 @@ public final class HostPersistenceTest {
             Files.writeString(DurableRealm.file(dir),"corrupted data");
             ArenaSystems recovered=new ArenaSystems(99913);
             check(DurableRealm.load(recovered,dir),"verified last-good backup restored after corruption");
-            check(recovered.world.devices.size()==1,"backup retains actual builds");
+            check(recovered.world.devices.size()==1,"backup retains imported legacy structure");
             boolean mismatch=false;
             try{DurableRealm.load(new ArenaSystems(99914),dir);}
             catch(java.io.IOException expected){mismatch=true;}

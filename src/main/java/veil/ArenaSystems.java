@@ -11,6 +11,7 @@ public final class ArenaSystems {
     public final Vehicles vehicles;
     public final CargoHaulage cargo;
     public final boolean hardcore;
+    public final FactionGroups factions=new FactionGroups();
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
@@ -169,12 +170,27 @@ public final class ArenaSystems {
         Player p=player(id);
         return p==null?null:p.progression.view();
     }
+    /** Explicit once-only faction enrollment, separate from private crew membership. */
+    public synchronized boolean enrollFaction(int id,CharacterRoster.Faction faction){
+        Player player=players.get(id);
+        if(player==null||player.dead||!player.accountKey.startsWith("acct_"))return false;
+        return factions.enroll(player.accountKey,faction);
+    }
+    public synchronized boolean allied(int firstId,int secondId){
+        Player a=players.get(firstId),b=players.get(secondId);
+        return a!=null&&b!=null&&factions.allied(a.accountKey,b.accountKey);
+    }
     private void breakGrace(Player p){p.protectedUntil=0;}
     public synchronized Collection<Player> roster(){return List.copyOf(players.values());}
     public synchronized Player player(int id){return players.get(id);}
     public synchronized long time(){return clock;}
     public synchronized void choose(int id,int classId){
-        Player p=player(id);if(p!=null&&classId>=0&&classId<4)p.classId=classId;
+        Player p=player(id);
+        if(p==null||classId<0||classId>=4)return;
+        CharacterRoster.Faction affiliation=factions.faction(p.accountKey);
+        if(affiliation!=null&&affiliation!=(classId==3?
+            CharacterRoster.Faction.THE_PENITENT:CharacterRoster.Faction.THE_UNRAVELED))return;
+        p.classId=classId;
     }
     public static double clamp(double x,double lo,double hi){return Math.max(lo,Math.min(hi,x));}
     public static double opacity(double visibility){return clamp(visibility,0,1);}
@@ -399,6 +415,9 @@ public final class ArenaSystems {
         int amount=(int)Math.round((weapon==0?25:Math.max(18,70-(int)(nearest*8)))*
             p.progression.damageMultiplier());
         if(target instanceof Player victim){
+            if(factions.allied(p.accountKey,victim.accountKey)){
+                shieldedShot.put(id,victim.id);return true; // ally absorbs shot; no shoot-through
+            }
             boolean wasAlive=!victim.dead;damage(victim,amount,weapon==1?6:2);
             if(wasAlive&&victim.dead){p.frags++;p.cash+=25;
                 p.progression.reward(CharacterProgression.Skill.MARKSMANSHIP,80,clock,1000);
@@ -497,7 +516,8 @@ public final class ArenaSystems {
         if(attacker==null||attacker.dead||deviceIndex<0||deviceIndex>=world.devices.size()||
            amount<=0||amount>250)return false;
         World.Device device=world.devices.get(deviceIndex);
-        if(device.hp<=0||attacker.accountKey.equals(device.ownerKey))return false;
+        if(device.hp<=0||attacker.accountKey.equals(device.ownerKey)||
+           factions.allied(attacker.accountKey,device.ownerKey))return false;
         if(device.ownerKey!=null&&device.ownerKey.startsWith("acct_")&&
            raidProtection.protectedOffline(device.ownerKey,utcMillis))return false;
         device.hp=Math.max(0,device.hp-amount);
@@ -513,13 +533,15 @@ public final class ArenaSystems {
             int risk=player==null?0:player.earlySpawnDeaths[i]*14;
             if(!free(point[0],point[1]))risk=1000;
             for(Player enemy:players.values()){
-                if(enemy.id==id||enemy.dead)continue;
+                if(enemy.id==id||enemy.dead||
+                   factions.allied(player.accountKey,enemy.accountKey))continue;
                 double distance=Math.hypot(enemy.x-point[0],enemy.y-point[1]);
                 if(distance<10)risk+=Math.max(0,(int)(65-distance*5));
                 if(distance<15&&clear(enemy.x,enemy.y,point[0],point[1]))risk+=30;
             }
             for(World.Device device:world.devices){
-                if(device.hp<=0||device.kind!=TURRET||device.ownerId==id)continue;
+                if(device.hp<=0||device.kind!=TURRET||device.ownerId==id||
+                   factions.allied(player==null?null:player.accountKey,device.ownerKey))continue;
                 double distance=Math.hypot(device.x-point[0],device.y-point[1]);
                 if(distance<7&&clear(device.x,device.y,point[0],point[1]))
                     risk+=Math.max(0,95-(int)(distance*8));

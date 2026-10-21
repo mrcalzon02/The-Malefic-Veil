@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.zip.*;
 
@@ -38,27 +40,39 @@ public final class PsxHorrorMenu implements AutoCloseable {
         Set<String> required=Set.of("window","panel","menu_band","button_normal",
             "button_hover","button_pressed","slider","slider_fill","divider",
             "dialogue","save_slot_normal");
+        // The source ZIP contains STORE-method entries with data descriptors.
+        // ZipInputStream rejects that producer layout; ZipFile reads its
+        // central directory correctly. A short-lived 135 KB temp copy avoids
+        // extracting assets into game data folders or redistributing content.
+        Path archive=null;
         try(InputStream file=PsxHorrorMenu.class.getResourceAsStream(ZIP)){
             if(file==null)throw new IOException("Missing CC BY 4.0 PSX Horror UI Free resource "+ZIP);
-            try(ZipInputStream zip=new ZipInputStream(file)){
-                ZipEntry entry;
-                while((entry=zip.getNextEntry())!=null){
+            archive=Files.createTempFile("malefic-psx-ui-", ".zip");
+            Files.copy(file,archive,java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            try(ZipFile zip=new ZipFile(archive.toFile())){
+                Enumeration<? extends ZipEntry> entries=zip.entries();
+                while(entries.hasMoreElements()){
+                    ZipEntry entry=entries.nextElement();
                     String name=entry.getName();
-                    if(name.startsWith(base)&&name.endsWith(".png")){
-                        String key=name.substring(base.length(),name.length()-4);
-                        if(required.contains(key)){
-                            byte[] bytes=zip.readAllBytes();
-                            Pixmap source=new Pixmap(bytes,0,bytes.length);
-                            Texture texture=new Texture(source);
-                            source.dispose();
-                            texture.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
-                            textures.put(key,texture);
-                        }
-                    }
-                    zip.closeEntry();
+                    if(!name.startsWith(base)||!name.endsWith(".png"))continue;
+                    String key=name.substring(base.length(),name.length()-4);
+                    if(!required.contains(key))continue;
+                    if(entry.getSize()<0||entry.getSize()>256*1024)
+                        throw new IOException("Invalid UI sprite size for "+name);
+                    byte[] bytes;
+                    try(InputStream raw=zip.getInputStream(entry)){bytes=raw.readAllBytes();}
+                    Pixmap source=new Pixmap(bytes,0,bytes.length);
+                    Texture texture=new Texture(source);
+                    source.dispose();
+                    texture.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
+                    textures.put(key,texture);
                 }
             }
-        }catch(IOException cause){close();throw new IllegalStateException("PSX UI art missing or corrupt",cause);}
+        }catch(IOException cause){
+            close();throw new IllegalStateException("PSX UI art missing or corrupt",cause);
+        }finally{
+            if(archive!=null)try{Files.deleteIfExists(archive);}catch(IOException ignored){}
+        }
         if(!textures.keySet().containsAll(required))
             throw new IllegalStateException("Incomplete PSX UI kit: "+required+" vs "+textures.keySet());
         patch("window",5,18,5,5);

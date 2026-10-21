@@ -22,10 +22,11 @@ public final class CityMiasmaTest {
                     city.x()-field.radius()-2,city.y(),20,
                     city.x()+field.radius()+2,city.y(),20),
                     "high-speed tick cannot tunnel across airspace");
-                check(!barrier.forbidsFlightSegment(
-                    city.x()+field.radius()+3,city.y(),20,
+                // Other cities may overlap the segment; they too must reject
+                // it. Check a known open-world corner separately below.
+                check(barrier.forbidsFlightSegment(city.x(),city.y(),20,
                     city.x()+field.radius()+8,city.y(),20),
-                    "distant flight path stays allowed unless another city overlaps");
+                    "entering from the city to open sky remains forbidden");
             }
             int cityCells=0;
             for(int x=0;x<ContinentLayout.SIZE;x++)

@@ -3,7 +3,7 @@
 | System | Implementation | Verification |
 |---|---|---|
 | Independent GitHub main | Three completed source commits | Remote branch-head and full-tree read-back observed |
-| Asset catalog | 33 exact Drive locators, including 19 converted GLBs | Drive folder/file presence observed; no asset bytes imported |
+| Asset catalog | 633 Drive source references (33 initial + 600 additional observed), including converted GLBs, textures and source meshes; capped folders still partial | Drive folder/file presence observed; no asset bytes imported |
 | City | 132 x 132 seeded grid, road intersections, walled lots, doors and courtyards | Source present, headless source test committed, no executed JVM test |
 | Rendering | Java2D 320 x 200 raycaster in scalable Swing view, primitive actor billboards | Source present, no UI frame or visual proof |
 | Combat | Handgun, shotgun, range/obstruction, reserves/reload, NPC hostiles | Source present, no runtime proof |

@@ -13,6 +13,8 @@ public final class ArenaSystems {
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
+    private final Map<String,CharacterProgression.Snapshot> accountSkills=new LinkedHashMap<>();
+    private final java.security.SecureRandom respawnRandom=new java.security.SecureRandom();
     /** Persistent host-owned account snapshot, excluding transient socket/vehicle ownership. */
     public record Profile(int hp,int sanity,int cash,int scrap,int medkits,int pistolReserve,
         int shellReserve,int pistolClip,int shellClip,int classId,int frags,boolean dead,
@@ -45,6 +47,24 @@ public final class ArenaSystems {
         }
         p.moveAt=clock;refreshVisibility(p);
     }
+    public synchronized Map<String,CharacterProgression.Snapshot> skillsSnapshot(){
+        Map<String,CharacterProgression.Snapshot> out=new TreeMap<>(accountSkills);
+        for(Player p:players.values())if(p.accountKey.startsWith("acct_"))
+            out.put(p.accountKey,p.progression.snapshot());
+        return Collections.unmodifiableMap(out);
+    }
+    public synchronized void restoreSkills(Map<String,CharacterProgression.Snapshot> data){
+        if(!players.isEmpty())throw new IllegalStateException("Live skill restore forbidden");
+        Map<String,CharacterProgression.Snapshot> checked=new TreeMap<>();
+        for(var entry:data.entrySet()){
+            if(!entry.getKey().matches("acct_[a-f0-9]{64}"))
+                throw new IllegalArgumentException("Invalid account skill owner");
+            CharacterProgression validation=new CharacterProgression();
+            validation.restore(entry.getValue());
+            checked.put(entry.getKey(),validation.snapshot());
+        }
+        accountSkills.clear();accountSkills.putAll(checked);
+    }
     public synchronized Map<String,Profile> profilesSnapshot(){
         Map<String,Profile> result=new TreeMap<>(accountProfiles);
         for(Player p:players.values())if(p.accountKey.startsWith("acct_"))
@@ -69,6 +89,10 @@ public final class ArenaSystems {
     public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3;
     public static final class Player {
         public final int id;
+        public final CharacterProgression progression=new CharacterProgression();
+        public final SurvivalCrafting survival=new SurvivalCrafting();
+        public boolean ready;
+        public long joinedAt,loadingDeadline,reloadAt=-100000;
         public double x,y,angle,visibility;
         public int hp=100,sanity=100,cash=150,scrap=4,medkits=2;
         public int pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
@@ -83,6 +107,9 @@ public final class ArenaSystems {
         Player(int id,double x,double y,long now){
             this.id=id;this.x=x;this.y=y;moveAt=now;
             accountKey="guest_"+id;
+            joinedAt=now;
+            loadingDeadline=now+15_000;
+            protectedUntil=now+10_000; // no deaths while client scene is still starting
         }
     }
     public ArenaSystems(long seed){
@@ -102,6 +129,8 @@ public final class ArenaSystems {
         if(departing!=null){
             if(departing.accountKey.startsWith("acct_"))
                 accountProfiles.put(departing.accountKey,savePlayer(departing));
+            if(departing.accountKey.startsWith("acct_"))
+                accountSkills.put(departing.accountKey,departing.progression.snapshot());
             raidProtection.logout(departing.accountKey,System.currentTimeMillis());
         }
         lastShotSequence.remove(id);
@@ -121,8 +150,23 @@ public final class ArenaSystems {
             d.ownerKey=key;
         Profile saved=accountProfiles.get(key);
         if(saved!=null)applyProfile(p,saved);
+        CharacterProgression.Snapshot skills=accountSkills.get(key);
+        if(skills!=null)p.progression.restore(skills);
         return true;
     }
+    /** One-shot readiness proof after scene/model loading; cannot be spammed. */
+    public synchronized boolean sceneReady(int id){
+        Player p=player(id);
+        if(p==null||p.dead||p.ready||clock>=p.loadingDeadline)return false;
+        p.ready=true;
+        p.protectedUntil=Math.min(p.loadingDeadline,Math.max(p.protectedUntil,clock+6000));
+        return true;
+    }
+    public synchronized CharacterProgression.View progression(int id){
+        Player p=player(id);
+        return p==null?null:p.progression.view();
+    }
+    private void breakGrace(Player p){p.protectedUntil=0;}
     public synchronized Collection<Player> roster(){return List.copyOf(players.values());}
     public synchronized Player player(int id){return players.get(id);}
     public synchronized long time(){return clock;}
@@ -155,11 +199,11 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
         long elapsed=Math.max(0,clock-p.moveAt);
-        double max=(flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85;
+        double max=((flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85)*p.progression.movementMultiplier();
         double permitted=.33+Math.min(elapsed,500)*max/1000;
         if(Math.hypot(x-p.x,y-p.y)>permitted)return false;
         p.x=x;p.y=y;p.angle=angle;p.flags=flags&3;p.moveAt=clock;
-        if(clock<p.protectedUntil&&Math.hypot(x-p.spawnX,y-p.spawnY)>.85)p.protectedUntil=0;
+        // Spawn/login grace permits a brief non-offensive escape to cover.
         refreshVisibility(p);return true;
     }
     public synchronized void refreshVisibility(Player p){
@@ -178,6 +222,11 @@ public final class ArenaSystems {
         p.lastHurt=clock;
         if(p.hp==0){
             p.dead=true;p.respawnAt=clock;p.protectedUntil=0;
+            p.progression.died();
+            // No graveyard has been commissioned: legacy carried resources are lost.
+            p.cash=0;p.scrap=0;p.medkits=0;
+            p.pistolClip=0;p.shellClip=0;p.pistolReserve=0;p.shellReserve=0;
+            p.survival.clearOnDeath();
             if(p.lastSpawnIndex>=0&&clock-p.lastSpawnAt<5000)
                 p.earlySpawnDeaths[p.lastSpawnIndex]=Math.min(10,p.earlySpawnDeaths[p.lastSpawnIndex]+1);
         }
@@ -188,6 +237,8 @@ public final class ArenaSystems {
         World.Pickup item=world.pickups.get(itemIndex);
         if(item.taken||Math.hypot(item.x-p.x,item.y-p.y)>.63)return false;
         item.taken=true;
+        breakGrace(p);
+        p.progression.reward(CharacterProgression.Skill.SCAVENGING,8,clock,3000);
         switch(item.kind){
             case 0 -> p.hp=Math.min(100,p.hp+30);
             case 1 -> p.sanity=Math.min(100,p.sanity+30);
@@ -203,19 +254,24 @@ public final class ArenaSystems {
     public synchronized boolean useMedkit(int id){
         Player p=player(id);
         if(p==null||p.dead||p.medkits<=0||p.hp>=100)return false;
-        p.medkits--;p.hp=Math.min(100,p.hp+55);return true;
+        breakGrace(p);p.medkits--;p.hp=Math.min(100,p.hp+55);return true;
     }
     public synchronized boolean reload(int id,int weapon){
         Player p=player(id);if(p==null||p.dead)return false;
+        if(clock<p.reloadAt)return false;
         if(weapon==0){
             int rounds=Math.min(12-p.pistolClip,p.pistolReserve);
             if(rounds<=0)return false;
-            p.pistolReserve-=rounds;p.pistolClip+=rounds;return true;
+            p.pistolReserve-=rounds;p.pistolClip+=rounds;
+            p.reloadAt=clock+Math.round(1700*p.progression.reloadMultiplier());
+            breakGrace(p);return true;
         }
         if(weapon==1){
             int rounds=Math.min(6-p.shellClip,p.shellReserve);
             if(rounds<=0)return false;
-            p.shellReserve-=rounds;p.shellClip+=rounds;return true;
+            p.shellReserve-=rounds;p.shellClip+=rounds;
+            p.reloadAt=clock+Math.round(2400*p.progression.reloadMultiplier());
+            breakGrace(p);return true;
         }
         return false;
     }
@@ -223,6 +279,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead||clock-p.abilityAt<18000)return false;
         p.abilityAt=clock;
+        breakGrace(p);
         switch(p.classId){
             case 0 -> {p.cash+=35;p.scrap++;}
             case 1 -> {p.hp=Math.min(100,p.hp+55);p.sanity=Math.min(100,p.sanity+20);}
@@ -293,7 +350,7 @@ public final class ArenaSystems {
         if(clock-p.shotAt<cooldown)return false;
         if(weapon==0&&p.pistolClip<=0||weapon==1&&p.shellClip<=0)return false;
         if(weapon==0)p.pistolClip--;else p.shellClip--;
-        p.protectedUntil=0; // offensive action immediately ends spawn invulnerability.
+        breakGrace(p); // offensive action immediately ends all invulnerability.
         p.shotAt=clock;refreshVisibility(p);
         double max=weapon==0?12:4.5;
         Object target=null;
@@ -331,10 +388,13 @@ public final class ArenaSystems {
                                    Math.cos(Math.atan2(car.y()-p.y,car.x()-p.x)-p.angle));
             if(Math.abs(diff)<=Math.atan2(.65,range)){nearest=range;target=car;}
         }
-        int amount=weapon==0?25:Math.max(18,70-(int)(nearest*8));
+        int amount=(int)Math.round((weapon==0?25:Math.max(18,70-(int)(nearest*8)))*
+            p.progression.damageMultiplier());
         if(target instanceof Player victim){
             boolean wasAlive=!victim.dead;damage(victim,amount,weapon==1?6:2);
-            if(wasAlive&&victim.dead){p.frags++;p.cash+=25;}
+            if(wasAlive&&victim.dead){p.frags++;p.cash+=25;
+                p.progression.reward(CharacterProgression.Skill.MARKSMANSHIP,80,clock,1000);
+            }
         } else if(target instanceof World.Device device){
             int index=world.devices.indexOf(device);
             if(!damageDevice(id,index,amount,System.currentTimeMillis()) &&
@@ -342,7 +402,10 @@ public final class ArenaSystems {
                 shieldedShot.put(id,index);
         } else if(target instanceof World.Npc npc){
             npc.hp-=amount;
-            if(npc.hp<=0){p.frags++;p.cash+=25;}
+            if(npc.hp<=0){p.frags++;p.cash+=25;
+                p.progression.reward(CharacterProgression.Skill.MARKSMANSHIP,
+                    25L+CharacterProgression.monsterLevel(world.seed,npc)*5L,clock,800);
+            }
         } else if(target instanceof Vehicles.State car){
             if(vehicles.damageCar(car.id(),amount))cargo.advance(0);
         }
@@ -475,10 +538,11 @@ public final class ArenaSystems {
         if(!free(world.spawns[spawn][0],world.spawns[spawn][1]))return false;
         p.x=world.spawns[spawn][0];p.y=world.spawns[spawn][1];
         p.lastSpawnIndex=spawn;p.lastSpawnAt=clock;
-        p.spawnX=p.x;p.spawnY=p.y;p.protectedUntil=clock+1200;
+        p.spawnX=p.x;p.spawnY=p.y;
+        p.protectedUntil=clock+5000+respawnRandom.nextInt(3001);
+        p.ready=true;
         p.hp=100;p.sanity=75;p.dead=false;p.moveAt=clock;
-        p.pistolClip=12;p.shellClip=6;
-        p.pistolReserve=Math.max(24,p.pistolReserve);p.shellReserve=Math.max(12,p.shellReserve);
+        // No free weapons/ammo are magically returned after death.
         refreshVisibility(p);return true;
     }
     /** Seat changes are authoritative and never accept client coordinates. */
@@ -487,7 +551,7 @@ public final class ArenaSystems {
         if(p==null||p.dead||!vehicles.enter(id,p.x,p.y,carIndex))return false;
         Vehicles.State car=vehicles.state(carIndex);
         p.x=car.x();p.y=car.y();p.angle=car.heading();
-        p.moveAt=clock;p.protectedUntil=0;return true;
+        p.moveAt=clock;breakGrace(p);return true;
     }
     public synchronized boolean exitVehicle(int id){
         Player p=players.get(id);
@@ -543,6 +607,8 @@ public final class ArenaSystems {
                 if(p.dead||car.hp()<=0)vehicles.disconnect(p.id);
             }
             if(p.dead)continue;
+            p.progression.aliveTick(ms);
+            p.survival.advance(ms);
             if(clock-p.lastHurt>=5000&&clock%1000<ms)
                 p.hp=Math.min(100,p.hp+2);
             refreshVisibility(p);

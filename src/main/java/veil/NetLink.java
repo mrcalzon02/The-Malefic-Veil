@@ -129,6 +129,16 @@ public final class NetLink implements AutoCloseable {
                                     new CargoDrop(Integer.parseInt(s[1]),Double.parseDouble(s[2]),
                                         Double.parseDouble(s[3]),s[4]));
                             }
+                            case "CARGO_DROP_IDS" -> {
+                                if(s.length==2){
+                                    if(s[1].equals("-"))cargoDrops.clear();
+                                    else{
+                                        java.util.HashSet<Integer> active=new java.util.HashSet<>();
+                                        for(String text:s[1].split(","))active.add(Integer.parseInt(text));
+                                        cargoDrops.keySet().removeIf(id->!active.contains(id));
+                                    }
+                                }
+                            }
                             case "CARGO_DROP_TAKEN" -> {
                                 if(s.length==2)cargoDrops.remove(Integer.parseInt(s[1]));
                             }

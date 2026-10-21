@@ -27,14 +27,18 @@ public final class SettlementAuthority {
     /** Each blueprint is server-classified; never take kind/cost from the client. */
     private static final Map<String,Kind> CATALOG=new LinkedHashMap<>();
     static {
-        for(String id:new String[]{
-            "field-shelter","hand-workshop","dry-store","rain-catcher",
-            "cooking-hearth","forager-garden","purification-works","infirmary",
-            "forge","materials-recycler","generator","freight-bay","watch-post",
-            "barracks","industrial-workshop","motor-pool","fuel-refinery",
-            "wall-gate-system","signal-relay","cold-store","command-hall",
-            "research-archive","security-grid"
-        })CATALOG.put(id,Kind.FACILITY);
+        // Authoritative build whitelist follows the versioned actual
+        // industry/farm registry, not a small stale manually copied subset.
+        // The heart is a charter prerequisite and primitive wall panels
+        // belong to separate modular construction budgets.
+        for(String id:CraftingEraRegistry.facilities().keySet())
+            if(!Set.of("camp-stake","claim-heart","monument-graveyard",
+                       "palisade-section").contains(id))
+                CATALOG.put(id,Kind.FACILITY);
+        // Legacy design-only services awaiting individual industry descriptors.
+        for(String id:new String[]{"purification-works","barracks",
+            "wall-gate-system","cold-store","security-grid"})
+            CATALOG.putIfAbsent(id,Kind.FACILITY);
         for(String id:new String[]{"aa-fast","aa-heavy","automated-turret"})
             CATALOG.put(id,Kind.DEFENSE);
         CATALOG.put("production-queue",Kind.QUEUE);

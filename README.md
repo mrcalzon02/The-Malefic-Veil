@@ -16,6 +16,12 @@ java -cp out veil.MaleficVeil
 
 Run `java -cp out veil.WorldSelfTest` for headless city checks and `java -cp out veil.LanSmokeTest` for localhost network checks. A local experimental server can also be run with `java -cp out veil.LanServer 7777`; the launcher offers SOLO, HOST LAN or JOIN LAN. Protocol v3 hosts PvP damage, visibility, NPCs, inventory, pickups and construction. Internet security, robust movement reconciliation and real gameplay loads are **not** accepted yet. For Windows double-click `play.bat` with JDK 17+ installed.
 
+## Crafting economy placeholder icons (150 verified sprites)
+
+The five consistent inventory sheets—shared materials, shared equipment, Unraveled manufacturing, Penitent ritual supplies and Begotten biological goods—are now checked in as **five archives of 30 individually sliced transparent PNGs**, together with five matching WebP visual references. Every asset has a stable uppercase item ID and SHA-256 recorded in [the crafting icon index](assets/game/crafting/icons_index.csv). [Crafting art readme](assets/game/crafting/README.md) explains the exact archive paths and naming rules.
+
+`CraftingIconPacks.load(Path.of("."))` reads the committed ZIPs directly and returns a real 128×128 RGBA sprite via `icon("TIMBER")`, `icon("RITUAL_CLOTH")`, etc. The dedicated headless `CraftingIconPacksTest` checks all **150** actual sprites, with no remote art service or external runtime dependency. The sprites are placeholder art for the planned economies; they are **not** a claim that every corresponding item can already be crafted, traded or placed in the live city-sector game.
+
 ## Opt-in GPU Kenney client (libGDX / OpenGL 3.3)
 
 The separate `gpu-client/` Maven project produces an actual **hardware-instanced** PSX-resolution desktop renderer from the same generated Kenney city tile placements. Identical GLB meshes are uploaded once; visible transforms draw with real `glDrawArraysInstanced` calls. It renders via a 320×200 framebuffer, nearest-neighbor upscale, hardware depth and fog, with a separate executable shaded JAR.

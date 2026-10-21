@@ -5,7 +5,11 @@ import java.util.*;
 
 /** License-selected Kenney source models; uses the host's exact tile/prop positions. */
 public final class UrbanScene {
-    public record ModelInstance(String model,double x,double y,double heading,double scale){}
+    public record ModelInstance(String model,double x,double y,double heading,double scale,double opacity){
+        public ModelInstance(String model,double x,double y,double heading,double scale){
+            this(model,x,y,heading,scale,1);
+        }
+    }
     private static final String[] IDS={
         "road-asphalt-straight","detail-barrier-type-a","detail-bench",
         "detail-dumpster-closed","detail-light-single"

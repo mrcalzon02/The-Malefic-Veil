@@ -12,6 +12,10 @@ public final class CargoHaulage {
     public record Site(int id,int x,int y,String plot,String resource,int stock,
                        long refillAt,String groundMesh) {}
     public record Drop(int id,double x,double y,String resource,long createdAt) {}
+    public record YardSave(int id,int stock,long refillAt) {}
+    public record TruckSave(int id,String cargo) {}
+    public record Snapshot(long clock,int nextDrop,List<YardSave> yards,
+                           List<TruckSave> trucks,List<Drop> drops) {}
     private static final class Yard {
         int id,x,y,stock=1;
         long refillAt;
@@ -128,6 +132,60 @@ public final class CargoHaulage {
                 if(drops.size()>128)throw new IllegalStateException("Cargo drop budget exceeded");
             }
         }
+    }
+    public synchronized Snapshot snapshot(){
+        List<YardSave> ys=new ArrayList<>();
+        for(Yard y:yards)ys.add(new YardSave(y.id,y.stock,y.refillAt));
+        List<TruckSave> cs=new ArrayList<>();
+        for(Vehicles.State car:vehicles.states()){
+            Vehicles.Load load=vehicles.cargo(car.id());
+            cs.add(new TruckSave(car.id(),load==null?null:load.resourceType()));
+        }
+        return new Snapshot(clock,nextDrop,List.copyOf(ys),List.copyOf(cs),List.copyOf(drops));
+    }
+    /** Load must be applied only after corresponding validated car restoration. */
+    public synchronized void restore(Snapshot snap){
+        if(snap==null||snap.clock<0||snap.nextDrop<1||snap.yards.size()!=yards.size()||
+            snap.trucks.size()!=vehicles.states().size()||snap.drops.size()>128)
+            throw new IllegalArgumentException("Corrupt cargo snapshot");
+        Set<Integer> ids=new HashSet<>();
+        int highest=0;
+        for(int i=0;i<yards.size();i++){
+            YardSave save=snap.yards.get(i);
+            if(save.id()!=i||(save.stock()!=0&&save.stock()!=1)||
+                save.refillAt()<0||save.refillAt()>Long.MAX_VALUE-REFILL_MS)
+                throw new IllegalArgumentException("Corrupt cargo yard");
+        }
+        for(int i=0;i<snap.trucks.size();i++){
+            TruckSave save=snap.trucks.get(i);
+            Vehicles.State vehicle=vehicles.state(i);
+            if(save.id()!=i||vehicle==null||!validType(save.cargo())||
+                save.cargo()!=null&&vehicle.hp()<=CARGO_DAMAGE_THRESHOLD)
+                throw new IllegalArgumentException("Corrupt truck load");
+        }
+        for(Drop drop:snap.drops){
+            if(drop.id()<1||!ids.add(drop.id())||
+                !Double.isFinite(drop.x())||!Double.isFinite(drop.y())||
+                drop.x()<0||drop.y()<0||drop.x()>=World.SIZE||drop.y()>=World.SIZE||
+                !validType(drop.resource())||drop.resource()==null||
+                drop.createdAt()<0||drop.createdAt()>snap.clock)
+                throw new IllegalArgumentException("Corrupt dropped cargo");
+            highest=Math.max(highest,drop.id());
+        }
+        if(highest>=snap.nextDrop)throw new IllegalArgumentException("Drop IDs cannot rewind");
+        for(int i=0;i<yards.size();i++){
+            Yard y=yards.get(i);
+            YardSave saved=snap.yards.get(i);
+            y.stock=saved.stock();y.refillAt=saved.refillAt();
+        }
+        for(TruckSave load:snap.trucks)
+            if(!vehicles.restoreCargo(load.id(),load.cargo()))
+                throw new IllegalArgumentException("Cannot restore valid truck cargo");
+        drops.clear();drops.addAll(snap.drops);
+        clock=snap.clock;nextDrop=snap.nextDrop;
+    }
+    private static boolean validType(String type){
+        return type==null||type.equals("METAL_STOCK")||type.equals("MACHINE_PARTS");
     }
     public synchronized long time(){return clock;}
 }

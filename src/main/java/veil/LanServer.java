@@ -40,6 +40,7 @@ public final class LanServer implements AutoCloseable {
                     }
                 }
                 for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
+                for(Vehicles.State car:match.vehicles.states())broadcast(carPacket(car),-1);
                 for(int i=0;i<match.world.npcs.size();i++){
                     World.Npc n=match.world.npcs.get(i);
                     broadcast("NPC|"+i+"|"+n.x+"|"+n.y+"|"+n.hp,-1);
@@ -58,6 +59,10 @@ public final class LanServer implements AutoCloseable {
     private static String peerPacket(ArenaSystems.Player p){
         return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility+"|"+p.classId;
     }
+    private static String carPacket(Vehicles.State car){
+        return "CAR|"+car.id()+"|"+car.x()+"|"+car.y()+"|"+car.heading()+"|"+
+            car.speed()+"|"+car.fuel()+"|"+car.hp()+"|"+car.driverId();
+    }
     private static String selfPacket(ArenaSystems.Player p){
         return "SELF|"+p.hp+"|"+p.sanity+"|"+p.cash+"|"+p.scrap+"|"+p.medkits+
             "|"+p.pistolReserve+"|"+p.shellReserve+"|"+p.pistolClip+"|"+p.shellClip+
@@ -67,6 +72,7 @@ public final class LanServer implements AutoCloseable {
         for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
         for(int i=0;i<match.world.pickups.size();i++)
             if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
+        for(Vehicles.State car:match.vehicles.states())peer.send(carPacket(car));
         for(int i=0;i<match.world.devices.size();i++){
             World.Device d=match.world.devices.get(i);
             peer.send("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp);
@@ -133,6 +139,22 @@ public final class LanServer implements AutoCloseable {
                                 World.Device d=match.world.devices.get(idx);
                                 broadcast("DEVICE|"+idx+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
                             }
+                        }
+                        case "RIDE" -> {
+                            if(s.length!=2)continue;
+                            int index=Integer.parseInt(s[1]);
+                            changed=match.enterVehicle(peer.id,index);
+                            peer.send("RIDE_RESULT|"+(changed?"OK":"REJECTED"));
+                        }
+                        case "EXIT" -> {
+                            if(s.length!=1)continue;
+                            changed=match.exitVehicle(peer.id);
+                            peer.send("RIDE_RESULT|"+(changed?"EXITED":"REJECTED"));
+                        }
+                        case "DRIVE" -> {
+                            if(s.length!=3)continue;
+                            changed=match.driveVehicle(peer.id,
+                                Double.parseDouble(s[1]),Double.parseDouble(s[2]));
                         }
                         case "PING" -> {
                             if(s.length!=2)continue;

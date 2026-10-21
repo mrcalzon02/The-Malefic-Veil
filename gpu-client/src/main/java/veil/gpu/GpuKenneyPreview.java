@@ -353,6 +353,30 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         sprites.end();
     }
 
+    /** CI camera searches genuine seeded in-world props; never inserts showcase-only assets. */
+    private void viewPlacedModel(String modelPrefix) {
+        for(World.UrbanProp target:world.urbanProps){
+            if(!target.model().startsWith(modelPrefix))continue;
+            for(int step=3;step<=6;step++){
+                for(int sector=0;sector<8;sector++){
+                    double angle=sector*Math.PI/4;
+                    double cx=target.x()+Math.cos(angle)*step;
+                    double cy=target.y()+Math.sin(angle)*step;
+                    if(!world.canWalk(cx,cy)||
+                       !world.lineClear(cx,cy,target.x(),target.y()))continue;
+                    x=cx;y=cy;
+                    heading=Math.atan2(target.y()-cy,target.x()-cx);
+                    visualDistance=48;
+                    System.out.println("GPU_SCENE_PROOF model="+target.model()+
+                        " world="+target.x()+","+target.y());
+                    return;
+                }
+            }
+        }
+        throw new IllegalStateException("No visually reachable seeded "+modelPrefix+
+            " in scene; cannot prove model integration");
+    }
+
     private void saveFrame(String filename) {
         // Read back the *actual* GPU framebuffer, correcting GL's bottom-left origin.
         Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);
@@ -395,6 +419,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 worldTimeMs=WorldDayNight.DAY_MS/2;
             }else if(frames==48){
                 saveFrame("gpu-continental-edge.png");
+                viewPlacedModel("truck-");
+            }else if(frames==60){
+                saveFrame("gpu-kenney-vehicles.png");
+                viewPlacedModel("tree-");
+            }else if(frames==72){
+                saveFrame("gpu-kenney-foliage.png");
                 framebuffer.end();
                 Gdx.app.exit();
                 return;

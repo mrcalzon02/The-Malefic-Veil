@@ -77,6 +77,18 @@ public final class CraftingEraRegistryTest {
             "Begotten reality breach bypasses finite organic feed");
         check(recipes.get("resilience-core").inputs().containsKey("MACHINE_PARTS"),
             "Unraveled automation bypasses salvage resource logistics");
+        for(String id:List.of("field-shelter","forager-garden","seed-nursery",
+            "compost-yard","herb-plot","root-cellar","smokehouse","fiber-loom",
+            "grain-mill","irrigation-works","animal-pen","materials-recycler",
+            "controlled-greenhouse","fuel-refinery","motor-pool")){
+            check(buildings.containsKey(id),"Crude-to-industrial facility not indexed "+id);
+        }
+        for(String id:List.of("compost-ferment","grow-field-crops",
+            "grow-medicinals","weave-cloth","smoke-rations",
+            "cellar-vegetables","mill-crops")){
+            check(recipes.containsKey(id),"Missing farming/food throughput plan "+id);
+            check(recipes.get(id).seconds() > 0, "nonpositive process time");
+        }
         System.out.println("PASS CraftingEraRegistryTest: "+buildings.size()+
             " facilities "+recipes.size()+" processes "+eras.size()+
             " eras, separate all-faction logistics and guarded three-branch endgame");

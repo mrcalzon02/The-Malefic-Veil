@@ -9,6 +9,7 @@ public final class World {
     public static final int SIZE = 132;
     public final long seed;
     private final byte[][] walls = new byte[SIZE][SIZE];
+    public final CityLayout city;
     public final List<Npc> npcs = new ArrayList<>();
     public final List<Pickup> pickups = new ArrayList<>();
     public final List<Device> devices = new ArrayList<>();
@@ -39,18 +40,8 @@ public final class World {
     }
     public World(long seed) {
         this.seed=seed;
-        for(int x=0;x<SIZE;x++) for(int y=0;y<SIZE;y++) {
-            int a=x%12,b=y%12;
-            boolean road=a<3||b<3;
-            int lotX=x/12,lotY=y/12;
-            long block=mix(seed ^ (lotX*7919L) ^ (lotY*104729L));
-            boolean courtyard=(block&7)==0;
-            boolean perimeter=a==3||a==11||b==3||b==11;
-            boolean door=(a==7&&(b==3||b==11))||(b==7&&(a==3||a==11));
-            boolean pillar=a==6&&b==6&&((block>>>8)&3)==0;
-            walls[x][y]=(byte)(road||courtyard||door ? 0 : perimeter||pillar ? 1 : 0);
-            if(x==0||y==0||x==SIZE-1||y==SIZE-1) walls[x][y]=1;
-        }
+        city=CityLayout.generate(seed);
+        city.copyInto(walls);
         for(double[] s:spawns) {
             int sx=(int)s[0],sy=(int)s[1];
             for(int x=Math.max(1,sx-1);x<=Math.min(SIZE-2,sx+1);x++)
@@ -59,11 +50,14 @@ public final class World {
         generateUrbanProps();
         Random r=new Random(seed^0x4D414C45464943L);
         for(int i=0;i<170;i++) {
-            double[] p=randomOpen(r);
-            pickups.add(new Pickup(p[0],p[1],i%7));
+            int kind=i%7;
+            CityLayout.Category preferred=kind==0||kind==6?CityLayout.Category.SAFE:
+                kind==2||kind==3||kind==4||kind==5?CityLayout.Category.RESOURCE:null;
+            double[] p=randomOpen(r,preferred);
+            pickups.add(new Pickup(p[0],p[1],kind));
         }
         for(int i=0;i<45;i++) {
-            double[] p=randomOpen(r);
+            double[] p=randomOpen(r,i%4==0?null:CityLayout.Category.HAZARD);
             npcs.add(new Npc(p[0],p[1]));
         }
     }
@@ -100,11 +94,13 @@ public final class World {
         a=(a^(a>>>27))*0x94d049bb133111ebL;
         return a^(a>>>31);
     }
-    private double[] randomOpen(Random r) {
+    private double[] randomOpen(Random r,CityLayout.Category preferred) {
         for(int i=0;i<10000;i++) {
             double x=1.5+r.nextInt(SIZE-3), y=1.5+r.nextInt(SIZE-3);
-            if(canWalk(x,y)) return new double[]{x,y};
+            if(canWalk(x,y)&&(preferred==null||city.categoryAt((int)x,(int)y)==preferred))
+                return new double[]{x,y};
         }
+        if(preferred!=null)return randomOpen(r,null);
         throw new IllegalStateException("No traversable city tiles");
     }
     public int tile(int x,int y) {

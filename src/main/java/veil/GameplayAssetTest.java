@@ -16,9 +16,9 @@ public final class GameplayAssetTest {
         g.setColor(new Color(18,20,28));g.fillRect(0,0,320,200);
         double[] depth=new double[320];Arrays.fill(depth,40);
         java.util.List<UrbanScene.ModelInstance> models=java.util.List.of(
-            new UrbanScene.ModelInstance(GameplayMeshes.HERO[0],4.5,-.7,0,1,alpha),
-            new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[0],5.5,.5,0,1),
-            new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[0],6.5,.3,0,1));
+            new UrbanScene.ModelInstance(GameplayMeshes.HERO[0],3.5,1.5,-Math.PI/2,1,alpha),
+            new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[0],4.5,2.2,0,1),
+            new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[0],5.3,.3,0,1));
         int visible=new PropRenderer().draw(g,pack.meshes(),models,1.5,1.5,0,
             depth,320,200);
         g.dispose();
@@ -61,7 +61,7 @@ public final class GameplayAssetTest {
             pg.setColor(new Color(19,20,28));pg.fillRect(0,0,320,200);
             double[] depth=new double[320];Arrays.fill(depth,40);
             if(index<4||index>=6)new PropRenderer().draw(pg,lib.meshes(),
-                java.util.List.of(new UrbanScene.ModelInstance(id,5.5,1.5,0,1,1)),
+                java.util.List.of(new UrbanScene.ModelInstance(id,3.5,1.5,-Math.PI/2,1,1)),
                 1.5,1.5,0,depth,320,200);
             else new WeaponViewRenderer().draw(pg,lib.meshes().get(id),320,200,0);
             pg.setFont(new Font(Font.MONOSPACED,Font.BOLD,13));

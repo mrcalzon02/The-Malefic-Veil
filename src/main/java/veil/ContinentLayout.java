@@ -47,10 +47,18 @@ public final class ContinentLayout {
     public boolean land(int x,int y) { return biome(x,y)!=Biome.WATER; }
     public char cityAt(int x,int y) { return inBounds(x,y)&&cityIds[x][y]!=0?(char)('A'+cityIds[x][y]-1):'\0'; }
     public boolean road(int x,int y) { return inBounds(x,y)&&roads[x][y]; }
-    /** True for generated structures and roads; never treat simple natural terrain as occupied. */
-    public boolean worldStructureAt(int x,int y) { return !inBounds(x,y)||immutableStructures[x][y]; }
+    /** Cities A-G are fully world-owned, including vacant/undeveloped parcels. */
+    public boolean cityProtected(int x,int y) {
+        return inBounds(x,y)&&cityIds[x][y]!=0;
+    }
+    /** Fixed city footprints, highways and natural world structures are not buildable. */
+    public boolean worldStructureAt(int x,int y) {
+        return !inBounds(x,y)||cityProtected(x,y)||immutableStructures[x][y];
+    }
+    /** Construction is only allowed on appropriate unoccupied wilderness land. */
     public boolean buildableGround(int x,int y) {
-        return land(x,y) && !worldStructureAt(x,y) && biome(x,y)!=Biome.MOUNTAINS;
+        return land(x,y) && !cityProtected(x,y) && !worldStructureAt(x,y) &&
+            biome(x,y)!=Biome.MOUNTAINS;
     }
     private static long hash(long value) {
         value=(value^(value>>>30))*0xbf58476d1ce4e5b9L;

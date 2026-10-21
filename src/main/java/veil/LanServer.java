@@ -101,6 +101,7 @@ public final class LanServer implements AutoCloseable {
         }
     }
     private static String state(Peer p){return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.health;}
+    public int port(){return listener.getLocalPort();}
     @Override public void close() throws IOException {
         running=false;listener.close();
         for(Peer p:peers.values())try{p.socket.close();}catch(IOException ignored){}

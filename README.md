@@ -14,7 +14,7 @@ javac --release 17 -d out src/main/java/veil/*.java
 java -cp out veil.MaleficVeil
 ```
 
-Optional local LAN server: `java -cp out veil.LanServer 7777` (networking milestone in progress; read the implementation status before claiming competitive multiplayer).
+Run `java -cp out veil.WorldSelfTest` for headless city checks and `java -cp out veil.LanSmokeTest` for localhost network checks. A local experimental server can also be run with `java -cp out veil.LanServer 7777`; the launcher offers SOLO, HOST LAN or JOIN LAN. LAN currently relays player positions and checks PvP hits only. It does **not** yet authoritatively synchronize NPCs, inventories, pickups or devices and is not ready for public servers. For Windows double-click `play.bat` with JDK 17+ installed.
 
 ## Play concept
 

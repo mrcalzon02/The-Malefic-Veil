@@ -56,7 +56,7 @@ public final class LanServer implements AutoCloseable {
         for(Peer q:connections.values())if(q.id!=except)q.send(message);
     }
     private static String peerPacket(ArenaSystems.Player p){
-        return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility;
+        return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility+"|"+p.classId;
     }
     private static String selfPacket(ArenaSystems.Player p){
         return "SELF|"+p.hp+"|"+p.sanity+"|"+p.cash+"|"+p.scrap+"|"+p.medkits+
@@ -80,7 +80,7 @@ public final class LanServer implements AutoCloseable {
             socket.setSoTimeout(30000);
             peer.out=out;
             ArenaSystems.Player actor=match.join(peer.id);
-            peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|2");
+            peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|3");
             connections.put(peer.id,peer);
             sendWorld(peer);peer.send(selfPacket(actor));
             broadcast(peerPacket(actor),peer.id);

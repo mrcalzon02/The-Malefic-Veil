@@ -18,6 +18,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final World world;
     private final UrbanScene urban;
     private final PropRenderer urbanRenderer=new PropRenderer();
+    private final GameplayMeshes actorModels=new GameplayMeshes();
+    private final WeaponViewRenderer weaponRenderer=new WeaponViewRenderer();
     private final NetLink net;
     private final int archetype;
     private final javax.swing.Timer timer;
@@ -324,18 +326,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if((tx+ty)%5==0){g.setColor(new Color(r/2,gg/2,b/2));g.drawLine(i,Math.max(0,top+h/2),i,Math.min(RH,top+h/2));}
         }
         urbanRenderer.draw(g,urban,px,py,angle,depth,RW,RH);
-        for(World.Pickup p:world.pickups)if(!p.taken) sprite(g,p.x,p.y,p.kind==0?0x7ad36c:p.kind==1?0x87a3fd:p.kind==4?0xF2D36B:0xE6AD54,16,false);
-        for(World.Device d:world.devices)if(d.hp>0)sprite(g,d.x,d.y,d.kind==0?0x57CCD6:d.kind==1?0x62E696:0xB88FF5,56,true);
-        for(World.Npc n:world.npcs)if(n.hp>0)sprite(g,n.x,n.y,0xD85569,74,true);
+        java.util.List<UrbanScene.ModelInstance> gameplay=new ArrayList<>();
+        for(World.Pickup p:world.pickups)if(!p.taken&&p.kind>=0&&p.kind<GameplayMeshes.PICKUP.length)
+            gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,0,1.1));
+        for(World.Device d:world.devices)if(d.hp>0&&d.kind>=0&&d.kind<GameplayMeshes.DEVICE.length)
+            gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[d.kind],d.x,d.y,0,1.0));
+        for(World.Npc n:world.npcs)if(n.hp>0)
+            gameplay.add(new UrbanScene.ModelInstance("enemy-walker",n.x,n.y,
+                Math.atan2(py-n.y,px-n.x)-Math.PI/2,1.0));
         if(net!=null)for(NetLink.Remote p:net.others.values())
-            if(p.hp>0)sprite(g,p.x,p.y,0x77D2F5,80,true,p.opacity);
+            if(p.hp>0)gameplay.add(new UrbanScene.ModelInstance(
+                GameplayMeshes.HERO[Math.max(0,Math.min(3,p.classId))],
+                p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
+        urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
         g.setColor(new Color(187,176,149));
         g.fillRect(RW/2-5,RH/2,11,1);g.fillRect(RW/2,RH/2-5,1,11);
         int bob=(int)(Math.sin(ticks*.15)*(down(KeyEvent.VK_W)?2:0));
-        g.setColor(gun==0?new Color(66,67,75):new Color(70,51,45));
-        int ww=gun==0?35:66;
-        g.fillPolygon(new int[]{RW/2-ww/2,RW/2+ww/2,RW/2+ww/3,RW/2-ww/3},
-            new int[]{RH-3+bob,RH-3+bob,RH-45+bob,RH-45+bob},4);
+        weaponRenderer.draw(g,actorModels.meshes().get(GameplayMeshes.WEAPON[gun]),RW,RH,bob);
         if(attackFlash>0){
             g.setColor(new Color(255,207,85));
             g.fillOval(RW/2-12,RH-64+bob,24,22);

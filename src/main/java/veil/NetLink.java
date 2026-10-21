@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class NetLink implements AutoCloseable {
     public static final class Remote {
         public volatile double x,y,angle,opacity;
-        public volatile int hp;
-        Remote(double x,double y,double a,int hp,double opacity){
-            this.x=x;this.y=y;this.angle=a;this.hp=hp;this.opacity=opacity;
+        public volatile int hp,classId;
+        Remote(double x,double y,double a,int hp,double opacity,int classId){
+            this.x=x;this.y=y;this.angle=a;this.hp=hp;this.opacity=opacity;this.classId=classId;
         }
     }
     public record Self(int health,int sanity,int cash,int supplies,int medkits,
@@ -45,7 +45,7 @@ public final class NetLink implements AutoCloseable {
         writer=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
         String hello=reader.readLine();
         String[] parts=hello==null?new String[0]:hello.split("\\|");
-        if(parts.length!=4||!parts[0].equals("WELCOME")||!parts[3].equals("2"))
+        if(parts.length!=4||!parts[0].equals("WELCOME")||!parts[3].equals("3"))
             throw new IOException("Unsupported or invalid LAN protocol");
         try{id=Integer.parseInt(parts[1]);seed=Long.parseLong(parts[2]);}
         catch(NumberFormatException e){throw new IOException("Malformed host greeting",e);}
@@ -57,11 +57,11 @@ public final class NetLink implements AutoCloseable {
                     try{
                         switch(s[0]){
                             case "PEER" -> {
-                                if(s.length!=7)continue;
+                                if(s.length!=8)continue;
                                 int pid=Integer.parseInt(s[1]);
                                 if(pid!=id)others.put(pid,new Remote(Double.parseDouble(s[2]),
                                     Double.parseDouble(s[3]),Double.parseDouble(s[4]),Integer.parseInt(s[5]),
-                                    ArenaSystems.opacity(Double.parseDouble(s[6]))));
+                                    ArenaSystems.opacity(Double.parseDouble(s[6])),Integer.parseInt(s[7])));
                             }
                             case "LEFT" -> {if(s.length==2)others.remove(Integer.parseInt(s[1]));}
                             case "PICKUP" -> {if(s.length==2)pickedUp.add(Integer.parseInt(s[1]));}

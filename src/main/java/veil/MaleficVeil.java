@@ -51,7 +51,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         setBackground(Color.BLACK);setPreferredSize(new Dimension(1024,640));
         setFocusable(true);
         addKeyListener(this);addMouseListener(this);addMouseMotionListener(this);
-        timer=new javax.swing.Timer(Math.max(16,1000/performance.frameCap),this);timer.start();
+        timer=new javax.swing.Timer(33,this);timer.start();
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(()->{
@@ -233,7 +233,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(sanity<25&&ticks%33==0)health=Math.max(1,health-1);
             }
         }
-        repaint();
+        if(performance.frameCap>=30 || ticks%2==0)repaint();
     }
     private void simulateNpc(double dt){
         for(World.Npc n:world.npcs) {
@@ -602,7 +602,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             JOptionPane.PLAIN_MESSAGE)!=JOptionPane.OK_OPTION)return;
         performance.apply(distance.getValue(),detail.getValue(),models.getValue(),cap.getValue());
         urbanRenderer.setBudgets(performance);
-        timer.setDelay(Math.max(16,1000/performance.frameCap));
+        // Simulation remains at 30 ticks/s regardless of the frame rendering cap.
         toast("GRAPHICS SETTINGS SAVED");
     }
     private void toggleCar(){

@@ -13,17 +13,45 @@ public final class LanSmokeTest {
         }
         throw new AssertionError("Timed out: "+why);
     }
-    private static void aimAtVacant(ArenaSystems host,int id,int kind) {
+    /** Find a walkable vacant CITY location: player build must still be denied. */
+    private static void aimAtVacant(ArenaSystems host,int id) {
         ArenaSystems.Player p=host.player(id);
         for(CityLayout.Plot lot:host.world.city.plots()){
             if(lot.template().category()!=CityLayout.Category.OPEN||lot.template().variant()!=2)continue;
             double x=(lot.x()+lot.right())*CityLayout.CELL/2.0+.5;
             double y=(lot.y()+lot.bottom())*CityLayout.CELL/2.0+.5;
             if(!host.world.canWalk(x-1.1,y)||!host.world.canWalk(x,y))continue;
+            if(host.world.devices.stream().anyMatch(d->Math.hypot(d.x-x,d.y-y)<3.5))continue;
             p.x=x-1.1;p.y=y;p.angle=0;p.moveAt=host.time();
-            if(host.reviewBuild(id,kind).allowed())return;
+            return;
         }
-        throw new AssertionError("No legal building site on seed "+host.world.seed);
+        throw new AssertionError("No empty city lot to test on seed "+host.world.seed);
+    }
+    /**
+     * Legacy structure fixture tests network replication, healing, revive and
+     * turret behavior without exposing a production bypass to city build rules.
+     */
+    private static World.Device legacyDevice(ArenaSystems host,int owner,int kind){
+        aimAtVacant(host,owner);
+        ArenaSystems.Player player=host.player(owner);
+        double x=player.x+1.1,y=player.y;
+        World.Device device=new World.Device(x,y,kind);
+        device.ownerId=owner;
+        device.ownerKey=player.accountKey;
+        host.world.devices.add(device);
+        return device;
+    }
+    private static void deniedCityBuild(ArenaSystems host,NetLink client,int kind)throws Exception{
+        aimAtVacant(host,client.id);
+        int old=host.world.devices.size();
+        ArenaSystems.Player player=host.player(client.id);
+        int cash=player.cash,scrap=player.scrap;
+        client.build(kind);
+        until(()->!client.buildResults.isEmpty(),"city build rejection returned");
+        NetLink.BuildEvent denied=client.buildResults.poll();
+        check(denied.reason().equals("CITY_PROTECTED"),"server must reject city parcel");
+        check(host.world.devices.size()==old&&player.cash==cash&&player.scrap==scrap,
+            "denied building request changed resources or structures");
     }
     public static void main(String[] unused)throws Exception{
         try(LanServer host=new LanServer(0,887766L);
@@ -50,9 +78,9 @@ public final class LanSmokeTest {
             check(host.match.player(attacker.id).pistolClip==11,"ammo decremented by host");
             ArenaSystems.Player shooter=host.match.player(attacker.id);
             shooter.cash=400;shooter.scrap=20;
-            aimAtVacant(host.match,attacker.id,ArenaSystems.HEALTH_STATION);
-            attacker.build(1);
-            until(()->host.match.world.devices.size()==1,"healing station built over socket");
+            deniedCityBuild(host.match,attacker,ArenaSystems.HEALTH_STATION);
+            World.Device healing=legacyDevice(host.match,attacker.id,ArenaSystems.HEALTH_STATION);
+            check(healing.ownerId==attacker.id,"legacy healing fixture has account owner");
             until(()->!attacker.structures.isEmpty()||!victim.structures.isEmpty(),"structure streamed to a client");
             host.match.damage(shooter,45,10);
             attacker.useMedkit();
@@ -70,18 +98,16 @@ public final class LanSmokeTest {
             until(()->shooter.hp>=65,"health pickup restored health");
             until(()->victim.pickedUp.contains(0),"pickup removal replicated to other client");
             check(!host.match.pickup(victim.id,0),"pickup remains exclusively acquired");
-            // Assemble several distinct real structures through the connected client.
-            aimAtVacant(host.match,attacker.id,ArenaSystems.TURRET);
-            attacker.build(ArenaSystems.TURRET);
-            until(()->host.match.world.devices.size()==2,"turret constructed over socket");
-            World.Device turret=host.match.world.devices.get(1);
-            aimAtVacant(host.match,attacker.id,ArenaSystems.REVIVE_STATION);
-            attacker.build(ArenaSystems.REVIVE_STATION);
-            until(()->host.match.world.devices.size()==3,"revival structure assembled over socket");
-            World.Device reviver=host.match.world.devices.get(2);
-            aimAtVacant(host.match,attacker.id,ArenaSystems.BARRICADE);
-            attacker.build(ArenaSystems.BARRICADE);
-            until(()->host.match.world.devices.size()==4,"barricade assembled over socket");
+            // Deny all four city build requests; independently exercise networked
+            // legacy fixture effects until wilderness runtime becomes playable.
+            deniedCityBuild(host.match,attacker,ArenaSystems.TURRET);
+            World.Device turret=legacyDevice(host.match,attacker.id,ArenaSystems.TURRET);
+            deniedCityBuild(host.match,attacker,ArenaSystems.REVIVE_STATION);
+            World.Device reviver=legacyDevice(host.match,attacker.id,ArenaSystems.REVIVE_STATION);
+            deniedCityBuild(host.match,attacker,ArenaSystems.BARRICADE);
+            legacyDevice(host.match,attacker.id,ArenaSystems.BARRICADE);
+            until(()->attacker.structures.size()>=4||victim.structures.size()>=4,
+                "legacy fixtures replicated to clients");
             check(host.match.world.devices.get(3).kind==ArenaSystems.BARRICADE,"correct constructed structure kind");
             // Live turret damage occurs in the host tick, not the client.
             prey.x=turret.x;prey.y=turret.y+1.1;
@@ -95,7 +121,7 @@ public final class LanSmokeTest {
             attacker.respawn(0); // living actor must NOT be allowed to respawn
             Thread.sleep(150);
             check(!shooter.dead&&shooter.hp>0,"invalid respawn cannot reset living actor");
-            System.out.println("PASS LanSmokeTest: host, PvP alpha/damage, regen, pickup broadcast, consumables, turret, heal/revive, barricade");
+            System.out.println("PASS LanSmokeTest: host PvP, pickups, city-wide build denial, legacy structure replication/effects");
         }
     }
 }

@@ -14,6 +14,19 @@ public final class QualityGateTest {
         while(System.nanoTime()<deadline){if(f.getAsBoolean())return;Thread.sleep(15);}
         throw new AssertionError("Timeout waiting for host packet");
     }
+    /** Position a host player at a legal empty lot, not on a generated roadway. */
+    private static void aimAtVacant(ArenaSystems game,int id,int kind) {
+        ArenaSystems.Player p=game.player(id);
+        for(CityLayout.Plot lot:game.world.city.plots()){
+            if(lot.template().category()!=CityLayout.Category.OPEN||lot.template().variant()!=2)continue;
+            double x=(lot.x()+lot.right())*CityLayout.CELL/2.0+.5;
+            double y=(lot.y()+lot.bottom())*CityLayout.CELL/2.0+.5;
+            if(!game.world.canWalk(x-1.1,y)||!game.world.canWalk(x,y))continue;
+            p.x=x-1.1;p.y=y;p.angle=0;p.moveAt=game.time();
+            if(game.reviewBuild(id,kind).allowed())return;
+        }
+        throw new AssertionError("No legal construction site on seed "+game.world.seed);
+    }
     public static void main(String[] args)throws Exception{
         ArenaSystems world=new ArenaSystems(42);
         world.world.npcs.clear();
@@ -32,9 +45,11 @@ public final class QualityGateTest {
         check(!obstructed.allowed(),"blocked build must be rejected");
         check(!world.build(1,ArenaSystems.BARRICADE),"cannot bypass build review");
         check(shooter.cash==money&&shooter.scrap==supplies,"rejected build is free");
-        shooter.x=14.5;shooter.y=1.5;
-        shooter.angle=0;
-        check(world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"valid build near open street");
+        shooter.x=14.5;shooter.y=1.5;shooter.angle=0;
+        check(world.reviewBuild(1,ArenaSystems.BARRICADE).reason().equals("WORLD_STRUCTURE"),
+            "existing world streets cannot be overwritten");
+        aimAtVacant(world,1,ArenaSystems.BARRICADE);
+        check(world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"valid build in vacant lot");
         check(world.build(1,ArenaSystems.BARRICADE),"can actually commit valid barricade");
         check(world.world.devices.size()==1,"one device");
         check(!world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"overlapping device rejected");
@@ -44,29 +59,21 @@ public final class QualityGateTest {
             arena.world.npcs.clear();
             ArenaSystems.Player builder=arena.join(42);
             builder.cash=10000;builder.scrap=1000;
-            int count=0;
-            for(int j=0;j<10;j++){
-                builder.x=1.5+j*12;builder.y=1.5;builder.angle=0;
-                ArenaSystems.BuildReview preview=arena.reviewBuild(42,ArenaSystems.BARRICADE);
-                if(preview.allowed()){
-                    check(arena.build(42,ArenaSystems.BARRICADE),"reviewed build commits");
-                    count++;
-                }else{
-                    int old=builder.cash;
-                    check(!arena.build(42,ArenaSystems.BARRICADE)&&builder.cash==old,
-                        "invalid build neither placed nor charged");
-                }
-            }
-            check(count>0,"seed produces usable build locations "+seed);
+            aimAtVacant(arena,42,ArenaSystems.BARRICADE);
+            check(arena.build(42,ArenaSystems.BARRICADE),"legal vacant lot builds on seed "+seed);
+            int old=builder.cash;
+            check(!arena.build(42,ArenaSystems.BARRICADE)&&builder.cash==old,
+                "duplicate footprint neither builds nor consumes resources on seed "+seed);
         }
         // Simultaneous host requests must not charge both clients for one footprint.
         ArenaSystems contested=new ArenaSystems(42);
         contested.world.npcs.clear();
         ArenaSystems.Player alpha=contested.join(51),beta=contested.join(52);
         for(ArenaSystems.Player player:List.of(alpha,beta)){
-            player.x=14.5;player.y=1.5;player.angle=0;
             player.cash=300;player.scrap=10;
         }
+        aimAtVacant(contested,51,ArenaSystems.TURRET);
+        beta.x=alpha.x;beta.y=alpha.y;beta.angle=alpha.angle;
         java.util.concurrent.CountDownLatch start=new java.util.concurrent.CountDownLatch(1);
         java.util.concurrent.ExecutorService pool=java.util.concurrent.Executors.newFixedThreadPool(2);
         try {

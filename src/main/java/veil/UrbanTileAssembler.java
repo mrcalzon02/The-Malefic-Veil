@@ -32,51 +32,57 @@ public final class UrbanTileAssembler {
         // The connected road graph is represented by the actual asphalt LEGO tiles,
         // not by paintings scattered arbitrarily over independent geometry.
         for(CityLayout.Road road:city.roadTiles()){
-            int x=road.x(),y=road.y(),bits=road.connections();
-            double cx=x*CELL+CELL/2.0,cy=y*CELL+CELL/2.0;
+            int x=road.x(),y=road.y();
+            // The source asphalt-center module is 1x1. Fill the six-unit
+            // road macrocell with actual unit modules; do NOT scale one GLB 6x.
+            for(int tx=x*CELL;tx<(x+1)*CELL;tx++)
+                for(int ty=y*CELL;ty<(y+1)*CELL;ty++){
+                    long n=roll(seed,tx,ty,44);
+                    String tile=(n&31)==0?"road-asphalt-damaged":"road-asphalt-center";
+                    add(assembled,tile,tx+.5,ty+.5,0,1,0);
+                }
+            // A 1x2 straight module provides curb/route-direction detail at
+            // the macrocell center, not a replacement for its paved footprint.
+            int bits=road.connections();
             if(bits==5||bits==10){
-                boolean vertical=bits==5;
-                for(int side=-1;side<=1;side+=2)
-                    add(assembled,"road-asphalt-straight",
-                        cx+(vertical?side*1.5:0),cy+(vertical?0:side*1.5),
-                        vertical?0:Math.PI/2,3,0);
+                double cx=x*CELL+CELL/2.0,cy=y*CELL+CELL/2.0;
+                add(assembled,"road-asphalt-straight",cx,cy,
+                    bits==5?0:Math.PI/2,1,0);
             }else if(Integer.bitCount(bits)==2){
+                double cx=x*CELL+CELL/2.0,cy=y*CELL+CELL/2.0;
                 double heading=switch(bits){
                     case 3 -> 0; case 6 -> Math.PI/2;
                     case 12 -> Math.PI; case 9 -> Math.PI*1.5;
                     default -> 0;
                 };
-                add(assembled,"road-asphalt-corner",cx,cy,heading,3,0);
-            }else{
-                // T junction/crossroads/dead-end: seamless center-tile material,
-                // exposed corners and pavement distinguish road connection counts.
-                add(assembled,"road-asphalt-center",cx,cy,0,CELL,0);
+                add(assembled,"road-asphalt-corner",cx,cy,heading,1,0);
             }
-            // Road details are placed on the existing paved grid only.
-            if((roll(seed,x,y,44)&15)==0)
-                add(assembled,"road-asphalt-damaged",cx,cy,0,1.3,0);
         }
         for(CityLayout.Plot plot:city.plots()){
             CityLayout.Category category=plot.template().category();
             int variant=plot.template().variant();
             boolean vacant=category==CityLayout.Category.OPEN&&variant==2;
-            for(int px=plot.x();px<plot.right();px++)
-                for(int py=plot.y();py<plot.bottom();py++){
-                    double cx=px*CELL+CELL/2.0,cy=py*CELL+CELL/2.0;
-                    long n=roll(seed,px,py,91);
-                    String ground=switch(category){
-                        case HAZARD -> from(n,"road-dirt-center","road-dirt-pavement","road-dirt-damaged");
-                        case RESOURCE -> from(n,"road-asphalt-pavement","road-dirt-center");
-                        case SAFE -> from(n,"road-asphalt-pavement","road-asphalt-center");
-                        case OPEN -> from(n,"grass","road-asphalt-pavement","road-dirt-center");
-                    };
-                    add(assembled,ground,cx,cy,0,CELL,0);
-                    if(!vacant&&category!=CityLayout.Category.OPEN){
-                        // Metal source roof modules form traversable-lot overhead surfaces.
-                        // Height is a render offset, never an extra gameplay collider.
-                        String roof=from(n>>>7,"roof-metal-type-a","roof-metal-type-b",
-                            "wall-a-roof","wall-b-roof");
-                        add(assembled,roof,cx,cy,((n>>>9)&1)==0?0:Math.PI/2,5.2,0,2.0);
+            for(int mx=plot.x();mx<plot.right();mx++)
+                for(int my=plot.y();my<plot.bottom();my++){
+                    for(int sx=0;sx<CELL;sx++)for(int sy=0;sy<CELL;sy++){
+                        int tx=mx*CELL+sx,ty=my*CELL+sy;
+                        long n=roll(seed,tx,ty,91);
+                        String ground=switch(category){
+                            case HAZARD -> from(n,"road-dirt-center","road-dirt-pavement","road-dirt-damaged");
+                            case RESOURCE -> from(n,"road-asphalt-pavement","road-dirt-center");
+                            case SAFE -> from(n,"road-asphalt-pavement","road-asphalt-center");
+                            case OPEN -> from(n,"grass","road-asphalt-pavement","road-dirt-center");
+                        };
+                        add(assembled,ground,tx+.5,ty+.5,0,1,0);
+                        // The modular roof is also only ~1x1 source units;
+                        // one roof section per interior tile, not one giant wedge.
+                        if(!vacant&&category!=CityLayout.Category.OPEN&&
+                           city.tile(tx,ty)==0){
+                            String roof=from(n>>>7,"roof-metal-type-a","roof-metal-type-b",
+                                "wall-a-roof","wall-b-roof");
+                            add(assembled,roof,tx+.5,ty+.5,
+                                ((n>>>9)&1)==0?0:Math.PI/2,1,0,2.0);
+                        }
                     }
                 }
             // Kit doorway modules frame the openings already carved by CityLayout.

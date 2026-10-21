@@ -60,6 +60,7 @@ public final class LanServer implements AutoCloseable {
                         if(self.dead){
                             List<ArenaSystems.SpawnRisk> risks=match.spawnRisks(p.id);
                             p.send("SPAWNS|"+risks.get(0).score()+"|"+risks.get(1).score()+"|"+risks.get(2).score());
+                            p.send("RESPAWN_TIMER|"+match.respawnRemainingMs(p.id));
                         }
                     }
                 }
@@ -247,7 +248,8 @@ public final class LanServer implements AutoCloseable {
                             if(s.length!=2)continue;
                             int index=Integer.parseInt(s[1]);
                             changed=match.respawn(peer.id,index);
-                            peer.send("RESPAWN_RESULT|"+index+"|"+(changed?"OK":"REJECTED"));
+                            peer.send("RESPAWN_RESULT|"+index+"|"+(changed?"OK":
+                                match.respawnRemainingMs(peer.id)>0?"WAIT":"REJECTED"));
                         }
                         default -> { }
                     }

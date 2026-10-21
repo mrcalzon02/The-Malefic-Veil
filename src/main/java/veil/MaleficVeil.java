@@ -368,11 +368,13 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         for(World.Npc n:world.npcs)if(n.hp>0)
             gameplay.add(new UrbanScene.ModelInstance("enemy-walker",n.x,n.y,
                 Math.atan2(py-n.y,px-n.x)-Math.PI/2,1.0));
-        if(net!=null)for(NetLink.Remote p:net.others.values())
-            if(p.hp>0&&net.cars.values().stream().noneMatch(car->car.driverId()==p.id))
+        if(net!=null)for(java.util.Map.Entry<Integer,NetLink.Remote> entry:net.others.entrySet()){
+            NetLink.Remote p=entry.getValue();
+            if(p.hp>0&&net.cars.values().stream().noneMatch(car->car.driverId()==entry.getKey()))
                 gameplay.add(new UrbanScene.ModelInstance(
-                GameplayMeshes.HERO[Math.max(0,Math.min(3,p.classId))],
-                p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
+                    GameplayMeshes.HERO[Math.max(0,Math.min(3,p.classId))],
+                    p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
+        }
         urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
         g.setColor(new Color(187,176,149));
         g.fillRect(RW/2-5,RH/2,11,1);g.fillRect(RW/2,RH/2-5,1,11);

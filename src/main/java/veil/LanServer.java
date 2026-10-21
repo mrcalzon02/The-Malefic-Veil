@@ -296,6 +296,29 @@ public final class LanServer implements AutoCloseable {
                             factionStateTo(requester,peer);
                             if(ok&&dataDirectory!=null)saveAll();
                         }
+                        case "CREW_PROMOTE" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(Integer.parseInt(s[1]));
+                            boolean ok=recipient!=null&&match.factions.promote(
+                                requester.accountKey,recipient.accountKey);
+                            peer.send("CREW_RESULT|PROMOTE|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(requester,peer);
+                            Peer promoted=recipient==null?null:connections.get(recipient.id);
+                            if(ok&&promoted!=null)factionStateTo(recipient,promoted);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_KICK" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(Integer.parseInt(s[1]));
+                            boolean ok=recipient!=null&&match.factions.remove(
+                                requester.accountKey,recipient.accountKey);
+                            peer.send("CREW_RESULT|KICK|"+(ok?"OK":"REJECTED"));
+                            Peer removed=recipient==null?null:connections.get(recipient.id);
+                            if(ok&&removed!=null)factionStateTo(recipient,removed);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
                         case "CREW_TRANSFER" -> {
                             if(s.length!=2||!peer.authenticated)continue;
                             ArenaSystems.Player requester=match.player(peer.id);

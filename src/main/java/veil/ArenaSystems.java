@@ -9,7 +9,7 @@ import java.util.*;
 public final class ArenaSystems {
     public final World world;
     public final Vehicles vehicles;
-    public final RaidProtection raidProtection=new RaidProtection(30);
+    public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();

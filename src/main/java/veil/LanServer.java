@@ -6,111 +6,151 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * LAN experimental host. Shared city seed and genuine remote combat/presence.
- * This is NOT yet an anti-cheat-authoritative public-internet server.
+ * Host-authoritative LAN match protocol v2: visibility, hits, inventory, pickups,
+ * healing, sanity, structures and NPCs are simulated by one ArenaSystems instance.
  */
 public final class LanServer implements AutoCloseable {
     private final ServerSocket listener;
-    private final ExecutorService threads=Executors.newCachedThreadPool();
-    private final Map<Integer,Peer> peers=new ConcurrentHashMap<>();
-    private final World map;
+    private final ExecutorService workers=Executors.newCachedThreadPool();
+    private final ScheduledExecutorService ticks=Executors.newSingleThreadScheduledExecutor();
+    private final ConcurrentMap<Integer,Peer> connections=new ConcurrentHashMap<>();
+    public final ArenaSystems match;
     private volatile boolean running=true;
-    private int nextId=0;
+    private int nextId;
     private static final class Peer {
-        int id; String name; Socket socket; PrintWriter out;
-        volatile double x=1.5,y=1.5,angle=0;
-        volatile int health=100; volatile long lastShot=0;
-        synchronized void send(String s){out.println(s);}
+        int id;
+        Socket socket;
+        PrintWriter out;
+        synchronized void send(String message){out.println(message);}
     }
-    public LanServer(int port,long seed) throws IOException {
+    public LanServer(int port,long seed)throws IOException {
         listener=new ServerSocket(port);
-        map=new World(seed);
-        threads.execute(()->{
-            while(running)try {Socket s=listener.accept();threads.execute(()->serve(s));}
-            catch(IOException e){if(running)System.err.println("Accept error: "+e);}
+        match=new ArenaSystems(seed);
+        ticks.scheduleAtFixedRate(()->{
+            try {
+                match.advance(100);
+                for(Peer p:connections.values()){
+                    ArenaSystems.Player self=match.player(p.id);
+                    if(self!=null)p.send(selfPacket(self));
+                }
+                for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
+                for(int i=0;i<match.world.npcs.size();i++){
+                    World.Npc n=match.world.npcs.get(i);
+                    broadcast("NPC|"+i+"|"+n.x+"|"+n.y+"|"+n.hp,-1);
+                }
+            }catch(RuntimeException e){System.err.println("Arena tick failed: "+e);}
+        },100,100,TimeUnit.MILLISECONDS);
+        workers.execute(()->{
+            while(running)try{Socket s=listener.accept();workers.execute(()->serve(s));}
+            catch(IOException e){if(running)System.err.println("Accept failed: "+e);}
         });
     }
     private synchronized int id(){return ++nextId;}
-    private void broadcast(String message,int except) {
-        for(Peer p:peers.values())if(p.id!=except)p.send(message);
+    private void broadcast(String message,int except){
+        for(Peer q:connections.values())if(q.id!=except)q.send(message);
     }
-    private void serve(Socket socket) {
-        Peer p=new Peer();p.id=id();p.socket=socket;
-        try(socket;
-            BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true)) {
-            socket.setSoTimeout(20000);
-            p.out=out;p.name="Player-"+p.id;
-            p.send("WELCOME|"+p.id+"|"+map.seed);
-            peers.put(p.id,p);
-            for(Peer other:peers.values())if(other.id!=p.id)
-                p.send(state(other));
-            broadcast(state(p),p.id);
-            String line;
-            while((line=in.readLine())!=null) {
-                if(line.length()>256)break;
-                String[] s=line.split("\\|");
-                try {
-                    switch(s[0]) {
-                    case "STATE" -> {
-                        if(s.length!=4)continue;
-                        double x=Double.parseDouble(s[1]),y=Double.parseDouble(s[2]),a=Double.parseDouble(s[3]);
-                        if(!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(a)||!map.canWalk(x,y))continue;
-                        // Movement speed is not yet host verified: LAN prototype only.
-                        p.x=x;p.y=y;p.angle=a;
-                        broadcast(state(p),p.id);
-                    }
-                    case "FIRE" -> {
-                        if(s.length!=2)continue;
-                        int weapon=Integer.parseInt(s[1]);
-                        if(weapon<0||weapon>1)continue;
-                        long now=System.currentTimeMillis();
-                        long gap=weapon==0?210:850;
-                        if(now-p.lastShot<gap)continue;
-                        p.lastShot=now;
-                        double max=weapon==0?12:4.5;
-                        for(Peer target:peers.values()) {
-                            if(target==p||target.health<=0)continue;
-                            double dx=target.x-p.x,dy=target.y-p.y,range=Math.hypot(dx,dy);
-                            if(range>max||range<.01)continue;
-                            double diff=Math.atan2(Math.sin(Math.atan2(dy,dx)-p.angle),Math.cos(Math.atan2(dy,dx)-p.angle));
-                            if(Math.abs(diff)>Math.atan2(.4,range)||!map.lineClear(p.x,p.y,target.x,target.y))continue;
-                            int dmg=weapon==0?25:Math.max(18,70-(int)(range*8));
-                            target.health=Math.max(0,target.health-dmg);
-                            target.send("HIT|"+dmg);
-                            broadcast("HP|"+target.id+"|"+target.health,-1);
-                            break;
-                        }
-                    }
-                    case "RESPAWN" -> {
-                        if(s.length!=2)continue;
-                        int index=Integer.parseInt(s[1]);
-                        if(index<0||index>=map.spawns.length)continue;
-                        p.x=map.spawns[index][0];p.y=map.spawns[index][1];
-                        p.health=100;
-                        broadcast(state(p),-1);
-                    }
-                    default -> { }
-                    }
-                }catch(NumberFormatException ignored){/* reject malformed packet */}
-            }
-        } catch(IOException ignored) {
-        } finally {
-            peers.remove(p.id);
-            broadcast("LEFT|"+p.id,-1);
+    private static String peerPacket(ArenaSystems.Player p){
+        return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility;
+    }
+    private static String selfPacket(ArenaSystems.Player p){
+        return "SELF|"+p.hp+"|"+p.sanity+"|"+p.cash+"|"+p.scrap+"|"+p.medkits+
+            "|"+p.pistolReserve+"|"+p.shellReserve+"|"+p.pistolClip+"|"+p.shellClip+
+            "|"+(p.dead?1:0)+"|"+p.frags+"|"+p.x+"|"+p.y+"|"+p.angle;
+    }
+    private void sendWorld(Peer peer){
+        for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
+        for(int i=0;i<match.world.pickups.size();i++)
+            if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
+        for(int i=0;i<match.world.devices.size();i++){
+            World.Device d=match.world.devices.get(i);
+            peer.send("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp);
         }
     }
-    private static String state(Peer p){return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.health;}
+    private void serve(Socket socket){
+        Peer peer=new Peer();peer.id=id();peer.socket=socket;
+        try(socket;
+            BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true)){
+            socket.setSoTimeout(30000);
+            peer.out=out;
+            ArenaSystems.Player actor=match.join(peer.id);
+            peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|2");
+            connections.put(peer.id,peer);
+            sendWorld(peer);peer.send(selfPacket(actor));
+            broadcast(peerPacket(actor),peer.id);
+            String line;
+            while((line=in.readLine())!=null){
+                if(line.length()>256)break;
+                String[] s=line.split("\\|");
+                try{
+                    boolean changed=false;
+                    switch(s[0]){
+                        case "STATE" -> {
+                            if(s.length!=5)continue;
+                            changed=match.move(peer.id,Double.parseDouble(s[1]),
+                                Double.parseDouble(s[2]),Double.parseDouble(s[3]),Integer.parseInt(s[4]));
+                        }
+                        case "CHOOSE" -> {
+                            if(s.length!=2)continue;
+                            match.choose(peer.id,Integer.parseInt(s[1]));changed=true;
+                        }
+                        case "FIRE" -> {
+                            if(s.length!=2)continue;
+                            changed=match.fire(peer.id,Integer.parseInt(s[1]));
+                        }
+                        case "PICKUP" -> {
+                            if(s.length!=2)continue;
+                            int index=Integer.parseInt(s[1]);
+                            changed=match.pickup(peer.id,index);
+                            if(changed)broadcast("PICKUP|"+index,-1);
+                        }
+                        case "MEDKIT" -> changed=match.useMedkit(peer.id);
+                        case "RELOAD" -> {
+                            if(s.length!=2)continue;
+                            changed=match.reload(peer.id,Integer.parseInt(s[1]));
+                        }
+                        case "ABILITY" -> changed=match.ability(peer.id);
+                        case "BUILD" -> {
+                            if(s.length!=2)continue;
+                            changed=match.build(peer.id,Integer.parseInt(s[1]));
+                            if(changed){
+                                int idx=match.world.devices.size()-1;
+                                World.Device d=match.world.devices.get(idx);
+                                broadcast("DEVICE|"+idx+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
+                            }
+                        }
+                        case "RESPAWN" -> {
+                            if(s.length!=2)continue;
+                            changed=match.respawn(peer.id,Integer.parseInt(s[1]));
+                        }
+                        default -> { }
+                    }
+                    if(changed){
+                        ArenaSystems.Player updated=match.player(peer.id);
+                        if(updated!=null){
+                            peer.send(selfPacket(updated));
+                            broadcast(peerPacket(updated),peer.id);
+                        }
+                    }
+                }catch(NumberFormatException ignored){/* malformed client command rejected */}
+            }
+        }catch(IOException ignored){
+        }finally{
+            connections.remove(peer.id);
+            match.leave(peer.id);
+            broadcast("LEFT|"+peer.id,-1);
+        }
+    }
     public int port(){return listener.getLocalPort();}
-    @Override public void close() throws IOException {
+    @Override public void close()throws IOException{
         running=false;listener.close();
-        for(Peer p:peers.values())try{p.socket.close();}catch(IOException ignored){}
-        threads.shutdownNow();
+        for(Peer p:connections.values())try{p.socket.close();}catch(IOException ignored){}
+        ticks.shutdownNow();workers.shutdownNow();
     }
     public static void main(String[] args)throws Exception{
         int port=args.length>0?Integer.parseInt(args[0]):7777;
         long seed=args.length>1?Long.parseLong(args[1]):20261020L;
         new LanServer(port,seed);
-        System.out.println("The Malefic Veil LAN host listening on "+port+" seed "+seed);
+        System.out.println("Malefic Veil LAN v2 host on "+port+" seed "+seed);
     }
 }

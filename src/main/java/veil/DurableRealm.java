@@ -11,13 +11,14 @@ import java.util.zip.CRC32;
  * Corrupt snapshots fail closed and may recover from an independently validated .bak.
  */
 public final class DurableRealm {
-    private static final int MAGIC=0x5645494c, VERSION=1, LIMIT=2_000_000;
+    private static final int MAGIC=0x5645494c, VERSION=2, LIMIT=2_000_000;
     private DurableRealm(){}
     private record DeviceSave(int kind,double x,double y,int hp,String owner){}
     private record CarSave(int id,double x,double y,double heading,double fuel,int hp){}
     private record NpcSave(double x,double y,int hp){}
     private record Snapshot(long seed,long timestamp,List<DeviceSave> devices,List<CarSave> cars,
-        boolean[] picked,List<NpcSave> npcs,List<RaidProtection.Presence> owners){}
+        boolean[] picked,List<NpcSave> npcs,List<RaidProtection.Presence> owners,
+        CargoHaulage.Snapshot cargo){}
     public static Path file(Path root){return root.resolve("realm.dat");}
     private static Snapshot capture(ArenaSystems game){
         List<DeviceSave> devices=new ArrayList<>();
@@ -32,7 +33,8 @@ public final class DurableRealm {
         List<NpcSave> npcs=new ArrayList<>();
         for(World.Npc n:game.world.npcs)npcs.add(new NpcSave(n.x,n.y,n.hp));
         return new Snapshot(game.world.seed,System.currentTimeMillis(),List.copyOf(devices),
-            List.copyOf(cars),picked,List.copyOf(npcs),game.raidProtection.snapshot());
+            List.copyOf(cars),picked,List.copyOf(npcs),game.raidProtection.snapshot(),
+            game.cargo.snapshot());
     }
     private static byte[] serialize(Snapshot snap)throws IOException{
         ByteArrayOutputStream payload=new ByteArrayOutputStream();
@@ -59,6 +61,22 @@ public final class DurableRealm {
             for(RaidProtection.Presence p:snap.owners){
                 out.writeUTF(p.account());out.writeLong(p.lastLogoutUtcMs());out.writeInt(p.sessions());
             }
+            // V2 extension, inside the SAME checksum and atomic realm snapshot.
+            CargoHaulage.Snapshot cargo=snap.cargo();
+            out.writeLong(cargo.clock());out.writeInt(cargo.nextDrop());
+            out.writeInt(cargo.yards().size());
+            for(CargoHaulage.YardSave yard:cargo.yards()){
+                out.writeInt(yard.id());out.writeInt(yard.stock());out.writeLong(yard.refillAt());
+            }
+            out.writeInt(cargo.trucks().size());
+            for(CargoHaulage.TruckSave truck:cargo.trucks()){
+                out.writeInt(truck.id());out.writeUTF(truck.cargo()==null?"":truck.cargo());
+            }
+            out.writeInt(cargo.drops().size());
+            for(CargoHaulage.Drop drop:cargo.drops()){
+                out.writeInt(drop.id());out.writeDouble(drop.x());out.writeDouble(drop.y());
+                out.writeUTF(drop.resource());out.writeLong(drop.createdAt());
+            }
         }
         byte[] bytes=payload.toByteArray();
         if(bytes.length>LIMIT-8)throw new IOException("Snapshot exceeds storage cap");
@@ -81,7 +99,9 @@ public final class DurableRealm {
         CRC32 crc=new CRC32();crc.update(bytes,0,bytes.length-8);
         if(recorded!=crc.getValue())throw new IOException("Snapshot checksum mismatch");
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes,0,bytes.length-8))){
-            if(in.readInt()!=MAGIC||in.readInt()!=VERSION)throw new IOException("Unsupported snapshot version");
+            if(in.readInt()!=MAGIC)throw new IOException("Wrong save magic");
+            int version=in.readInt();
+            if(version!=1&&version!=VERSION)throw new IOException("Unsupported snapshot version");
             long seed=in.readLong(),timestamp=in.readLong(),now=System.currentTimeMillis();
             if(seed!=target.world.seed)throw new IOException("Save seed mismatch: no world reset allowed");
             if(timestamp<0||timestamp>now+300000)throw new IOException("Unreasonable snapshot timestamp");
@@ -130,8 +150,47 @@ public final class DurableRealm {
                    !account.matches("[a-zA-Z0-9:_-]{1,96}"))throw new IOException("Invalid owner presence");
                 owners.add(new RaidProtection.Presence(account,loggedOut,sessions));
             }
+            CargoHaulage.Snapshot cargo=null;
+            if(version>=2){
+                long cargoClock=in.readLong();int nextDrop=in.readInt();
+                List<CargoHaulage.YardSave> yardStates=new ArrayList<>();
+                for(int i=count(in,128);i>0;i--)
+                    yardStates.add(new CargoHaulage.YardSave(
+                        in.readInt(),in.readInt(),in.readLong()));
+                List<CargoHaulage.TruckSave> truckStates=new ArrayList<>();
+                for(int i=count(in,64);i>0;i--){
+                    int carId=in.readInt();String value=in.readUTF();
+                    truckStates.add(new CargoHaulage.TruckSave(
+                        carId,value.isEmpty()?null:value));
+                }
+                List<CargoHaulage.Drop> dropped=new ArrayList<>();
+                for(int i=count(in,128);i>0;i--)
+                    dropped.add(new CargoHaulage.Drop(in.readInt(),in.readDouble(),
+                        in.readDouble(),in.readUTF(),in.readLong()));
+                cargo=new CargoHaulage.Snapshot(cargoClock,nextDrop,
+                    List.copyOf(yardStates),List.copyOf(truckStates),List.copyOf(dropped));
+                // Reject invalid cargo metadata BEFORE mutating live match.
+                if(cargo.clock()<0||cargo.nextDrop()<1||
+                    cargo.yards().size()!=target.cargo.sites().size()||
+                    cargo.trucks().size()!=target.vehicles.states().size())
+                    throw new IOException("Corrupt cargo snapshot cardinality");
+                for(int i=0;i<cargo.yards().size();i++){
+                    var yard=cargo.yards().get(i);
+                    if(yard.id()!=i||(yard.stock()!=0&&yard.stock()!=1)||
+                        yard.refillAt()<0)
+                        throw new IOException("Corrupt cargo yard");
+                }
+                for(int i=0;i<cargo.trucks().size();i++){
+                    var truck=cargo.trucks().get(i);
+                    if(truck.id()!=i||(truck.cargo()!=null&&
+                        !truck.cargo().equals("METAL_STOCK")&&
+                        !truck.cargo().equals("MACHINE_PARTS"))||
+                        truck.cargo()!=null&&cars.get(i).hp()<=80)
+                        throw new IOException("Invalid persistent loaded vehicle");
+                }
+            }
             if(in.available()!=0)throw new IOException("Unexpected snapshot trailing data");
-            return new Snapshot(seed,timestamp,devices,cars,picked,npcs,owners);
+            return new Snapshot(seed,timestamp,devices,cars,picked,npcs,owners,cargo);
         }catch(EOFException e){throw new IOException("Incomplete world snapshot",e);}
     }
     /** Only call before accepting connections. Refuse corrupt data when no valid backup exists. */
@@ -189,6 +248,12 @@ public final class DurableRealm {
             }
             try{game.raidProtection.restore(snapshot.owners,System.currentTimeMillis());}
             catch(IllegalArgumentException ex){throw new IOException("Invalid raid presence data",ex);}
+            if(snapshot.cargo()!=null){
+                try{game.cargo.restore(snapshot.cargo());}
+                catch(IllegalArgumentException invalid){
+                    throw new IOException("Corrupt cargo overlay",invalid);
+                }
+            }
         }
         return true;
     }

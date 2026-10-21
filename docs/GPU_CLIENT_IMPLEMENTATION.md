@@ -43,3 +43,18 @@ The smoke run captures a **real OpenGL framebuffer** to `build/test-visuals/gpu-
 - To replace the old wall-shaded raycaster in actual gameplay, migrate gameplay rendering, input binding, UI, and network replicates to this backend, then compare screenshots and PvP collider parity. The GPU client does not silently bypass server checks.
 
 **Proof gates**: G1 Maven compile (Linux/Windows); G2 OpenGL screenshot under Mesa; G3 all Kenney buildings visibly and spatially correct; G4 30-minute traversal benchmark and LOD/hot-load; G5 real two-client network combat parity; G6 preferred launcher switch. G1/G2 are only considered passed after readback of successful GitHub Actions logs and screenshot artifacts.
+
+## First end-to-end acceptance — CI run 39584033608
+
+[GPU Kenney PSX client CI](https://github.com/mrcalzon02/The-Malefic-Veil/actions/runs/39584033608) on commit `9d283afd1c64fecefbbce56c52ba683a0ab03936` finished **successful** on both Ubuntu JDK 17 and Windows JDK 17. Windows proof is Java/Maven compilation and shaded JAR packaging; graphics execution was performed under Linux/Xvfb with Mesa software OpenGL 3.3, not on Windows hardware.
+
+OpenGL smoke reported:
+
+```text
+GPU_KENNEY_READY seed=20261020 placedTiles=29072 sourceMeshes=47 resolution=320x200
+PASS GPU_KENNEY_SMOKE ... visibleInstances=1199 instancedDrawCalls=28 variedColors=278
+```
+
+The GitHub artifact `malefic-gpu-ubuntu-latest-jdk17` includes the self-contained `MaleficVeil-GPU.jar` and a **real rendered 320×200 GPU screenshot** (`gpu-kenney-city.png`). This proves the instanced drawing pipeline executed, but not that all plot assemblies are visually satisfactory or that multiplayer works in GPU mode. The separate [full host/combat verification run](https://github.com/mrcalzon02/The-Malefic-Veil/actions/runs/39584033557) also completed successfully, demonstrating that the original client and server did not break.
+
+**G1 (packaging) and G2 (OpenGL screenshot) have passed for the tested environments.** G3–G6 remain open.

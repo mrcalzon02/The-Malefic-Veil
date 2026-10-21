@@ -117,6 +117,16 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 pistolClip=s.pistolClip();shellClip=s.shellClip();frags=s.frags();
                 if(Math.hypot(px-s.x(),py-s.y())>1.0){px=s.x();py=s.y();}
             }
+            NetLink.ShotEvent result;
+            while((result=net.shots.poll())!=null){
+                if(!result.fired())toast("SHOT REJECTED: "+result.outcome());
+                else if(result.damage()>0)toast("CONFIRMED "+result.outcome()+" HIT "+result.damage());
+            }
+            NetLink.BuildEvent construction;
+            while((construction=net.buildResults.poll())!=null){
+                toast(construction.reason().equals("OK")?"CONSTRUCTION ACCEPTED":
+                    "BUILD REJECTED: "+construction.reason());
+            }
             Integer pickupIndex;
             while((pickupIndex=net.pickedUp.poll())!=null){
                 if(pickupIndex>=0&&pickupIndex<world.pickups.size())world.pickups.get(pickupIndex).taken=true;
@@ -248,7 +258,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void deploy(int kind){
         if(dead)return;
-        if(net!=null){net.build(kind);toast("CONSTRUCTION REQUEST SENT");return;}
+        if(net!=null){net.build(kind);return;}
         int price=kind==0?(archetype==0?60:100):kind==1?75:120;
         int cost=kind==0?3:kind==1?1:2;
         if(cash<price||scrap<cost){toast("NEED $"+price+" AND "+cost+" SUPPLIES");return;}

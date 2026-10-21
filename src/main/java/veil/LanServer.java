@@ -95,8 +95,12 @@ public final class LanServer implements AutoCloseable {
                             match.choose(peer.id,Integer.parseInt(s[1]));changed=true;
                         }
                         case "FIRE" -> {
-                            if(s.length!=2)continue;
-                            changed=match.fire(peer.id,Integer.parseInt(s[1]));
+                            if(s.length!=3)continue;
+                            long sequence=Long.parseLong(s[1]);
+                            ArenaSystems.ShotReport shot=match.fireReport(peer.id,Integer.parseInt(s[2]),sequence);
+                            peer.send("SHOT|"+shot.sequence()+"|"+shot.fired()+"|"+shot.status()+"|"+
+                                shot.targetId()+"|"+shot.damage()+"|"+shot.ammo());
+                            changed=shot.fired();
                         }
                         case "PICKUP" -> {
                             if(s.length!=2)continue;
@@ -112,7 +116,11 @@ public final class LanServer implements AutoCloseable {
                         case "ABILITY" -> changed=match.ability(peer.id);
                         case "BUILD" -> {
                             if(s.length!=2)continue;
-                            changed=match.build(peer.id,Integer.parseInt(s[1]));
+                            int kind=Integer.parseInt(s[1]);
+                            ArenaSystems.BuildReview review=match.reviewBuild(peer.id,kind);
+                            changed=match.build(peer.id,kind);
+                            peer.send("BUILD_RESULT|"+kind+"|"+(changed?"OK":review.reason())+"|"+
+                                review.cashCost()+"|"+review.suppliesCost());
                             if(changed){
                                 int idx=match.world.devices.size()-1;
                                 World.Device d=match.world.devices.get(idx);

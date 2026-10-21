@@ -1,0 +1,83 @@
+package veil;
+
+import java.util.*;
+import java.util.function.BooleanSupplier;
+
+/** QoL gate: server confirmations, duplicate suppression, construction rejection, route preservation. */
+public final class QualityGateTest {
+    private static int assertions;
+    private static void check(boolean yes,String message){
+        assertions++;if(!yes)throw new AssertionError(message);
+    }
+    private static void until(BooleanSupplier f)throws Exception{
+        long deadline=System.nanoTime()+4_000_000_000L;
+        while(System.nanoTime()<deadline){if(f.getAsBoolean())return;Thread.sleep(15);}
+        throw new AssertionError("Timeout waiting for host packet");
+    }
+    public static void main(String[] args)throws Exception{
+        ArenaSystems world=new ArenaSystems(42);
+        world.world.npcs.clear();
+        ArenaSystems.Player shooter=world.join(1),victim=world.join(2);
+        shooter.angle=0;victim.x=4.5;victim.y=1.5;
+        ArenaSystems.ShotReport hit=world.fireReport(1,0,1);
+        check(hit.fired()&&hit.status().equals("PLAYER"),"host hit must be explicit");
+        check(hit.targetId()==2&&hit.damage()==25&&hit.ammo()==11,"accurate hit receipt");
+        check(!world.fireReport(1,0,1).fired(),"duplicate request replay rejected");
+        check(!world.fireReport(1,0,2).fired(),"cooldown reject");
+        check(world.fireReport(1,0,2).status().equals("DUPLICATE"),"replay of cooldown still rejected");
+        check(world.player(1).pistolClip==11,"reject costs no additional ammo");
+        int money=shooter.cash,supplies=shooter.scrap;
+        shooter.angle=Math.PI;
+        ArenaSystems.BuildReview obstructed=world.reviewBuild(1,ArenaSystems.BARRICADE);
+        check(!obstructed.allowed(),"blocked build must be rejected");
+        check(!world.build(1,ArenaSystems.BARRICADE),"cannot bypass build review");
+        check(shooter.cash==money&&shooter.scrap==supplies,"rejected build is free");
+        shooter.angle=0;
+        check(world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"valid build near open street");
+        check(world.build(1,ArenaSystems.BARRICADE),"can actually commit valid barricade");
+        check(world.world.devices.size()==1,"one device");
+        check(!world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"overlapping device rejected");
+        check(shooter.cash==money-45&&shooter.scrap==supplies-1,"atomic cost charged exactly once");
+        for(long seed=1;seed<=20;seed++){
+            ArenaSystems arena=new ArenaSystems(seed);
+            arena.world.npcs.clear();
+            ArenaSystems.Player builder=arena.join(42);
+            builder.cash=10000;builder.scrap=1000;
+            int count=0;
+            for(int j=0;j<10;j++){
+                builder.x=1.5+j*12;builder.y=1.5;builder.angle=0;
+                ArenaSystems.BuildReview preview=arena.reviewBuild(42,ArenaSystems.BARRICADE);
+                if(preview.allowed()){
+                    check(arena.build(42,ArenaSystems.BARRICADE),"reviewed build commits");
+                    count++;
+                }else{
+                    int old=builder.cash;
+                    check(!arena.build(42,ArenaSystems.BARRICADE)&&builder.cash==old,
+                        "invalid build neither placed nor charged");
+                }
+            }
+            check(count>0,"seed produces usable build locations "+seed);
+        }
+        try(LanServer server=new LanServer(0,999L);
+            NetLink a=new NetLink("127.0.0.1",server.port());
+            NetLink b=new NetLink("127.0.0.1",server.port())){
+            server.match.world.npcs.clear();
+            ArenaSystems.Player target=server.match.player(b.id);
+            target.x=4.5;target.y=1.5;
+            server.match.player(a.id).angle=0;
+            long seq=a.fire(0);
+            until(()->!a.shots.isEmpty());
+            NetLink.ShotEvent result=a.shots.poll();
+            check(result.sequence()==seq&&result.fired()&&result.damage()==25,"real socket shot receipt");
+            check(result.targetId()==b.id,"host returns true victim ID");
+            ArenaSystems.Player actor=server.match.player(a.id);
+            actor.angle=Math.PI;
+            a.build(ArenaSystems.BARRICADE);
+            until(()->!a.buildResults.isEmpty());
+            NetLink.BuildEvent denied=a.buildResults.poll();
+            check(!denied.reason().equals("OK"),"real socket rejection reason");
+        }
+        System.out.println("PASS QualityGateTest "+assertions+
+            " checks: host-confirmed hits, anti-replay, truthful denied construction, 20 map seeds");
+    }
+}

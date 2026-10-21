@@ -10,6 +10,7 @@ public final class ArenaSystems {
     public final World world;
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private long clock;
+    private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3;
     public static final class Player {
         public final int id;
@@ -29,7 +30,10 @@ public final class ArenaSystems {
         Player p=new Player(id,world.spawns[0][0],world.spawns[0][1],clock);
         players.put(id,p);refreshVisibility(p);return p;
     }
-    public synchronized void leave(int id){players.remove(id);}
+    public synchronized void leave(int id){
+        players.remove(id);
+        lastShotSequence.remove(id);
+    }
     public synchronized Collection<Player> roster(){return List.copyOf(players.values());}
     public synchronized Player player(int id){return players.get(id);}
     public synchronized long time(){return clock;}
@@ -135,6 +139,40 @@ public final class ArenaSystems {
         }
         refreshVisibility(p);return true;
     }
+    /** Correlates each client shot with an independently checked server damage result. */
+    public record ShotReport(long sequence,boolean fired,String status,int targetId,int damage,int ammo){}
+    private static int ammo(Player p,int weapon){
+        if(p==null)return 0;
+        return weapon==0?p.pistolClip:weapon==1?p.shellClip:0;
+    }
+    public synchronized ShotReport fireReport(int id,int weapon,long sequence){
+        Player shooter=player(id);
+        int remaining=ammo(shooter,weapon);
+        if(shooter==null||sequence<=0)return new ShotReport(sequence,false,"INVALID",0,0,remaining);
+        Long last=lastShotSequence.get(id);
+        if(last!=null&&sequence<=last)return new ShotReport(sequence,false,"DUPLICATE",0,0,remaining);
+        lastShotSequence.put(id,sequence);
+        if(shooter.dead)return new ShotReport(sequence,false,"DEAD",0,0,remaining);
+        if(weapon<0||weapon>1)return new ShotReport(sequence,false,"WEAPON",0,0,remaining);
+        if(clock-shooter.shotAt<(weapon==0?210:850))
+            return new ShotReport(sequence,false,"COOLDOWN",0,0,remaining);
+        if(remaining==0)return new ShotReport(sequence,false,"NO_AMMO",0,0,remaining);
+        Map<Integer,Integer> before=new HashMap<>();
+        for(Player other:players.values())if(other.id!=id)before.put(other.id,other.hp);
+        int[] npcHealth=new int[world.npcs.size()];
+        for(int i=0;i<npcHealth.length;i++)npcHealth[i]=world.npcs.get(i).hp;
+        if(!fire(id,weapon))return new ShotReport(sequence,false,"REJECTED",0,0,ammo(shooter,weapon));
+        for(Player other:players.values()){
+            Integer previous=before.get(other.id);
+            if(previous!=null&&other.hp<previous)
+                return new ShotReport(sequence,true,"PLAYER",other.id,previous-other.hp,ammo(shooter,weapon));
+        }
+        for(int i=0;i<npcHealth.length;i++){
+            if(world.npcs.get(i).hp<npcHealth[i])
+                return new ShotReport(sequence,true,"NPC",i,npcHealth[i]-world.npcs.get(i).hp,ammo(shooter,weapon));
+        }
+        return new ShotReport(sequence,true,"MISS",0,0,ammo(shooter,weapon));
+    }
     public synchronized boolean fire(int id,int weapon){
         Player p=player(id);
         if(p==null||p.dead||weapon<0||weapon>1)return false;
@@ -172,20 +210,64 @@ public final class ArenaSystems {
         }
         return true;
     }
-    public synchronized boolean build(int id,int kind){
+    public record BuildReview(boolean allowed,String reason,int cashCost,int suppliesCost,double x,double y){}
+    /** Returns a concrete rejection without mutating inventories. */
+    public synchronized BuildReview reviewBuild(int id,int kind){
         Player p=player(id);
-        if(p==null||p.dead||kind<0||kind>3||world.devices.size()>=100)return false;
-        int cash=kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
-        int scrap=kind==0?3:kind==1?1:kind==2?2:1;
-        if(p.cash<cash||p.scrap<scrap)return false;
+        if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
+        if(kind<0||kind>3)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        int price=kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
+        int supplies=kind==0?3:kind==1?1:kind==2?2:1;
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
-        if(!free(x,y)||!clear(p.x,p.y,x,y))return false;
+        if(world.devices.size()>=100)return new BuildReview(false,"BUILD_LIMIT",price,supplies,x,y);
+        if(p.cash<price||p.scrap<supplies)return new BuildReview(false,"RESOURCES",price,supplies,x,y);
+        if(!free(x,y)||!clear(p.x,p.y,x,y))
+            return new BuildReview(false,"OBSTRUCTED",price,supplies,x,y);
+        for(double[] spawn:world.spawns)
+            if(Math.hypot(x-spawn[0],y-spawn[1])<2.0)
+                return new BuildReview(false,"SPAWN_CLEARANCE",price,supplies,x,y);
         for(World.Device d:world.devices)
-            if(d.hp>0&&Math.hypot(d.x-x,d.y-y)<1.2)return false;
-        p.cash-=cash;p.scrap-=scrap;
-        World.Device device=new World.Device(x,y,kind);
+            if(d.hp>0&&Math.hypot(d.x-x,d.y-y)<1.2)
+                return new BuildReview(false,"DEVICE_CLEARANCE",price,supplies,x,y);
+        if(kind==BARRICADE&&!routesRemainOpen(x,y))
+            return new BuildReview(false,"ROUTE_BLOCKED",price,supplies,x,y);
+        return new BuildReview(true,"OK",price,supplies,x,y);
+    }
+    /**
+     * A proposed barricade cannot disconnect any of the three established spawn sectors.
+     * Pathfinding reads actual colliders and existing barricades, not a decorative map.
+     */
+    private boolean routesRemainOpen(double blockX,double blockY){
+        final int n=World.SIZE;
+        boolean[][] seen=new boolean[n][n];
+        ArrayDeque<int[]> pending=new ArrayDeque<>();
+        double[] first=world.spawns[0];
+        int sx=(int)first[0],sy=(int)first[1];
+        pending.add(new int[]{sx,sy});seen[sx][sy]=true;
+        int[][] dirs={{1,0},{-1,0},{0,1},{0,-1}};
+        while(!pending.isEmpty()){
+            int[] pos=pending.removeFirst();
+            for(int[] dir:dirs){
+                int xx=pos[0]+dir[0],yy=pos[1]+dir[1];
+                if(xx<1||yy<1||xx>=n-1||yy>=n-1||seen[xx][yy])continue;
+                double cx=xx+.5,cy=yy+.5;
+                if(Math.hypot(cx-blockX,cy-blockY)<.72||!free(cx,cy))continue;
+                seen[xx][yy]=true;pending.addLast(new int[]{xx,yy});
+            }
+        }
+        for(double[] sector:world.spawns)
+            if(!seen[(int)sector[0]][(int)sector[1]])return false;
+        return true;
+    }
+    public synchronized boolean build(int id,int kind){
+        BuildReview review=reviewBuild(id,kind);
+        if(!review.allowed())return false;
+        Player p=player(id);
+        p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
+        World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;
-        world.devices.add(device);return true;
+        world.devices.add(device);
+        return true;
     }
     public synchronized boolean respawn(int id,int spawn){
         Player p=player(id);

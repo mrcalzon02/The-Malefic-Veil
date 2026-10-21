@@ -3,6 +3,7 @@ package veil;
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 /** Thin async LAN wire client; never modifies Swing components on socket reader. */
 public final class NetLink implements AutoCloseable {
     public static final class Remote {
@@ -17,6 +18,8 @@ public final class NetLink implements AutoCloseable {
         double x,double y,double angle,double visibility){}
     public record DeviceEvent(int index,int kind,double x,double y,int hp){}
     public record NpcEvent(int index,double x,double y,int hp){}
+    public record ShotEvent(long sequence,boolean fired,String outcome,int targetId,int damage,int ammo){}
+    public record BuildEvent(int kind,String reason,int cashCost,int suppliesCost){}
     private final Socket socket;
     private final PrintWriter writer;
     public final long seed;
@@ -25,6 +28,9 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<Integer> pickedUp=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<DeviceEvent> structures=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<NpcEvent> npcs=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<ShotEvent> shots=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<BuildEvent> buildResults=new ConcurrentLinkedQueue<>();
+    private final AtomicLong shotIds=new AtomicLong();
     private volatile Self self;
     public NetLink(String host,int port)throws IOException {
         socket=new Socket();
@@ -61,6 +67,15 @@ public final class NetLink implements AutoCloseable {
                                 if(s.length==5)npcs.add(new NpcEvent(Integer.parseInt(s[1]),
                                     Double.parseDouble(s[2]),Double.parseDouble(s[3]),Integer.parseInt(s[4])));
                             }
+                            case "SHOT" -> {
+                                if(s.length==7)shots.add(new ShotEvent(Long.parseLong(s[1]),
+                                    Boolean.parseBoolean(s[2]),s[3],Integer.parseInt(s[4]),
+                                    Integer.parseInt(s[5]),Integer.parseInt(s[6])));
+                            }
+                            case "BUILD_RESULT" -> {
+                                if(s.length==5)buildResults.add(new BuildEvent(Integer.parseInt(s[1]),
+                                    s[2],Integer.parseInt(s[3]),Integer.parseInt(s[4])));
+                            }
                             case "SELF" -> {
                                 if(s.length==16)self=new Self(Integer.parseInt(s[1]),Integer.parseInt(s[2]),
                                     Integer.parseInt(s[3]),Integer.parseInt(s[4]),Integer.parseInt(s[5]),
@@ -81,7 +96,11 @@ public final class NetLink implements AutoCloseable {
     private synchronized void send(String s){writer.println(s);}
     public void choose(int id){send("CHOOSE|"+id);}
     public void state(double x,double y,double angle,int stanceFlags){send("STATE|"+x+"|"+y+"|"+angle+"|"+stanceFlags);}
-    public void fire(int gun){send("FIRE|"+gun);}
+    public long fire(int gun){
+        long sequence=shotIds.incrementAndGet();
+        send("FIRE|"+sequence+"|"+gun);
+        return sequence;
+    }
     public void pickup(int index){send("PICKUP|"+index);}
     public void useMedkit(){send("MEDKIT");}
     public void reload(int weapon){send("RELOAD|"+weapon);}

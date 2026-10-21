@@ -86,7 +86,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private double visibility(){
         double v=.36;
         int tileX=(int)px,tileY=(int)py;
-        boolean avenue=tileX%12<3||tileY%12<3;
+        boolean avenue=world.city.road(tileX/CityLayout.CELL,tileY/CityLayout.CELL);
         v+=avenue?.25:-.14;
         if(down(KeyEvent.VK_SHIFT))v+=.29;
         if(down(KeyEvent.VK_C))v-=.28;
@@ -418,7 +418,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         int tile=3,left=w-World.SIZE*tile-16,top=35;
         g.setColor(new Color(8,9,13,225));g.fillRect(left-6,top-6,World.SIZE*tile+12,World.SIZE*tile+12);
         for(int x=0;x<World.SIZE;x++)for(int y=0;y<World.SIZE;y++) {
-            g.setColor(world.tile(x,y)==0?new Color(37,39,49):new Color(103,107,114));
+            CityLayout.Category category=world.city.categoryAt(x,y);
+            Color tint=switch(category){
+                case HAZARD -> new Color(184,77,73);
+                case RESOURCE -> new Color(95,152,81);
+                case SAFE -> new Color(75,132,172);
+                case OPEN -> new Color(169,144,104);
+                case null -> new Color(43,45,54);
+            };
+            g.setColor(world.tile(x,y)==0?tint:tint.darker().darker());
             g.fillRect(left+x*tile,top+y*tile,tile,tile);
         }
         for(double[] s:world.spawns){g.setColor(Color.YELLOW);g.fillRect(left+(int)(s[0]*tile)-2,top+(int)(s[1]*tile)-2,5,5);}

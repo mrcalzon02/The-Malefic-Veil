@@ -89,8 +89,11 @@ public final class DurableRealm {
             for(int i=count(in,500);i>0;i--){
                 int kind=in.readInt();double x=in.readDouble(),y=in.readDouble();
                 int hp=in.readInt();String owner=in.readUTF();
+                // Parse structurally valid legacy devices even when they sit in
+                // newly protected city plots. load() will archive and quarantine
+                // them; active city placement is never restored.
                 if(kind<0||kind>3||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
-                   target.world.worldStructureAt(x,y,.55)||
+                   x<0||y<0||x>=World.SIZE||y>=World.SIZE||
                    (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}")))
                     throw new IOException("Invalid persisted device");
                 devices.add(new DeviceSave(kind,x,y,hp,owner));
@@ -148,8 +151,28 @@ public final class DurableRealm {
                 failure.addSuppressed(backupError);throw failure;
             }
         }
+        long illegal=snapshot.devices.stream().filter(d->
+            game.world.worldStructureAt(d.x,d.y,.55)).count();
+        if(illegal>0){
+            // Preserve the exact verified legacy snapshot independently BEFORE
+            // sanitizing active runtime state or permitting subsequent saves.
+            Path archive=Files.createTempFile(root,"realm-city-legacy-",".dat");
+            byte[] source=Files.readAllBytes(primary);
+            try{
+                Files.write(archive,source);
+                if(!Arrays.equals(source,Files.readAllBytes(archive)))
+                    throw new IOException("Legacy world snapshot archival verification failed");
+                parse(Files.readAllBytes(archive),game);
+            }catch(IOException failure){
+                Files.deleteIfExists(archive);
+                throw new IOException("Cannot safely archive obsolete city buildings",failure);
+            }
+            System.err.println("Archived "+illegal+" former city structure(s) to "+
+                archive+"; fixed city sector will not restore these player devices");
+        }
         synchronized(game){
             for(DeviceSave d:snapshot.devices){
+                if(game.world.worldStructureAt(d.x,d.y,.55))continue;
                 World.Device device=new World.Device(d.x,d.y,d.kind);
                 device.hp=d.hp;device.ownerKey=d.owner.isEmpty()?null:d.owner;
                 game.world.devices.add(device);
@@ -174,6 +197,9 @@ public final class DurableRealm {
         Objects.requireNonNull(root);
         Snapshot snapshot;
         synchronized(game){snapshot=capture(game);}
+        for(DeviceSave device:snapshot.devices)
+            if(game.world.worldStructureAt(device.x,device.y,.55))
+                throw new IOException("Refusing to save an active city-owned player structure");
         byte[] bytes=serialize(snapshot);
         // Validate before touching an existing save.
         parse(bytes,game);

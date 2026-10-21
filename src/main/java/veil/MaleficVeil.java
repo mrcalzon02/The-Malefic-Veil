@@ -23,6 +23,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final WeaponViewRenderer weaponRenderer=new WeaponViewRenderer();
     private final NetLink net;
     private final Vehicles localVehicles;
+    private final CargoHaulage localCargo;
     private final int archetype;
     private final javax.swing.Timer timer;
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
@@ -41,6 +42,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         this.window=window;this.net=net;this.archetype=archetype;
         world=new World(seed);
         localVehicles=new Vehicles(world);
+        localCargo=new CargoHaulage(world,localVehicles);
         try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
@@ -195,7 +197,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
             if(ticks%90==0)net.ping();
         }
-        if(net==null)localVehicles.advance(33);
+        if(net==null){localVehicles.advance(33);localCargo.advance(33);}
         if(!dead){
             int carId=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
             if(carId>=0){
@@ -397,10 +399,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.List<UrbanScene.ModelInstance> cars=new java.util.ArrayList<>();
         if(net!=null){
             for(NetLink.Car car:net.cars.values())if(car.hp()>0&&car.driverId()!=net.id)
-                cars.add(new UrbanScene.ModelInstance("truck-green",car.x(),car.y(),car.heading(),1.9));
+                cars.add(new UrbanScene.ModelInstance(
+                    (car.id()%2==0?"truck-green":"truck-grey")+
+                        (net.truckCargo.containsKey(car.id())?"-cargo":""),
+                    car.x(),car.y(),car.heading(),1.9));
         }else{
             for(Vehicles.State car:localVehicles.states())if(car.hp()>0&&car.driverId()!=1)
-                cars.add(new UrbanScene.ModelInstance("truck-green",car.x(),car.y(),car.heading(),1.9));
+                cars.add(new UrbanScene.ModelInstance(localVehicles.cargo(car.id()).model(),
+                    car.x(),car.y(),car.heading(),1.9));
         }
         urbanRenderer.draw(g,urban.models(),cars,px,py,angle,depth,RW,RH);
         java.util.List<UrbanScene.ModelInstance> gameplay=new java.util.ArrayList<>();
@@ -516,7 +522,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
-            g.drawString("T/H/V/B wilderness build only  E medkit",23,127);
+            g.drawString("L LOAD CARGO  G RECOVER  Q TRUCK  E MEDKIT",23,127);
             g.drawString("Q enter/exit car  M city map  N continent  TAB / Esc help",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
@@ -621,6 +627,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_1 -> gun=0;
             case KeyEvent.VK_2 -> gun=1;
             case KeyEvent.VK_R -> reload();
+            case KeyEvent.VK_L -> loadNearestCargo();
+            case KeyEvent.VK_G -> recoverNearestCargo();
             case KeyEvent.VK_F -> ability();
             case KeyEvent.VK_T -> deploy(0);
             case KeyEvent.VK_H -> deploy(1);
@@ -680,6 +688,55 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(chosen<0||!localVehicles.enter(1,px,py,chosen))toast("NO VEHICLE IN REACH");
             else toast("ENGINE ENGAGED");
         }
+    }
+    /** Pick up a heavy load only on foot next to both the yard and stopped truck. */
+    private void loadNearestCargo(){
+        if(net!=null){
+            if(net.drivenCar()>=0){toast("EXIT TRUCK TO LOAD");return;}
+            for(NetLink.CargoYard yard:net.cargoYards.values()){
+                if(yard.stock()<=0||Math.hypot(px-yard.x()-.5,py-yard.y()-.5)>2.5)continue;
+                for(NetLink.Car car:net.cars.values()){
+                    if(car.driverId()!=-1||car.hp()<=80||Math.abs(car.speed())>.10||
+                        net.truckCargo.containsKey(car.id())||
+                        Math.hypot(car.x()-yard.x()-.5,car.y()-yard.y()-.5)>4.2)continue;
+                    net.loadCargo(car.id(),yard.id());toast("REQUESTING CARGO LOAD");return;
+                }
+            }
+        }else{
+            if(localVehicles.carDrivenBy(1)>=0){toast("EXIT TRUCK TO LOAD");return;}
+            for(CargoHaulage.Site yard:localCargo.sites()){
+                if(yard.stock()==0||Math.hypot(px-yard.x()-.5,py-yard.y()-.5)>2.5)continue;
+                for(Vehicles.State car:localVehicles.states())
+                    if(localCargo.load(1,px,py,car.id(),yard.id())){
+                        toast("LOADED "+yard.resource().replace('_',' '));return;
+                    }
+            }
+        }
+        toast("NO LOADING BAY / PARKED TRUCK IN REACH");
+    }
+    /** Ground cargo is reloaded onto an intact nearby parked truck, never hand-carried. */
+    private void recoverNearestCargo(){
+        if(net!=null){
+            if(net.drivenCar()>=0){toast("EXIT TRUCK TO RECOVER");return;}
+            for(NetLink.CargoDrop d:net.cargoDrops.values()){
+                if(Math.hypot(px-d.x(),py-d.y())>2.5)continue;
+                for(NetLink.Car car:net.cars.values()){
+                    if(car.hp()<=80||car.driverId()>=0||Math.abs(car.speed())>.10||
+                        net.truckCargo.containsKey(car.id()))continue;
+                    if(Math.hypot(d.x()-car.x(),d.y()-car.y())<=4.2){
+                        net.recoverCargo(car.id(),d.id());toast("REQUESTING CARGO RECOVERY");return;
+                    }
+                }
+            }
+        }else{
+            if(localVehicles.carDrivenBy(1)>=0){toast("EXIT TRUCK TO RECOVER");return;}
+            for(CargoHaulage.Drop d:localCargo.drops())if(Math.hypot(px-d.x(),py-d.y())<2.5)
+                for(Vehicles.State car:localVehicles.states())
+                    if(localCargo.recover(1,px,py,car.id(),d.id())){
+                        toast("RECOVERED "+d.resource().replace('_',' '));return;
+                    }
+        }
+        toast("NO DAMAGED CARGO / PARKED TRUCK IN REACH");
     }
     @Override public void keyReleased(KeyEvent e){held.remove(e.getKeyCode());}
     @Override public void keyTyped(KeyEvent e){}

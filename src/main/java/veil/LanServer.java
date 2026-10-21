@@ -21,6 +21,7 @@ public final class LanServer implements AutoCloseable {
     private final long startup=System.currentTimeMillis();
     private final ConcurrentMap<Integer,Peer> connections=new ConcurrentHashMap<>();
     public final ArenaSystems match;
+    public final ContinentSectors continentSectors;
     private volatile boolean running=true;
     private int nextId;
     private static final class Peer {
@@ -38,6 +39,8 @@ public final class LanServer implements AutoCloseable {
         dataDirectory=saveDir;
         moderation=saveDir==null?null:new HostModeration(saveDir);
         match=new ArenaSystems(seed);
+        ContinentLayout continent=match.world.continent();
+        continentSectors=new ContinentSectors(continent,new ContinentPopulation(continent));
         if(saveDir!=null)DurableRealm.load(match,saveDir);
         listener=saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
@@ -212,6 +215,28 @@ public final class LanServer implements AutoCloseable {
                             if(s.length!=3)continue;
                             changed=match.driveVehicle(peer.id,
                                 Double.parseDouble(s[1]),Double.parseDouble(s[2]));
+                        }
+                        case "SECTOR" -> {
+                            // Explicitly a macro-blueprint query: no player teleport or game mutation.
+                            if(s.length!=3)continue;
+                            int sx=Integer.parseInt(s[1]),sy=Integer.parseInt(s[2]);
+                            if(sx<0||sy<0||sx>=ContinentSectors.COUNT||sy>=ContinentSectors.COUNT){
+                                peer.send("SECTOR_DENIED|BOUNDS");continue;
+                            }
+                            ContinentSectors.Sector sector=continentSectors.sector(new ContinentSectors.Key(sx,sy));
+                            peer.send("SECTOR_BEGIN|"+sx+"|"+sy+"|"+sector.parcels().size()+"|"+
+                                sector.playerSpawns().size()+"|"+sector.npcSpawns().size());
+                            for(ContinentSectors.Parcel cell:sector.parcels())
+                                peer.send("PARCEL|"+cell.x()+"|"+cell.y()+"|"+cell.biome()+"|"+
+                                    cell.elevation()+"|"+(int)cell.city()+"|"+(cell.road()?1:0)+"|"+
+                                    (cell.worldOwned()?1:0)+"|"+(cell.buildable()?1:0));
+                            for(var spawn:sector.playerSpawns())
+                                peer.send("CONTINENT_SPAWN|"+spawn.id()+"|"+spawn.x()+"|"+spawn.y()+"|"+
+                                    spawn.kind()+"|"+(int)spawn.city());
+                            for(var npc:sector.npcSpawns())
+                                peer.send("CONTINENT_ENCOUNTER|"+npc.id()+"|"+npc.x()+"|"+npc.y()+"|"+
+                                    npc.kind()+"|"+npc.groupSize());
+                            peer.send("SECTOR_END|"+sx+"|"+sy);
                         }
                         case "PING" -> {
                             if(s.length!=2)continue;

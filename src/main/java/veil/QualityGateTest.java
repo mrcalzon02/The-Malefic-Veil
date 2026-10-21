@@ -111,6 +111,7 @@ public final class QualityGateTest {
         DedicatedHostTest.main(new String[0]);
         RaidCombatTest.main(new String[0]);
         ContinentPopulationTest.main(new String[0]);
+        ContinentVehicleSitesTest.main(new String[0]);
         System.out.println("PASS QualityGateTest "+assertions+
             " checks: host-confirmed hits, anti-replay, immutable cities, 20 map seeds");
     }

@@ -50,13 +50,8 @@ public final class DedicatedHostTest {
                     "durable host forbids player structures in empty city parcels");
                 check(server.match.world.devices.isEmpty()&&owner.cash==1000&&owner.scrap==100,
                     "denied construction preserves world and inventory");
-                // Simulate a pre-rule persisted structure fixture for migration
-                // compatibility; this never enters the player build pathway.
-                World.Device historical=new World.Device(owner.x+1.1,owner.y,ArenaSystems.BARRICADE);
-                historical.ownerId=client.id;historical.ownerKey=account;
-                server.match.world.devices.add(historical);
-                check(server.match.world.devices.get(0).ownerKey.equals(account),
-                    "historic ownership keyed by account rather than socket");
+                check(server.match.world.devices.isEmpty(),
+                    "no saved city structure can be materialized from player build requests");
                 server.saveNow();
                 check(Files.isRegularFile(DurableRealm.file(temp)),"manual save materialized");
                 check(server.ban(account),"operator ban accepted");
@@ -64,11 +59,10 @@ public final class DedicatedHostTest {
                 until(()->server.match.player(client.id)==null,"disconnect releases host actor");
             }
             try(LanServer resumed=new LanServer(0,92233L,temp)){
-                check(resumed.match.world.devices.size()==1,"legacy base survives host restart");
-                check(resumed.match.world.devices.get(0).ownerKey.equals(account),"base ownership persists");
+                check(resumed.match.world.devices.isEmpty(),"immutable city remains free of player bases");
                 HostModeration decisions=new HostModeration(temp);
                 check(!decisions.permitted(account),"ban survives complete host process cycle");
-                check(resumed.status().contains("structures=1"),"operator status reflects world load");
+                check(resumed.status().contains("structures=0"),"operator status reflects protected city");
             }
             check(Files.readString(temp.resolve("audit.log")).contains("ban account="),
                 "operator audit contains moderation action");

@@ -167,6 +167,61 @@ public final class GameplayMeshes {
         barricade.box(0,.53,-.11,1.17,.18,.04,0xC6A963);
         barricade.box(0,.18,.12,1.44,.12,.24,0x5A6068);
         meshes.put(DEVICE[3],barricade.done());
+
+        // Reuse selected CC0 Beckenburg models, not the full source library.
+        try {
+            for(String name:new String[]{"broadleaf","conifer"}){
+                byte[] source=java.nio.file.Files.readAllBytes(java.nio.file.Path.of(
+                    "assets","game","beckenburg","level_tree_"+name+".glb"));
+                GlbMesh tree=GlbMesh.read(source);
+                if(tree.triangleCount()<50)throw new java.io.IOException("Empty imported tree");
+                meshes.put("resource-tree-"+name,tree);
+            }
+        }catch(java.io.IOException exception){
+            throw new IllegalStateException("Required Beckenburg CC0 resource trees missing",exception);
+        }
+        Model stone=new Model();
+        stone.diamond(-.19,.27,0,.31,.50,0x74767A);
+        stone.diamond(.22,.20,.13,.23,.37,0x9C9B91);
+        stone.diamond(.02,.13,-.23,.19,.27,0x505C5F);
+        meshes.put("resource-stone",stone.done());
+        Model ore=new Model();
+        ore.diamond(-.12,.32,0,.35,.64,0x444A54);
+        ore.diamond(.23,.22,.12,.24,.42,0x5B6877);
+        ore.diamond(-.13,.41,-.20,.10,.18,0xC2A04B);
+        ore.diamond(.20,.35,-.08,.09,.16,0xCFAE65);
+        meshes.put("resource-ore",ore.done());
+        Model fiber=new Model();
+        for(int i=0;i<7;i++){
+            double a=i*Math.PI*2/7;
+            fiber.box(Math.cos(a)*.16,.27,Math.sin(a)*.16,
+                .044,.54+(i%3)*.14,.043,i%2==0?0x758657:0x9D9363);
+        }
+        fiber.box(0,.17,0,.23,.13,.19,0x6E583D);
+        meshes.put("resource-fiber",fiber.done());
+        Model forage=new Model();
+        forage.box(0,.18,0,.10,.35,.09,0x5D6D38);
+        for(int i=0;i<6;i++){
+            double a=i*Math.PI/3;
+            forage.diamond(Math.cos(a)*.23,.31+((i%3)*.04),Math.sin(a)*.23,
+                .18,.17,0x436D43);
+            forage.diamond(Math.cos(a)*.22,.23,Math.sin(a)*.22,.055,.10,
+                i%2==0?0xB24D3F:0xBE8B45);
+        }
+        meshes.put("resource-edibles",forage.done());
+        Model herbs=new Model();
+        herbs.box(0,.18,0,.09,.35,.09,0x5E6641);
+        for(int i=0;i<6;i++){
+            double a=i*Math.PI/3;
+            herbs.diamond(Math.cos(a)*.15,.32,Math.sin(a)*.15,.15,.30,0x4B8261);
+            herbs.diamond(Math.cos(a)*.17,.52,Math.sin(a)*.17,.075,.13,0xAC758B);
+        }
+        meshes.put("resource-herbs",herbs.done());
+        Model water=new Model();
+        water.box(0,.045,0,.85,.075,.72,0x4D6561);
+        water.box(.08,.091,.04,.49,.011,.45,0x557F86);
+        water.diamond(-.17,.12,.02,.09,.06,0x7A9C9B);
+        meshes.put("resource-water",water.done());
     }
     public Map<String,GlbMesh> meshes(){return Collections.unmodifiableMap(meshes);}
 }

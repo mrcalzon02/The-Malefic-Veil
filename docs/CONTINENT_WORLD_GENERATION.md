@@ -51,3 +51,9 @@ The current continental blueprint is generated **lazily** through `World.contine
 - **G5 — long-session acceptance:** 20+ world seeds, pathfinding through all city sites, 2+ players, build/exploit/rejoin scenarios, reproducibility across Windows/Linux Java 17/21, real rendered playtest and frame/memory evidence.
 
 Run locally: `javac --release 17 -d out src/main/java/veil/*.java`; `java -cp out veil.ContinentLayoutTest`; `java -cp out veil.CityLayoutTest`; `java -cp out veil.QualityGateTest`; `java -cp out veil.LanSmokeTest`. The existing verification workflow includes continent/city test gates; CI success must be established from a finished run, not presumed.
+
+## G2 increment — sector partition and subscriptions (October 20, 2026)
+
+`ContinentSectors` now provides deterministic 8×8 macro-parcel sectors (28×28 total for the 224×224 blueprint), containing immutable biome/elevation, city, road, world-structure, and buildability data. Player and NPC spawn *markers* are pre-indexed into a single owning sector; repeated subscriptions cannot duplicate marker IDs. Bounded `interest(x,y,radius)` produces a stable list of nearby sectors, clamped at map edges. The separate `ContinentSectorsTest` checks partition coverage, ownership masks, uniqueness, and boundary subscriptions across four seeds.
+
+**Integration still required:** this sector model is not yet consulted by `LanServer` or `ArenaSystems`; its parcels are macro coordinates, not rendered terrain, and it does not create networked NPCs or construction entities. Next, implement immutable network sector descriptors (with generation version), actor subscription/delta reconciliation, and a macro-to-fine collision/materialization adapter. Only then move players/cars from single-city local coordinates to authoritative continental coordinates. Do not mark G2 complete until two-client crossing and restart tests demonstrate that traversal.

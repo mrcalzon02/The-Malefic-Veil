@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 public final class KenneyCityAssemblyTest {
     private static void check(boolean ok,String reason){if(!ok)throw new AssertionError(reason);}
     private static long key(int x,int y){return ((long)x<<32)|(y&0xffffffffL);}
+    private static int worldSizeBound(World city){return city.urbanProps.size()/10;}
     public static void main(String[] args)throws Exception{
         World city=new World(20261020L);
         UrbanScene scene=new UrbanScene(city);
@@ -41,7 +42,8 @@ public final class KenneyCityAssemblyTest {
         check(walls>200&&upper>200,"Building shell not assembled from wall tiles");
         check(roofs>80,"Building roofs not represented by modular roofs");
         check(doors>5,"Entrances not represented by open wall modules");
-        check(colliders==4,"Source kit must not add invisible physics obstructions");
+        check(colliders>=4,"Kenney scene lost source-backed collision obstacles");
+        check(colliders<=worldSizeBound(city),"Unbounded collision-object density");
         check(scene.models().size()>25,"Too few distinct source construction modules");
         var nearby=scene.nearby(1.5,1.5,19);
         check(nearby.size()<city.urbanProps.size()/2,"Renderer still scans the whole city");

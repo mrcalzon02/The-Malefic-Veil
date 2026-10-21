@@ -32,6 +32,10 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<BuildEvent> buildResults=new ConcurrentLinkedQueue<>();
     private final AtomicLong shotIds=new AtomicLong();
     private volatile Self self;
+    private volatile boolean connected=true;
+    private volatile long roundTripMs=-1;
+    private final AtomicLong pingIds=new AtomicLong();
+    private volatile long waitingPing=-1,pingSentNanos=0;
     private volatile int[] spawnScores={0,0,0};
     public final ConcurrentLinkedQueue<String> respawnResults=new ConcurrentLinkedQueue<>();
     public NetLink(String host,int port)throws IOException {
@@ -78,6 +82,16 @@ public final class NetLink implements AutoCloseable {
                                 if(s.length==5)buildResults.add(new BuildEvent(Integer.parseInt(s[1]),
                                     s[2],Integer.parseInt(s[3]),Integer.parseInt(s[4])));
                             }
+                            case "PONG" -> {
+                                if(s.length==2){
+                                    long nonce=Long.parseLong(s[1]);
+                                    if(nonce==waitingPing&&pingSentNanos!=0){
+                                        roundTripMs=Math.max(0,TimeUnit.NANOSECONDS.toMillis(
+                                            System.nanoTime()-pingSentNanos));
+                                        waitingPing=-1;
+                                    }
+                                }
+                            }
                             case "SPAWNS" -> {
                                 if(s.length==4)spawnScores=new int[]{
                                     Integer.parseInt(s[1]),Integer.parseInt(s[2]),Integer.parseInt(s[3])};
@@ -98,12 +112,25 @@ public final class NetLink implements AutoCloseable {
                     }catch(NumberFormatException ignored){}
                 }
             }catch(IOException ignored){}
+            finally{connected=false;}
         },"Veil-LAN-reader");
         t.setDaemon(true);t.start();
     }
     public Self self(){return self;}
     public int[] spawnScores(){return spawnScores.clone();}
-    private synchronized void send(String s){writer.println(s);}
+    public boolean connected(){return connected;}
+    public long roundTripMs(){return roundTripMs;}
+    private synchronized void send(String s){
+        if(!connected)return;
+        writer.println(s);
+        if(writer.checkError())connected=false;
+    }
+    public synchronized void ping(){
+        if(!connected)return;
+        long nonce=pingIds.incrementAndGet();
+        waitingPing=nonce;pingSentNanos=System.nanoTime();
+        send("PING|"+nonce);
+    }
     public void choose(int id){send("CHOOSE|"+id);}
     public void state(double x,double y,double angle,int stanceFlags){send("STATE|"+x+"|"+y+"|"+angle+"|"+stanceFlags);}
     public long fire(int gun){
@@ -117,5 +144,5 @@ public final class NetLink implements AutoCloseable {
     public void ability(){send("ABILITY");}
     public void build(int kind){send("BUILD|"+kind);}
     public void respawn(int index){send("RESPAWN|"+index);}
-    @Override public void close()throws IOException{socket.close();}
+    @Override public void close()throws IOException{connected=false;socket.close();}
 }

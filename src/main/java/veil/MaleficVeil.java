@@ -149,6 +149,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 }
             }
             if(ticks%3==0)net.state(px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
+            if(ticks%90==0)net.ping();
         }
         if(!dead){
             if(down(KeyEvent.VK_LEFT))angle-=step*2.1;
@@ -402,6 +403,13 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.drawString("THE MALEFIC VEIL",15,22);
         g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
         g.drawString("SEED "+world.seed+"  "+(net==null?"SOLO":"LAN PLAYERS "+(net.others.size()+1)),w-218,22);
+        if(net!=null){
+            g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
+            String diagnostic=net.connected()?
+                "HOST RTT "+(net.roundTripMs()<0?"--":net.roundTripMs()+"ms"):"HOST DISCONNECTED";
+            g.setColor(net.connected()?new Color(181,196,177):new Color(247,107,105));
+            g.drawString(diagnostic,w-218,39);
+        }
         if(noticeTicks>0){g.setFont(new Font(Font.MONOSPACED,Font.BOLD,17));g.setColor(new Color(234,202,132));g.drawString(notice,15,52);}
         if(mapVisible)drawMap(g,w,h);
         if(help&&!dead){g.setColor(new Color(9,10,17,220));g.fillRect(12,64,440,100);
@@ -410,6 +418,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("T turret  H heal  V revive  B barricade  E medkit",23,127);
             g.drawString("M city map  TAB help    Esc toggle help",23,147);}
+        if(net!=null&&!net.connected()){
+            g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
+            g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
+            g.drawString("HOST CONNECTION LOST",Math.max(15,w/2-170),h/2);
+            g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,14));
+            g.drawString("This match is no longer synchronized. Close to reconnect.",
+                Math.max(15,w/2-235),h/2+27);
+        }
         if(dead){
             g.setColor(new Color(0,0,0,210));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(238,114,128));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,26));

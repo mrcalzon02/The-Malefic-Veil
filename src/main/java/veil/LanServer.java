@@ -134,6 +134,11 @@ public final class LanServer implements AutoCloseable {
                                 broadcast("DEVICE|"+idx+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
                             }
                         }
+                        case "PING" -> {
+                            if(s.length!=2)continue;
+                            long nonce=Long.parseLong(s[1]);
+                            if(nonce>0)peer.send("PONG|"+nonce);
+                        }
                         case "RESPAWN" -> {
                             if(s.length!=2)continue;
                             int index=Integer.parseInt(s[1]);

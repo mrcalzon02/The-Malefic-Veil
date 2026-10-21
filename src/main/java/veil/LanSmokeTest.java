@@ -20,6 +20,9 @@ public final class LanSmokeTest {
             host.match.world.npcs.clear(); // isolate network PvP scenario from hostile random spawns
             check(attacker.seed==887766L&&victim.seed==887766L,"host seed");
             check(attacker.id!=victim.id,"unique IDs");
+            attacker.ping();
+            until(()->attacker.roundTripMs()>=0,"host RTT response");
+            check(attacker.connected(),"socket alive after heartbeat");
             attacker.choose(2);
             attacker.state(1.5,1.5,0,1);
             until(()->victim.others.containsKey(attacker.id),"peer joined");

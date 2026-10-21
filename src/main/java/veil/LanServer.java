@@ -123,12 +123,13 @@ public final class LanServer implements AutoCloseable {
                         case "BUILD" -> {
                             if(s.length!=2)continue;
                             int kind=Integer.parseInt(s[1]);
-                            ArenaSystems.BuildReview review=match.reviewBuild(peer.id,kind);
-                            changed=match.build(peer.id,kind);
+                            ArenaSystems.BuildOutcome outcome=match.buildOutcome(peer.id,kind);
+                            ArenaSystems.BuildReview review=outcome.review();
+                            changed=outcome.built();
                             peer.send("BUILD_RESULT|"+kind+"|"+(changed?"OK":review.reason())+"|"+
                                 review.cashCost()+"|"+review.suppliesCost());
                             if(changed){
-                                int idx=match.world.devices.size()-1;
+                                int idx=outcome.deviceIndex();
                                 World.Device d=match.world.devices.get(idx);
                                 broadcast("DEVICE|"+idx+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
                             }

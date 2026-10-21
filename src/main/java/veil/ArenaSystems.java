@@ -269,16 +269,19 @@ public final class ArenaSystems {
             if(!seen[(int)sector[0]][(int)sector[1]])return false;
         return true;
     }
-    public synchronized boolean build(int id,int kind){
+    public record BuildOutcome(boolean built,BuildReview review,int deviceIndex){}
+    /** Atomic authoritative validation, inventory debit and structure creation. */
+    public synchronized BuildOutcome buildOutcome(int id,int kind){
         BuildReview review=reviewBuild(id,kind);
-        if(!review.allowed())return false;
+        if(!review.allowed())return new BuildOutcome(false,review,-1);
         Player p=player(id);
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;
         world.devices.add(device);
-        return true;
+        return new BuildOutcome(true,review,world.devices.size()-1);
     }
+    public synchronized boolean build(int id,int kind){return buildOutcome(id,kind).built();}
     /** Scores current threats for each selectable spawn without secretly denying chosen risk. */
     public record SpawnRisk(int index,int score,String label){}
     public synchronized List<SpawnRisk> spawnRisks(int id){

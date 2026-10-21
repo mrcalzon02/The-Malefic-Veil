@@ -34,9 +34,15 @@ Each phase has **entry criteria**, concrete deliverables, automated acceptance e
 
 ### Continental world-generation expansion [BLUEPRINT IMPLEMENTED; GAME STREAMING PENDING]
 
-The hand-drawn island/cities A–G layout now has a deterministic 224×224 parcel-scale `ContinentLayout` with coast/water, seven biome types, irregular city masks (square City C), intercity network, connected city arteries and categorized local plots. World-owned roads/sites have a separate protected construction mask, with undeveloped vacant lots left buildable. The `N` preview exposes macro topology beside the existing `M` city map. **The live combat world is still the existing 132×132 city sector**; continental chunk streaming, road meshes, fine elevation, adjacent city traversal and terrain-specific 3D assets are unimplemented gates. See [CONTINENT_WORLD_GENERATION.md](CONTINENT_WORLD_GENERATION.md).
+The hand-drawn island/cities A–G layout now has a deterministic 224×224 parcel-scale `ContinentLayout` with coast/water, seven biome types, irregular city masks (square City C), intercity network, connected city arteries and categorized local plots. World-owned roads/sites have a separate protected construction mask, with undeveloped vacant lots left buildable. The `N` preview exposes macro topology beside the existing `M` city map. **The playable City A district is now embedded in the same world coordinates as the continent**, with outdoor world-movement and harvest nodes sharing player positions; the other cities still lack finished physical site geometry, road meshes, elevation, NPC instantiation and streamed 3D urban art. See [CONTINENT_WORLD_GENERATION.md](CONTINENT_WORLD_GENERATION.md).
 
 Next gates: verified Java 17/21 topology and host-build regressions, macro-to-fine sector conversion, terrain transition artistry, uninterrupted intercity traversal and large building-footprint enforcement.
+
+### Continuous world correction and Beckenburg harvesting port [CODE COMMITTED; RUNTIME QA OPEN]
+
+The erroneous `WILD_ENTER/WILD_EXIT/WILD_MOVE` session model was removed entirely. City A is aligned to the actual macro continent in world-metres; ordinary `ArenaSystems.move` handles all walking through the edge crossings and validates swept movement across tile/terrain obstacles. Host combat, pickups, vehicles, crafting and resource nodes all use ONE `ArenaSystems.Player.x/y/angle` and there is no special dimension flag. `WorldHarvesting` authoritatively ray-validates `HARVEST|nodeId`, awards material to the same character's inventory, syncs `RESOURCE_NODE` to nearby players and durably saves depletion. The client preserves the Beckenburg center-aim hand/E prompt and draws CC0 Beckenburg tree GLBs plus authored resource proxy meshes.
+
+`WorldHarvestingTest` and `InteractionFocusTest` are registered in `QualityGateTest`, **but current branch compilation and actual Windows/Linux traversal/visual tests require verification**. Gate next: continuous graphical roads/terrain blending, real physical City B–G lots/interiors, forestry node collision/animations, combat/vehicle convoys across old City A boundary and multiplayer load/carry/deplete soak. Full [contract and exact limits](ONE_CONTINUOUS_WORLD_AND_HARVESTING.md).
 
 ## Phase P3 — Character, arsenal and animations [PLANNED]
 

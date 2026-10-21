@@ -58,7 +58,7 @@ public final class LanSmokeTest {
             shooter.x=1.5;shooter.y=1.5;shooter.angle=0;
             attacker.build(ArenaSystems.TURRET);
             until(()->host.match.world.devices.size()==2,"turret constructed over socket");
-            shooter.x=6.5;shooter.y=1.5;shooter.angle=Math.PI;
+            shooter.x=14.5;shooter.y=1.5;shooter.angle=0;
             attacker.build(ArenaSystems.REVIVE_STATION);
             until(()->host.match.world.devices.size()==3,"revival structure assembled over socket");
             shooter.angle=Math.PI/2;

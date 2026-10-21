@@ -71,8 +71,8 @@ public final class ArenaSystemsTest {
         shooter.hp=40;shooter.sanity=50;
         advance(host,500);
         check(shooter.hp>=43&&shooter.sanity>=52,"medical station restores health and sanity");
-        moveTo(host,1,6.5,1.5);
-        shooter.angle=Math.PI;
+        moveTo(host,1,14.5,1.5);
+        shooter.angle=0;
         check(host.build(1,ArenaSystems.REVIVE_STATION),"revive station assembly");
         shooter.angle=Math.PI/2;
         check(host.build(1,ArenaSystems.BARRICADE),"barricade structure assembly");

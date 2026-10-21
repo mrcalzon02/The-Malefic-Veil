@@ -13,7 +13,7 @@ public final class NetLink implements AutoCloseable {
             this.x=x;this.y=y;this.angle=a;this.hp=hp;this.opacity=opacity;this.classId=classId;
         }
     }
-    public record Rpg(int level,long experience,long next,long aliveMs,double streak,
+    public record Rpg(int level,long experience,long next,long aliveMs,double streakBonus,
                       int marksmanship,int athletics,int engineering,int scavenging,int survival,
                       long protectionMs,int hunger,int hydration){}
     public record NpcRank(int level,String archetype){}

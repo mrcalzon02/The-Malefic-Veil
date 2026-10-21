@@ -34,7 +34,7 @@ public final class EquipmentUpgradesTest {
         check(high.toLevel()==50&&high.visibleStage().equals("ENDGAME_SPECIALIZED"),
             "top level should be an actual industrial retrofit stage");
         denied(()->EquipmentUpgrades.next("aa-fast",EquipmentUpgrades.Class.DEFENSE,
-            10,11,CraftingEraRegistry.Era.INCURSION),"OWNER_LEVEL_LOCKED");
+            10,10,CraftingEraRegistry.Era.INCURSION),"OWNER_LEVEL_LOCKED");
         denied(()->EquipmentUpgrades.next("ground-wagon",EquipmentUpgrades.Class.VEHICLE,
             39,50,CraftingEraRegistry.Era.ELECTRIC),"RESEARCH_ERA_LOCKED");
         denied(()->EquipmentUpgrades.next("air-medium",EquipmentUpgrades.Class.VEHICLE,

@@ -17,6 +17,18 @@ public final class InteractionFocus {
     @FunctionalInterface public interface Sight {
         boolean clear(double ax,double ay,double bx,double by);
     }
+    public static String pickupName(int kind){
+        return switch(kind){
+            case 0 -> "HEALTH";
+            case 1 -> "SANITY";
+            case 2 -> "PISTOL AMMO";
+            case 3 -> "SHOTGUN SHELLS";
+            case 4 -> "CASH";
+            case 5 -> "SUPPLIES";
+            case 6 -> "MEDKIT";
+            default -> "UNKNOWN";
+        };
+    }
     private InteractionFocus(){}
     /** Closest physical aim intersection, not a nearest-distance auto selection. */
     public static Target pick(double x,double y,double heading,

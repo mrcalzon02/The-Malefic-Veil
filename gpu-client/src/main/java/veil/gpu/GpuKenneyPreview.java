@@ -30,6 +30,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         #version 330 core
         in vec3 a_position;
         in vec4 a_color;
+        in vec2 a_texcoord;
         in vec4 a_instance;
         in vec2 a_extra;
         uniform mat4 u_projView;
@@ -37,6 +38,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         out vec4 v_color;
         out float v_distance;
         out vec3 v_world;
+        out vec2 v_texcoord;
         void main() {
             float cs=cos(a_instance.z),sn=sin(a_instance.z);
             vec3 scaled=a_position*a_instance.w;
@@ -48,6 +50,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             v_color=vec4(a_color.rgb,a_color.a*a_extra.x);
             v_distance=length(world-u_eye);
             v_world=world;
+            v_texcoord=a_texcoord;
         }
         """;
     static final String FRAGMENT_SHADER="""
@@ -55,6 +58,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         in vec4 v_color;
         in float v_distance;
         in vec3 v_world;
+        in vec2 v_texcoord;
+        uniform sampler2D u_diffuse;
+        uniform int u_textured;
         uniform float u_fogFar;
         uniform float u_ambient;
         uniform float u_lampStrength;
@@ -75,7 +81,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             // Ambient daylight and real sourced streetlight pools: no fake
             // emissive cubes, and at most eight lights tested per fragment.
             vec3 brightness=u_dayTint*u_ambient+vec3(1.00,0.73,0.46)*warm;
-            vec3 shaded=v_color.rgb*min(brightness,vec3(1.65));
+            vec3 sourceColor=v_color.rgb;
+            if(u_textured!=0)sourceColor*=texture(u_diffuse,v_texcoord).rgb;
+            vec3 shaded=sourceColor*min(brightness,vec3(1.65));
             float fog=smoothstep(u_fogFar*.35,u_fogFar,v_distance);
             fragColor=vec4(mix(shaded,u_haze,fog),v_color.a);
         }
@@ -85,8 +93,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         final Mesh mesh;
         final int vertexCount;
         final int capacity;
-        GpuModel(Mesh mesh,int vertexCount,int capacity){
+        final Texture texture;
+        GpuModel(Mesh mesh,int vertexCount,int capacity,Texture texture){
             this.mesh=mesh;this.vertexCount=vertexCount;this.capacity=capacity;
+            this.texture=texture;
         }
     }
     private static final class FloatList {
@@ -115,7 +125,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private GpuSkybox skybox;
     private UrbanLighting lighting;
     private PsxHorrorMenu menu;
-    private final Map<String,GpuModel> models=new LinkedHashMap<>();
+    private final Map<String,List<GpuModel>> models=new LinkedHashMap<>();
+    private final Map<String,Texture> materialTextures=new HashMap<>();
     private final Map<String,FloatList> visible=new LinkedHashMap<>();
     private double x=1.5,y=1.5,heading=0.2;
     private float visualDistance=30f;
@@ -138,32 +149,70 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         lighting=new UrbanLighting(world);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
+        // Mesh geometry is uploaded only once per source-material pair. A
+        // typical Kenney wall has two textures; each material keeps one actual
+        // GL30 instanced draw for all its visible wall placements.
         for(UrbanInstanceBatches.Batch batch:scene.batches().all()){
             GlbMesh source=batch.mesh();
-            int count=source.triangleCount()*3;
-            float[] vertexData=new float[count*7];
-            int cursor=0;
-            for(GlbMesh.Triangle triangle:source.triangles()){
-                int rgb=triangle.rgb();
-                float r=((rgb>>>16)&255)/255f,g=((rgb>>>8)&255)/255f,b=(rgb&255)/255f;
-                float[] coords={triangle.ax(),triangle.ay(),triangle.az(),
-                    triangle.bx(),triangle.by(),triangle.bz(),
-                    triangle.cx(),triangle.cy(),triangle.cz()};
-                for(int offset=0;offset<9;offset+=3){
-                    vertexData[cursor++]=coords[offset];
-                    vertexData[cursor++]=coords[offset+1];
-                    vertexData[cursor++]=coords[offset+2];
-                    vertexData[cursor++]=r;vertexData[cursor++]=g;
-                    vertexData[cursor++]=b;vertexData[cursor++]=1;
+            Map<String,List<GlbMesh.Surface>> groups=new LinkedHashMap<>();
+            for(GlbMesh.Surface surface:source.surfaces())
+                groups.computeIfAbsent(surface.texture(),k->new ArrayList<>()).add(surface);
+            List<GpuModel> geometry=new ArrayList<>();
+            for(var group:groups.entrySet()){
+                int count=group.getValue().size()*3;
+                float[] vertexData=new float[count*9];
+                int cursor=0;
+                for(GlbMesh.Surface surface:group.getValue()){
+                    GlbMesh.Triangle tri=surface.triangle();
+                    int rgb=surface.texture()==null?tri.rgb():surface.tintRgb();
+                    float red=((rgb>>>16)&255)/255f;
+                    float green=((rgb>>>8)&255)/255f;
+                    float blue=(rgb&255)/255f;
+                    float[] verts={
+                        tri.ax(),tri.ay(),tri.az(),surface.au(),surface.av(),
+                        tri.bx(),tri.by(),tri.bz(),surface.bu(),surface.bv(),
+                        tri.cx(),tri.cy(),tri.cz(),surface.cu(),surface.cv()
+                    };
+                    for(int i=0;i<15;i+=5){
+                        vertexData[cursor++]=verts[i];
+                        vertexData[cursor++]=verts[i+1];
+                        vertexData[cursor++]=verts[i+2];
+                        vertexData[cursor++]=red;
+                        vertexData[cursor++]=green;
+                        vertexData[cursor++]=blue;
+                        vertexData[cursor++]=1;
+                        vertexData[cursor++]=verts[i+3];
+                        vertexData[cursor++]=verts[i+4];
+                    }
                 }
+                Mesh mesh=new Mesh(Mesh.VertexDataType.VertexBufferObjectWithVAO,
+                    true,count,0,VertexAttribute.Position(),VertexAttribute.ColorUnpacked(),
+                    new VertexAttribute(VertexAttributes.Usage.TextureCoordinates,2,"a_texcoord"));
+                mesh.setVertices(vertexData);
+                mesh.enableInstancedRendering(false,batch.count(),
+                    new VertexAttribute(VertexAttributes.Usage.Generic,4,"a_instance"),
+                    new VertexAttribute(VertexAttributes.Usage.Generic,2,"a_extra"));
+                Texture texture=null;
+                if(group.getKey()!=null){
+                    texture=materialTextures.get(group.getKey());
+                    if(texture==null){
+                        try{
+                            byte[] data=KenneyAssetPack.load().texture(group.getKey());
+                            Pixmap image=new Pixmap(data,0,data.length);
+                            texture=new Texture(image);
+                            image.dispose();
+                            texture.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
+                            texture.setWrap(Texture.TextureWrap.Repeat,Texture.TextureWrap.Repeat);
+                            materialTextures.put(group.getKey(),texture);
+                        }catch(Exception ex){
+                            throw new IllegalStateException("Missing source Kenney texture "+
+                                group.getKey()+" for "+batch.modelId(),ex);
+                        }
+                    }
+                }
+                geometry.add(new GpuModel(mesh,count,batch.count(),texture));
             }
-            Mesh mesh=new Mesh(Mesh.VertexDataType.VertexBufferObjectWithVAO,true,count,0,
-                VertexAttribute.Position(),VertexAttribute.ColorUnpacked());
-            mesh.setVertices(vertexData);
-            mesh.enableInstancedRendering(false,batch.count(),
-                new VertexAttribute(VertexAttributes.Usage.Generic,4,"a_instance"),
-                new VertexAttribute(VertexAttributes.Usage.Generic,2,"a_extra"));
-            models.put(batch.modelId(),new GpuModel(mesh,count,batch.count()));
+            models.put(batch.modelId(),List.copyOf(geometry));
         }
         camera=new PerspectiveCamera(72,WIDTH,HEIGHT);
         camera.near=0.08f;camera.far=140f;
@@ -269,15 +318,20 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         shader.setUniformi("u_lightCount",activeLights);
         shader.setUniform4fv("u_pointLights[0]",lightUniforms,0,lightUniforms.length);
         for(var entry:visible.entrySet()){
-            GpuModel gpu=models.get(entry.getKey());
+            List<GpuModel> geometry=models.get(entry.getKey());
             FloatList transforms=entry.getValue();
-            if(gpu==null||transforms.size==0)continue;
-            if(transforms.size/6>gpu.capacity)
-                throw new IllegalStateException("Instancing upload exceeds capacity for "+entry.getKey());
-            gpu.mesh.setInstanceData(transforms.values,0,transforms.size);
-            // Exactly ONE GPU glDrawArraysInstanced per visible Kenney mesh type.
-            gpu.mesh.render(shader,GL20.GL_TRIANGLES,0,gpu.vertexCount);
-            drawCalls++;
+            if(geometry==null||transforms.size==0)continue;
+            for(GpuModel gpu:geometry){
+                if(transforms.size/6>gpu.capacity)
+                    throw new IllegalStateException("Instance upload exceeds capacity "+entry.getKey());
+                gpu.mesh.setInstanceData(transforms.values,0,transforms.size);
+                shader.bind();
+                shader.setUniformi("u_textured",gpu.texture==null?0:1);
+                shader.setUniformi("u_diffuse",0);
+                if(gpu.texture!=null)gpu.texture.bind(0);
+                gpu.mesh.render(shader,GL20.GL_TRIANGLES,0,gpu.vertexCount);
+                drawCalls++;
+            }
         }
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
@@ -347,8 +401,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
 
     @Override public void dispose() {
-        for(GpuModel model:models.values())model.mesh.dispose();
+        for(List<GpuModel> groups:models.values())for(GpuModel model:groups)model.mesh.dispose();
         models.clear();
+        for(Texture texture:materialTextures.values())texture.dispose();
+        materialTextures.clear();
         if(shader!=null)shader.dispose();
         if(framebuffer!=null)framebuffer.dispose();
         if(sprites!=null)sprites.dispose();

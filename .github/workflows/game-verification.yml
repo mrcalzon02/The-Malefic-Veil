@@ -53,6 +53,12 @@ jobs:
       - name: Kenney modular city assembly and screenshot gate
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.KenneyCityAssemblyTest
+      - name: Kenney foliage and derelict vehicle collision verification
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.UrbanDressingTest
+      - name: Continental biome terrain mesh and vista screening
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.ContinentVistaTest
       - name: Shared Kenney geometry and packed instance buffer invariants
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanInstanceBatchesTest

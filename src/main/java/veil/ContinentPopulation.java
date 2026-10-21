@@ -16,12 +16,16 @@ public final class ContinentPopulation {
     private final ContinentLayout world;
     private final List<PlayerSpawn> players=new ArrayList<>();
     private final List<NpcSpawn> npcs=new ArrayList<>();
+    private final ContinentVehicleSites vehicleSites;
     public ContinentPopulation(ContinentLayout world){
         this.world=Objects.requireNonNull(world);
         createPlayerSites();createNpcs();
+        vehicleSites=new ContinentVehicleSites(world,players,npcs);
     }
     public List<PlayerSpawn> playerSpawns(){return List.copyOf(players);}
     public List<NpcSpawn> npcSpawns(){return List.copyOf(npcs);}
+    /** Immutable discoverable vehicle sites; not runtime-instantiated cars. */
+    public List<ContinentVehicleSites.Site> vehicleSpawns(){return vehicleSites.sites();}
     private long roll(int x,int y,int salt){
         return World.mix(world.seed()^((long)x*0x9e3779b97f4a7c15L)^
             ((long)y*0x632be59bd9b4e019L)^(salt*7919L));

@@ -154,7 +154,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         new GalleryView("01-city-street",61.5,61.5,1.55,1.10,-.05f,48,12),
         new GalleryView("02-central-streets",61.5,61.5,3.1,0.67,-.15f,78,16.5),
         new GalleryView("03-urban-rooftops",66,66,43,0.45,-.81f,100,18.2),
-        new GalleryView("04-city-overhead",66,66,115,0.30,-1.55f,100,12),
+        // Aerial distance must exceed camera altitude or the actual world
+        // vanishes into fog even though its geometry is correctly loaded.
+        new GalleryView("04-city-overhead",66,66,115,0.30,-1.42f,230,12),
         new GalleryView("05-city-woodland-edge",125,66,38,0.12,-.64f,100,10),
         new GalleryView("06-urban-night",61.5,61.5,40,0.42,-.80f,90,0)
     };

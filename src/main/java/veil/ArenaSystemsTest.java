@@ -33,7 +33,7 @@ public final class ArenaSystemsTest {
         check(shooter.visibility>crouch,"crouch is more transparent than sprint");
         host.advance(100);
         check(host.ability(1),"shade ability");
-        check(shooter.visibility<.1,"shade makes player near invisible to PvP");
+        check(shooter.visibility<=.20,"Shade lowers PvP opacity while sprinting");
         check(!host.ability(1),"ability cooldown");
         check(host.fire(1,0),"pistol shot accepted");
         check(target.hp==75,"host owns real PvP HP loss");

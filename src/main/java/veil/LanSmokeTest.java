@@ -38,8 +38,10 @@ public final class LanSmokeTest {
             attacker.build(1);
             until(()->host.match.world.devices.size()==1,"healing station built over socket");
             until(()->!attacker.structures.isEmpty()||!victim.structures.isEmpty(),"structure streamed to a client");
+            host.match.damage(shooter,45,10);
             attacker.useMedkit();
             until(()->attacker.self()!=null&&attacker.self().medkits()==1,"item usage acknowledged");
+            check(shooter.hp>=100,"medkit restores damaged health");
             attacker.respawn(0); // living actor must NOT be allowed to respawn
             Thread.sleep(150);
             check(!shooter.dead&&shooter.hp>0,"invalid respawn cannot reset living actor");

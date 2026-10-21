@@ -1,0 +1,3962 @@
+[
+  {
+    "id": "M000",
+    "source_object": "014",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 38900,
+    "dimensions": [
+      0.9836931824684143,
+      1.0,
+      0.17672039568424225
+    ]
+  },
+  {
+    "id": "M001",
+    "source_object": "016",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 13452,
+    "dimensions": [
+      1.0,
+      0.9987154006958008,
+      0.12098115682601929
+    ]
+  },
+  {
+    "id": "M002",
+    "source_object": "017",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 20700,
+    "dimensions": [
+      0.9683318138122559,
+      1.0,
+      0.1004643663764
+    ]
+  },
+  {
+    "id": "M003",
+    "source_object": "018",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 33630,
+    "dimensions": [
+      0.9999996423721313,
+      1.0,
+      0.17187875509262085
+    ]
+  },
+  {
+    "id": "M004",
+    "source_object": "019",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 54316,
+    "dimensions": [
+      0.967386782169342,
+      1.0,
+      0.17187875509262085
+    ]
+  },
+  {
+    "id": "M005",
+    "source_object": "7 (1)",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 56668,
+    "dimensions": [
+      0.9999996423721313,
+      1.0,
+      0.14888091385364532
+    ]
+  },
+  {
+    "id": "M006",
+    "source_object": "Body016",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 6812,
+    "dimensions": [
+      0.9999980330467224,
+      1.0,
+      0.2388138771057129
+    ]
+  },
+  {
+    "id": "M007",
+    "source_object": "Body020",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 50624,
+    "dimensions": [
+      0.9999787211418152,
+      1.0,
+      0.259901225566864
+    ]
+  },
+  {
+    "id": "M008",
+    "source_object": "Body024",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 52160,
+    "dimensions": [
+      0.9985876083374023,
+      0.9999999403953552,
+      0.2483140230178833
+    ]
+  },
+  {
+    "id": "M009",
+    "source_object": "Body025",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 47310,
+    "dimensions": [
+      0.9998706579208374,
+      1.0,
+      0.14719900488853455
+    ]
+  },
+  {
+    "id": "M010",
+    "source_object": "Body026",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 4402,
+    "dimensions": [
+      0.9998687505722046,
+      0.9999999403953552,
+      0.19358141720294952
+    ]
+  },
+  {
+    "id": "M011",
+    "source_object": "Body1524",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 36488,
+    "dimensions": [
+      0.9998707175254822,
+      1.0,
+      0.23238445818424225
+    ]
+  },
+  {
+    "id": "M012",
+    "source_object": "Body158",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 128734,
+    "dimensions": [
+      0.999999463558197,
+      1.0,
+      0.16659142076969147
+    ]
+  },
+  {
+    "id": "M013",
+    "source_object": "Body160",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 13580,
+    "dimensions": [
+      1.0,
+      0.9999990463256836,
+      0.21747829020023346
+    ]
+  },
+  {
+    "id": "M014",
+    "source_object": "Body161",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 11460,
+    "dimensions": [
+      0.9998690485954285,
+      1.0,
+      0.4359709620475769
+    ]
+  },
+  {
+    "id": "M015",
+    "source_object": "Body162",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 266576,
+    "dimensions": [
+      0.9999565482139587,
+      1.0,
+      0.3437126576900482
+    ]
+  },
+  {
+    "id": "M016",
+    "source_object": "Body163",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 10932,
+    "dimensions": [
+      1.0,
+      0.9999997019767761,
+      0.10150287300348282
+    ]
+  },
+  {
+    "id": "M017",
+    "source_object": "Body164",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 28138,
+    "dimensions": [
+      0.82659512758255,
+      0.8261709809303284,
+      1.0
+    ]
+  },
+  {
+    "id": "M018",
+    "source_object": "Body166",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 1872,
+    "dimensions": [
+      0.9999999403953552,
+      0.9999994039535522,
+      0.45972728729248047
+    ]
+  },
+  {
+    "id": "M019",
+    "source_object": "Body185",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 22878,
+    "dimensions": [
+      0.5874219536781311,
+      0.5874238014221191,
+      1.0
+    ]
+  },
+  {
+    "id": "M020",
+    "source_object": "Body194",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 68986,
+    "dimensions": [
+      0.6742541193962097,
+      0.5874237418174744,
+      1.0
+    ]
+  },
+  {
+    "id": "M021",
+    "source_object": "Body622",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 26998,
+    "dimensions": [
+      0.9999999403953552,
+      0.998486340045929,
+      0.14133040606975555
+    ]
+  },
+  {
+    "id": "M022",
+    "source_object": "Body626",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 11104,
+    "dimensions": [
+      1.0,
+      0.9236935973167419,
+      0.30830812454223633
+    ]
+  },
+  {
+    "id": "M023",
+    "source_object": "Body634",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 8128,
+    "dimensions": [
+      1.0,
+      0.9999537467956543,
+      0.1498647928237915
+    ]
+  },
+  {
+    "id": "M024",
+    "source_object": "Body639",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 22996,
+    "dimensions": [
+      1.0,
+      0.9999998211860657,
+      0.32181423902511597
+    ]
+  },
+  {
+    "id": "M025",
+    "source_object": "Body87",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 6960,
+    "dimensions": [
+      0.7333369851112366,
+      0.7333377599716187,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "M026",
+    "source_object": "Box003",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 11516,
+    "dimensions": [
+      1.0,
+      0.999996542930603,
+      0.3021961450576782
+    ]
+  },
+  {
+    "id": "M027",
+    "source_object": "L001",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 10550,
+    "dimensions": [
+      1.0,
+      0.99234938621521,
+      0.11207691580057144
+    ]
+  },
+  {
+    "id": "M028",
+    "source_object": "Object003",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 10419,
+    "dimensions": [
+      1.0,
+      0.9999996423721313,
+      0.42109349370002747
+    ]
+  },
+  {
+    "id": "M029",
+    "source_object": "Object004",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 6006,
+    "dimensions": [
+      0.9999991059303284,
+      1.0,
+      0.4546482264995575
+    ]
+  },
+  {
+    "id": "M030",
+    "source_object": "Object007",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 14746,
+    "dimensions": [
+      0.9860661029815674,
+      0.9860677123069763,
+      1.0
+    ]
+  },
+  {
+    "id": "M031",
+    "source_object": "Object015",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 5222,
+    "dimensions": [
+      0.9998692274093628,
+      1.0,
+      0.1257142275571823
+    ]
+  },
+  {
+    "id": "M032",
+    "source_object": "Object167",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 9926,
+    "dimensions": [
+      0.9987168908119202,
+      1.0,
+      0.18180572986602783
+    ]
+  },
+  {
+    "id": "M033",
+    "source_object": "Object168",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 32574,
+    "dimensions": [
+      0.9611437916755676,
+      0.9611411094665527,
+      1.0
+    ]
+  },
+  {
+    "id": "M034",
+    "source_object": "Object172",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 25426,
+    "dimensions": [
+      0.9998692870140076,
+      0.9999999403953552,
+      0.14170655608177185
+    ]
+  },
+  {
+    "id": "M035",
+    "source_object": "Object173",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 1938,
+    "dimensions": [
+      0.999632716178894,
+      1.0,
+      0.18633237481117249
+    ]
+  },
+  {
+    "id": "M036",
+    "source_object": "Object176",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 15574,
+    "dimensions": [
+      0.9996277093887329,
+      1.0,
+      0.33120858669281006
+    ]
+  },
+  {
+    "id": "M037",
+    "source_object": "Object181",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 6988,
+    "dimensions": [
+      1.0,
+      0.9995843172073364,
+      0.7419477105140686
+    ]
+  },
+  {
+    "id": "M038",
+    "source_object": "Object199",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 81014,
+    "dimensions": [
+      1.0,
+      0.9860259890556335,
+      0.23515550792217255
+    ]
+  },
+  {
+    "id": "M039",
+    "source_object": "Object505",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+    "triangles": 5948,
+    "dimensions": [
+      0.8859775066375732,
+      0.8848416209220886,
+      1.0
+    ]
+  },
+  {
+    "id": "G000",
+    "source_object": "z",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9450,
+    "dimensions": [
+      0.998717725276947,
+      0.34098947048187256,
+      1.0
+    ]
+  },
+  {
+    "id": "G001",
+    "source_object": "Object682",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 15822,
+    "dimensions": [
+      0.9987168908119202,
+      0.12067299336194992,
+      1.0
+    ]
+  },
+  {
+    "id": "G002",
+    "source_object": "Object547",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5570,
+    "dimensions": [
+      0.9999991059303284,
+      0.14869652688503265,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G003",
+    "source_object": "Object546",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8332,
+    "dimensions": [
+      0.9998487830162048,
+      0.057148002088069916,
+      1.0
+    ]
+  },
+  {
+    "id": "G004",
+    "source_object": "Object505",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5948,
+    "dimensions": [
+      0.8859790563583374,
+      0.9999999403953552,
+      0.884841799736023
+    ]
+  },
+  {
+    "id": "G005",
+    "source_object": "Object504",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12592,
+    "dimensions": [
+      0.4001044034957886,
+      0.16902805864810944,
+      1.0
+    ]
+  },
+  {
+    "id": "G006",
+    "source_object": "Object503",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10010,
+    "dimensions": [
+      1.0,
+      0.15021838247776031,
+      0.9987161755561829
+    ]
+  },
+  {
+    "id": "G007",
+    "source_object": "Object422",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 392,
+    "dimensions": [
+      1.0,
+      0.16673585772514343,
+      0.9978303909301758
+    ]
+  },
+  {
+    "id": "G008",
+    "source_object": "Object420",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5016,
+    "dimensions": [
+      0.9999999403953552,
+      0.17586804926395416,
+      0.9996569156646729
+    ]
+  },
+  {
+    "id": "G009",
+    "source_object": "Object418",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 70454,
+    "dimensions": [
+      1.0,
+      0.07996715605258942,
+      0.9987161159515381
+    ]
+  },
+  {
+    "id": "G010",
+    "source_object": "Object417",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 32236,
+    "dimensions": [
+      0.9999999403953552,
+      0.05466274544596672,
+      0.9987164735794067
+    ]
+  },
+  {
+    "id": "G011",
+    "source_object": "Object416",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 17216,
+    "dimensions": [
+      1.0,
+      0.07165136933326721,
+      0.9999926090240479
+    ]
+  },
+  {
+    "id": "G012",
+    "source_object": "Object415",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1124,
+    "dimensions": [
+      1.0,
+      0.22028157114982605,
+      0.9997143149375916
+    ]
+  },
+  {
+    "id": "G013",
+    "source_object": "Object200",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2318,
+    "dimensions": [
+      0.9999999403953552,
+      0.06982964277267456,
+      0.9999995231628418
+    ]
+  },
+  {
+    "id": "G014",
+    "source_object": "Object199",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 81014,
+    "dimensions": [
+      1.0,
+      0.23515553772449493,
+      0.9860259294509888
+    ]
+  },
+  {
+    "id": "G015",
+    "source_object": "Object195",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2648,
+    "dimensions": [
+      0.9999984502792358,
+      0.09638214856386185,
+      1.0
+    ]
+  },
+  {
+    "id": "G016",
+    "source_object": "Object181",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6988,
+    "dimensions": [
+      1.0,
+      0.741947591304779,
+      0.9995840191841125
+    ]
+  },
+  {
+    "id": "G017",
+    "source_object": "Object178",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 121434,
+    "dimensions": [
+      0.5901532173156738,
+      0.3153681755065918,
+      1.0
+    ]
+  },
+  {
+    "id": "G018",
+    "source_object": "Object176",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 15574,
+    "dimensions": [
+      0.9996272921562195,
+      0.33120861649513245,
+      1.0
+    ]
+  },
+  {
+    "id": "G019",
+    "source_object": "Object175",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6916,
+    "dimensions": [
+      0.9999504089355469,
+      0.24482201039791107,
+      1.0
+    ]
+  },
+  {
+    "id": "G020",
+    "source_object": "Object173",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1938,
+    "dimensions": [
+      0.9996325373649597,
+      0.18633240461349487,
+      1.0
+    ]
+  },
+  {
+    "id": "G021",
+    "source_object": "Object172",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 25426,
+    "dimensions": [
+      0.9998677968978882,
+      0.14170655608177185,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G022",
+    "source_object": "Object168",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 32574,
+    "dimensions": [
+      0.9611429572105408,
+      1.0,
+      0.9611408114433289
+    ]
+  },
+  {
+    "id": "G023",
+    "source_object": "Object167",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9926,
+    "dimensions": [
+      0.9987154603004456,
+      0.18180575966835022,
+      1.0
+    ]
+  },
+  {
+    "id": "G024",
+    "source_object": "Object018",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6608,
+    "dimensions": [
+      1.0,
+      0.9703569412231445,
+      0.9999544024467468
+    ]
+  },
+  {
+    "id": "G025",
+    "source_object": "Object017",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8102,
+    "dimensions": [
+      1.0,
+      0.16839560866355896,
+      0.9999529719352722
+    ]
+  },
+  {
+    "id": "G026",
+    "source_object": "Object016",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9488,
+    "dimensions": [
+      0.9999999403953552,
+      0.1837918907403946,
+      0.9998689293861389
+    ]
+  },
+  {
+    "id": "G027",
+    "source_object": "Object015",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5222,
+    "dimensions": [
+      0.9998692870140076,
+      0.12571421265602112,
+      1.0
+    ]
+  },
+  {
+    "id": "G028",
+    "source_object": "Object010",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7740,
+    "dimensions": [
+      1.0,
+      0.48852360248565674,
+      0.7226661443710327
+    ]
+  },
+  {
+    "id": "G029",
+    "source_object": "Object007",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 14746,
+    "dimensions": [
+      0.9860675930976868,
+      1.0,
+      0.9860675930976868
+    ]
+  },
+  {
+    "id": "G030",
+    "source_object": "Object004",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6006,
+    "dimensions": [
+      0.9999999403953552,
+      0.45464783906936646,
+      0.9999992847442627
+    ]
+  },
+  {
+    "id": "G031",
+    "source_object": "Object003",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10419,
+    "dimensions": [
+      0.9999991655349731,
+      0.4210936725139618,
+      1.0
+    ]
+  },
+  {
+    "id": "G032",
+    "source_object": "Mega_Kitbash_Detail_514",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 33178,
+    "dimensions": [
+      1.0,
+      0.16259083151817322,
+      0.9987162351608276
+    ]
+  },
+  {
+    "id": "G033",
+    "source_object": "L001",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10550,
+    "dimensions": [
+      1.0,
+      0.11207669973373413,
+      0.9923484325408936
+    ]
+  },
+  {
+    "id": "G034",
+    "source_object": "Box004",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 31658,
+    "dimensions": [
+      0.8384617567062378,
+      0.2547473609447479,
+      1.0
+    ]
+  },
+  {
+    "id": "G035",
+    "source_object": "Box003",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11516,
+    "dimensions": [
+      1.0,
+      0.30219724774360657,
+      1.0
+    ]
+  },
+  {
+    "id": "G036",
+    "source_object": "Box002",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9616,
+    "dimensions": [
+      0.9999555945396423,
+      0.13646654784679413,
+      1.0
+    ]
+  },
+  {
+    "id": "G037",
+    "source_object": "Body99",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12084,
+    "dimensions": [
+      1.0,
+      0.7175233960151672,
+      0.9914925694465637
+    ]
+  },
+  {
+    "id": "G038",
+    "source_object": "Body95",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 28740,
+    "dimensions": [
+      0.8648843765258789,
+      0.4405074715614319,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G039",
+    "source_object": "Body93",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 76530,
+    "dimensions": [
+      1.0,
+      0.29413339495658875,
+      0.7340278029441833
+    ]
+  },
+  {
+    "id": "G040",
+    "source_object": "Body91",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7970,
+    "dimensions": [
+      1.0,
+      0.7384462356567383,
+      0.6699362993240356
+    ]
+  },
+  {
+    "id": "G041",
+    "source_object": "Body90",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12876,
+    "dimensions": [
+      0.7133936882019043,
+      0.39749956130981445,
+      1.0
+    ]
+  },
+  {
+    "id": "G042",
+    "source_object": "Body9",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 46300,
+    "dimensions": [
+      0.4499044120311737,
+      0.4860663414001465,
+      1.0
+    ]
+  },
+  {
+    "id": "G043",
+    "source_object": "Body89",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7852,
+    "dimensions": [
+      0.9987163543701172,
+      0.19386474788188934,
+      1.0
+    ]
+  },
+  {
+    "id": "G044",
+    "source_object": "Body88",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 19992,
+    "dimensions": [
+      0.6645128130912781,
+      0.4693160057067871,
+      1.0
+    ]
+  },
+  {
+    "id": "G045",
+    "source_object": "Body87",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6960,
+    "dimensions": [
+      0.7333384156227112,
+      1.0,
+      0.7333377003669739
+    ]
+  },
+  {
+    "id": "G046",
+    "source_object": "Body80",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7364,
+    "dimensions": [
+      0.32563892006874084,
+      0.12762589752674103,
+      1.0
+    ]
+  },
+  {
+    "id": "G047",
+    "source_object": "Body79",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 31464,
+    "dimensions": [
+      0.7577899098396301,
+      0.24688760936260223,
+      1.0
+    ]
+  },
+  {
+    "id": "G048",
+    "source_object": "Body78",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 21952,
+    "dimensions": [
+      0.3642379343509674,
+      0.19906015694141388,
+      1.0
+    ]
+  },
+  {
+    "id": "G049",
+    "source_object": "Body77",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1368,
+    "dimensions": [
+      1.0,
+      0.10087515413761139,
+      0.9987727999687195
+    ]
+  },
+  {
+    "id": "G050",
+    "source_object": "Body76",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13394,
+    "dimensions": [
+      0.6195467710494995,
+      0.18695087730884552,
+      1.0
+    ]
+  },
+  {
+    "id": "G051",
+    "source_object": "Body75",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4904,
+    "dimensions": [
+      0.9999999403953552,
+      0.2627508342266083,
+      0.6739595532417297
+    ]
+  },
+  {
+    "id": "G052",
+    "source_object": "Body74",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 29436,
+    "dimensions": [
+      0.6199294924736023,
+      0.3245546817779541,
+      1.0
+    ]
+  },
+  {
+    "id": "G053",
+    "source_object": "Body73",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5652,
+    "dimensions": [
+      0.9999999403953552,
+      0.26250290870666504,
+      0.9987159967422485
+    ]
+  },
+  {
+    "id": "G054",
+    "source_object": "Body72",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3348,
+    "dimensions": [
+      0.772046685218811,
+      0.3469586968421936,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G055",
+    "source_object": "Body71",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 27476,
+    "dimensions": [
+      0.691355288028717,
+      0.4007115960121155,
+      1.0
+    ]
+  },
+  {
+    "id": "G056",
+    "source_object": "Body70",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3744,
+    "dimensions": [
+      0.9999997019767761,
+      0.23714306950569153,
+      1.0
+    ]
+  },
+  {
+    "id": "G057",
+    "source_object": "Body7",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11058,
+    "dimensions": [
+      1.0,
+      0.20832550525665283,
+      0.9999998807907104
+    ]
+  },
+  {
+    "id": "G058",
+    "source_object": "Body67",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 50198,
+    "dimensions": [
+      1.0,
+      0.2622703015804291,
+      0.9331238865852356
+    ]
+  },
+  {
+    "id": "G059",
+    "source_object": "Body66",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 21492,
+    "dimensions": [
+      0.48089441657066345,
+      0.29746150970458984,
+      1.0
+    ]
+  },
+  {
+    "id": "G060",
+    "source_object": "Body65",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 17412,
+    "dimensions": [
+      1.0,
+      0.22468194365501404,
+      0.35373765230178833
+    ]
+  },
+  {
+    "id": "G061",
+    "source_object": "Body639",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 22996,
+    "dimensions": [
+      0.9999982714653015,
+      0.32181423902511597,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G062",
+    "source_object": "Body634",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8128,
+    "dimensions": [
+      0.9999999403953552,
+      0.14986439049243927,
+      0.9999505281448364
+    ]
+  },
+  {
+    "id": "G063",
+    "source_object": "Body632",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8690,
+    "dimensions": [
+      0.7842690944671631,
+      1.0,
+      0.8364306688308716
+    ]
+  },
+  {
+    "id": "G064",
+    "source_object": "Body627",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8112,
+    "dimensions": [
+      0.9999990463256836,
+      0.19745409488677979,
+      1.0
+    ]
+  },
+  {
+    "id": "G065",
+    "source_object": "Body626",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11104,
+    "dimensions": [
+      1.0,
+      0.30830827355384827,
+      0.9236941933631897
+    ]
+  },
+  {
+    "id": "G066",
+    "source_object": "Body622",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 26998,
+    "dimensions": [
+      1.0,
+      0.14133065938949585,
+      0.9984882473945618
+    ]
+  },
+  {
+    "id": "G067",
+    "source_object": "Body61",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2584,
+    "dimensions": [
+      1.0,
+      0.22703814506530762,
+      0.9987169504165649
+    ]
+  },
+  {
+    "id": "G068",
+    "source_object": "Body60",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6262,
+    "dimensions": [
+      0.49443185329437256,
+      0.18970835208892822,
+      1.0
+    ]
+  },
+  {
+    "id": "G069",
+    "source_object": "Body6",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2924,
+    "dimensions": [
+      0.8723046779632568,
+      0.698859691619873,
+      1.0
+    ]
+  },
+  {
+    "id": "G070",
+    "source_object": "Body56",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 38540,
+    "dimensions": [
+      0.7259998321533203,
+      0.33943605422973633,
+      1.0
+    ]
+  },
+  {
+    "id": "G071",
+    "source_object": "Body55",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8184,
+    "dimensions": [
+      0.8249832391738892,
+      0.1892819106578827,
+      1.0
+    ]
+  },
+  {
+    "id": "G072",
+    "source_object": "Body53",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6352,
+    "dimensions": [
+      0.36875730752944946,
+      0.18317562341690063,
+      1.0
+    ]
+  },
+  {
+    "id": "G073",
+    "source_object": "Body52",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 24856,
+    "dimensions": [
+      1.0,
+      0.46150094270706177,
+      0.6534467935562134
+    ]
+  },
+  {
+    "id": "G074",
+    "source_object": "Body5",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 47248,
+    "dimensions": [
+      1.0,
+      0.4000176787376404,
+      0.998268187046051
+    ]
+  },
+  {
+    "id": "G075",
+    "source_object": "Body48",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6804,
+    "dimensions": [
+      0.8303039073944092,
+      0.19050242006778717,
+      1.0
+    ]
+  },
+  {
+    "id": "G076",
+    "source_object": "Body46",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 696,
+    "dimensions": [
+      0.9999999403953552,
+      0.08634823560714722,
+      0.8666610717773438
+    ]
+  },
+  {
+    "id": "G077",
+    "source_object": "Body42",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2162,
+    "dimensions": [
+      0.5902009606361389,
+      0.3054908215999603,
+      1.0
+    ]
+  },
+  {
+    "id": "G078",
+    "source_object": "Body4",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1688,
+    "dimensions": [
+      0.7501263618469238,
+      0.17408710718154907,
+      1.0
+    ]
+  },
+  {
+    "id": "G079",
+    "source_object": "Body39",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 22872,
+    "dimensions": [
+      0.7971784472465515,
+      0.5040830969810486,
+      1.0
+    ]
+  },
+  {
+    "id": "G080",
+    "source_object": "Body36",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 39068,
+    "dimensions": [
+      1.0,
+      0.38314011693000793,
+      0.6214611530303955
+    ]
+  },
+  {
+    "id": "G081",
+    "source_object": "Body35",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 59922,
+    "dimensions": [
+      1.0,
+      0.3831406533718109,
+      0.9892409443855286
+    ]
+  },
+  {
+    "id": "G082",
+    "source_object": "Body34",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6206,
+    "dimensions": [
+      1.0,
+      0.15204943716526031,
+      0.999997615814209
+    ]
+  },
+  {
+    "id": "G083",
+    "source_object": "Body332",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11356,
+    "dimensions": [
+      0.2569194436073303,
+      0.11008128523826599,
+      1.0
+    ]
+  },
+  {
+    "id": "G084",
+    "source_object": "Body331",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8320,
+    "dimensions": [
+      0.40995901823043823,
+      0.17494460940361023,
+      1.0
+    ]
+  },
+  {
+    "id": "G085",
+    "source_object": "Body33",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 44100,
+    "dimensions": [
+      0.39139994978904724,
+      0.3944452702999115,
+      1.0
+    ]
+  },
+  {
+    "id": "G086",
+    "source_object": "Body328",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12264,
+    "dimensions": [
+      0.4489120543003082,
+      0.446471631526947,
+      1.0
+    ]
+  },
+  {
+    "id": "G087",
+    "source_object": "Body327",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5356,
+    "dimensions": [
+      0.24473370611667633,
+      0.3010421395301819,
+      1.0
+    ]
+  },
+  {
+    "id": "G088",
+    "source_object": "Body326",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13184,
+    "dimensions": [
+      0.27754056453704834,
+      0.27603182196617126,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G089",
+    "source_object": "Body325",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9876,
+    "dimensions": [
+      0.4023372530937195,
+      0.2173503041267395,
+      1.0
+    ]
+  },
+  {
+    "id": "G090",
+    "source_object": "Body323",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 45992,
+    "dimensions": [
+      0.20654810965061188,
+      0.38035452365875244,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G091",
+    "source_object": "Body322",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 77668,
+    "dimensions": [
+      0.22086001932621002,
+      0.12254605442285538,
+      1.0
+    ]
+  },
+  {
+    "id": "G092",
+    "source_object": "Body32",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9904,
+    "dimensions": [
+      1.0,
+      0.28115808963775635,
+      0.932837724685669
+    ]
+  },
+  {
+    "id": "G093",
+    "source_object": "Body316",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7560,
+    "dimensions": [
+      0.7307345867156982,
+      0.0623336061835289,
+      1.0
+    ]
+  },
+  {
+    "id": "G094",
+    "source_object": "Body315",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7948,
+    "dimensions": [
+      0.6674843430519104,
+      0.05693841725587845,
+      1.0
+    ]
+  },
+  {
+    "id": "G095",
+    "source_object": "Body314",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4900,
+    "dimensions": [
+      0.682181179523468,
+      0.08530255407094955,
+      1.0
+    ]
+  },
+  {
+    "id": "G096",
+    "source_object": "Body313",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2140,
+    "dimensions": [
+      0.37561678886413574,
+      0.07738173007965088,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G097",
+    "source_object": "Body310",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 20226,
+    "dimensions": [
+      0.6507071256637573,
+      1.0,
+      0.6507066488265991
+    ]
+  },
+  {
+    "id": "G098",
+    "source_object": "Body31",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8938,
+    "dimensions": [
+      0.9999988675117493,
+      0.177374005317688,
+      1.0
+    ]
+  },
+  {
+    "id": "G099",
+    "source_object": "Body308",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 21938,
+    "dimensions": [
+      0.29514849185943604,
+      0.05197802558541298,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G100",
+    "source_object": "Body307",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1488,
+    "dimensions": [
+      0.7882564663887024,
+      0.05512811243534088,
+      1.0
+    ]
+  },
+  {
+    "id": "G101",
+    "source_object": "Body305",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 34484,
+    "dimensions": [
+      0.33873167634010315,
+      0.3350208103656769,
+      1.0
+    ]
+  },
+  {
+    "id": "G102",
+    "source_object": "Body304",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16232,
+    "dimensions": [
+      0.4924018085002899,
+      0.19995898008346558,
+      1.0
+    ]
+  },
+  {
+    "id": "G103",
+    "source_object": "Body303",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 20764,
+    "dimensions": [
+      0.5270211100578308,
+      0.1360694020986557,
+      1.0
+    ]
+  },
+  {
+    "id": "G104",
+    "source_object": "Body301",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 43894,
+    "dimensions": [
+      0.5727881789207458,
+      0.12878063321113586,
+      1.0
+    ]
+  },
+  {
+    "id": "G105",
+    "source_object": "Body300",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11238,
+    "dimensions": [
+      0.8375929594039917,
+      0.17568019032478333,
+      1.0
+    ]
+  },
+  {
+    "id": "G106",
+    "source_object": "Body30",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5190,
+    "dimensions": [
+      0.7355945110321045,
+      0.17167523503303528,
+      1.0
+    ]
+  },
+  {
+    "id": "G107",
+    "source_object": "Body3",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 41256,
+    "dimensions": [
+      0.9014625549316406,
+      0.3066868185997009,
+      1.0
+    ]
+  },
+  {
+    "id": "G108",
+    "source_object": "Body298",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3264,
+    "dimensions": [
+      0.33670884370803833,
+      0.06710747629404068,
+      1.0
+    ]
+  },
+  {
+    "id": "G109",
+    "source_object": "Body297",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8452,
+    "dimensions": [
+      0.2081952542066574,
+      0.1533907949924469,
+      1.0
+    ]
+  },
+  {
+    "id": "G110",
+    "source_object": "Body296",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12864,
+    "dimensions": [
+      0.4404458999633789,
+      0.33670902252197266,
+      1.0
+    ]
+  },
+  {
+    "id": "G111",
+    "source_object": "Body29",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3212,
+    "dimensions": [
+      0.6070988178253174,
+      0.14254480600357056,
+      1.0
+    ]
+  },
+  {
+    "id": "G112",
+    "source_object": "Body289",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1380,
+    "dimensions": [
+      0.8155423998832703,
+      0.1304907500743866,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G113",
+    "source_object": "Body28",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4268,
+    "dimensions": [
+      0.5992280840873718,
+      0.07632707059383392,
+      1.0
+    ]
+  },
+  {
+    "id": "G114",
+    "source_object": "Body273",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3004,
+    "dimensions": [
+      0.9075230956077576,
+      0.1772102266550064,
+      1.0
+    ]
+  },
+  {
+    "id": "G115",
+    "source_object": "Body272",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1908,
+    "dimensions": [
+      0.5400494933128357,
+      0.10545433312654495,
+      1.0
+    ]
+  },
+  {
+    "id": "G116",
+    "source_object": "Body271",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6382,
+    "dimensions": [
+      0.9923388957977295,
+      0.11174892634153366,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G117",
+    "source_object": "Body270",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6914,
+    "dimensions": [
+      0.5722842812538147,
+      0.11174899339675903,
+      1.0
+    ]
+  },
+  {
+    "id": "G118",
+    "source_object": "Body27",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 24560,
+    "dimensions": [
+      0.9999999403953552,
+      0.8069833517074585,
+      0.8571415543556213
+    ]
+  },
+  {
+    "id": "G119",
+    "source_object": "Body269",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6642,
+    "dimensions": [
+      0.7823113799095154,
+      0.11174894869327545,
+      1.0
+    ]
+  },
+  {
+    "id": "G120",
+    "source_object": "Body268",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3196,
+    "dimensions": [
+      0.763581395149231,
+      0.5066484212875366,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G121",
+    "source_object": "Body267",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6514,
+    "dimensions": [
+      0.7812625765800476,
+      0.16054126620292664,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G122",
+    "source_object": "Body266",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11224,
+    "dimensions": [
+      0.6726077198982239,
+      0.4475785493850708,
+      1.0
+    ]
+  },
+  {
+    "id": "G123",
+    "source_object": "Body265",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1212,
+    "dimensions": [
+      0.7106394171714783,
+      0.6381904482841492,
+      1.0
+    ]
+  },
+  {
+    "id": "G124",
+    "source_object": "Body264",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5166,
+    "dimensions": [
+      1.0,
+      0.7918244004249573,
+      0.8925720453262329
+    ]
+  },
+  {
+    "id": "G125",
+    "source_object": "Body263",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6566,
+    "dimensions": [
+      0.4111216962337494,
+      0.347500205039978,
+      1.0
+    ]
+  },
+  {
+    "id": "G126",
+    "source_object": "Body262",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10320,
+    "dimensions": [
+      0.7611925005912781,
+      0.08863771706819534,
+      1.0
+    ]
+  },
+  {
+    "id": "G127",
+    "source_object": "Body261",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 26320,
+    "dimensions": [
+      0.5068348050117493,
+      0.5974081754684448,
+      1.0
+    ]
+  },
+  {
+    "id": "G128",
+    "source_object": "Body259",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2592,
+    "dimensions": [
+      0.545647144317627,
+      0.2912166714668274,
+      1.0
+    ]
+  },
+  {
+    "id": "G129",
+    "source_object": "Body258",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 26000,
+    "dimensions": [
+      0.49224191904067993,
+      0.6900971531867981,
+      1.0
+    ]
+  },
+  {
+    "id": "G130",
+    "source_object": "Body255",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9472,
+    "dimensions": [
+      0.9176068305969238,
+      0.1272715926170349,
+      1.0
+    ]
+  },
+  {
+    "id": "G131",
+    "source_object": "Body253",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 17062,
+    "dimensions": [
+      0.764586329460144,
+      1.0,
+      0.7518541812896729
+    ]
+  },
+  {
+    "id": "G132",
+    "source_object": "Body242",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12036,
+    "dimensions": [
+      0.5753540396690369,
+      0.3018905520439148,
+      1.0
+    ]
+  },
+  {
+    "id": "G133",
+    "source_object": "Body24",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8892,
+    "dimensions": [
+      0.38404494524002075,
+      0.07650783658027649,
+      1.0
+    ]
+  },
+  {
+    "id": "G134",
+    "source_object": "Body239",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1914,
+    "dimensions": [
+      0.2765715718269348,
+      0.10607728362083435,
+      1.0
+    ]
+  },
+  {
+    "id": "G135",
+    "source_object": "Body238",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 57594,
+    "dimensions": [
+      0.4326968789100647,
+      0.4453031122684479,
+      1.0
+    ]
+  },
+  {
+    "id": "G136",
+    "source_object": "Body236",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7206,
+    "dimensions": [
+      1.0,
+      0.15000291168689728,
+      0.999382495880127
+    ]
+  },
+  {
+    "id": "G137",
+    "source_object": "Body235",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4502,
+    "dimensions": [
+      0.9987161159515381,
+      0.31576403975486755,
+      1.0
+    ]
+  },
+  {
+    "id": "G138",
+    "source_object": "Body231",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 23588,
+    "dimensions": [
+      0.8598151803016663,
+      1.0,
+      0.8598155379295349
+    ]
+  },
+  {
+    "id": "G139",
+    "source_object": "Body230",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1604,
+    "dimensions": [
+      0.749722421169281,
+      0.5519320964813232,
+      1.0
+    ]
+  },
+  {
+    "id": "G140",
+    "source_object": "Body23",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1138,
+    "dimensions": [
+      0.30444392561912537,
+      0.07875435054302216,
+      1.0
+    ]
+  },
+  {
+    "id": "G141",
+    "source_object": "Body229",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 29202,
+    "dimensions": [
+      0.7019397020339966,
+      1.0,
+      0.7181182503700256
+    ]
+  },
+  {
+    "id": "G142",
+    "source_object": "Body226",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5846,
+    "dimensions": [
+      0.9999989867210388,
+      0.1273588389158249,
+      1.0
+    ]
+  },
+  {
+    "id": "G143",
+    "source_object": "Body224",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9308,
+    "dimensions": [
+      1.0,
+      0.13493894040584564,
+      0.9993993043899536
+    ]
+  },
+  {
+    "id": "G144",
+    "source_object": "Body222",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7412,
+    "dimensions": [
+      0.3112729787826538,
+      0.16619960963726044,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G145",
+    "source_object": "Body221",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3724,
+    "dimensions": [
+      1.0,
+      0.21153844892978668,
+      0.9999988079071045
+    ]
+  },
+  {
+    "id": "G146",
+    "source_object": "Body220",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9416,
+    "dimensions": [
+      0.2965550422668457,
+      0.2535802125930786,
+      1.0
+    ]
+  },
+  {
+    "id": "G147",
+    "source_object": "Body22",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16726,
+    "dimensions": [
+      0.5273094773292542,
+      0.30997148156166077,
+      1.0
+    ]
+  },
+  {
+    "id": "G148",
+    "source_object": "Body219",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1864,
+    "dimensions": [
+      0.9987170696258545,
+      0.20493216812610626,
+      1.0
+    ]
+  },
+  {
+    "id": "G149",
+    "source_object": "Body218",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 14084,
+    "dimensions": [
+      1.0,
+      0.4075431823730469,
+      0.8090420365333557
+    ]
+  },
+  {
+    "id": "G150",
+    "source_object": "Body217",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5392,
+    "dimensions": [
+      0.6227968335151672,
+      0.07331200689077377,
+      1.0
+    ]
+  },
+  {
+    "id": "G151",
+    "source_object": "Body216",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3764,
+    "dimensions": [
+      1.0,
+      0.2648983299732208,
+      0.9987167716026306
+    ]
+  },
+  {
+    "id": "G152",
+    "source_object": "Body215",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4566,
+    "dimensions": [
+      1.0,
+      0.17445793747901917,
+      0.9245262145996094
+    ]
+  },
+  {
+    "id": "G153",
+    "source_object": "Body213",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5542,
+    "dimensions": [
+      0.99871426820755,
+      0.16050481796264648,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G154",
+    "source_object": "Body212",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1132,
+    "dimensions": [
+      0.5905163884162903,
+      0.07090737670660019,
+      1.0
+    ]
+  },
+  {
+    "id": "G155",
+    "source_object": "Body211",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 14214,
+    "dimensions": [
+      0.9204748272895813,
+      0.18734095990657806,
+      1.0
+    ]
+  },
+  {
+    "id": "G156",
+    "source_object": "Body21",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8094,
+    "dimensions": [
+      1.0,
+      0.13594527542591095,
+      0.9974794983863831
+    ]
+  },
+  {
+    "id": "G157",
+    "source_object": "Body209",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16870,
+    "dimensions": [
+      0.9835981130599976,
+      0.22191251814365387,
+      1.0
+    ]
+  },
+  {
+    "id": "G158",
+    "source_object": "Body208",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 840,
+    "dimensions": [
+      0.5058661699295044,
+      0.6209368705749512,
+      1.0
+    ]
+  },
+  {
+    "id": "G159",
+    "source_object": "Body206",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13892,
+    "dimensions": [
+      0.5352996587753296,
+      0.27354297041893005,
+      1.0
+    ]
+  },
+  {
+    "id": "G160",
+    "source_object": "Body20",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11382,
+    "dimensions": [
+      0.3972555994987488,
+      0.32816824316978455,
+      1.0
+    ]
+  },
+  {
+    "id": "G161",
+    "source_object": "Body198",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2904,
+    "dimensions": [
+      0.38715094327926636,
+      0.4833979606628418,
+      1.0
+    ]
+  },
+  {
+    "id": "G162",
+    "source_object": "Body196",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 14718,
+    "dimensions": [
+      1.0,
+      0.3557973802089691,
+      0.9335299134254456
+    ]
+  },
+  {
+    "id": "G163",
+    "source_object": "Body194",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 68986,
+    "dimensions": [
+      0.6742536425590515,
+      1.0,
+      0.5874237418174744
+    ]
+  },
+  {
+    "id": "G164",
+    "source_object": "Body19",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3558,
+    "dimensions": [
+      1.0,
+      0.2134362757205963,
+      0.9999985694885254
+    ]
+  },
+  {
+    "id": "G165",
+    "source_object": "Body189",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 34208,
+    "dimensions": [
+      0.5414947867393494,
+      0.628044068813324,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G166",
+    "source_object": "Body188",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 14278,
+    "dimensions": [
+      0.6984307169914246,
+      0.12068387120962143,
+      1.0
+    ]
+  },
+  {
+    "id": "G167",
+    "source_object": "Body187",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11748,
+    "dimensions": [
+      0.2789526879787445,
+      0.40462151169776917,
+      1.0
+    ]
+  },
+  {
+    "id": "G168",
+    "source_object": "Body186",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9006,
+    "dimensions": [
+      0.5394778251647949,
+      0.12068389356136322,
+      1.0
+    ]
+  },
+  {
+    "id": "G169",
+    "source_object": "Body185",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 22878,
+    "dimensions": [
+      0.5874220728874207,
+      1.0,
+      0.5874237418174744
+    ]
+  },
+  {
+    "id": "G170",
+    "source_object": "Body184",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 75600,
+    "dimensions": [
+      0.48765477538108826,
+      0.8421114087104797,
+      1.0
+    ]
+  },
+  {
+    "id": "G171",
+    "source_object": "Body183",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2880,
+    "dimensions": [
+      0.7603718042373657,
+      0.1646498441696167,
+      1.0
+    ]
+  },
+  {
+    "id": "G172",
+    "source_object": "Body182",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3716,
+    "dimensions": [
+      0.4260295033454895,
+      0.07393745332956314,
+      1.0
+    ]
+  },
+  {
+    "id": "G173",
+    "source_object": "Body181",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7410,
+    "dimensions": [
+      0.8893502354621887,
+      0.29696789383888245,
+      1.0
+    ]
+  },
+  {
+    "id": "G174",
+    "source_object": "Body180",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 14092,
+    "dimensions": [
+      0.6950973868370056,
+      0.32472550868988037,
+      1.0
+    ]
+  },
+  {
+    "id": "G175",
+    "source_object": "Body18",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 40208,
+    "dimensions": [
+      0.39212721586227417,
+      0.3613620698451996,
+      1.0
+    ]
+  },
+  {
+    "id": "G176",
+    "source_object": "Body179",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7564,
+    "dimensions": [
+      0.5986135601997375,
+      0.0815863236784935,
+      1.0
+    ]
+  },
+  {
+    "id": "G177",
+    "source_object": "Body178",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6612,
+    "dimensions": [
+      0.427636057138443,
+      0.05541791394352913,
+      1.0
+    ]
+  },
+  {
+    "id": "G178",
+    "source_object": "Body176",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 72194,
+    "dimensions": [
+      0.3193870186805725,
+      0.31219232082366943,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G179",
+    "source_object": "Body175",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7798,
+    "dimensions": [
+      0.9996519684791565,
+      0.15261177718639374,
+      1.0
+    ]
+  },
+  {
+    "id": "G180",
+    "source_object": "Body171",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1088,
+    "dimensions": [
+      1.0,
+      0.37722787261009216,
+      0.6498599052429199
+    ]
+  },
+  {
+    "id": "G181",
+    "source_object": "Body170",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 29062,
+    "dimensions": [
+      0.49608612060546875,
+      1.0,
+      0.4682694673538208
+    ]
+  },
+  {
+    "id": "G182",
+    "source_object": "Body168",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2036,
+    "dimensions": [
+      0.47404322028160095,
+      0.09793466329574585,
+      1.0
+    ]
+  },
+  {
+    "id": "G183",
+    "source_object": "Body166",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1872,
+    "dimensions": [
+      1.0,
+      0.4597274959087372,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G184",
+    "source_object": "Body164",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 28138,
+    "dimensions": [
+      0.8265967965126038,
+      1.0,
+      0.8261711597442627
+    ]
+  },
+  {
+    "id": "G185",
+    "source_object": "Body163",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10932,
+    "dimensions": [
+      1.0,
+      0.10150279849767685,
+      0.9999997019767761
+    ]
+  },
+  {
+    "id": "G186",
+    "source_object": "Body162",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 266576,
+    "dimensions": [
+      0.9999549984931946,
+      0.3437126576900482,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G187",
+    "source_object": "Body161",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11460,
+    "dimensions": [
+      0.9998682737350464,
+      0.43597081303596497,
+      1.0
+    ]
+  },
+  {
+    "id": "G188",
+    "source_object": "Body160",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13584,
+    "dimensions": [
+      0.999998927116394,
+      0.21747833490371704,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G189",
+    "source_object": "Body158",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 128734,
+    "dimensions": [
+      1.0,
+      0.16659118235111237,
+      0.9999987483024597
+    ]
+  },
+  {
+    "id": "G190",
+    "source_object": "Body1552",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2210,
+    "dimensions": [
+      0.9987168312072754,
+      0.22012096643447876,
+      1.0
+    ]
+  },
+  {
+    "id": "G191",
+    "source_object": "Body1551",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6380,
+    "dimensions": [
+      1.0,
+      0.10193321853876114,
+      0.9993816614151001
+    ]
+  },
+  {
+    "id": "G192",
+    "source_object": "Body1547",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1754,
+    "dimensions": [
+      0.9999999403953552,
+      0.12790867686271667,
+      0.9999985694885254
+    ]
+  },
+  {
+    "id": "G193",
+    "source_object": "Body1546",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3538,
+    "dimensions": [
+      0.9987167716026306,
+      0.15360741317272186,
+      1.0
+    ]
+  },
+  {
+    "id": "G194",
+    "source_object": "Body1545",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1640,
+    "dimensions": [
+      1.0,
+      0.1182885691523552,
+      0.9999996423721313
+    ]
+  },
+  {
+    "id": "G195",
+    "source_object": "Body1544",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3228,
+    "dimensions": [
+      0.9987763166427612,
+      0.1467319130897522,
+      1.0
+    ]
+  },
+  {
+    "id": "G196",
+    "source_object": "Body1543",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7356,
+    "dimensions": [
+      1.0,
+      0.06827401369810104,
+      0.9999994039535522
+    ]
+  },
+  {
+    "id": "G197",
+    "source_object": "Body1539",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 18918,
+    "dimensions": [
+      0.49421945214271545,
+      0.2596956193447113,
+      1.0
+    ]
+  },
+  {
+    "id": "G198",
+    "source_object": "Body1538",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9244,
+    "dimensions": [
+      0.9031311869621277,
+      0.1861889660358429,
+      1.0
+    ]
+  },
+  {
+    "id": "G199",
+    "source_object": "Body1533",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 19216,
+    "dimensions": [
+      0.27368199825286865,
+      0.34796640276908875,
+      1.0
+    ]
+  },
+  {
+    "id": "G200",
+    "source_object": "Body1532",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13000,
+    "dimensions": [
+      0.8676331639289856,
+      1.0,
+      0.8676335215568542
+    ]
+  },
+  {
+    "id": "G201",
+    "source_object": "Body1526",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10587,
+    "dimensions": [
+      0.9999999403953552,
+      0.056999724358320236,
+      0.999867856502533
+    ]
+  },
+  {
+    "id": "G202",
+    "source_object": "Body1524",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 36488,
+    "dimensions": [
+      0.999867856502533,
+      0.23238442838191986,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G203",
+    "source_object": "Body152",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4296,
+    "dimensions": [
+      0.8833498954772949,
+      0.3372398018836975,
+      1.0
+    ]
+  },
+  {
+    "id": "G204",
+    "source_object": "Body15",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9420,
+    "dimensions": [
+      0.8186973333358765,
+      0.09942188113927841,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G205",
+    "source_object": "Body147",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4700,
+    "dimensions": [
+      0.5666226744651794,
+      0.839640736579895,
+      1.0
+    ]
+  },
+  {
+    "id": "G206",
+    "source_object": "Body146",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6836,
+    "dimensions": [
+      0.49764904379844666,
+      0.1699080914258957,
+      1.0
+    ]
+  },
+  {
+    "id": "G207",
+    "source_object": "Body145",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 890,
+    "dimensions": [
+      0.27171772718429565,
+      0.2040579468011856,
+      1.0
+    ]
+  },
+  {
+    "id": "G208",
+    "source_object": "Body144",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4736,
+    "dimensions": [
+      0.41644996404647827,
+      0.09942188113927841,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G209",
+    "source_object": "Body143",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9002,
+    "dimensions": [
+      1.0,
+      0.10689564049243927,
+      0.8804527521133423
+    ]
+  },
+  {
+    "id": "G210",
+    "source_object": "Body142",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12930,
+    "dimensions": [
+      0.9963786602020264,
+      0.15262316167354584,
+      1.0
+    ]
+  },
+  {
+    "id": "G211",
+    "source_object": "Body141",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2738,
+    "dimensions": [
+      1.0,
+      0.15317796170711517,
+      0.8701709508895874
+    ]
+  },
+  {
+    "id": "G212",
+    "source_object": "Body14",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4280,
+    "dimensions": [
+      0.678879976272583,
+      0.3276248872280121,
+      1.0
+    ]
+  },
+  {
+    "id": "G213",
+    "source_object": "Body139",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9084,
+    "dimensions": [
+      0.19084949791431427,
+      0.17091795802116394,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G214",
+    "source_object": "Body138",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 32458,
+    "dimensions": [
+      0.5087680816650391,
+      0.4688514769077301,
+      1.0
+    ]
+  },
+  {
+    "id": "G215",
+    "source_object": "Body136",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 27674,
+    "dimensions": [
+      0.7461397647857666,
+      0.3463633954524994,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G216",
+    "source_object": "Body135",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12802,
+    "dimensions": [
+      0.970821738243103,
+      0.5070655345916748,
+      1.0
+    ]
+  },
+  {
+    "id": "G217",
+    "source_object": "Body133",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 23682,
+    "dimensions": [
+      0.8163308501243591,
+      0.5456833243370056,
+      1.0
+    ]
+  },
+  {
+    "id": "G218",
+    "source_object": "Body132",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5520,
+    "dimensions": [
+      1.0,
+      0.12731528282165527,
+      0.9999988079071045
+    ]
+  },
+  {
+    "id": "G219",
+    "source_object": "Body130",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4120,
+    "dimensions": [
+      0.9995723962783813,
+      0.1424422264099121,
+      1.0
+    ]
+  },
+  {
+    "id": "G220",
+    "source_object": "Body129",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 24552,
+    "dimensions": [
+      0.5485212802886963,
+      0.28229275345802307,
+      1.0
+    ]
+  },
+  {
+    "id": "G221",
+    "source_object": "Body128",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11352,
+    "dimensions": [
+      1.0,
+      0.37423405051231384,
+      0.854762613773346
+    ]
+  },
+  {
+    "id": "G222",
+    "source_object": "Body127",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9152,
+    "dimensions": [
+      1.0,
+      0.14285774528980255,
+      0.9185727834701538
+    ]
+  },
+  {
+    "id": "G223",
+    "source_object": "Body126",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10390,
+    "dimensions": [
+      0.5404908061027527,
+      0.08197531849145889,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G224",
+    "source_object": "Body124",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7000,
+    "dimensions": [
+      0.6751030087471008,
+      0.579725980758667,
+      1.0
+    ]
+  },
+  {
+    "id": "G225",
+    "source_object": "Body123",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 33348,
+    "dimensions": [
+      0.840756356716156,
+      0.29336854815483093,
+      1.0
+    ]
+  },
+  {
+    "id": "G226",
+    "source_object": "Body122",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16728,
+    "dimensions": [
+      0.7616844177246094,
+      0.35357919335365295,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G227",
+    "source_object": "Body12",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1654,
+    "dimensions": [
+      0.8708638548851013,
+      0.2753913998603821,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G228",
+    "source_object": "Body118",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 30172,
+    "dimensions": [
+      0.6935022473335266,
+      0.4476844072341919,
+      1.0
+    ]
+  },
+  {
+    "id": "G229",
+    "source_object": "Body116",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5874,
+    "dimensions": [
+      1.0,
+      0.13647553324699402,
+      0.9987819790840149
+    ]
+  },
+  {
+    "id": "G230",
+    "source_object": "Body115",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16806,
+    "dimensions": [
+      0.48057687282562256,
+      0.2730521261692047,
+      1.0
+    ]
+  },
+  {
+    "id": "G231",
+    "source_object": "Body114",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11386,
+    "dimensions": [
+      0.5083695650100708,
+      0.5077170133590698,
+      1.0
+    ]
+  },
+  {
+    "id": "G232",
+    "source_object": "Body113",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 20848,
+    "dimensions": [
+      0.5947717428207397,
+      0.25647109746932983,
+      1.0
+    ]
+  },
+  {
+    "id": "G233",
+    "source_object": "Body112",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 36566,
+    "dimensions": [
+      0.7268711924552917,
+      0.2762770354747772,
+      1.0
+    ]
+  },
+  {
+    "id": "G234",
+    "source_object": "Body111",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 35538,
+    "dimensions": [
+      0.5305067896842957,
+      0.20164065062999725,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G235",
+    "source_object": "Body110",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 36566,
+    "dimensions": [
+      0.7268711924552917,
+      0.2762770354747772,
+      1.0
+    ]
+  },
+  {
+    "id": "G236",
+    "source_object": "Body11",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1796,
+    "dimensions": [
+      0.9999999403953552,
+      0.18069064617156982,
+      0.9874647259712219
+    ]
+  },
+  {
+    "id": "G237",
+    "source_object": "Body109",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11904,
+    "dimensions": [
+      0.2093399167060852,
+      0.37624093890190125,
+      1.0
+    ]
+  },
+  {
+    "id": "G238",
+    "source_object": "Body107",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 32804,
+    "dimensions": [
+      0.36379796266555786,
+      0.1539687067270279,
+      1.0
+    ]
+  },
+  {
+    "id": "G239",
+    "source_object": "Body106",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13520,
+    "dimensions": [
+      0.3720431923866272,
+      0.33721378445625305,
+      1.0
+    ]
+  },
+  {
+    "id": "G240",
+    "source_object": "Body105",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1958,
+    "dimensions": [
+      0.18964330852031708,
+      0.0993320643901825,
+      1.0
+    ]
+  },
+  {
+    "id": "G241",
+    "source_object": "Body104",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1714,
+    "dimensions": [
+      0.23402412235736847,
+      0.16773711144924164,
+      1.0
+    ]
+  },
+  {
+    "id": "G242",
+    "source_object": "Body103",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 5300,
+    "dimensions": [
+      0.5664018392562866,
+      0.2522770166397095,
+      1.0
+    ]
+  },
+  {
+    "id": "G243",
+    "source_object": "Body101",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6956,
+    "dimensions": [
+      1.0,
+      0.12222425639629364,
+      0.5928632616996765
+    ]
+  },
+  {
+    "id": "G244",
+    "source_object": "Body100",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2160,
+    "dimensions": [
+      0.7553519010543823,
+      0.3166019916534424,
+      1.0
+    ]
+  },
+  {
+    "id": "G245",
+    "source_object": "Body1",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11900,
+    "dimensions": [
+      0.5594432950019836,
+      0.12746669352054596,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G246",
+    "source_object": "Body098",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2504,
+    "dimensions": [
+      0.6134700775146484,
+      0.20616717636585236,
+      1.0
+    ]
+  },
+  {
+    "id": "G247",
+    "source_object": "Body097",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4528,
+    "dimensions": [
+      0.9298229813575745,
+      0.1916988044977188,
+      1.0
+    ]
+  },
+  {
+    "id": "G248",
+    "source_object": "Body096",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4792,
+    "dimensions": [
+      0.9031670093536377,
+      0.18618899583816528,
+      1.0
+    ]
+  },
+  {
+    "id": "G249",
+    "source_object": "Body095",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1736,
+    "dimensions": [
+      0.23067660629749298,
+      0.16533781588077545,
+      1.0
+    ]
+  },
+  {
+    "id": "G250",
+    "source_object": "Body094",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 53098,
+    "dimensions": [
+      0.1981552392244339,
+      0.42576777935028076,
+      1.0
+    ]
+  },
+  {
+    "id": "G251",
+    "source_object": "Body093",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 27898,
+    "dimensions": [
+      0.9344561696052551,
+      1.0,
+      0.9344562888145447
+    ]
+  },
+  {
+    "id": "G252",
+    "source_object": "Body091",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16372,
+    "dimensions": [
+      0.2647976875305176,
+      0.16135592758655548,
+      1.0
+    ]
+  },
+  {
+    "id": "G253",
+    "source_object": "Body090",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 25514,
+    "dimensions": [
+      0.23992162942886353,
+      0.17278240621089935,
+      1.0
+    ]
+  },
+  {
+    "id": "G254",
+    "source_object": "Body089",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 976,
+    "dimensions": [
+      0.44201526045799255,
+      0.14346399903297424,
+      1.0
+    ]
+  },
+  {
+    "id": "G255",
+    "source_object": "Body088",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7756,
+    "dimensions": [
+      0.4325129985809326,
+      0.5934249758720398,
+      1.0
+    ]
+  },
+  {
+    "id": "G256",
+    "source_object": "Body087",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7468,
+    "dimensions": [
+      0.6640360355377197,
+      0.47402551770210266,
+      1.0
+    ]
+  },
+  {
+    "id": "G257",
+    "source_object": "Body086",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 25252,
+    "dimensions": [
+      0.28479284048080444,
+      0.21940310299396515,
+      1.0
+    ]
+  },
+  {
+    "id": "G258",
+    "source_object": "Body085",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 27272,
+    "dimensions": [
+      0.17870911955833435,
+      0.13592994213104248,
+      1.0
+    ]
+  },
+  {
+    "id": "G259",
+    "source_object": "Body084",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 19216,
+    "dimensions": [
+      0.21213676035404205,
+      0.16135594248771667,
+      1.0
+    ]
+  },
+  {
+    "id": "G260",
+    "source_object": "Body083",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 25252,
+    "dimensions": [
+      0.19692033529281616,
+      0.15170660614967346,
+      1.0
+    ]
+  },
+  {
+    "id": "G261",
+    "source_object": "Body082",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 33838,
+    "dimensions": [
+      0.41767263412475586,
+      0.15875343978405,
+      1.0
+    ]
+  },
+  {
+    "id": "G262",
+    "source_object": "Body081",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11768,
+    "dimensions": [
+      0.29926854372024536,
+      0.3082142472267151,
+      1.0
+    ]
+  },
+  {
+    "id": "G263",
+    "source_object": "Body080",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13500,
+    "dimensions": [
+      0.19204923510551453,
+      0.16135607659816742,
+      1.0
+    ]
+  },
+  {
+    "id": "G264",
+    "source_object": "Body078",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2348,
+    "dimensions": [
+      0.5073797702789307,
+      0.19852715730667114,
+      1.0
+    ]
+  },
+  {
+    "id": "G265",
+    "source_object": "Body077",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16244,
+    "dimensions": [
+      0.32090842723846436,
+      0.0736282467842102,
+      1.0
+    ]
+  },
+  {
+    "id": "G266",
+    "source_object": "Body076",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 18060,
+    "dimensions": [
+      0.32090842723846436,
+      0.0736282467842102,
+      1.0
+    ]
+  },
+  {
+    "id": "G267",
+    "source_object": "Body075",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 17008,
+    "dimensions": [
+      0.32090842723846436,
+      0.0736282467842102,
+      1.0
+    ]
+  },
+  {
+    "id": "G268",
+    "source_object": "Body074",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9060,
+    "dimensions": [
+      0.3386840522289276,
+      0.12746655941009521,
+      1.0
+    ]
+  },
+  {
+    "id": "G269",
+    "source_object": "Body073",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9740,
+    "dimensions": [
+      0.39132317900657654,
+      0.12746655941009521,
+      1.0
+    ]
+  },
+  {
+    "id": "G270",
+    "source_object": "Body072",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13758,
+    "dimensions": [
+      0.44673869013786316,
+      0.10178709775209427,
+      1.0
+    ]
+  },
+  {
+    "id": "G271",
+    "source_object": "Body071",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11198,
+    "dimensions": [
+      0.6958479881286621,
+      0.17047527432441711,
+      1.0
+    ]
+  },
+  {
+    "id": "G272",
+    "source_object": "Body069",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 8142,
+    "dimensions": [
+      0.8881752490997314,
+      0.7938568592071533,
+      1.0
+    ]
+  },
+  {
+    "id": "G273",
+    "source_object": "Body068",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 32584,
+    "dimensions": [
+      0.5924386978149414,
+      1.0,
+      0.5078045725822449
+    ]
+  },
+  {
+    "id": "G274",
+    "source_object": "Body064",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 34788,
+    "dimensions": [
+      0.635644257068634,
+      0.32455459237098694,
+      1.0
+    ]
+  },
+  {
+    "id": "G275",
+    "source_object": "Body059",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 31492,
+    "dimensions": [
+      0.6403562426567078,
+      0.3402104079723358,
+      1.0
+    ]
+  },
+  {
+    "id": "G276",
+    "source_object": "Body058",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1800,
+    "dimensions": [
+      1.0,
+      0.8011122941970825,
+      0.9999994039535522
+    ]
+  },
+  {
+    "id": "G277",
+    "source_object": "Body057",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 632,
+    "dimensions": [
+      0.6670166254043579,
+      0.1605602651834488,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G278",
+    "source_object": "Body051",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 12746,
+    "dimensions": [
+      0.9567427635192871,
+      1.0,
+      0.8656394481658936
+    ]
+  },
+  {
+    "id": "G279",
+    "source_object": "Body047",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4464,
+    "dimensions": [
+      0.5088561177253723,
+      0.17755921185016632,
+      1.0
+    ]
+  },
+  {
+    "id": "G280",
+    "source_object": "Body045",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 564,
+    "dimensions": [
+      0.4477400779724121,
+      0.12415850907564163,
+      1.0
+    ]
+  },
+  {
+    "id": "G281",
+    "source_object": "Body043",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 7770,
+    "dimensions": [
+      0.5482446551322937,
+      0.3402101397514343,
+      1.0
+    ]
+  },
+  {
+    "id": "G282",
+    "source_object": "Body038",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 24618,
+    "dimensions": [
+      0.9372051358222961,
+      0.5753538608551025,
+      1.0
+    ]
+  },
+  {
+    "id": "G283",
+    "source_object": "Body037",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 10566,
+    "dimensions": [
+      0.7682802677154541,
+      0.6592576503753662,
+      1.0
+    ]
+  },
+  {
+    "id": "G284",
+    "source_object": "Body033",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 105852,
+    "dimensions": [
+      0.8057393431663513,
+      1.0,
+      0.8057393431663513
+    ]
+  },
+  {
+    "id": "G285",
+    "source_object": "Body029",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 22980,
+    "dimensions": [
+      0.34692880511283875,
+      0.23848946392536163,
+      1.0
+    ]
+  },
+  {
+    "id": "G286",
+    "source_object": "Body028",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 49796,
+    "dimensions": [
+      1.0,
+      0.3514116406440735,
+      0.8672075867652893
+    ]
+  },
+  {
+    "id": "G287",
+    "source_object": "Body027",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 79006,
+    "dimensions": [
+      1.0,
+      0.33620020747184753,
+      0.8693344593048096
+    ]
+  },
+  {
+    "id": "G288",
+    "source_object": "Body026",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4402,
+    "dimensions": [
+      0.9998683929443359,
+      0.19358135759830475,
+      1.0
+    ]
+  },
+  {
+    "id": "G289",
+    "source_object": "Body025",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 47310,
+    "dimensions": [
+      0.9998683929443359,
+      0.14719901978969574,
+      1.0
+    ]
+  },
+  {
+    "id": "G290",
+    "source_object": "Body024",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 52160,
+    "dimensions": [
+      0.9985877275466919,
+      0.2483140230178833,
+      1.0
+    ]
+  },
+  {
+    "id": "G291",
+    "source_object": "Body023",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 76172,
+    "dimensions": [
+      0.736909806728363,
+      0.28233978152275085,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G292",
+    "source_object": "Body020",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 50624,
+    "dimensions": [
+      0.999976634979248,
+      0.2599012851715088,
+      1.0
+    ]
+  },
+  {
+    "id": "G293",
+    "source_object": "Body018",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 16282,
+    "dimensions": [
+      0.9999999403953552,
+      0.2550121247768402,
+      0.9935962557792664
+    ]
+  },
+  {
+    "id": "G294",
+    "source_object": "Body017",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1330,
+    "dimensions": [
+      1.0,
+      0.1684936136007309,
+      0.9999997615814209
+    ]
+  },
+  {
+    "id": "G295",
+    "source_object": "Body016",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6812,
+    "dimensions": [
+      0.9999979734420776,
+      0.23881380259990692,
+      1.0
+    ]
+  },
+  {
+    "id": "G296",
+    "source_object": "Body015",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2180,
+    "dimensions": [
+      0.7794177532196045,
+      0.17251701653003693,
+      1.0
+    ]
+  },
+  {
+    "id": "G297",
+    "source_object": "Body014",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 6110,
+    "dimensions": [
+      0.9999999403953552,
+      0.13395574688911438,
+      0.815986156463623
+    ]
+  },
+  {
+    "id": "G298",
+    "source_object": "Body013",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 14040,
+    "dimensions": [
+      0.6519790887832642,
+      0.9143157601356506,
+      1.0
+    ]
+  },
+  {
+    "id": "G299",
+    "source_object": "Body009",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3644,
+    "dimensions": [
+      1.0,
+      0.13194265961647034,
+      0.9999989867210388
+    ]
+  },
+  {
+    "id": "G300",
+    "source_object": "Body006",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4308,
+    "dimensions": [
+      0.2812497019767761,
+      0.15414594113826752,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G301",
+    "source_object": "Body005",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 2416,
+    "dimensions": [
+      0.5890340805053711,
+      0.14373277127742767,
+      1.0
+    ]
+  },
+  {
+    "id": "G302",
+    "source_object": "Body003",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 4396,
+    "dimensions": [
+      0.9031303524971008,
+      0.18618886172771454,
+      1.0
+    ]
+  },
+  {
+    "id": "G303",
+    "source_object": "7__1_",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 56668,
+    "dimensions": [
+      0.9999990463256836,
+      0.14888082444667816,
+      1.0
+    ]
+  },
+  {
+    "id": "G304",
+    "source_object": "7",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3288,
+    "dimensions": [
+      0.9996697902679443,
+      0.10508972406387329,
+      1.0
+    ]
+  },
+  {
+    "id": "G305",
+    "source_object": "4__1___1_",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 15860,
+    "dimensions": [
+      1.0,
+      0.38827279210090637,
+      1.0
+    ]
+  },
+  {
+    "id": "G306",
+    "source_object": "1__1___3___1_",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 24572,
+    "dimensions": [
+      0.9999980926513672,
+      0.21052703261375427,
+      1.0
+    ]
+  },
+  {
+    "id": "G307",
+    "source_object": "021",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 32514,
+    "dimensions": [
+      0.46066534519195557,
+      1.0,
+      0.4606645107269287
+    ]
+  },
+  {
+    "id": "G308",
+    "source_object": "019",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 54316,
+    "dimensions": [
+      0.9673870801925659,
+      0.17187875509262085,
+      1.0
+    ]
+  },
+  {
+    "id": "G309",
+    "source_object": "018",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 33630,
+    "dimensions": [
+      0.9999990463256836,
+      0.17187875509262085,
+      1.0
+    ]
+  },
+  {
+    "id": "G310",
+    "source_object": "017",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 20700,
+    "dimensions": [
+      0.9683324694633484,
+      0.10046424716711044,
+      1.0
+    ]
+  },
+  {
+    "id": "G311",
+    "source_object": "016",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 13452,
+    "dimensions": [
+      1.0,
+      0.12098108232021332,
+      0.9987146258354187
+    ]
+  },
+  {
+    "id": "G312",
+    "source_object": "015",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 64324,
+    "dimensions": [
+      0.4997570514678955,
+      1.0,
+      0.3830399811267853
+    ]
+  },
+  {
+    "id": "G313",
+    "source_object": "014",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 38900,
+    "dimensions": [
+      0.9836930632591248,
+      0.1767202913761139,
+      1.0
+    ]
+  },
+  {
+    "id": "G314",
+    "source_object": "013",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11288,
+    "dimensions": [
+      0.9987143874168396,
+      0.11735756695270538,
+      1.0
+    ]
+  },
+  {
+    "id": "G315",
+    "source_object": "012",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 3160,
+    "dimensions": [
+      0.9996960163116455,
+      0.08672080934047699,
+      1.0
+    ]
+  },
+  {
+    "id": "G316",
+    "source_object": "010",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 1564,
+    "dimensions": [
+      0.9997941851615906,
+      0.08452403545379639,
+      1.0
+    ]
+  },
+  {
+    "id": "G317",
+    "source_object": "009",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9822,
+    "dimensions": [
+      0.9999978542327881,
+      0.10812356323003769,
+      1.0
+    ]
+  },
+  {
+    "id": "G318",
+    "source_object": "008",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 11415,
+    "dimensions": [
+      0.9999980330467224,
+      0.8387481570243835,
+      0.9999999403953552
+    ]
+  },
+  {
+    "id": "G319",
+    "source_object": "007",
+    "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+    "triangles": 9934,
+    "dimensions": [
+      1.0,
+      0.10812383890151978,
+      0.921319305896759
+    ]
+  }
+]

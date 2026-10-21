@@ -10,3 +10,7 @@ build/
 .vscode/
 assets/private/
 assets/runtime/
+assets/source_working.blend
+previews/
+reports/*.log
+*.blend1

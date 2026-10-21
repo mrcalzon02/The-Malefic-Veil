@@ -305,7 +305,7 @@ public final class ArenaSystems {
             World.Pickup item=world.pickups.get(i);
             if(!item.taken&&Math.hypot(item.x-p.x,item.y-p.y)<1.2)
                 candidates.add(new InteractionFocus.Candidate(InteractionFocus.Kind.PICKUP,
-                    i,"SUPPLIES",item.x,item.y,.30,.75));
+                    i,InteractionFocus.pickupName(item.kind),item.x,item.y,.30,.75));
         }
         InteractionFocus.Target target=InteractionFocus.pick(p.x,p.y,p.angle,candidates,
             (x,y,a,b)->world.lineClear(x,y,a,b));

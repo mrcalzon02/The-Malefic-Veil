@@ -337,6 +337,11 @@ public final class ArenaSystems {
         int price=kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind==0?3:kind==1?1:kind==2?2:1;
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
+        // The current 132x132 arena is an ENTIRE fixed city sector. Player
+        // structures are wilderness-only; reject here before any resource debit
+        // or spawn/route heuristics. Continental wilderness activation is gated.
+        if(world.city.worldStructureAt(x,y,.55))
+            return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
         if(world.devices.size()>=100)return new BuildReview(false,"BUILD_LIMIT",price,supplies,x,y);
         if(p.cash<price||p.scrap<supplies)return new BuildReview(false,"RESOURCES",price,supplies,x,y);
         // Dedicated spawn-clearance feedback takes priority over overlapping world roads.

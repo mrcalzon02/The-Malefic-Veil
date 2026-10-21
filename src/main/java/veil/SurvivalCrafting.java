@@ -76,11 +76,15 @@ public final class SurvivalCrafting {
         int total=0;for(var item:items.entrySet())total+=item.getValue()*weight(item.getKey());
         return total;
     }
-    /** Bulk cargo can enter this inventory only after legitimate base unloading. */
-    public synchronized boolean acquire(Item kind,int amount,boolean atBase){
+    /** Host preflight allows harvesting to debit the node only if cargo will fit. */
+    public synchronized boolean canAcquire(Item kind,int amount,boolean atBase){
         if(kind==null||amount<=0||amount>1000)return false;
         if((kind==Item.METAL_STOCK||kind==Item.MACHINE_PARTS)&&!atBase)return false;
-        if((long)mass()+(long)weight(kind)*amount>200)return false;
+        return (long)mass()+(long)weight(kind)*amount<=200;
+    }
+    /** Bulk cargo can enter this inventory only after legitimate base unloading. */
+    public synchronized boolean acquire(Item kind,int amount,boolean atBase){
+        if(!canAcquire(kind,amount,atBase))return false;
         items.merge(kind,amount,Integer::sum);return true;
     }
     public synchronized boolean craft(String recipeId,Station station){

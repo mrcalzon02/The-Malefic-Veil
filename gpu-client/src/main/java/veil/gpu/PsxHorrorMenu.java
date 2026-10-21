@@ -74,6 +74,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
             left,right,top,bottom));
     }
     public Screen screen(){return screen;}
+    public void showMain(){screen=Screen.MAIN;selection=0;}
     public boolean running(){return screen==Screen.RUNNING;}
     private int size(){return switch(screen){
         case MAIN -> 4; case GRAPHICS -> 4; case CREDITS -> 1; case RUNNING -> 0;
@@ -107,8 +108,8 @@ public final class PsxHorrorMenu implements AutoCloseable {
             selection=(selection+size()-1)%size();
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
             selection=(selection+1)%size();
-        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))activate(settings,-1);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))activate(settings,1);
+        if(screen==Screen.GRAPHICS&&Gdx.input.isKeyJustPressed(Input.Keys.LEFT))activate(settings,-1);
+        if(screen==Screen.GRAPHICS&&Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))activate(settings,1);
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             activate(settings,0);
             return false;

@@ -73,6 +73,8 @@ public final class World {
         // Kenney's original modular assets are the physical city construction grammar.
         // The CityLayout map continues to own all solid collision and LOS rules.
         urbanProps.addAll(UrbanTileAssembler.assemble(seed,city,spawns));
+        // Trees, shrubs and derelict source-kit trucks have real, shared collision footprints.
+        urbanProps.addAll(UrbanDressing.generate(seed,city,spawns));
         for(UrbanProp p:urbanProps)if(p.solid())physicalProps.add(p);
     }
     public static long mix(long a) {

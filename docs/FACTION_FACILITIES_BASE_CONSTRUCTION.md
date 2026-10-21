@@ -16,7 +16,7 @@
 
 ## 1. Structure of an actual base
 
-**Hierarchy:** realm → continent sector/zone authority → wilderness claim → crew/base → constituent facilities → bounded interactive/storage/power/production components → authenticated characters and their permissions. Do not make every faction a single globally shared construction owner: each faction contains multiple independent crews that can cooperate or feud according to server mode.
+**Hierarchy:** realm → continent sector/zone authority → wilderness claim → crew/base → constituent facilities → bounded interactive/storage/power/production components → authenticated characters and their permissions. Do not make every faction a single globally shared construction owner: each faction contains multiple independent crews with separate founder-controlled claims, commercial competition and negotiated contracts, while **all crews in the same faction remain permanently allied in combat**. No server setting may enable same-faction friendly fire or turn denied building permission into hostility.
 
 **Founding:** A player creates a same-faction crew, names it, selects an eligible wilderness site and builds a physical **Claim Anchor / Heart**. Anchor must exist and be completed before any permanent facility. Crew charter, base UUID and owner character/account IDs persist; the anchor is a physical destructible facility rather than an abstract invisible radius. Initial claim footprint target: **48-meter radius** with extensions via costly expansion pylons up to 96 meters in approved configurations. Final limits are balancing values; collision and zone geometry must derive from measured world meters, not from the current 224×224 macro blueprint index.
 

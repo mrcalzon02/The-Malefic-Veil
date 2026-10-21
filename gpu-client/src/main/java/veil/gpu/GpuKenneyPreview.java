@@ -173,6 +173,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         font.getData().setScale(0.62f);
         skybox=new GpuSkybox();
         menu=new PsxHorrorMenu(smoke);
+        font.dispose();
+        font=menu.font();
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
             scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
@@ -350,8 +352,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(shader!=null)shader.dispose();
         if(framebuffer!=null)framebuffer.dispose();
         if(sprites!=null)sprites.dispose();
-        if(font!=null)font.dispose();
-        if(skybox!=null)skybox.close();
         if(menu!=null)menu.close();
+        else if(font!=null)font.dispose();
+        if(skybox!=null)skybox.close();
     }
 }

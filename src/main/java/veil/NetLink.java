@@ -21,12 +21,19 @@ public final class NetLink implements AutoCloseable {
     public record ShotEvent(long sequence,boolean fired,String outcome,int targetId,int damage,int ammo){}
     public record BuildEvent(int kind,String reason,int cashCost,int suppliesCost){}
     public record Car(int id,double x,double y,double heading,double speed,double fuel,int hp,int driverId){}
+    public record CargoYard(int id,int x,int y,String type,int stock){}
+    public record CargoDrop(int id,double x,double y,String type){}
+
     private final Socket socket;
     private final PrintWriter writer;
     public final long seed;
     public final int id;
     public final ConcurrentHashMap<Integer,Remote> others=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,Car> cars=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,String> truckCargo=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,CargoYard> cargoYards=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,CargoDrop> cargoDrops=new ConcurrentHashMap<>();
+    public final ConcurrentLinkedQueue<String> cargoResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> rideResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<Integer> pickedUp=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<DeviceEvent> structures=new ConcurrentLinkedQueue<>();
@@ -103,6 +110,27 @@ public final class NetLink implements AutoCloseable {
                                        Double.isFinite(car.heading())&&Double.isFinite(car.speed())&&
                                        Double.isFinite(car.fuel()))cars.put(car.id(),car);
                                 }
+                            }
+                            case "TRUCK_CARGO" -> {
+                                if(s.length==3){
+                                    int car=Integer.parseInt(s[1]);
+                                    if(s[2].equals("NONE"))truckCargo.remove(car);
+                                    else if(s[2].equals("METAL_STOCK")||
+                                        s[2].equals("MACHINE_PARTS"))truckCargo.put(car,s[2]);
+                                }
+                            }
+                            case "CARGO_YARD" -> {
+                                if(s.length==6)cargoYards.put(Integer.parseInt(s[1]),
+                                    new CargoYard(Integer.parseInt(s[1]),Integer.parseInt(s[2]),
+                                        Integer.parseInt(s[3]),s[4],Integer.parseInt(s[5])));
+                            }
+                            case "CARGO_DROP" -> {
+                                if(s.length==5)cargoDrops.put(Integer.parseInt(s[1]),
+                                    new CargoDrop(Integer.parseInt(s[1]),Double.parseDouble(s[2]),
+                                        Double.parseDouble(s[3]),s[4]));
+                            }
+                            case "CARGO_RESULT" -> {
+                                if(s.length==3)cargoResults.add(s[1]+"|"+s[2]);
                             }
                             case "RIDE_RESULT" -> {
                                 if(s.length==2)rideResults.add(s[1]);
@@ -187,5 +215,8 @@ public final class NetLink implements AutoCloseable {
     public void ride(int index){send("RIDE|"+index);}
     public void exitCar(){send("EXIT");}
     public void drive(double throttle,double steering){send("DRIVE|"+throttle+"|"+steering);}
+    public void loadCargo(int truck,int yard){send("CARGO_LOAD|"+truck+"|"+yard);}
+    public void recoverCargo(int truck,int drop){send("CARGO_RECOVER|"+truck+"|"+drop);}
+
     @Override public void close()throws IOException{connected=false;socket.close();}
 }

@@ -110,8 +110,7 @@ public final class ArenaSystems {
             this.id=id;this.x=x;this.y=y;moveAt=now;
             accountKey="guest_"+id;
             joinedAt=now;
-            loadingDeadline=now+15_000;
-            protectedUntil=now+10_000; // no deaths while client scene is still starting
+            loadingDeadline=now; // protection is armed by the actual network handshake
         }
     }
     public ArenaSystems(long seed){this(seed,false);}
@@ -156,6 +155,15 @@ public final class ArenaSystems {
         if(saved!=null)applyProfile(p,saved);
         CharacterProgression.Snapshot skills=accountSkills.get(key);
         if(skills!=null)p.progression.restore(skills);
+        return true;
+    }
+    /** Network server calls this when accepting a real, authenticated loading session. */
+    public synchronized boolean beginLoading(int id){
+        Player p=players.get(id);
+        if(p==null||p.dead)return false;
+        p.ready=false;p.joinedAt=clock;
+        p.loadingDeadline=clock+15_000;
+        p.protectedUntil=clock+10_000;
         return true;
     }
     /** One-shot readiness proof after scene/model loading; cannot be spammed. */

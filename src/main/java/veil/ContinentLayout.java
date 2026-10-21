@@ -273,7 +273,7 @@ public final class ContinentLayout {
             for(int[] p:candidates){
                 if(used[p[0]][p[1]])continue;
                 int[] order={0,1,2,3,4,5,6};
-                for(int i=order.length-1;i>0;i--){int j=r.nextInt(i+1),tmp=order[j];order[i]=order[j];order[j]=tmp;}
+                for(int i=order.length-1;i>0;i--){int j=r.nextInt(i+1),tmp=order[j];order[j]=order[i];order[i]=tmp;}
                 for(int k:order)if(fits(p[0],p[1],shapes[k][0],shapes[k][1],used,id)){
                     lot(p[0],p[1],shapes[k][0],shapes[k][1],used,id,r,mandatory);break;
                 }

@@ -54,6 +54,12 @@ Next gates: verified Java 17/21 topology and host-build regressions, macro-to-fi
 
 **Release gate R4:** Deterministic + adversarial multiplayer tests including duplicate pickup/build commands, disconnect mid-revive, 4–16 clients, 150ms latency/packet loss, 2h soak, resource and security bounds. Localhost protocol tests **do not** satisfy this gate. Target `v0.4.0-alpha`.
 
+### Vehicles and endgame aviation [V1 discovery blueprint integrated; release gates open]
+
+The ground/air contract is documented in **[Faction vehicles and air power](FACTION_VEHICLES_AND_AIR_POWER.md)**. The current city-sector vehicles still support host-authoritative driving, collision damage, fuel, single truck-cargo loads and persistence. New `ContinentVehicleSites` and `ContinentPopulation.vehicleSpawns()` define off-road, seed-stable city parking and highway-shoulder discovery points with stable IDs, source-car variants, initial damage/fuel and capacity/marking metadata. **They are not spawned or driven in the unstreamed continent.**
+
+V2 requires actually converted GGBot CC0 runtime cars, multiple chassis, server materialization/tombstones and physical collision/access checks. V3 adds component repairs, multi-slot cargo and chassis manufacturing; V4 adds faction access and ally-safe vehicle combat. Aircraft are gated behind late-game industry, nine original airframes (three distinct classes per faction), actual host flight and mixed-arms counterplay; no aircraft are implemented yet.
+
 ## Phase P5 — Horror, traversal and production gameplay [PLANNED]
 
 **Deliver:** Full health/sanity effects, darkness and visibility gem affecting actual remote alpha, stealth/detection AI, combat feedback, sound staging, classes, team objectives, extraction/holdout, health regen pacing, repair/assembly and supply/cash economy, dynamic environments.

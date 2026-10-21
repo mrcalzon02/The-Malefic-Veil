@@ -21,6 +21,8 @@ public final class WorldHarvestingTest {
         check(world.detailedCity(player.x,player.y),"spawn belongs to City A");
         check(world.canWalk(1.5,1.5),"existing city street remains accessible");
         check(!world.detailedCity(-.5,1.5),"same coordinate world continues past old city border");
+        check(world.canWalk(-.4,1.5)||world.canWalk(1.5,-.4),
+            "City A pedestrian street has a genuine walkable outbound edge");
         check(world.parcelX(world.worldX(33.5))==33,"macro node X maps to world metres");
         check(world.parcelY(world.worldY(44.5))==44,"macro node Y maps to world metres");
         WildernessResources.Node chosen=null;

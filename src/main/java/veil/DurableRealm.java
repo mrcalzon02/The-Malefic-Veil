@@ -140,7 +140,9 @@ public final class DurableRealm {
         catch(IOException damaged){
             try{
                 snapshot=parse(Files.readAllBytes(backup),game);
-                System.err.println("Primary save rejected ("+damaged.getMessage()+"); valid backup recovered");
+                Files.copy(backup,primary,StandardCopyOption.REPLACE_EXISTING);
+                parse(Files.readAllBytes(primary),game);
+                System.err.println("Primary save rejected ("+damaged.getMessage()+"); validated backup restored to primary");
             }catch(IOException backupError){
                 IOException failure=new IOException("Both primary and backup unusable; refusing world reset",damaged);
                 failure.addSuppressed(backupError);throw failure;

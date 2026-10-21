@@ -1,6 +1,6 @@
 # The Malefic Veil — release-gated development plan
 
-Each phase has **entry criteria**, concrete deliverables, automated acceptance evidence and explicit **exit gates**. Release-blocking player experience requirements are specified in **[PLAYER_QOL_MUST_HAVES.md](PLAYER_QOL_MUST_HAVES.md)**; P0 issues are non-waivable for public multiplayer. A green unit test is never proof of real user playability. Work stays on `main`; GitHub Actions are authorized for build/testing on this project, not for unsupervised release of purchased archives.
+Each phase has **entry criteria**, concrete deliverables, automated acceptance evidence and explicit **exit gates**. The license/provenance/renderer/animation implementation gates are tracked in **[ASSET_PIPELINE_AUDIT.md](ASSET_PIPELINE_AUDIT.md)**. Release-blocking player experience requirements are specified in **[PLAYER_QOL_MUST_HAVES.md](PLAYER_QOL_MUST_HAVES.md)**; P0 issues are non-waivable for public multiplayer. A green unit test is never proof of real user playability. Work stays on `main`; GitHub Actions are authorized for build/testing on this project, not for unsupervised release of purchased archives.
 
 ## Phase P0 — Foundation / repository / licensing [BASELINE VERIFIED]
 

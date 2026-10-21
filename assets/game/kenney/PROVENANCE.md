@@ -11,9 +11,9 @@
 - `detail-dumpster-closed.glb` — Drive 1lMMOnVkTDB1Tk-mxHv4SzCLNLisqR6Fp
 - `detail-light-single.glb` — Drive 1ntuMj886up94iPLHvAQuSexFWQsD7qz8
 
-**Runtime:** The `GlbMesh` Java 17 GLB parser consumes source vertex positions, triangle indices, and simple material references. `PropRenderer` projects 3D mesh geometry over the raycaster, without UV texture sampling/skinning. `UrbanScene` places seeded street props. The JAR packages only five curated CC0 GLBs. No paid PSX Mega Pack binary is bundled.
+**Runtime:** The Java 17 `KenneyAssetPack` reader opens the committed complete CC0 ZIP (124 source GLBs and 22 source PNGs). `GlbMesh` consumes source vertex positions, triangle indices, material references and source UV coordinates. Material color for a triangle comes from its **nearest PNG texel at UV centroid**, not a fully rasterized texture. `UrbanScene` places 42 curated families as deterministic props. The JAR contains the source ZIP and the five original individually curated GLBs. No purchased PSX Mega Pack binary is bundled.
 
-**Open visual gates:** source image textures, per-pixel occlusion and lighting, physics collision, correct road tile transforms, full building geometry, approved character animations and side-by-side reference screenshots. Do not represent this initial geometry pass as complete textured integration.
+**Open visual gates:** per-pixel texture interpolation, depth-buffer occlusion and lighting, geometric physics collision, correct road tile transforms, full building geometry, approved character rigs/animations and side-by-side reference screenshots. Do not represent this initial geometry pass as complete textured integration.
 
 ## ZIP-vs-Drive source hashes (verified 2026-10-20)
 

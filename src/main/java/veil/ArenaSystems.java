@@ -11,6 +11,57 @@ public final class ArenaSystems {
     public final Vehicles vehicles;
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
     private final Map<Integer,Player> players=new LinkedHashMap<>();
+    private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
+    /** Persistent host-owned account snapshot, excluding transient socket/vehicle ownership. */
+    public record Profile(int hp,int sanity,int cash,int scrap,int medkits,int pistolReserve,
+        int shellReserve,int pistolClip,int shellClip,int classId,int frags,boolean dead,
+        double x,double y,double angle){}
+    private static Profile savePlayer(Player p){
+        return new Profile(p.hp,p.sanity,p.cash,p.scrap,p.medkits,p.pistolReserve,
+            p.shellReserve,p.pistolClip,p.shellClip,p.classId,p.frags,p.dead,p.x,p.y,p.angle);
+    }
+    public static boolean validProfile(Profile p){
+        return p!=null&&p.hp>=0&&p.hp<=100&&p.sanity>=0&&p.sanity<=100&&
+            p.cash>=0&&p.cash<=1_000_000_000&&p.scrap>=0&&p.scrap<=1_000_000_000&&
+            p.medkits>=0&&p.medkits<=100_000&&p.pistolReserve>=0&&p.pistolReserve<=1_000_000&&
+            p.shellReserve>=0&&p.shellReserve<=1_000_000&&p.pistolClip>=0&&p.pistolClip<=12&&
+            p.shellClip>=0&&p.shellClip<=6&&p.classId>=0&&p.classId<4&&
+            p.frags>=0&&p.frags<=1_000_000_000&&Double.isFinite(p.x)&&
+            Double.isFinite(p.y)&&Double.isFinite(p.angle);
+    }
+    private void applyProfile(Player p,Profile profile){
+        if(!validProfile(profile))throw new IllegalStateException("Invalid profile");
+        p.hp=profile.hp();p.sanity=profile.sanity();p.cash=profile.cash();
+        p.scrap=profile.scrap();p.medkits=profile.medkits();
+        p.pistolReserve=profile.pistolReserve();p.shellReserve=profile.shellReserve();
+        p.pistolClip=profile.pistolClip();p.shellClip=profile.shellClip();
+        p.classId=profile.classId();p.frags=profile.frags();
+        p.dead=profile.dead();p.respawnAt=clock-1200;
+        if(free(profile.x(),profile.y())){
+            p.x=profile.x();p.y=profile.y();p.angle=profile.angle();
+        }else{
+            p.x=world.spawns[0][0];p.y=world.spawns[0][1];
+        }
+        p.moveAt=clock;refreshVisibility(p);
+    }
+    public synchronized Map<String,Profile> profilesSnapshot(){
+        Map<String,Profile> result=new TreeMap<>(accountProfiles);
+        for(Player p:players.values())if(p.accountKey.startsWith("acct_"))
+            result.put(p.accountKey,savePlayer(p));
+        return Collections.unmodifiableMap(result);
+    }
+    /** Called only during startup before sockets are accepted. */
+    public synchronized void restoreProfiles(Map<String,Profile> persisted){
+        if(!players.isEmpty())throw new IllegalStateException("Cannot overwrite live accounts");
+        Map<String,Profile> validated=new LinkedHashMap<>();
+        for(var entry:persisted.entrySet()){
+            if(!entry.getKey().matches("acct_[a-f0-9]{64}")||!validProfile(entry.getValue()))
+                throw new IllegalArgumentException("Corrupt account profile");
+            validated.put(entry.getKey(),entry.getValue());
+        }
+        accountProfiles.clear();accountProfiles.putAll(validated);
+    }
+
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     private final Map<Integer,Integer> shieldedShot=new HashMap<>();
@@ -44,7 +95,11 @@ public final class ArenaSystems {
     public synchronized void leave(int id){
         vehicles.disconnect(id);
         Player departing=players.remove(id);
-        if(departing!=null)raidProtection.logout(departing.accountKey,System.currentTimeMillis());
+        if(departing!=null){
+            if(departing.accountKey.startsWith("acct_"))
+                accountProfiles.put(departing.accountKey,savePlayer(departing));
+            raidProtection.logout(departing.accountKey,System.currentTimeMillis());
+        }
         lastShotSequence.remove(id);
     }
     /** Only the host may assign a verified session identity, never raw client user IDs. */
@@ -60,6 +115,8 @@ public final class ArenaSystems {
         raidProtection.login(key,System.currentTimeMillis());
         for(World.Device d:world.devices)if(d.ownerId==id&&prior.equals(d.ownerKey))
             d.ownerKey=key;
+        Profile saved=accountProfiles.get(key);
+        if(saved!=null)applyProfile(p,saved);
         return true;
     }
     public synchronized Collection<Player> roster(){return List.copyOf(players.values());}

@@ -30,6 +30,13 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: maven
           cache-dependency-path: gpu-client/pom.xml
+      - name: Verify deterministic sky cycle and asset-sourced streetlight bounds
+        shell: bash
+        run: |
+          mkdir -p build/classes
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          java -cp build/classes veil.WorldDayNightTest
+          java -cp build/classes veil.UrbanLightingTest
       - name: Build self-contained GPU desktop JAR
         shell: bash
         run: |
@@ -53,6 +60,8 @@ jobs:
           xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
             timeout 90s java -Djava.awt.headless=false -jar gpu-client/target/MaleficVeil-GPU.jar --smoke
           test -s build/test-visuals/gpu-kenney-city.png
+          test -s build/test-visuals/gpu-kenney-night.png
+          test -s build/test-visuals/gpu-psx-menu.png
           file build/test-visuals/gpu-kenney-city.png
       - uses: actions/upload-artifact@v4
         if: always()
@@ -61,4 +70,6 @@ jobs:
           path: |
             gpu-client/target/MaleficVeil-GPU.jar
             build/test-visuals/gpu-kenney-city.png
+            build/test-visuals/gpu-kenney-night.png
+            build/test-visuals/gpu-psx-menu.png
           if-no-files-found: warn

@@ -25,8 +25,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final Vehicles localVehicles;
     private final CargoHaulage localCargo;
     private final ArenaSystems localHost;
-    private final WildernessExpedition localWilderness;
-    private boolean wildernessView;
+    private final WorldHarvesting localHarvesting;
     private final int archetype;
     private final javax.swing.Timer timer;
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
@@ -49,7 +48,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         localCargo=new CargoHaulage(world,localVehicles);
         localHost=net==null?new ArenaSystems(seed):null;
         if(localHost!=null)localHost.join(1);
-        localWilderness=net==null?new WildernessExpedition(world.continent()):null;
+        localHarvesting=net==null?new WorldHarvesting(world):null;
         try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
@@ -121,7 +120,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private double visibility(){
         double v=.36;
         int tileX=(int)px,tileY=(int)py;
-        boolean avenue=world.city.road(tileX/CityLayout.CELL,tileY/CityLayout.CELL);
+        boolean avenue=world.detailedCity(px,py)?world.city.road(tileX/CityLayout.CELL,tileY/CityLayout.CELL):world.continent().road(world.parcelX(px),world.parcelY(py));
         v+=avenue?.25:-.14;
         if(down(KeyEvent.VK_SHIFT))v+=.29;
         if(down(KeyEvent.VK_C))v-=.28;
@@ -129,61 +128,19 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         if(archetype==2&&abilitySeconds>0)v-=.72;
         return Math.max(.02,Math.min(1,v));
     }
-    private boolean walkingWilderness(double x,double y){
-        if(localWilderness!=null)return localWilderness.walkable(x,y);
-        if(!Double.isFinite(x)||!Double.isFinite(y))return false;
-        ContinentLayout map=world.continent();
-        int tx=(int)Math.floor(x),ty=(int)Math.floor(y);
-        return map.inBounds(tx,ty)&&map.land(tx,ty)&&
-            !map.cityProtected(tx,ty)&&!map.worldStructureAt(tx,ty);
-    }
+    /** The same movement and world collision work on either side of city limits. */
     private void slide(double dx,double dy){
-        if(wildernessView){
-            double nx=px+dx,ny=py+dy;
-            if(net!=null){
-                if(walkingWilderness(nx,py))px=nx;
-                if(walkingWilderness(px,ny))py=ny;
-            }else{
-                double x=walkingWilderness(nx,py)?nx:px;
-                double y=walkingWilderness(x,ny)?ny:py;
-                if(localWilderness.move(1,localHost.player(1),x,y,angle,
-                    (down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0))){
-                    px=x;py=y;
-                }
-            }
-            return;
-        }
         if(world.canWalk(px+dx,py))px+=dx;
         if(world.canWalk(px,py+dy))py+=dy;
     }
     @Override public void actionPerformed(ActionEvent unused){
         ticks++;
-        if(localWilderness!=null)localWilderness.advance(33);
+        if(localHarvesting!=null)localHarvesting.advance(33);
         if(net!=null){
-            boolean confirmed=net.wildActive();
-            if(confirmed!=wildernessView){
-                wildernessView=confirmed;
-                if(confirmed){
-                    var pos=net.wildPosition();
-                    if(pos!=null){px=pos.x();py=pos.y();angle=pos.angle();}
-                    toast("WILDERNESS EXPEDITION — E HARVEST, U RETURN");
-                }else{
-                    var self=net.self();
-                    if(self!=null){px=self.x();py=self.y();angle=self.angle();}
-                    toast("RETURNED TO CITY");
-                }
-            }
-            String reply;
-            while((reply=net.wildResults.poll())!=null){
-                if(reply.startsWith("HARVEST"))toast(reply.replace(' ',' '));
-                else if(reply.startsWith("DENIED"))toast(reply);
-            }
-            if(wildernessView){
-                var correct=net.wildPosition();
-                if(correct!=null&&Math.hypot(px-correct.x(),py-correct.y())>.33){
-                    px=correct.x();py=correct.y();
-                }
-            }
+            String result;
+            while((result=net.harvestResults.poll())!=null)
+                toast(result.endsWith("|OK")?"HARVESTED "+result.substring(0,result.indexOf('|')):
+                    "GATHER REJECTED: "+result.substring(result.indexOf('|')+1));
         }
         double step=.033;
         abilityCooldown=Math.max(0,abilityCooldown-step);
@@ -218,7 +175,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 health=s.health();sanity=s.sanity();cash=s.cash();scrap=s.supplies();
                 medkits=s.medkits();pistolReserve=s.pistolReserve();shellReserve=s.shellReserve();
                 pistolClip=s.pistolClip();shellClip=s.shellClip();frags=s.frags();
-                if(!wildernessView&&(net.drivenCar()>=0||Math.hypot(px-s.x(),py-s.y())>1.0)){
+                if(net.drivenCar()>=0||Math.hypot(px-s.x(),py-s.y())>1.0){
                     px=s.x();py=s.y();
                     if(net.drivenCar()>=0)angle=s.angle();
                 }
@@ -265,9 +222,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 }
             }
             if(ticks%3==0){
-                if(wildernessView)net.moveWilderness(px,py,angle,
-                    (down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
-                else if(net.drivenCar()>=0)net.drive((down(KeyEvent.VK_W)?1:0)-(down(KeyEvent.VK_S)?1:0),
+                if(net.drivenCar()>=0)net.drive((down(KeyEvent.VK_W)?1:0)-(down(KeyEvent.VK_S)?1:0),
                     (down(KeyEvent.VK_D)?1:0)-(down(KeyEvent.VK_A)?1:0));
                 else net.state(px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
             }
@@ -275,7 +230,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
         if(net==null){localVehicles.advance(33);localCargo.advance(33);}
         if(!dead){
-            int carId=wildernessView?-1:net==null?localVehicles.carDrivenBy(1):net.drivenCar();
+            int carId=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
             if(carId>=0){
                 if(net==null){
                     localVehicles.input(1,(down(KeyEvent.VK_W)?1:0)-(down(KeyEvent.VK_S)?1:0),
@@ -296,7 +251,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     (Math.sin(angle)*forward+Math.cos(angle)*sideways)*speed*step);
             }
             }
-            if(net==null&&!wildernessView){
+            if(net==null){
             simulateNpc(step);
             for(World.Device d:world.devices) {
                 if(d.hp<=0)continue;
@@ -381,7 +336,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         // Tell the player why construction is unavailable without pretending
         // a vacant urban plot is wilderness.
         if(net!=null){net.build(kind);return;}
-        if(world.city.worldStructureAt(px+Math.cos(angle)*1.1,
+        if(world.detailedCity(px,py)&&world.city.worldStructureAt(px+Math.cos(angle)*1.1,
                                        py+Math.sin(angle)*1.1,.55)){
             toast("CITY IS IMMUTABLE — BUILD IN WILDERNESS");return;
         }
@@ -440,31 +395,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             default -> throw new IllegalArgumentException("Unknown harvestable type "+type);
         };
     }
-    private java.util.List<InteractionFocus.Candidate> wildernessCandidates(){
-        java.util.List<InteractionFocus.Candidate> candidates=new java.util.ArrayList<>();
-        if(!wildernessView)return candidates;
+    private java.util.List<InteractionFocus.Candidate> resourceCandidates(){
+        java.util.List<InteractionFocus.Candidate> list=new java.util.ArrayList<>();
         if(net!=null){
-            for(NetLink.WildNode n:net.wildNodes.values())if(n.remaining()>0&&
-                Math.hypot(n.x()+.5-px,n.y()+.5-py)<2.7)
-                candidates.add(new InteractionFocus.Candidate(InteractionFocus.Kind.RESOURCE,
-                    n.id(),n.type().replace('_',' '),n.x()+.5,n.y()+.5,.38,2.1));
+            for(NetLink.ResourceNode n:net.resourceNodes.values())
+                if(n.remaining()>0&&Math.hypot(n.x()-px,n.y()-py)<3)
+                    list.add(new InteractionFocus.Candidate(InteractionFocus.Kind.RESOURCE,
+                        n.id(),n.type().replace('_',' '),n.x(),n.y(),.45,2.1));
         }else{
-            for(var n:localWilderness.nearby(px,py,3))if(n.remaining()>0)
-                candidates.add(new InteractionFocus.Candidate(InteractionFocus.Kind.RESOURCE,
-                    n.id(),n.type().name().replace('_',' '),n.x()+.5,n.y()+.5,.38,2.1));
+            for(var node:localHarvesting.nearby(px,py,3))if(node.remaining()>0)
+                list.add(new InteractionFocus.Candidate(InteractionFocus.Kind.RESOURCE,
+                    node.id(),node.type().name().replace('_',' '),
+                    localHarvesting.nodeX(node),localHarvesting.nodeY(node),.45,2.1));
         }
-        return candidates;
+        return list;
     }
     private InteractionFocus.Target focusTarget(){
         if(dead)return null;
-        if(wildernessView){
-            return InteractionFocus.pick(px,py,angle,wildernessCandidates(),
-                (x,y,a,b)->{
-                    for(int i=1;i<=12;i++)if(!walkingWilderness(x+(a-x)*i/12.,
-                        y+(b-y)*i/12.))return false;
-                    return true;
-                });
-        }
         java.util.List<InteractionFocus.Candidate> objects=new java.util.ArrayList<>();
         for(int i=0;i<world.pickups.size();i++){
             var p=world.pickups.get(i);
@@ -487,11 +434,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 objects.add(new InteractionFocus.Candidate(InteractionFocus.Kind.CARGO_YARD,
                     yard.id(),"CARGO",yard.x()+.5,yard.y()+.5,.55,2.5));
         }
+        objects.addAll(resourceCandidates());
         return InteractionFocus.pick(px,py,angle,objects,
             (x,y,a,b)->world.lineClear(x,y,a,b));
     }
     /** Walkable streamed continent scene, using imported GLB trees and real 3D node meshes. */
-    private void renderWilderness(Graphics2D g){
+    private void renderContinentalGround(Graphics2D g){
         g.setColor(new Color(38,37,62));g.fillRect(0,0,RW,RH/2);
         ContinentLayout terrain=world.continent();
         double tangent=Math.tan(FOV/2);
@@ -501,7 +449,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 double ray=angle+Math.atan(((col+.5)/RW-.5)*2*tangent);
                 int x=(int)Math.floor(px+Math.cos(ray)*distance);
                 int y=(int)Math.floor(py+Math.sin(ray)*distance);
-                var biome=terrain.biome(x,y);
+                var biome=terrain.biome(world.parcelX(x),world.parcelY(y));
                 int base=switch(biome){
                     case FOREST -> 0x455A3B;
                     case PLAINS -> 0x68754A;
@@ -521,14 +469,18 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
         java.util.List<UrbanScene.ModelInstance> displays=new java.util.ArrayList<>();
         if(net!=null){
-            for(var node:net.wildNodes.values())if(node.remaining()>0&&
-                Math.hypot(node.x()+.5-px,node.y()+.5-py)<21)
-                displays.add(new UrbanScene.ModelInstance(modelForResource(node.type(),node.id()),
-                    node.x()+.5,node.y()+.5,0,node.type().equals("TIMBER")?.39:1.05));
+            for(var node:net.resourceNodes.values())
+                if(node.remaining()>0&&Math.hypot(node.x()-px,node.y()-py)<21)
+                    displays.add(new UrbanScene.ModelInstance(
+                        modelForResource(node.type(),node.id()),node.x(),node.y(),0,
+                        node.type().equals("TIMBER")?.39:1.05));
         }else{
-            for(var node:localWilderness.nearby(px,py,21))if(node.remaining()>0)
-                displays.add(new UrbanScene.ModelInstance(modelForResource(node.type().name(),node.id()),
-                    node.x()+.5,node.y()+.5,0,node.type()==WildernessResources.Type.TIMBER?.39:1.05));
+            for(var node:localHarvesting.nearby(px,py,21))
+                if(node.remaining()>0)
+                    displays.add(new UrbanScene.ModelInstance(
+                        modelForResource(node.type().name(),node.id()),
+                        localHarvesting.nodeX(node),localHarvesting.nodeY(node),0,
+                        node.type()==WildernessResources.Type.TIMBER?.39:1.05));
         }
         java.util.Arrays.fill(depth,65);
         urbanRenderer.draw(g,actorModels.meshes(),displays,px,py,angle,depth,RW,RH);
@@ -536,19 +488,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.fillRect(RW/2-4,RH/2,9,1);g.fillRect(RW/2,RH/2-4,1,9);
         InteractionFocus.draw(g,RW,RH,focusTarget());
         g.setColor(new Color(229,214,178));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,8));
-        g.drawString("WILDERNESS  "+(int)px+","+(int)py+"  E GATHER   U CITY",5,10);
+        g.drawString("CONTINENT  "+(int)px+","+(int)py+"   E INTERACT",5,10);
     }
     private void interactTarget(){
         var t=focusTarget();
         if(t==null){toast("NO OBJECT IN SIGHT");return;}
-        if(wildernessView){
-            if(net!=null){net.moveWilderness(px,py,angle,0);net.harvestWilderness(t.id());}
-            else{
-                var harvested=localWilderness.harvest(1,localHost.player(1),t.id());
-                toast(harvested.accepted()?"+1 "+harvested.item().name():harvested.reason());
-            }
-            return;
-        }
         switch(t.kind()){
             case PICKUP -> {
                 if(net!=null){net.state(px,py,angle,0);net.pickup(t.id());}
@@ -570,25 +514,19 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case VEHICLE -> toggleCar();
             case CARGO_YARD -> loadNearestCargo();
             case CARGO_DROP -> recoverNearestCargo();
-            case RESOURCE -> { }
-        }
-    }
-    private void switchWilderness(){
-        if(net!=null){
-            if(net.wildActive())net.exitWilderness();else net.enterWilderness();
-        }else{
-            if(wildernessView){localWilderness.leave(1);wildernessView=false;
-                px=world.spawns[0][0];py=world.spawns[0][1];
-                toast("RETURNED TO CITY");
-            }else{
-                var pos=localWilderness.enter(1,localHost.player(1));
-                if(pos!=null){wildernessView=true;px=pos.x();py=pos.y();angle=pos.angle();
-                    toast("WILDERNESS EXPEDITION — E HARVEST");}
+            case RESOURCE -> {
+                if(net!=null)net.harvest(t.id());
+                else {
+                    ArenaSystems.Player actor=localHost.player(1);
+                    actor.x=px;actor.y=py;actor.angle=angle;
+                    var result=localHarvesting.harvest(actor,t.id());
+                    toast(result.accepted()?"+1 "+result.item().name():result.reason());
+                }
             }
         }
     }
     private void renderScene(Graphics2D g){
-        if(wildernessView){renderWilderness(g);return;}
+        if(!world.detailedCity(px,py)){renderContinentalGround(g);return;}
         g.setColor(new Color(14,14,27));g.fillRect(0,0,RW,RH/2);
         g.setColor(new Color(29,28,29));g.fillRect(0,RH/2,RW,RH/2);
         for(int i=0;i<RW;i++){
@@ -813,7 +751,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
-            g.drawString("E INTERACT / GRAB  X MEDKIT  Q TRUCK  U WILDERNESS",23,127);
+            g.drawString("E INTERACT / HARVEST  X MEDKIT  Q VEHICLE",23,127);
             g.drawString("I inventory  K skills  J craft  O crews  M map",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
@@ -925,7 +863,6 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_H -> deploy(1);
             case KeyEvent.VK_V -> deploy(2);
             case KeyEvent.VK_E -> interactTarget();
-            case KeyEvent.VK_U -> switchWilderness();
             case KeyEvent.VK_X -> {
                 if(net!=null)net.useMedkit();
                 else if(medkits>0&&health<100){medkits--;health=Math.min(100,health+55);toast("MEDKIT USED");}

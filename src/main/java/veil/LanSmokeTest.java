@@ -34,7 +34,7 @@ public final class LanSmokeTest {
             until(()->victim.self()!=null&&victim.self().health()<=75,"health replicated to client");
             check(host.match.player(attacker.id).pistolClip==11,"ammo decremented by host");
             ArenaSystems.Player shooter=host.match.player(attacker.id);
-            shooter.cash=400;shooter.scrap=20;shooter.angle=Math.PI/2;
+            shooter.cash=400;shooter.scrap=20;shooter.x=14.5;shooter.y=1.5;shooter.angle=Math.PI/2;
             attacker.build(1);
             until(()->host.match.world.devices.size()==1,"healing station built over socket");
             until(()->!attacker.structures.isEmpty()||!victim.structures.isEmpty(),"structure streamed to a client");
@@ -55,10 +55,10 @@ public final class LanSmokeTest {
             until(()->victim.pickedUp.contains(0),"pickup removal replicated to other client");
             check(!host.match.pickup(victim.id,0),"pickup remains exclusively acquired");
             // Assemble several distinct real structures through the connected client.
-            shooter.x=1.5;shooter.y=1.5;shooter.angle=0;
+            shooter.x=26.5;shooter.y=1.5;shooter.angle=0;
             attacker.build(ArenaSystems.TURRET);
             until(()->host.match.world.devices.size()==2,"turret constructed over socket");
-            shooter.x=14.5;shooter.y=1.5;shooter.angle=0;
+            shooter.x=38.5;shooter.y=1.5;shooter.angle=0;
             attacker.build(ArenaSystems.REVIVE_STATION);
             until(()->host.match.world.devices.size()==3,"revival structure assembled over socket");
             shooter.angle=Math.PI/2;
@@ -66,7 +66,7 @@ public final class LanSmokeTest {
             until(()->host.match.world.devices.size()==4,"barricade assembled over socket");
             check(host.match.world.devices.get(3).kind==ArenaSystems.BARRICADE,"correct constructed structure kind");
             // Live turret damage occurs in the host tick, not the client.
-            prey.x=4.5;prey.y=1.5;
+            prey.x=29.5;prey.y=1.5;
             int beforeTurret=prey.hp;
             until(()->prey.hp<beforeTurret,"turret attacked opposing player");
             // Revive station heals its nearby dead owner after the revive countdown.

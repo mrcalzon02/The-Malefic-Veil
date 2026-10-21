@@ -59,7 +59,7 @@ public final class ArenaSystemsTest {
         check(host.pickup(1,0),"nearby pickup");
         check(shooter.hp==75&&item.taken,"health pickup restored 30 HP");
         check(!host.pickup(2,0),"pickup cannot be duplicated");
-        moveTo(host,1,1.5,1.5);
+        moveTo(host,1,14.5,1.5);
         shooter.cash=500;shooter.scrap=30;
         shooter.angle=0;
         check(host.build(1,ArenaSystems.TURRET),"turret assembly");
@@ -71,7 +71,7 @@ public final class ArenaSystemsTest {
         shooter.hp=40;shooter.sanity=50;
         advance(host,500);
         check(shooter.hp>=43&&shooter.sanity>=52,"medical station restores health and sanity");
-        moveTo(host,1,14.5,1.5);
+        moveTo(host,1,26.5,1.5);
         shooter.angle=0;
         check(host.build(1,ArenaSystems.REVIVE_STATION),"revive station assembly");
         shooter.angle=Math.PI/2;
@@ -92,9 +92,10 @@ public final class ArenaSystemsTest {
         ArenaSystems turretHost=new ArenaSystems(123);isolateNpcs(turretHost);
         ArenaSystems.Player builder=turretHost.join(3);
         builder.cash=1000;builder.scrap=20;builder.angle=0;
+        moveTo(turretHost,3,14.5,1.5);
         check(turretHost.build(3,ArenaSystems.TURRET),"test turret built");
         ArenaSystems.Player intruder=turretHost.join(4);
-        moveTo(turretHost,4,4.5,1.5);
+        moveTo(turretHost,4,17.5,1.5);
         int old=intruder.hp;
         advance(turretHost,100);
         check(intruder.hp<old,"host turret deals actual damage");

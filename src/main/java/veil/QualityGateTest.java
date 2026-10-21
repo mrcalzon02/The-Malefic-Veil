@@ -32,6 +32,7 @@ public final class QualityGateTest {
         check(!obstructed.allowed(),"blocked build must be rejected");
         check(!world.build(1,ArenaSystems.BARRICADE),"cannot bypass build review");
         check(shooter.cash==money&&shooter.scrap==supplies,"rejected build is free");
+        shooter.x=14.5;shooter.y=1.5;
         shooter.angle=0;
         check(world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"valid build near open street");
         check(world.build(1,ArenaSystems.BARRICADE),"can actually commit valid barricade");

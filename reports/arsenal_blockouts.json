@@ -1,0 +1,3400 @@
+{
+  "schema": 1,
+  "stage": "primitive blockouts; not final meshes or implemented weapons",
+  "weapons": [
+    {
+      "id": "w01-vesper",
+      "name": "Vesper",
+      "silhouette": "pistol",
+      "primitive_triangles": 184,
+      "bounds_m": [
+        [
+          -0.12999999523162842,
+          -0.035999998450279236,
+          -0.17000000178813934
+        ],
+        [
+          0.24300000071525574,
+          0.035999998450279236,
+          0.085999995470047
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "slide",
+          "shape": "primitive",
+          "parent": "slide_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "slide_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "slide_PIVOT"
+        },
+        {
+          "role": "magazine_toe",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "45c7b09fa6b39a2ec385f120a46574b24022201e6ebb2cbff72c65c896d97a84"
+    },
+    {
+      "id": "w02-ossuary",
+      "name": "Ossuary",
+      "silhouette": "revolver",
+      "primitive_triangles": 228,
+      "bounds_m": [
+        [
+          -0.14750000834465027,
+          -0.052000001072883606,
+          -0.17000000178813934
+        ],
+        [
+          0.31299999356269836,
+          0.052000001072883606,
+          0.09799999743700027
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "revolver_cylinder",
+          "shape": "primitive",
+          "parent": "cylinder_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "cylinder_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "cylinder_PIVOT"
+        },
+        {
+          "role": "hammer",
+          "shape": "primitive",
+          "parent": "cylinder_PIVOT"
+        },
+        {
+          "role": "magazine_toe",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "1dd1728be6e6dcf902608d9fe7e57b8273a227cd8c82a81c33d9d2a299f1dde6"
+    },
+    {
+      "id": "w03-needle-choir",
+      "name": "Needle Choir",
+      "silhouette": "smg",
+      "primitive_triangles": 200,
+      "bounds_m": [
+        [
+          -0.2667999863624573,
+          -0.054999999701976776,
+          -0.28829100728034973
+        ],
+        [
+          0.30300000309944153,
+          0.054999999701976776,
+          0.12999999523162842
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "magazine",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "short_foregrip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "d4e5615495cd4827701ff81d726bafbd4dbde50e9a49ae3642d470a799181521"
+    },
+    {
+      "id": "w04-rivet-saint",
+      "name": "Rivet Saint",
+      "silhouette": "rifle",
+      "primitive_triangles": 200,
+      "bounds_m": [
+        [
+          -0.4415999948978424,
+          -0.054999999701976776,
+          -0.2545959949493408
+        ],
+        [
+          0.4733999967575073,
+          0.054999999701976776,
+          0.12999999523162842
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "forearm",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "magazine",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "10eb77679831369ea93d0b0e661e7e9da40f37bfaf3a1aebaea7bd5af8f8e236"
+    },
+    {
+      "id": "w05-grave-bell",
+      "name": "Grave Bell",
+      "silhouette": "double",
+      "primitive_triangles": 276,
+      "bounds_m": [
+        [
+          -0.39100000262260437,
+          -0.09000000357627869,
+          -0.1850000023841858
+        ],
+        [
+          0.42800000309944153,
+          0.09000000357627869,
+          0.12999999523162842
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "left_barrel",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "left_barrel_bore",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "right_barrel",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "right_barrel_bore",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "breech",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "39504c80c68933c2b540d9eb153bb4f4a18de22aede52d43fa8733a974ea4bb3"
+    },
+    {
+      "id": "w06-cerberus",
+      "name": "Cerberus",
+      "silhouette": "triple",
+      "primitive_triangles": 364,
+      "bounds_m": [
+        [
+          -0.414000004529953,
+          -0.10000000149011612,
+          -0.1850000023841858
+        ],
+        [
+          0.453000009059906,
+          0.10000000149011612,
+          0.14500001072883606
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "left_barrel",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "left_barrel_bore",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "right_barrel",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "right_barrel_bore",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "top_barrel",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "top_barrel_bore",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "breech",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "5e9e4dc7413b62297d56ffbb6e15c175b6e33622a56b0a187191bd260e525eb2"
+    },
+    {
+      "id": "w07-reliquary",
+      "name": "Reliquary",
+      "silhouette": "shotgun",
+      "primitive_triangles": 276,
+      "bounds_m": [
+        [
+          -0.4691999852657318,
+          -0.054999999701976776,
+          -0.1850000023841858
+        ],
+        [
+          0.512999951839447,
+          0.054999999701976776,
+          0.12999999523162842
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "shell_tube",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "shell_tube_bore",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "pump",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "f5ef6beafc6e3af25df555f3e50b1538f44760791a2d118099dd45f814a04ac3"
+    },
+    {
+      "id": "w08-furnace-organ",
+      "name": "Furnace Organ",
+      "silhouette": "rotary",
+      "primitive_triangles": 796,
+      "bounds_m": [
+        [
+          -0.5130000114440918,
+          -0.3199999928474426,
+          -0.23475000262260437
+        ],
+        [
+          0.5615999698638916,
+          0.125,
+          0.32750001549720764
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "tube_0_0",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_0_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_1",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_1_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_2",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_2_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_3",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_3_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_4",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_4_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_5",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_5_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "rotor_rear_0",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "rotor_front_0",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "feed_drum",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "feed_bridge",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_top",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_-0.2",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_0.06",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "be9c4a873cfef904413c4466eaaccfcd99aa8ce299f39ee87ca2a3090dcce271"
+    },
+    {
+      "id": "w09-hailstorm",
+      "name": "Hailstorm",
+      "silhouette": "rotary_heavy",
+      "primitive_triangles": 1412,
+      "bounds_m": [
+        [
+          -0.6029999852180481,
+          -0.3199999928474426,
+          -0.23475000262260437
+        ],
+        [
+          0.6595999598503113,
+          0.26499998569488525,
+          0.32750001549720764
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "tube_0_0",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_0_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_1",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_1_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_2",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_2_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_3",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_3_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_4",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_4_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_5",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_5_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "rotor_rear_0",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "rotor_front_0",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "tube_1_0",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_0_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_1",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_1_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_2",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_2_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_3",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_3_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_4",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_4_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_5",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "tube_1_5_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_1"
+        },
+        {
+          "role": "rotor_rear_1",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "rotor_front_1",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "feed_drum",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "feed_bridge",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_top",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_-0.2",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_0.06",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "51fe422103e7d233cb7cd2c45bbda1308d9565d945d57179e00def1195997790"
+    },
+    {
+      "id": "w10-cautery",
+      "name": "Cautery",
+      "silhouette": "laser",
+      "primitive_triangles": 256,
+      "bounds_m": [
+        [
+          -0.42320001125335693,
+          -0.06300000101327896,
+          -0.25
+        ],
+        [
+          0.45680001378059387,
+          0.06300000101327896,
+          0.14499999582767487
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "power_cell",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "laser_heat_rail_-0.052",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "laser_heat_rail_0.052",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "focusing_lens",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "9f58532c9811e11174898c8dc5e3542d396386344caa1642cd3c02dfea2a7c21"
+    },
+    {
+      "id": "w11-prism-writ",
+      "name": "Prism Writ",
+      "silhouette": "prism",
+      "primitive_triangles": 444,
+      "bounds_m": [
+        [
+          -0.48159998655319214,
+          -0.1054999977350235,
+          -0.22999998927116394
+        ],
+        [
+          0.4880000054836273,
+          0.16300000250339508,
+          0.18259292840957642
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "power_cell",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "coil_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "prong_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "electrode_tip_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "coil_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "prong_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "electrode_tip_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "coil_2",
+          "shape": "primitive",
+          "parent": "electrode_2"
+        },
+        {
+          "role": "prong_2",
+          "shape": "primitive",
+          "parent": "electrode_2"
+        },
+        {
+          "role": "electrode_tip_2",
+          "shape": "primitive",
+          "parent": "electrode_2"
+        },
+        {
+          "role": "central_emitter",
+          "shape": "primitive",
+          "parent": "prongs_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "b55229179751ec96b3bed8de40c3b0b612a2f7bec2265de04175c458335eee5f"
+    },
+    {
+      "id": "w12-longwake",
+      "name": "Longwake",
+      "silhouette": "rail",
+      "primitive_triangles": 280,
+      "bounds_m": [
+        [
+          -0.6991999745368958,
+          -0.05999999865889549,
+          -0.25
+        ],
+        [
+          0.8131999969482422,
+          0.05999999865889549,
+          0.26100000739097595
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "power_cell",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "accelerator_rail_-0.03",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "accelerator_rail_0.11",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "scope",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "scope_mount_-0.14",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "scope_mount_0.025",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "9d06e7a6793d56ebc07dce5c03cad2a60df222a2ef56e8e6725e48c2f0a8db10"
+    },
+    {
+      "id": "w13-ion-psalm",
+      "name": "Ion Psalm",
+      "silhouette": "plasma",
+      "primitive_triangles": 448,
+      "bounds_m": [
+        [
+          -0.4323999881744385,
+          -0.13500000536441803,
+          -0.25
+        ],
+        [
+          0.409199982881546,
+          0.13500000536441803,
+          0.14499999582767487
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "power_cell",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "side_capacitor_-0.09",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "side_capacitor_0.09",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "field_collar",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "plasma_aperture",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "615084c0b12e5d877f6a9c503ad6d52d10143427695c5e0c17a5fd49b352e95c"
+    },
+    {
+      "id": "w14-sun-eater",
+      "name": "Sun Eater",
+      "silhouette": "beam_heavy",
+      "primitive_triangles": 968,
+      "bounds_m": [
+        [
+          -0.5979999899864197,
+          -0.14750000834465027,
+          -0.25
+        ],
+        [
+          0.6010000109672546,
+          0.14750000834465027,
+          0.23499999940395355
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "power_cell",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "heat_fin_0",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "heat_fin_1",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "heat_fin_2",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "heat_fin_3",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "heat_fin_4",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "heat_fin_5",
+          "shape": "primitive",
+          "parent": "vents_PIVOT"
+        },
+        {
+          "role": "rear_power_pack",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "eea57d515fc98001edf1f7e6d6fb4f989197ce9a9636f05bb6c0f72a30d1504a"
+    },
+    {
+      "id": "w15-storm-rosary",
+      "name": "Storm Rosary",
+      "silhouette": "tesla",
+      "primitive_triangles": 344,
+      "bounds_m": [
+        [
+          -0.43860000371932983,
+          -0.15799999237060547,
+          -0.22999998927116394
+        ],
+        [
+          0.4880000054836273,
+          0.15799999237060547,
+          0.12999999523162842
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "power_cell",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "coil_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "prong_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "electrode_tip_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "coil_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "prong_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "electrode_tip_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "central_emitter",
+          "shape": "primitive",
+          "parent": "prongs_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "52abfaadaffdbd9c0bd97293fd32fc7ed83e45a438018d7ab64c9b90670aa416"
+    },
+    {
+      "id": "w16-forked-benediction",
+      "name": "Forked Benediction",
+      "silhouette": "fork",
+      "primitive_triangles": 356,
+      "bounds_m": [
+        [
+          -0.39559999108314514,
+          -0.15799999237060547,
+          -0.22999998927116394
+        ],
+        [
+          0.4880000054836273,
+          0.15799999237060547,
+          0.1980000138282776
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "power_cell",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "coil_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "prong_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "electrode_tip_0",
+          "shape": "primitive",
+          "parent": "electrode_0"
+        },
+        {
+          "role": "coil_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "prong_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "electrode_tip_1",
+          "shape": "primitive",
+          "parent": "electrode_1"
+        },
+        {
+          "role": "central_emitter",
+          "shape": "primitive",
+          "parent": "prongs_PIVOT"
+        },
+        {
+          "role": "fork_crosshead",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "87393b0c85fe679fd4b5e02d6cb2cef09f2b792d096385afff83882b6fa8db60"
+    },
+    {
+      "id": "w17-ball-lightning",
+      "name": "Ball Lightning",
+      "silhouette": "orb",
+      "primitive_triangles": 400,
+      "bounds_m": [
+        [
+          -0.39559999108314514,
+          -0.12999999523162842,
+          -0.1850000023841858
+        ],
+        [
+          0.5149999856948853,
+          0.12999999523162842,
+          0.2549999952316284
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_ring_0",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "field_ring_1",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "field_spine",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_spine_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "suspended_core",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "reactor_pack",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [
+        "suspended_core"
+      ],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "4334f1364d058c0eea031f60981976c447e1e3aaca74eba7bcb738d4dfbb5017"
+    },
+    {
+      "id": "w18-thunder-loom",
+      "name": "Thunder Loom",
+      "silhouette": "arc_rotary",
+      "primitive_triangles": 620,
+      "bounds_m": [
+        [
+          -0.4950000047683716,
+          -0.3199999928474426,
+          -0.23475000262260437
+        ],
+        [
+          0.5419999957084656,
+          0.125,
+          0.32750001549720764
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "tube_0_0",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_0_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_1",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_1_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_2",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_2_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_3",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "tube_0_3_bore",
+          "shape": "primitive",
+          "parent": "rotor_bank_0"
+        },
+        {
+          "role": "rotor_rear_0",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "rotor_front_0",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "feed_drum",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "feed_bridge",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_top",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_-0.2",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_0.06",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "94a1deae67e8ad555a4d4209874a94fa024bb9ff936e309e074a2e80b0182252"
+    },
+    {
+      "id": "w19-pilgrim",
+      "name": "Pilgrim",
+      "silhouette": "rocket",
+      "primitive_triangles": 296,
+      "bounds_m": [
+        [
+          -0.5088000297546387,
+          -0.21899999678134918,
+          -0.25475001335144043
+        ],
+        [
+          0.5502000451087952,
+          0.12999999523162842,
+          0.28999999165534973
+        ]
+      ],
+      "roles": [
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "shoulder_rest",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "shoulder_rest_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "rear_exhaust",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "muzzle_collar",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "targeting_unit",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "targeting_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "sight_glass",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "reload_tray",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "0551430b56662a6e8903ff30aa49f94058ce6c0223567db5f3035fab62711b9d"
+    },
+    {
+      "id": "w20-widow-choir",
+      "name": "Widow Choir",
+      "silhouette": "missile",
+      "primitive_triangles": 484,
+      "bounds_m": [
+        [
+          -0.44999998807907104,
+          -0.21899999678134918,
+          -0.25475001335144043
+        ],
+        [
+          0.4729999899864197,
+          0.17000000178813934,
+          0.28999999165534973
+        ]
+      ],
+      "roles": [
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "shoulder_rest",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "shoulder_rest_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "launch_tube_0",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "launch_tube_0_bore",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "launch_tube_1",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "launch_tube_1_bore",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "launch_tube_2",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "launch_tube_2_bore",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "launch_tube_3",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "launch_tube_3_bore",
+          "shape": "primitive",
+          "parent": "rack_PIVOT"
+        },
+        {
+          "role": "tube_cluster_frame",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "targeting_unit",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "targeting_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "sight_glass",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "reload_tray",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "cfea461553bc9718489c4b2ab4241b684256ed206d88976787c57f4bae224a54"
+    },
+    {
+      "id": "w21-basilisk",
+      "name": "Basilisk",
+      "silhouette": "rocket_heavy",
+      "primitive_triangles": 296,
+      "bounds_m": [
+        [
+          -0.6096000075340271,
+          -0.21899999678134918,
+          -0.25475001335144043
+        ],
+        [
+          0.6654000282287598,
+          0.1579499989748001,
+          0.28999999165534973
+        ]
+      ],
+      "roles": [
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "shoulder_rest",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "shoulder_rest_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "bolt_PIVOT"
+        },
+        {
+          "role": "rear_exhaust",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "muzzle_collar",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "targeting_unit",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "targeting_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "sight_glass",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "reload_tray",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "1140222fa848102f09b320db9a36ae95073bebec54bef977f9abee11e265e85e"
+    },
+    {
+      "id": "w22-censer",
+      "name": "Censer",
+      "silhouette": "grenade",
+      "primitive_triangles": 220,
+      "bounds_m": [
+        [
+          -0.4047999978065491,
+          -0.10000000894069672,
+          -0.1850000023841858
+        ],
+        [
+          0.4166000187397003,
+          0.10000000894069672,
+          0.1599999964237213
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "feed_drum",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "drum_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "drum_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "197e409579de5acff21ee1aa6367c349eec442edaff6394fcd01b50078969dc7"
+    },
+    {
+      "id": "w23-vigil-mortar",
+      "name": "Vigil Mortar",
+      "silhouette": "mortar",
+      "primitive_triangles": 252,
+      "bounds_m": [
+        [
+          -0.3400000035762787,
+          -0.2750000059604645,
+          -0.5024999976158142
+        ],
+        [
+          0.3585626184940338,
+          0.2750000059604645,
+          0.4133950471878052
+        ]
+      ],
+      "roles": [
+        {
+          "role": "cradle",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "hinge_PIVOT"
+        },
+        {
+          "role": "breech",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "brace_crossbar",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "brace_leg_-0.2",
+          "shape": "primitive",
+          "parent": "brace_-0.2"
+        },
+        {
+          "role": "brace_foot_-0.2",
+          "shape": "primitive",
+          "parent": "brace_-0.2"
+        },
+        {
+          "role": "brace_leg_0.2",
+          "shape": "primitive",
+          "parent": "brace_0.2"
+        },
+        {
+          "role": "brace_foot_0.2",
+          "shape": "primitive",
+          "parent": "brace_0.2"
+        },
+        {
+          "role": "carry_handle",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_-0.3",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "carry_handle_mount_-0.08",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "4e3f253f7017f5e4a7ee22978632f836a42f17f836ee81d971defb84cf045b45"
+    },
+    {
+      "id": "w24-cathedral",
+      "name": "Cathedral",
+      "silhouette": "artillery",
+      "primitive_triangles": 268,
+      "bounds_m": [
+        [
+          -0.6800000071525574,
+          -0.2750000059604645,
+          -0.5024999976158142
+        ],
+        [
+          0.5567840933799744,
+          0.2750000059604645,
+          0.3072681427001953
+        ]
+      ],
+      "roles": [
+        {
+          "role": "cradle",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "braces_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "braces_PIVOT"
+        },
+        {
+          "role": "breech",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "brace_crossbar",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "brace_leg_-0.2",
+          "shape": "primitive",
+          "parent": "brace_-0.2"
+        },
+        {
+          "role": "brace_foot_-0.2",
+          "shape": "primitive",
+          "parent": "brace_-0.2"
+        },
+        {
+          "role": "brace_leg_0.2",
+          "shape": "primitive",
+          "parent": "brace_0.2"
+        },
+        {
+          "role": "brace_foot_0.2",
+          "shape": "primitive",
+          "parent": "brace_0.2"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "rangefinder",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "rangefinder_bridge",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "rangefinder_post",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "6c79a844d9f4562697b7e943cd105d23548644d9062f7ac606b04b20dfe72df7"
+    },
+    {
+      "id": "w25-shrapnel-mass",
+      "name": "Shrapnel Mass",
+      "silhouette": "flak",
+      "primitive_triangles": 256,
+      "bounds_m": [
+        [
+          -0.5152000188827515,
+          -0.11500000208616257,
+          -0.1850000023841858
+        ],
+        [
+          0.5294000506401062,
+          0.11500000208616257,
+          0.19750000536441803
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "feed_drum",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "upper_jaw",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "lower_jaw",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        },
+        {
+          "role": "pump",
+          "shape": "primitive",
+          "parent": "pump_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "9f84e5bea3e8944face926de85bdb615f1ffd6b759e78dace8bd2acb7dc7cba4"
+    },
+    {
+      "id": "w26-ricochet-gospel",
+      "name": "Ricochet Gospel",
+      "silhouette": "disc",
+      "primitive_triangles": 348,
+      "bounds_m": [
+        [
+          -0.4047999978065491,
+          -0.20400001108646393,
+          -0.1850000023841858
+        ],
+        [
+          0.45399999618530273,
+          0.20400001108646393,
+          0.12999999523162842
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "saw_disc",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_0",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_1",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_2",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_3",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_4",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_5",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_6",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_7",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_8",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_9",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_10",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "saw_tooth_11",
+          "shape": "primitive",
+          "parent": "disc_PIVOT"
+        },
+        {
+          "role": "disc_guide_-0.015",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "disc_guide_0.085",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "f6a3decbb5102823bdf7e368c6d0127132160982e94fba46f42ba0414c5a5b48"
+    },
+    {
+      "id": "w27-bankshot",
+      "name": "Bankshot",
+      "silhouette": "bounce",
+      "primitive_triangles": 272,
+      "bounds_m": [
+        [
+          -0.36800000071525574,
+          -0.1120000034570694,
+          -0.1850000023841858
+        ],
+        [
+          0.5149999856948853,
+          0.1120000034570694,
+          0.2549999952316284
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_ring_0",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "field_spine",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_spine_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "suspended_core",
+          "shape": "primitive",
+          "parent": "capacitor_PIVOT"
+        },
+        {
+          "role": "reactor_pack",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [
+        "suspended_core"
+      ],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "a471b1aa8fbbb5380346e8a50c6551ade3fcf484b8af73d67ac188ba0b38d238"
+    },
+    {
+      "id": "w28-scrap-cyclone",
+      "name": "Scrap Cyclone",
+      "silhouette": "scrap",
+      "primitive_triangles": 256,
+      "bounds_m": [
+        [
+          -0.4691999852657318,
+          -0.14000000059604645,
+          -0.1850000023841858
+        ],
+        [
+          0.5099999904632568,
+          0.14000000059604645,
+          0.32499998807907104
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "feed_drum",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "drum_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "drum_PIVOT"
+        },
+        {
+          "role": "magnetic_scoop_-0.115",
+          "shape": "primitive",
+          "parent": "drum_PIVOT"
+        },
+        {
+          "role": "magnetic_scoop_0.115",
+          "shape": "primitive",
+          "parent": "drum_PIVOT"
+        },
+        {
+          "role": "scrap_hopper",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "22491d4184202343158bd423a083ce10099af693b4911549a93957e515a87dd2"
+    },
+    {
+      "id": "w29-miasma",
+      "name": "Miasma",
+      "silhouette": "bio",
+      "primitive_triangles": 792,
+      "bounds_m": [
+        [
+          -0.42320001125335693,
+          -0.19499999284744263,
+          -0.1850000023841858
+        ],
+        [
+          0.4410000145435333,
+          0.19499999284744263,
+          0.3474999964237213
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "fluid_tank_-0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "tank_cap_-0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "fluid_tank_0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "tank_cap_0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "fluid_manifold",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "nozzle_fin_0",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "nozzle_fin_1",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "nozzle_fin_2",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "fluid_aperture",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "2ce196646e972f3146999d73665333b4b661d23bb719ed09f9f241617e58d2e8"
+    },
+    {
+      "id": "w30-winter-verdict",
+      "name": "Winter Verdict",
+      "silhouette": "cryo",
+      "primitive_triangles": 792,
+      "bounds_m": [
+        [
+          -0.4415999948978424,
+          -0.1889999955892563,
+          -0.1850000023841858
+        ],
+        [
+          0.4410000145435333,
+          0.1889999955892563,
+          0.26899999380111694
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "barrel",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "barrel_bore",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "fluid_tank_-0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "tank_cap_-0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "fluid_tank_0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "tank_cap_0.13",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        },
+        {
+          "role": "fluid_manifold",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "nozzle_fin_0",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "nozzle_fin_1",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "nozzle_fin_2",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        },
+        {
+          "role": "fluid_aperture",
+          "shape": "primitive",
+          "parent": "tank_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "d6e6f86b2a0a1e216ec6e6b873527a3425e4c3bb16f2a8f4e05baa122f12d06d"
+    },
+    {
+      "id": "w31-eventide",
+      "name": "Eventide",
+      "silhouette": "gravity",
+      "primitive_triangles": 528,
+      "bounds_m": [
+        [
+          -0.5152000188827515,
+          -0.1599999964237213,
+          -0.1850000023841858
+        ],
+        [
+          0.5149999856948853,
+          0.1599999964237213,
+          0.2549999952316284
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_ring_0",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "field_ring_1",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "field_ring_2",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "field_spine",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_spine_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "suspended_core",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "reactor_pack",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [
+        "suspended_core"
+      ],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "37a8c3233497082af28a7daa0d266da363735fc9456dc3b1e6fda4eb70d95bff"
+    },
+    {
+      "id": "w32-veilbreaker",
+      "name": "Veilbreaker",
+      "silhouette": "singularity",
+      "primitive_triangles": 656,
+      "bounds_m": [
+        [
+          -0.6439999938011169,
+          -0.19999998807907104,
+          -0.1850000023841858
+        ],
+        [
+          0.5149999856948853,
+          0.19999998807907104,
+          0.2549999952316284
+        ]
+      ],
+      "roles": [
+        {
+          "role": "receiver",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "grip",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_bottom",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "guard_front",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "trigger",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "stock",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_ring_0",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "field_ring_1",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "field_ring_2",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "field_ring_3",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "field_spine",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "field_spine_mount",
+          "shape": "primitive",
+          "parent": "receiver_group"
+        },
+        {
+          "role": "suspended_core",
+          "shape": "primitive",
+          "parent": "rings_PIVOT"
+        },
+        {
+          "role": "reactor_pack",
+          "shape": "primitive",
+          "parent": "magazine_PIVOT"
+        }
+      ],
+      "detached_aabb_groups": [],
+      "intentional_noncontact": [
+        "suspended_core"
+      ],
+      "status": "primitive blockout; connection and silhouette review",
+      "glb_sha256": "bf0ef76f8c55413e679fac5e84f835ed7243435851b8c4e7254b6041d1978165"
+    }
+  ],
+  "master_layout": [
+    {
+      "id": "w01-vesper",
+      "grid_position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w02-ossuary",
+      "grid_position": [
+        2.299999952316284,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w03-needle-choir",
+      "grid_position": [
+        4.599999904632568,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w04-rivet-saint",
+      "grid_position": [
+        6.900000095367432,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w05-grave-bell",
+      "grid_position": [
+        0.0,
+        1.7999999523162842,
+        0.0
+      ]
+    },
+    {
+      "id": "w06-cerberus",
+      "grid_position": [
+        2.299999952316284,
+        1.7999999523162842,
+        0.0
+      ]
+    },
+    {
+      "id": "w07-reliquary",
+      "grid_position": [
+        4.599999904632568,
+        1.7999999523162842,
+        0.0
+      ]
+    },
+    {
+      "id": "w08-furnace-organ",
+      "grid_position": [
+        6.900000095367432,
+        1.7999999523162842,
+        0.0
+      ]
+    },
+    {
+      "id": "w09-hailstorm",
+      "grid_position": [
+        0.0,
+        3.5999999046325684,
+        0.0
+      ]
+    },
+    {
+      "id": "w10-cautery",
+      "grid_position": [
+        2.299999952316284,
+        3.5999999046325684,
+        0.0
+      ]
+    },
+    {
+      "id": "w11-prism-writ",
+      "grid_position": [
+        4.599999904632568,
+        3.5999999046325684,
+        0.0
+      ]
+    },
+    {
+      "id": "w12-longwake",
+      "grid_position": [
+        6.900000095367432,
+        3.5999999046325684,
+        0.0
+      ]
+    },
+    {
+      "id": "w13-ion-psalm",
+      "grid_position": [
+        0.0,
+        5.400000095367432,
+        0.0
+      ]
+    },
+    {
+      "id": "w14-sun-eater",
+      "grid_position": [
+        2.299999952316284,
+        5.400000095367432,
+        0.0
+      ]
+    },
+    {
+      "id": "w15-storm-rosary",
+      "grid_position": [
+        4.599999904632568,
+        5.400000095367432,
+        0.0
+      ]
+    },
+    {
+      "id": "w16-forked-benediction",
+      "grid_position": [
+        6.900000095367432,
+        5.400000095367432,
+        0.0
+      ]
+    },
+    {
+      "id": "w17-ball-lightning",
+      "grid_position": [
+        0.0,
+        7.199999809265137,
+        0.0
+      ]
+    },
+    {
+      "id": "w18-thunder-loom",
+      "grid_position": [
+        2.299999952316284,
+        7.199999809265137,
+        0.0
+      ]
+    },
+    {
+      "id": "w19-pilgrim",
+      "grid_position": [
+        4.599999904632568,
+        7.199999809265137,
+        0.0
+      ]
+    },
+    {
+      "id": "w20-widow-choir",
+      "grid_position": [
+        6.900000095367432,
+        7.199999809265137,
+        0.0
+      ]
+    },
+    {
+      "id": "w21-basilisk",
+      "grid_position": [
+        0.0,
+        9.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w22-censer",
+      "grid_position": [
+        2.299999952316284,
+        9.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w23-vigil-mortar",
+      "grid_position": [
+        4.599999904632568,
+        9.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w24-cathedral",
+      "grid_position": [
+        6.900000095367432,
+        9.0,
+        0.0
+      ]
+    },
+    {
+      "id": "w25-shrapnel-mass",
+      "grid_position": [
+        0.0,
+        10.800000190734863,
+        0.0
+      ]
+    },
+    {
+      "id": "w26-ricochet-gospel",
+      "grid_position": [
+        2.299999952316284,
+        10.800000190734863,
+        0.0
+      ]
+    },
+    {
+      "id": "w27-bankshot",
+      "grid_position": [
+        4.599999904632568,
+        10.800000190734863,
+        0.0
+      ]
+    },
+    {
+      "id": "w28-scrap-cyclone",
+      "grid_position": [
+        6.900000095367432,
+        10.800000190734863,
+        0.0
+      ]
+    },
+    {
+      "id": "w29-miasma",
+      "grid_position": [
+        0.0,
+        12.600000381469727,
+        0.0
+      ]
+    },
+    {
+      "id": "w30-winter-verdict",
+      "grid_position": [
+        2.299999952316284,
+        12.600000381469727,
+        0.0
+      ]
+    },
+    {
+      "id": "w31-eventide",
+      "grid_position": [
+        4.599999904632568,
+        12.600000381469727,
+        0.0
+      ]
+    },
+    {
+      "id": "w32-veilbreaker",
+      "grid_position": [
+        6.900000095367432,
+        12.600000381469727,
+        0.0
+      ]
+    }
+  ]
+}

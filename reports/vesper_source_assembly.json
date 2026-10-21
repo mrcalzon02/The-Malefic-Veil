@@ -1,0 +1,174 @@
+{
+  "status": "full-detail sourced assembly; no simplification",
+  "components": [
+    {
+      "role": "receiver",
+      "part": "G058",
+      "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+      "source_object": "Body67",
+      "uniform_scale": 0.36,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "location": [
+        0,
+        0,
+        0
+      ],
+      "cuts": [
+        [
+          2,
+          0.025,
+          true
+        ],
+        [
+          0,
+          0.18,
+          false
+        ]
+      ],
+      "triangles": 19072
+    },
+    {
+      "role": "grip",
+      "part": "G132",
+      "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+      "source_object": "Body242",
+      "uniform_scale": 0.2,
+      "rotation": [
+        0,
+        -0.18,
+        0
+      ],
+      "location": [
+        -0.119,
+        0,
+        -0.035
+      ],
+      "cuts": [
+        [
+          2,
+          0.24,
+          false
+        ],
+        [
+          2,
+          -0.33,
+          true
+        ]
+      ],
+      "triangles": 6768
+    },
+    {
+      "role": "barrel_sleeve_0",
+      "part": "M025",
+      "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+      "source_object": "Body87",
+      "uniform_scale": 0.071,
+      "rotation": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "location": [
+        0.033,
+        0,
+        0
+      ],
+      "cuts": [],
+      "triangles": 6960
+    },
+    {
+      "role": "barrel_sleeve_1",
+      "part": "M025",
+      "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+      "source_object": "Body87",
+      "uniform_scale": 0.071,
+      "rotation": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "location": [
+        0.099,
+        0,
+        0
+      ],
+      "cuts": [],
+      "triangles": 6960
+    },
+    {
+      "role": "muzzle",
+      "part": "M019",
+      "source_path": "C:\\Users\\Admin\\Documents\\Models\\mega-pack-kitbash-320-details\\Mech_Warrior_Builder_Kit_ 10\\Mech_Warrior_Builder_Kit_ 10\\Fbx\\Part_01.FBX",
+      "source_object": "Body185",
+      "uniform_scale": 0.105,
+      "rotation": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "location": [
+        0.169,
+        0,
+        0
+      ],
+      "cuts": [],
+      "triangles": 22878
+    },
+    {
+      "role": "breech_collar",
+      "part": "G013",
+      "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+      "source_object": "Object200",
+      "uniform_scale": 0.063,
+      "rotation": [
+        0,
+        0,
+        1.5707963267948966
+      ],
+      "location": [
+        0.003,
+        0,
+        0
+      ],
+      "cuts": [],
+      "triangles": 2318
+    },
+    {
+      "role": "magazine_toe",
+      "part": "G132",
+      "source_path": "C:\\Users\\Admin\\Documents\\Models\\Greebles.blend",
+      "source_object": "Body242",
+      "uniform_scale": 0.2,
+      "rotation": [
+        0,
+        -0.18,
+        0
+      ],
+      "location": [
+        -0.119,
+        0,
+        -0.035
+      ],
+      "cuts": [
+        [
+          2,
+          -0.33,
+          false
+        ]
+      ],
+      "triangles": 5260
+    }
+  ],
+  "source_triangles": 70216,
+  "authored_triangles": 500,
+  "clips": [
+    "idle",
+    "fire",
+    "alternate",
+    "reload"
+  ]
+}

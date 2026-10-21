@@ -47,6 +47,9 @@ jobs:
       - name: Rig-independent PSX character, weapon, item and power-up render verification
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.GameplayAssetTest
+      - name: Original arsenal blockout GLB import verification
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.ArsenalBlockoutTest
       - name: QoL gate for confirmed hits and obstacle-aware construction
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.QualityGateTest

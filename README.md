@@ -44,6 +44,12 @@ The dedicated server binds loopback by default; launch on trusted networks only 
 
 Read the [asset implementation audit and release gates](docs/ASSET_PIPELINE_AUDIT.md) for source rights, importer capabilities and rigged-character blockers.
 
+## Arsenal design and primitive review
+
+The [32-weapon proposal](design/ARSENAL.md) now has **32 original primitive blockouts**, separate receiver/mechanism/ammo groups, movement pivots and muzzle/hand sockets. Open [the Blender master](assets/game/arsenal-blockouts/arsenal-blockouts.blend) or review the [four contact sheets](docs/ARSENAL_STATUS.md). These are silhouettes for proportion and attachment review, not finished kitbash weapons or additional playable combat behaviors. The current game still uses its original handgun and shotgun rules.
+
+The [component replacement plan](design/COMPONENT_REPLACEMENT.md) maps functional blocks to the local supplied mech parts. Detailed source prototypes remain local and retain their full geometry. See [power-ups and inventory proposals](design/PICKUPS.md) for the later health/armor/ammo/resource and timed-buff work; food/water mechanics remain deferred. Validate the committed blockout exports with `java -cp build/classes veil.ArsenalBlockoutTest` after compilation.
+
 ## Asset policy
 
 Google Drive remains the archival source of truth. See [assets/SOURCES.md](assets/SOURCES.md) and [assets/manifest.csv](assets/manifest.csv) for VERIFIED FOLDER/FILE LOCATORS. Archive presence is NOT game integration, a rigged character or a runtime-tested scene. Never commit complete purchased packs to this public repository. Ship only curated permitted derived game runtime assets after license and functionality checks.

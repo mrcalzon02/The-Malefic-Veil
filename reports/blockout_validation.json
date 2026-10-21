@@ -1,0 +1,232 @@
+{
+  "stage": "primitive blockout validation",
+  "count": 32,
+  "connection_check": "Conservative AABB proximity within 12mm; not exact triangle contact. Suspended field cores explicitly excluded.",
+  "source_meshes_in_public_blockouts": 0,
+  "items": [
+    {
+      "id": "w01-vesper",
+      "hierarchical_bytes": 19560,
+      "static_bytes": 18720,
+      "components": 9,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w02-ossuary",
+      "hierarchical_bytes": 22724,
+      "static_bytes": 21748,
+      "components": 10,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w03-needle-choir",
+      "hierarchical_bytes": 21224,
+      "static_bytes": 20288,
+      "components": 10,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w04-rivet-saint",
+      "hierarchical_bytes": 21196,
+      "static_bytes": 20272,
+      "components": 10,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w05-grave-bell",
+      "hierarchical_bytes": 26128,
+      "static_bytes": 24828,
+      "components": 11,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w06-cerberus",
+      "hierarchical_bytes": 32356,
+      "static_bytes": 30816,
+      "components": 13,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w07-reliquary",
+      "hierarchical_bytes": 25976,
+      "static_bytes": 24800,
+      "components": 11,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w08-furnace-organ",
+      "hierarchical_bytes": 65704,
+      "static_bytes": 62708,
+      "components": 25,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w09-hailstorm",
+      "hierarchical_bytes": 110188,
+      "static_bytes": 104736,
+      "components": 39,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w10-cautery",
+      "hierarchical_bytes": 25972,
+      "static_bytes": 24916,
+      "components": 12,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w11-prism-writ",
+      "hierarchical_bytes": 40024,
+      "static_bytes": 38200,
+      "components": 17,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w12-longwake",
+      "hierarchical_bytes": 28792,
+      "static_bytes": 27632,
+      "components": 14,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w13-ion-psalm",
+      "hierarchical_bytes": 39128,
+      "static_bytes": 37788,
+      "components": 13,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w14-sun-eater",
+      "hierarchical_bytes": 75932,
+      "static_bytes": 74504,
+      "components": 16,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w15-storm-rosary",
+      "hierarchical_bytes": 32248,
+      "static_bytes": 30756,
+      "components": 14,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w16-forked-benediction",
+      "hierarchical_bytes": 33924,
+      "static_bytes": 32316,
+      "components": 15,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w17-ball-lightning",
+      "hierarchical_bytes": 37984,
+      "static_bytes": 36952,
+      "components": 12,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w18-thunder-loom",
+      "hierarchical_bytes": 52720,
+      "static_bytes": 50652,
+      "components": 21,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w19-pilgrim",
+      "hierarchical_bytes": 30388,
+      "static_bytes": 28984,
+      "components": 14,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w20-widow-choir",
+      "hierarchical_bytes": 44988,
+      "static_bytes": 42556,
+      "components": 19,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w21-basilisk",
+      "hierarchical_bytes": 30424,
+      "static_bytes": 29000,
+      "components": 14,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w22-censer",
+      "hierarchical_bytes": 21132,
+      "static_bytes": 20696,
+      "components": 9,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w23-vigil-mortar",
+      "hierarchical_bytes": 27352,
+      "static_bytes": 25964,
+      "components": 13,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w24-cathedral",
+      "hierarchical_bytes": 28996,
+      "static_bytes": 27608,
+      "components": 14,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w25-shrapnel-mass",
+      "hierarchical_bytes": 25816,
+      "static_bytes": 25144,
+      "components": 12,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w26-ricochet-gospel",
+      "hierarchical_bytes": 39296,
+      "static_bytes": 39128,
+      "components": 21,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w27-bankshot",
+      "hierarchical_bytes": 28884,
+      "static_bytes": 27992,
+      "components": 11,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w28-scrap-cyclone",
+      "hierarchical_bytes": 25848,
+      "static_bytes": 25172,
+      "components": 12,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w29-miasma",
+      "hierarchical_bytes": 63140,
+      "static_bytes": 61964,
+      "components": 17,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w30-winter-verdict",
+      "hierarchical_bytes": 63572,
+      "static_bytes": 61720,
+      "components": 17,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w31-eventide",
+      "hierarchical_bytes": 46804,
+      "static_bytes": 45764,
+      "components": 13,
+      "detached_aabb_groups": []
+    },
+    {
+      "id": "w32-veilbreaker",
+      "hierarchical_bytes": 55868,
+      "static_bytes": 54720,
+      "components": 14,
+      "detached_aabb_groups": []
+    }
+  ]
+}

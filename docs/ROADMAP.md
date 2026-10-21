@@ -79,6 +79,12 @@ The [city miasma, crude structure, full economy and trade spec](CITY_MIASMA_SETT
 
 Next gates: consistent fine world/air coordinates, real miasma particle/cloud art and air-launched projectile blocking, verified character ownership and wilderness construction, actual planted crop states and industrial machines, founder-level upgrade transactions, physical convoy/lot receipts across streamed sectors, and full production/defense two-client tests.
 
+### Icon atlas integration: five committed economy sheets [ASSET FOUNDATION VERIFIED LOCALLY]
+
+All **five** October 2026 placeholder icon sheets have been sliced into **150 unique 128×128 RGBA PNGs**, archived in five tracked `assets/game/crafting/packs/*_sprites_only.zip` files, with matching `*_source.webp` visual sheet references. Committed `icons_index.csv` maps each item ID to its ZIP entry and SHA-256; `icons_manifest.json` adds pack integrity and grouped labels. `CraftingIconPacks` loads images by stable item ID, verifies SHA-256 and dimensions, and provides them directly for inventory/recipe/trade UIs; `tools/extract_crafting_icon_packs.py` expands verified individual PNGs for renderers that need loose files. Local **JDK 17-targeted** headless test passed for all 150; end-to-end integrated UI renders and game release packaging are **not yet verified**. The WebP sheets are reference previews; the full-resolution originals and labeled full-card slices are in the separately retained authoring package.
+
+Next UI slice: bind inventory, recipe selection, faction workstations and multi-base trade listings to `CraftingIconPacks.icon(id)`, with a readable separately drawn label. Next simulation slice: make new generic Unraveled/Penitent/Begotten materials physically obtainable through their real faction-specific guarded production chains, not by assuming that an indexed image grants an item.
+
 ## Phase P5 — Horror, traversal and production gameplay [PLANNED]
 
 **Deliver:** Full health/sanity effects, darkness and visibility gem affecting actual remote alpha, stealth/detection AI, combat feedback, sound staging, classes, team objectives, extraction/holdout, health regen pacing, repair/assembly and supply/cash economy, dynamic environments.

@@ -24,9 +24,11 @@ Each phase has **entry criteria**, concrete deliverables, automated acceptance e
 
 **Status:** First five GLBs committed; Java 17 static mesh geometry importer and renderer now in integration testing. UV textures, collision integration and manual desktop sign-off remain open. No R1 release tag.
 
-## Phase P2 — Fully usable PSX city [PLANNED]
+## Phase P2 — Fully usable PSX city [FOUNDATION IN PROGRESS]
 
 **Deliver:** Expanded tile grammar from URBAN/Retro Urban with intersecting roads, interiors, multilevel buildings, roof access, cover, destructible props, map streaming/chunks, deterministic spawn-safe navigation. Texture atlas, low-res PSX shading, dynamic lights/fog and occlusion.
+
+**Completed plot-foundation slice:** 22x22 seeded road/parcel topology; connected road graph with intersections and cul-de-sacs; seven footprint sizes; 104 categorized plot definitions (32 standard 2x2); safe/resource/hostile spawn placement; collision accessibility repairs; category-colored city map; Java 17 layout/world regression tests. See [PLOT_GENERATION.md](PLOT_GENERATION.md). Named templates currently share procedural geometric motifs and are **not** yet finished source-verified 3D levels.
 
 **Release gate R2:** 20 deterministic map seeds with connected spawn routes; traversal and geometry/collision matching; no visual wall-through; 30-minute Windows desktop tour; memory/frame profiling at small, medium and large city sizes; licensed pack references/hashes and authored conversion evidence. Target `v0.2.0-alpha`.
 

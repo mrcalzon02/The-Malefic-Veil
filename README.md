@@ -32,6 +32,6 @@ Google Drive remains the archival source of truth. See [assets/SOURCES.md](asset
 
 ## Scope / priorities
 
-[Design contract](docs/DESIGN.md) · [Development and QA gates](docs/ROADMAP.md)
+[Design contract](docs/DESIGN.md) · [Development and QA gates](docs/ROADMAP.md) · **[Player QoL must-haves and external shooter research](docs/PLAYER_QOL_MUST_HAVES.md)**
 
 No GitHub Actions by default. A remote commit is only claimed after its acceptance and read-back. Existing shared Beckenburg library and its original archives must not be deleted or reorganized.

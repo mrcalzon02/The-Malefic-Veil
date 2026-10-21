@@ -32,30 +32,38 @@ public final class UrbanTileAssembler {
         // The connected road graph is represented by the actual asphalt LEGO tiles,
         // not by paintings scattered arbitrarily over independent geometry.
         for(CityLayout.Road road:city.roadTiles()){
-            int x=road.x(),y=road.y();
-            // The source asphalt-center module is 1x1. Fill the six-unit
-            // road macrocell with actual unit modules; do NOT scale one GLB 6x.
-            for(int tx=x*CELL;tx<(x+1)*CELL;tx++)
-                for(int ty=y*CELL;ty<(y+1)*CELL;ty++){
-                    long n=roll(seed,tx,ty,44);
-                    String tile=(n&31)==0?"road-asphalt-damaged":"road-asphalt-center";
-                    add(assembled,tile,tx+.5,ty+.5,0,1,0);
-                }
-            // A 1x2 straight module provides curb/route-direction detail at
-            // the macrocell center, not a replacement for its paved footprint.
-            int bits=road.connections();
-            if(bits==5||bits==10){
-                double cx=x*CELL+CELL/2.0,cy=y*CELL+CELL/2.0;
-                add(assembled,"road-asphalt-straight",cx,cy,
-                    bits==5?0:Math.PI/2,1,0);
-            }else if(Integer.bitCount(bits)==2){
-                double cx=x*CELL+CELL/2.0,cy=y*CELL+CELL/2.0;
-                double heading=switch(bits){
-                    case 3 -> 0; case 6 -> Math.PI/2;
-                    case 12 -> Math.PI; case 9 -> Math.PI*1.5;
-                    default -> 0;
-                };
-                add(assembled,"road-asphalt-corner",cx,cy,heading,1,0);
+            int x=road.x(),y=road.y(),bits=road.connections();
+            // Every world tile has exactly one licensed Kenney road surface.
+            // Pavement is placed on *external* edges, never across connected
+            // road exits: route continuity is derived from the road graph.
+            for(int sx=0;sx<CELL;sx++)for(int sy=0;sy<CELL;sy++){
+                int tx=x*CELL+sx,ty=y*CELL+sy;
+                boolean outerWest=sx==0&&(bits&8)==0;
+                boolean outerEast=sx==CELL-1&&(bits&2)==0;
+                boolean outerNorth=sy==0&&(bits&1)==0;
+                boolean outerSouth=sy==CELL-1&&(bits&4)==0;
+                boolean curb=outerWest||outerEast||outerNorth||outerSouth;
+                long n=roll(seed,tx,ty,44);
+                String ground=curb?"road-asphalt-pavement":
+                    (n&31)==0?"road-asphalt-damaged":"road-asphalt-center";
+                add(assembled,ground,tx+.5,ty+.5,0,1,0);
+            }
+            // Lit crossings are actual source fixtures along the sidewalk,
+            // never invented emissive cubes. Fixtures are visual while the
+            // original road/plot map remains the sole collision authority.
+            long street=roll(seed,x,y,238);
+            if((street&3)==0){
+                int sx=(street&8)==0?0:CELL-1;
+                int sy=(street&16)==0?0:CELL-1;
+                double lx=x*CELL+sx+.5,ly=y*CELL+sy+.5;
+                if(clearSpawns(lx,ly,spawns,4))
+                    add(assembled,(street&32)==0?"detail-light-single":"detail-light-double",
+                        lx,ly,((street>>>6)&3)*Math.PI/2,1.35,0);
+            }
+            if(Integer.bitCount(bits)>=3&&(street&7)==5){
+                double ax=x*CELL+.5,ay=y*CELL+CELL-1.5;
+                if(clearSpawns(ax,ay,spawns,4))
+                    add(assembled,"detail-barrier-type-a",ax,ay,Math.PI/2,0.9,0);
             }
         }
         for(CityLayout.Plot plot:city.plots()){

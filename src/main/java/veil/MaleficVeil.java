@@ -414,6 +414,29 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     car.x(),car.y(),car.heading(),1.9));
         }
         urbanRenderer.draw(g,urban.models(),cars,px,py,angle,depth,RW,RH);
+        // Dynamic licensed Kenney pallets: only stocked yards show resources;
+        // a wrecked truck drops one recoverable ground item, not an invisible
+        // inventory entry. The network is authoritative for both lists.
+        java.util.List<UrbanScene.ModelInstance> cargoMeshes=new java.util.ArrayList<>();
+        if(net!=null){
+            for(NetLink.CargoYard yard:net.cargoYards.values())if(yard.stock()>0)
+                cargoMeshes.add(new UrbanScene.ModelInstance(
+                    yard.type().equals("METAL_STOCK")?"pallet":"pallet-small",
+                    yard.x()+.5,yard.y()+.5,0,1.2));
+            for(NetLink.CargoDrop drop:net.cargoDrops.values())
+                cargoMeshes.add(new UrbanScene.ModelInstance(
+                    drop.type().equals("METAL_STOCK")?"pallet":"pallet-small",
+                    drop.x(),drop.y(),0,1.0));
+        }else{
+            for(CargoHaulage.Site yard:localCargo.sites())if(yard.stock()>0)
+                cargoMeshes.add(new UrbanScene.ModelInstance(
+                    yard.groundMesh(),yard.x()+.5,yard.y()+.5,0,1.2));
+            for(CargoHaulage.Drop drop:localCargo.drops())
+                cargoMeshes.add(new UrbanScene.ModelInstance(
+                    drop.resource().equals("METAL_STOCK")?"pallet":"pallet-small",
+                    drop.x(),drop.y(),0,1.0));
+        }
+        urbanRenderer.draw(g,urban.models(),cargoMeshes,px,py,angle,depth,RW,RH);
         java.util.List<UrbanScene.ModelInstance> gameplay=new java.util.ArrayList<>();
         for(World.Pickup p:world.pickups)if(!p.taken&&p.kind>=0&&p.kind<GameplayMeshes.PICKUP.length)
             gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,

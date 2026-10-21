@@ -30,6 +30,12 @@ public final class HostRules {
                 return active;
             }
         }
+        // Pre-hardcore worlds implicitly used NORMAL rules. Do not silently
+        // enable permadeath on a legacy realm lacking an explicit mode file.
+        if(requested&&(Files.exists(directory.resolve("realm.dat"))||
+           Files.exists(directory.resolve("accounts.dat"))))
+            throw new IOException("Legacy realm defaults to NORMAL; enabling hardcore "+
+                "requires an explicit character/world migration");
         ByteArrayOutputStream bytes=new ByteArrayOutputStream();
         try(DataOutputStream out=new DataOutputStream(bytes)){
             out.writeInt(MAGIC);out.writeInt(1);out.writeByte(requested?1:0);

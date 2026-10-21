@@ -417,7 +417,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             var p=world.pickups.get(i);
             if(!p.taken&&Math.hypot(p.x-px,p.y-py)<1.2)
                 objects.add(new InteractionFocus.Candidate(InteractionFocus.Kind.PICKUP,
-                    i,"SUPPLIES",p.x,p.y,.30,.75));
+                    i,InteractionFocus.pickupName(p.kind),p.x,p.y,.30,.75));
         }
         if(net!=null){
             for(var car:net.cars.values())if(car.driverId()<0&&car.hp()>0)

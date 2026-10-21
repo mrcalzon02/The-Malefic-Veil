@@ -482,7 +482,20 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                         localHarvesting.nodeX(node),localHarvesting.nodeY(node),0,
                         node.type()==WildernessResources.Type.TIMBER?.39:1.05));
         }
+        if(net!=null){
+            for(var entry:net.others.entrySet()){
+                var remote=entry.getValue();
+                if(remote.hp>0&&Math.hypot(remote.x-px,remote.y-py)<21)
+                    displays.add(new UrbanScene.ModelInstance(
+                        GameplayMeshes.HERO[Math.max(0,Math.min(3,remote.classId))],
+                        remote.x,remote.y,remote.angle-Math.PI/2,1.0,remote.opacity));
+            }
+        }
+        for(var npc:world.npcs)if(npc.hp>0&&Math.hypot(npc.x-px,npc.y-py)<21)
+            displays.add(new UrbanScene.ModelInstance("enemy-walker",npc.x,npc.y,
+                Math.atan2(py-npc.y,px-npc.x)-Math.PI/2,1.0));
         java.util.Arrays.fill(depth,65);
+        urbanRenderer.draw(g,urban,px,py,angle,depth,RW,RH);
         urbanRenderer.draw(g,actorModels.meshes(),displays,px,py,angle,depth,RW,RH);
         g.setColor(new Color(204,186,157));
         g.fillRect(RW/2-4,RH/2,9,1);g.fillRect(RW/2,RH/2-4,1,9);
@@ -603,6 +616,21 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 gameplay.add(new UrbanScene.ModelInstance(
                     GameplayMeshes.HERO[Math.max(0,Math.min(3,p.classId))],
                     p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
+        }
+        // Material nodes outside City A remain visible through the ordinary
+        // city camera when standing near a real border crossing.
+        if(net!=null){
+            for(var node:net.resourceNodes.values())
+                if(node.remaining()>0&&Math.hypot(node.x()-px,node.y()-py)<19)
+                    gameplay.add(new UrbanScene.ModelInstance(modelForResource(
+                        node.type(),node.id()),node.x(),node.y(),0,
+                        node.type().equals("TIMBER")?.39:1.05));
+        }else{
+            for(var node:localHarvesting.nearby(px,py,19))if(node.remaining()>0)
+                gameplay.add(new UrbanScene.ModelInstance(modelForResource(
+                    node.type().name(),node.id()),localHarvesting.nodeX(node),
+                    localHarvesting.nodeY(node),0,
+                    node.type()==WildernessResources.Type.TIMBER?.39:1.05));
         }
         urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
         drawMonsterThreats(g);

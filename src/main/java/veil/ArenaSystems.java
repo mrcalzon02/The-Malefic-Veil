@@ -231,6 +231,8 @@ public final class ArenaSystems {
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
         if(world.devices.size()>=100)return new BuildReview(false,"BUILD_LIMIT",price,supplies,x,y);
         if(p.cash<price||p.scrap<supplies)return new BuildReview(false,"RESOURCES",price,supplies,x,y);
+        if(world.worldStructureAt(x,y,.55))
+            return new BuildReview(false,"WORLD_STRUCTURE",price,supplies,x,y);
         if(!free(x,y)||!clear(p.x,p.y,x,y))
             return new BuildReview(false,"OBSTRUCTED",price,supplies,x,y);
         for(double[] spawn:world.spawns)

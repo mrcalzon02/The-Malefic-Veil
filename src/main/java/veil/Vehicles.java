@@ -70,6 +70,12 @@ public final class Vehicles {
         if(Math.abs(car.speed)>.1||car.driverId>=0)return null;
         String item=car.cargo;car.cargo=null;return item;
     }
+    /** Emergency cargo ejection on damage, including while the driver is in the cab. */
+    synchronized String ejectCargo(int carId){
+        if(carId<0||carId>=cars.size())return null;
+        Car car=cars.get(carId);
+        String result=car.cargo;car.cargo=null;return result;
+    }
     /** Host-controlled health damage; never allows a client-authored HP value. */
     public synchronized boolean damageCar(int carId,int amount){
         if(carId<0||carId>=cars.size()||amount<1||amount>200)return false;

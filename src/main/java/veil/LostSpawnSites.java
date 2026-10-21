@@ -35,7 +35,7 @@ public final class LostSpawnSites {
         for(CityLayout.Plot plot:hazard){
             if(sites.size()>=36)break;
             int variant=plot.template().variant();
-            if(variant==6||variant==2||variant==4||variant==0||variant==3||variant==5){
+            { // every built HAZARD plot can be a Lost origin, not only select variants
                 int left=plot.x()*CityLayout.CELL+2,top=plot.y()*CityLayout.CELL+2;
                 int right=plot.right()*CityLayout.CELL-2,bottom=plot.bottom()*CityLayout.CELL-2;
                 boolean created=false;
@@ -48,26 +48,28 @@ public final class LostSpawnSites {
                     if(protectedSpawn)continue;
                     Site site=new Site();
                     site.id=sites.size();site.x=x;site.y=y;
-                    site.capacity=2; // max two active Lost NPCs per named ruin
+                    site.capacity=1; // assigned after site count is known
                     site.building=plot.template().id();
                     site.appearance=lostModel(world.seed,plot.x(),plot.y(),variant);
                     sites.add(site);created=true;
                 }
             }
         }
-        if(sites.size()<23)throw new IllegalStateException("Too few source ruins to bound Lost creatures");
-        // Fixed 45 stable NPC indices preserve the existing on-disk v1 NPC
-        // catalog and socket indices. Dormant slots (hp=0) are not live threats.
-        for(Site site:sites){
-            if(world.npcs.size()>=MAX_GLOBAL)break;
-            reserve(site);
+        if(sites.isEmpty())throw new IllegalStateException("No hazard sites in generated city");
+        // Compatibility: version-1 realms and the LAN protocol have precisely
+        // 45 stable NPC indexes. Spread dormant slots among genuine buildings,
+        // never fabricate extra city sites or let one building grow unbounded.
+        int maxPerSite=(int)Math.ceil(MAX_GLOBAL/(double)sites.size());
+        for(Site site:sites)site.capacity=Math.max(1,maxPerSite);
+        while(world.npcs.size()<MAX_GLOBAL){
+            boolean allocated=false;
+            for(Site site:sites){
+                if(world.npcs.size()>=MAX_GLOBAL)break;
+                if(site.owned.size()>=site.capacity)continue;
+                reserve(site);allocated=true;
+            }
+            if(!allocated)throw new IllegalStateException("Lost NPC slot assignment stuck");
         }
-        for(Site site:sites){
-            if(world.npcs.size()>=MAX_GLOBAL)break;
-            if(site.capacity>1)reserve(site);
-        }
-        if(world.npcs.size()!=MAX_GLOBAL)
-            throw new IllegalStateException("Could not reserve 45 stable Lost NPC slots");
         advance(0,List.of());
     }
     private void reserve(Site site){

@@ -64,6 +64,33 @@ public final class WildernessResources {
     public synchronized Node node(int id){
         return id>=0&&id<nodes.size()?nodes.get(id).view():null;
     }
+    public record Depletion(int id,int remaining,long replenishesAt) {}
+    public record Snapshot(long seed,long clock,List<Depletion> depletion) {}
+    /** Durable node state, keyed to the same deterministic continental seed. */
+    public synchronized Snapshot snapshot(){
+        List<Depletion> changes=new ArrayList<>();
+        for(Resource r:nodes)if(r.remaining<r.capacity)
+            changes.add(new Depletion(r.id,r.remaining,r.replenishesAt));
+        return new Snapshot(map.seed(),now,List.copyOf(changes));
+    }
+    public synchronized void restore(Snapshot save){
+        if(save==null||save.seed()!=map.seed()||save.clock()<0||
+           save.depletion()==null||save.depletion().size()>nodes.size())
+            throw new IllegalArgumentException("Invalid wilderness resource save");
+        Set<Integer> seen=new HashSet<>();
+        for(Depletion d:save.depletion()){
+            if(d==null||d.id()<0||d.id()>=nodes.size()||!seen.add(d.id())||
+               d.remaining()<0||d.remaining()>=nodes.get(d.id()).capacity||
+               d.replenishesAt()<0||d.replenishesAt()>save.clock()+600_000L)
+                throw new IllegalArgumentException("Corrupt wilderness depletion");
+        }
+        for(Resource r:nodes){r.remaining=r.capacity;r.replenishesAt=0;}
+        now=save.clock();
+        for(Depletion d:save.depletion()){
+            Resource r=nodes.get(d.id());
+            r.remaining=d.remaining();r.replenishesAt=d.replenishesAt();
+        }
+    }
     /** Exact coordinate/range validation belongs to server's player position. */
     public synchronized Type harvest(int id,int x,int y){
         if(id<0||id>=nodes.size())return null;

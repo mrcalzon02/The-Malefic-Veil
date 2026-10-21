@@ -22,6 +22,7 @@ public final class LanServer implements AutoCloseable {
     private final ConcurrentMap<Integer,Peer> connections=new ConcurrentHashMap<>();
     public final ArenaSystems match;
     public final ContinentSectors continentSectors;
+    public final WildernessExpedition wilderness;
     private volatile boolean running=true;
     private int nextId;
     private static final class Peer {
@@ -31,6 +32,7 @@ public final class LanServer implements AutoCloseable {
         boolean authenticated;
         int commands;
         long commandWindow=System.nanoTime();
+        double lastResourceX=Double.NaN,lastResourceY=Double.NaN;
         synchronized void send(String message){out.println(message);}
     }
     public LanServer(int port,long seed)throws IOException {this(port,seed,null,false);}
@@ -45,9 +47,11 @@ public final class LanServer implements AutoCloseable {
         match=new ArenaSystems(seed,active);
         ContinentLayout continent=match.world.continent();
         continentSectors=new ContinentSectors(continent,new ContinentPopulation(continent));
+        wilderness=new WildernessExpedition(continent);
         if(saveDir!=null){
             DurableRealm.load(match,saveDir);
             AccountDirectory.load(match,saveDir);
+            wilderness.load(saveDir);
         }
         listener=saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
@@ -60,10 +64,21 @@ public final class LanServer implements AutoCloseable {
         ticks.scheduleAtFixedRate(()->{
             try {
                 match.advance(100);
+                wilderness.advance(100);
                 for(Peer p:connections.values()){
                     ArenaSystems.Player self=match.player(p.id);
                     if(self!=null){
                         p.send(selfPacket(self));
+                        if(self.inWilderness){
+                            WildernessExpedition.Position position=wilderness.position(p.id);
+                            if(position!=null){
+                                p.send("WILD_POSITION|"+position.x()+"|"+position.y()+"|"+position.angle());
+                                if(!Double.isFinite(p.lastResourceX)||
+                                   Math.hypot(position.x()-p.lastResourceX,
+                                              position.y()-p.lastResourceY)>7||
+                                   match.time()%5000==0)syncResources(p,position);
+                            }
+                        }
                         if(match.time()%500==0){
                             p.send(progressionPacket(self));
                             p.send(inventoryPacket(self));
@@ -75,7 +90,7 @@ public final class LanServer implements AutoCloseable {
                         }
                     }
                 }
-                for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
+                for(ArenaSystems.Player p:match.roster())if(!p.inWilderness)broadcast(peerPacket(p),p.id);
                 for(Vehicles.State car:match.vehicles.states())broadcast(carPacket(car),-1);
                 if(match.time()%500==0){
                     for(Vehicles.State car:match.vehicles.states())
@@ -109,6 +124,13 @@ public final class LanServer implements AutoCloseable {
     private synchronized int id(){return ++nextId;}
     private void broadcast(String message,int except){
         for(Peer q:connections.values())if(q.id!=except)q.send(message);
+    }
+    private void syncResources(Peer peer,WildernessExpedition.Position location){
+        for(var node:wilderness.nearby(location.x(),location.y(),25)){
+            peer.send("WILD_NODE|"+node.id()+"|"+node.x()+"|"+node.y()+"|"+
+                node.type()+"|"+node.remaining()+"|"+node.capacity());
+        }
+        peer.lastResourceX=location.x();peer.lastResourceY=location.y();
     }
     private static String peerPacket(ArenaSystems.Player p){
         return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility+"|"+p.classId;
@@ -224,8 +246,16 @@ public final class LanServer implements AutoCloseable {
                     if(moderation!=null&&peer.authenticated&&
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
-                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND").contains(s[0])){
+                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND",
+                           "WILD_ENTER","WILD_MOVE","WILD_HARVEST").contains(s[0])){
                         peer.send("FACTION_RESULT|REQUIRED");continue;
+                    }
+                    ArenaSystems.Player dimensionActor=match.player(peer.id);
+                    if(dimensionActor!=null&&dimensionActor.inWilderness&&
+                       Set.of("STATE","FIRE","PICKUP","BUILD","RIDE","DRIVE",
+                           "CARGO_LOAD","CARGO_RECOVER","ABILITY","RELOAD",
+                           "CHOOSE","RESPAWN").contains(s[0])){
+                        peer.send("WILD_DENIED|WRONG_DIMENSION");continue;
                     }
                     switch(s[0]){
                         case "AUTH" -> {
@@ -342,6 +372,57 @@ public final class LanServer implements AutoCloseable {
                             boolean admitted=match.sceneReady(peer.id);
                             peer.send("SCENE_READY_RESULT|"+(admitted?"OK":"IGNORED"));
                         }
+                        case "WILD_ENTER" -> {
+                            if(s.length!=1)continue;
+                            ArenaSystems.Player p=match.player(peer.id);
+                            if(p==null||p.dead||match.vehicles.carDrivenBy(peer.id)>=0){
+                                peer.send("WILD_DENIED|NOT_READY");continue;
+                            }
+                            var position=wilderness.enter(peer.id,p);
+                            if(position==null){peer.send("WILD_DENIED|NOT_READY");continue;}
+                            p.inWilderness=true;
+                            peer.send("WILD_ENTERED|"+position.x()+"|"+position.y()+"|"+position.angle());
+                            syncResources(peer,position);
+                        }
+                        case "WILD_EXIT" -> {
+                            if(s.length!=1)continue;
+                            var p=match.player(peer.id);
+                            if(p!=null&&p.inWilderness){
+                                wilderness.leave(peer.id);p.inWilderness=false;
+                                peer.send("WILD_EXITED");
+                                peer.send(selfPacket(p));
+                            }
+                        }
+                        case "WILD_MOVE" -> {
+                            if(s.length!=5)continue;
+                            var p=match.player(peer.id);
+                            if(p!=null&&p.inWilderness)
+                                wilderness.move(peer.id,p,Double.parseDouble(s[1]),
+                                    Double.parseDouble(s[2]),Double.parseDouble(s[3]),
+                                    Integer.parseInt(s[4]));
+                        }
+                        case "WILD_HARVEST" -> {
+                            if(s.length!=2)continue;
+                            var p=match.player(peer.id);
+                            int nodeId=Integer.parseInt(s[1]);
+                            var outcome=wilderness.harvest(peer.id,p,nodeId);
+                            peer.send("WILD_HARVEST_RESULT|"+nodeId+"|"+outcome.reason());
+                            if(outcome.accepted()){
+                                peer.send(inventoryPacket(p));
+                                p.progression.reward(CharacterProgression.Skill.SCAVENGING,
+                                    8,match.time(),3000);
+                                peer.send(progressionPacket(p));
+                                var n=outcome.node();
+                                for(Peer observer:connections.values())
+                                    if(wilderness.active(observer.id)){
+                                        var pos=wilderness.position(observer.id);
+                                        if(pos!=null&&Math.hypot(pos.x()-n.x()-.5,
+                                            pos.y()-n.y()-.5)<30)
+                                            observer.send("WILD_NODE|"+n.id()+"|"+n.x()+"|"+
+                                                n.y()+"|"+n.type()+"|"+n.remaining()+"|"+n.capacity());
+                                    }
+                            }
+                        }
                         case "STATE" -> {
                             if(s.length!=5)continue;
                             changed=match.move(peer.id,Double.parseDouble(s[1]),
@@ -362,7 +443,7 @@ public final class LanServer implements AutoCloseable {
                         case "PICKUP" -> {
                             if(s.length!=2)continue;
                             int index=Integer.parseInt(s[1]);
-                            changed=match.pickup(peer.id,index);
+                            changed=match.interactPickup(peer.id,index);
                             if(changed)broadcast("PICKUP|"+index,-1);
                         }
                         case "MEDKIT" -> changed=match.useMedkit(peer.id);
@@ -481,6 +562,7 @@ public final class LanServer implements AutoCloseable {
         }finally{
             if(peer.authenticated) audit("logout id="+peer.id);
             connections.remove(peer.id);
+            wilderness.leave(peer.id);
             match.leave(peer.id);
             broadcast("LEFT|"+peer.id,-1);
         }
@@ -534,6 +616,7 @@ public final class LanServer implements AutoCloseable {
         if(dataDirectory==null)throw new IOException("In-memory LAN match has no save directory");
         DurableRealm.save(match,dataDirectory);
         AccountDirectory.save(match,dataDirectory);
+        wilderness.save(dataDirectory);
     }
     public void saveNow()throws IOException{
         saveAll();audit("manual_save");

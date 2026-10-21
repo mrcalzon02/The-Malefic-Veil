@@ -488,7 +488,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 case MOUNTAINS -> new Color(131,136,141);
                 case MARSH -> new Color(81,107,91);
             };
-            if(map.cityAt(x,y)!='\\0')tint=map.worldStructureAt(x,y)?new Color(108,104,109):new Color(135,128,98);
+            if(map.cityAt(x,y)!='\0')tint=map.worldStructureAt(x,y)?new Color(108,104,109):new Color(135,128,98);
             if(map.road(x,y))tint=new Color(192,186,165);
             g.setColor(tint);g.fillRect(left+x*tile,top+y*tile,tile,tile);
         }

@@ -521,7 +521,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 g.drawString(status,left+panelWidth-155,rowTop+29);
             }
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
-            g.drawString("1–3 SELECT   ENTER DEPLOY   CLICK ROW TO SELECT",left+20,top+258);
+            g.drawString("1–3 SELECT  /  CLICK ROW  /  ENTER DEPLOY",left+20,top+258);
             if(net!=null&&!net.connected())g.drawString("CONNECTION LOST — RECONNECT REQUIRED",left+20,top+275);
         }
         g.dispose();
@@ -652,7 +652,22 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     @Override public void keyReleased(KeyEvent e){held.remove(e.getKeyCode());}
     @Override public void keyTyped(KeyEvent e){}
-    @Override public void mousePressed(MouseEvent e){requestFocusInWindow();if(e.getButton()==MouseEvent.BUTTON1)shoot();}
+    @Override public void mousePressed(MouseEvent e){
+        requestFocusInWindow();
+        if(e.getButton()!=MouseEvent.BUTTON1)return;
+        if(dead){
+            int top=Math.max(46,(getHeight()-282)/2);
+            int left=(getWidth()-Math.min(590,getWidth()-30))/2;
+            int right=getWidth()-left;
+            for(int i=0;i<3;i++){
+                int rowTop=top+79+i*52;
+                if(e.getX()>=left+16&&e.getX()<right-16&&
+                   e.getY()>=rowTop&&e.getY()<rowTop+46)spawn=i;
+            }
+            return;
+        }
+        shoot();
+    }
     @Override public void mouseReleased(MouseEvent e){}
     @Override public void mouseClicked(MouseEvent e){}
     @Override public void mouseEntered(MouseEvent e){previousMouse=-1;}

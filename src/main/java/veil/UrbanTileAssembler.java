@@ -79,6 +79,22 @@ public final class UrbanTileAssembler {
                         add(assembled,roof,cx,cy,((n>>>9)&1)==0?0:Math.PI/2,5.2,0,2.0);
                     }
                 }
+            // Kit doorway modules frame the openings already carved by CityLayout.
+            // No doors are invented in blocked squares: the exact same walkable gap
+            // is used by the renderer and the authoritative tile collider.
+            if(category!=CityLayout.Category.OPEN){
+                int x0=plot.x()*CELL,y0=plot.y()*CELL;
+                int x1=plot.right()*CELL,y1=plot.bottom()*CELL;
+                int midX=(x0+x1)/2,midY=(y0+y1)/2;
+                int[][] entries={{midX,y0},{midX,y1-1},{x0,midY},{x1-1,midY}};
+                for(int side=0;side<4;side++){
+                    int ex=entries[side][0],ey=entries[side][1];
+                    if(city.tile(ex,ey)!=0)continue;
+                    // The open frame is an aperture, not a collision override.
+                    String frame=((roll(seed,ex,ey,71)&1)==0)?"wall-a-open":"wall-b-open";
+                    add(assembled,frame,ex+.5,ey+.5,side*Math.PI/2,1,0);
+                }
+            }
             // Lot dressing respects the existing authored plot categorization, rather
             // than randomly scattering contradictory geometry across city roads.
             double ix=(plot.x()+plot.right())*CELL/2.0,
@@ -123,7 +139,7 @@ public final class UrbanTileAssembler {
             else if((hash&15)==1)
                 wall=useB?"wall-b-window":"wall-a-window";
             else if((hash&7)==2)
-                wall=useB?"wall-b-flat":"wall-a-flat-painted";
+                wall=useB?"wall-b":"wall-a-painted";
             else
                 wall=useB?"wall-b":"wall-a";
             double angle=(hash&3)*Math.PI/2;

@@ -107,6 +107,7 @@ public final class ContinentPopulation {
             return new BuildCheck(false,"OUT_OF_BOUNDS");
         for(int px=x-clearance;px<x+w+clearance;px++)
             for(int py=y-clearance;py<y+h+clearance;py++){
+                if(world.cityProtected(px,py))return new BuildCheck(false,"CITY_PROTECTED");
                 if(!world.land(px,py))return new BuildCheck(false,"WATER");
                 if(world.worldStructureAt(px,py))return new BuildCheck(false,"WORLD_STRUCTURE");
                 if(!world.buildableGround(px,py))return new BuildCheck(false,"TERRAIN");

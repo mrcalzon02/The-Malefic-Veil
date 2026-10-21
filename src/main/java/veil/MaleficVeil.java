@@ -21,6 +21,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final GameplayMeshes actorModels=new GameplayMeshes();
     private final WeaponViewRenderer weaponRenderer=new WeaponViewRenderer();
     private final NetLink net;
+    private final Vehicles localVehicles;
     private final int archetype;
     private final javax.swing.Timer timer;
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
@@ -36,6 +37,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {
         this.window=window;this.net=net;this.archetype=archetype;
         world=new World(seed);
+        localVehicles=new Vehicles(world);
         try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
@@ -117,8 +119,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 health=s.health();sanity=s.sanity();cash=s.cash();scrap=s.supplies();
                 medkits=s.medkits();pistolReserve=s.pistolReserve();shellReserve=s.shellReserve();
                 pistolClip=s.pistolClip();shellClip=s.shellClip();frags=s.frags();
-                if(Math.hypot(px-s.x(),py-s.y())>1.0){px=s.x();py=s.y();}
+                if(net.drivenCar()>=0||Math.hypot(px-s.x(),py-s.y())>1.0){
+                    px=s.x();py=s.y();
+                    if(net.drivenCar()>=0)angle=s.angle();
+                }
             }
+            String rideReply;
+            while((rideReply=net.rideResults.poll())!=null)
+                toast(rideReply.equals("OK")?"ENGINE ENGAGED":rideReply.equals("EXITED")?
+                    "EXITED VEHICLE":"VEHICLE ACTION REJECTED");
             String respawnReply;
             while((respawnReply=net.respawnResults.poll())!=null)
                 if(!respawnReply.equals("OK"))toast("RESPAWN REJECTED");
@@ -150,10 +159,24 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     n.x=npc.x();n.y=npc.y();n.hp=npc.hp();
                 }
             }
-            if(ticks%3==0)net.state(px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
+            if(ticks%3==0){
+                if(net.drivenCar()>=0)net.drive((down(KeyEvent.VK_W)?1:0)-(down(KeyEvent.VK_S)?1:0),
+                    (down(KeyEvent.VK_D)?1:0)-(down(KeyEvent.VK_A)?1:0));
+                else net.state(px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
+            }
             if(ticks%90==0)net.ping();
         }
+        if(net==null)localVehicles.advance(33);
         if(!dead){
+            int carId=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
+            if(carId>=0){
+                if(net==null){
+                    localVehicles.input(1,(down(KeyEvent.VK_W)?1:0)-(down(KeyEvent.VK_S)?1:0),
+                        (down(KeyEvent.VK_D)?1:0)-(down(KeyEvent.VK_A)?1:0));
+                    Vehicles.State car=localVehicles.state(carId);
+                    if(car!=null){px=car.x();py=car.y();angle=car.heading();}
+                }
+            }else{
             if(down(KeyEvent.VK_LEFT))angle-=step*2.1;
             if(down(KeyEvent.VK_RIGHT))angle+=step*2.1;
             double forward=(down(KeyEvent.VK_W)?1:0)-(down(KeyEvent.VK_S)?1:0);
@@ -165,8 +188,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 slide((Math.cos(angle)*forward-Math.sin(angle)*sideways)*speed*step,
                     (Math.sin(angle)*forward+Math.cos(angle)*sideways)*speed*step);
             }
+            }
             if(net!=null){
-                if(ticks%8==0)for(int i=0;i<world.pickups.size();i++){
+                if(carId<0&&ticks%8==0)for(int i=0;i<world.pickups.size();i++){
                     World.Pickup item=world.pickups.get(i);
                     if(!item.taken&&Math.hypot(px-item.x,py-item.y)<.57)net.pickup(i);
                 }
@@ -326,6 +350,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if((tx+ty)%5==0){g.setColor(new Color(r/2,gg/2,b/2));g.drawLine(i,Math.max(0,top+h/2),i,Math.min(RH,top+h/2));}
         }
         urbanRenderer.draw(g,urban,px,py,angle,depth,RW,RH);
+        java.util.List<UrbanScene.ModelInstance> cars=new java.util.ArrayList<>();
+        if(net!=null){
+            for(NetLink.Car car:net.cars.values())if(car.hp()>0&&car.driverId()!=net.id)
+                cars.add(new UrbanScene.ModelInstance("truck-green",car.x(),car.y(),car.heading(),1.9));
+        }else{
+            for(Vehicles.State car:localVehicles.states())if(car.hp()>0&&car.driverId()!=1)
+                cars.add(new UrbanScene.ModelInstance("truck-green",car.x(),car.y(),car.heading(),1.9));
+        }
+        urbanRenderer.draw(g,urban.models(),cars,px,py,angle,depth,RW,RH);
         java.util.List<UrbanScene.ModelInstance> gameplay=new java.util.ArrayList<>();
         for(World.Pickup p:world.pickups)if(!p.taken&&p.kind>=0&&p.kind<GameplayMeshes.PICKUP.length)
             gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,
@@ -336,7 +369,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             gameplay.add(new UrbanScene.ModelInstance("enemy-walker",n.x,n.y,
                 Math.atan2(py-n.y,px-n.x)-Math.PI/2,1.0));
         if(net!=null)for(NetLink.Remote p:net.others.values())
-            if(p.hp>0)gameplay.add(new UrbanScene.ModelInstance(
+            if(p.hp>0&&net.cars.values().stream().noneMatch(car->car.driverId()==p.id))
+                gameplay.add(new UrbanScene.ModelInstance(
                 GameplayMeshes.HERO[Math.max(0,Math.min(3,p.classId))],
                 p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
         urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
@@ -422,12 +456,22 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         if(noticeTicks>0){g.setFont(new Font(Font.MONOSPACED,Font.BOLD,17));g.setColor(new Color(234,202,132));g.drawString(notice,15,52);}
         if(continentVisible)drawContinentMap(g,w,h);
         else if(mapVisible)drawMap(g,w,h);
+        int activeCar=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
+        if(activeCar>=0){
+            double speed=0,fuel=0;
+            if(net==null){Vehicles.State car=localVehicles.state(activeCar);
+                if(car!=null){speed=car.speed();fuel=car.fuel();}}
+            else{NetLink.Car car=net.cars.get(activeCar);
+                if(car!=null){speed=car.speed();fuel=car.fuel();}}
+            g.setColor(new Color(229,211,152));
+            g.drawString(String.format("CAR  SPEED %.1f  FUEL %.0f%%  Q exit",speed,fuel),15,70);
+        }
         if(help&&!dead){g.setColor(new Color(9,10,17,220));g.fillRect(12,64,440,100);
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("T turret  H heal  V revive  B barricade  E medkit",23,127);
-            g.drawString("M city map  N continent  TAB / Esc help",23,147);}
+            g.drawString("Q enter/exit car  M city map  N continent  TAB / Esc help",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
@@ -527,10 +571,36 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 else if(medkits>0&&health<100){medkits--;health=Math.min(100,health+55);toast("MEDKIT USED");}
             }
             case KeyEvent.VK_B -> deploy(3);
+            case KeyEvent.VK_Q -> toggleCar();
             case KeyEvent.VK_SPACE -> shoot();
             case KeyEvent.VK_M -> {mapVisible=!mapVisible;continentVisible=false;}
             case KeyEvent.VK_N -> {continentVisible=!continentVisible;mapVisible=false;}
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
+        }
+    }
+    private void toggleCar(){
+        if(net!=null){
+            if(net.drivenCar()>=0){net.exitCar();return;}
+            int chosen=-1;double best=2.0;
+            for(NetLink.Car car:net.cars.values()){
+                double dist=Math.hypot(px-car.x(),py-car.y());
+                if(car.hp()>0&&car.driverId()<0&&dist<best){best=dist;chosen=car.id();}
+            }
+            if(chosen<0)toast("NO VEHICLE IN REACH");else net.ride(chosen);
+        }else{
+            if(localVehicles.carDrivenBy(1)>=0){
+                double[] exited=localVehicles.exit(1);
+                if(exited==null)toast("STOP AND CLEAR THE DOOR");
+                else{px=exited[0];py=exited[1];toast("EXITED VEHICLE");}
+                return;
+            }
+            int chosen=-1;double best=2.0;
+            for(Vehicles.State car:localVehicles.states()){
+                double dist=Math.hypot(px-car.x(),py-car.y());
+                if(car.hp()>0&&car.driverId()<0&&dist<best){best=dist;chosen=car.id();}
+            }
+            if(chosen<0||!localVehicles.enter(1,px,py,chosen))toast("NO VEHICLE IN REACH");
+            else toast("ENGINE ENGAGED");
         }
     }
     @Override public void keyReleased(KeyEvent e){held.remove(e.getKeyCode());}

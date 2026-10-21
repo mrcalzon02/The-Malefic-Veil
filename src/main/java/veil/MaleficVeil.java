@@ -462,6 +462,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
         }
         urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
+        drawMonsterThreats(g);
         g.setColor(new Color(187,176,149));
         g.fillRect(RW/2-5,RH/2,11,1);g.fillRect(RW/2,RH/2-5,1,11);
         int bob=(int)(Math.sin(ticks*.15)*(down(KeyEvent.VK_W)?2:0));
@@ -475,6 +476,41 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(new Color(65,30,91,Math.min(100,a)));
             g.fillRect(0,0,RW,RH);
         }
+    }
+    /** Server-ranked creature danger at a glance; never trusts client-authored levels. */
+    private void drawMonsterThreats(Graphics2D g){
+        int playerLevel=net!=null&&net.rpg()!=null?net.rpg().level():1;
+        int drawn=0;
+        Font original=g.getFont();
+        g.setFont(new Font(Font.MONOSPACED,Font.BOLD,8));
+        for(int index=0;index<world.npcs.size()&&drawn<7;index++){
+            World.Npc monster=world.npcs.get(index);
+            if(monster.hp<=0)continue;
+            double dx=monster.x-px,dy=monster.y-py,d=Math.hypot(dx,dy);
+            if(d<=.35||d>=15)continue;
+            double relative=Math.atan2(Math.sin(Math.atan2(dy,dx)-angle),
+                Math.cos(Math.atan2(dy,dx)-angle));
+            if(Math.abs(relative)>=FOV*.48)continue;
+            int column=(int)(RW/2+Math.tan(relative)/Math.tan(FOV/2)*RW/2);
+            if(column<0||column>=RW||d>=depth[column]-.1)continue;
+            NetLink.NpcRank rank=net==null?null:net.npcRanks.get(index);
+            int enemyLevel=rank==null?CharacterProgression.monsterLevel(world.seed,monster):
+                rank.level();
+            CharacterProgression.ThreatMark threat=CharacterProgression.threat(playerLevel,enemyLevel);
+            int barWidth=33,center=Math.max(17,Math.min(RW-18,column));
+            int top=Math.max(10,Math.min(RH-26,RH/2-(int)(62/d)-14));
+            g.setColor(new Color(10,12,17,205));
+            g.fillRect(center-36,top-13,72,23);
+            g.setColor(Color.decode(threat.colorHex()));
+            String archetype=monster.kind.replace("lost-","").toUpperCase();
+            String label=threat.icon()+" LV"+enemyLevel+" "+archetype;
+            g.drawString(label,center-Math.min(35,label.length()*2),top-4);
+            g.setColor(new Color(55,54,61));g.fillRect(center-16,top,barWidth,3);
+            g.setColor(Color.decode(threat.colorHex()));
+            g.fillRect(center-16,top,(int)Math.ceil(barWidth*Math.max(0,monster.hp)/80.0),3);
+            drawn++;
+        }
+        g.setFont(original);
     }
     private void sprite(Graphics2D g,double x,double y,int rgb,int scale,boolean humanoid){
         sprite(g,x,y,rgb,scale,humanoid,1.0);

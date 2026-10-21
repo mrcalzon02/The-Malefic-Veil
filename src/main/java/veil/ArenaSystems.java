@@ -10,6 +10,7 @@ public final class ArenaSystems {
     public final World world;
     public final Vehicles vehicles;
     public final CargoHaulage cargo;
+    public final boolean hardcore;
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
@@ -112,7 +113,9 @@ public final class ArenaSystems {
             protectedUntil=now+10_000; // no deaths while client scene is still starting
         }
     }
-    public ArenaSystems(long seed){
+    public ArenaSystems(long seed){this(seed,false);}
+    public ArenaSystems(long seed,boolean hardcore){
+        this.hardcore=hardcore;
         world=new World(seed);vehicles=new Vehicles(world);
         cargo=new CargoHaulage(world,vehicles);
     }
@@ -222,7 +225,12 @@ public final class ArenaSystems {
         p.lastHurt=clock;
         if(p.hp==0){
             p.dead=true;p.respawnAt=clock;p.protectedUntil=0;
-            p.progression.died();
+            if(hardcore){
+                p.progression.resetCharacter();
+                p.frags=0;
+                // Character's affiliation and account authentication survive;
+                // earned proficiency, achievements and personal score do not.
+            }else p.progression.died();
             // No graveyard has been commissioned: legacy carried resources are lost.
             p.cash=0;p.scrap=0;p.medkits=0;
             p.pistolClip=0;p.shellClip=0;p.pistolReserve=0;p.shellReserve=0;

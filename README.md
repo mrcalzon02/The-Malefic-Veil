@@ -29,6 +29,14 @@ java -jar gpu-client/target/MaleficVeil-GPU.jar
 
 WASD moves, arrow keys turn, Left Shift sprints, plus/minus changes view distance. This is currently a **real GPU Kenney environment walkthrough**, **not yet** a port of the existing shooter client, authentication, LAN combat or UI. The original Java2D launchers and headless server remain unchanged. The [GPU CI workflow](.github/workflows/gpu-client.yml) builds on Linux and Windows, executes a Mesa/Xvfb OpenGL smoke screenshot on Linux, and publishes a downloadable JAR and screenshot in its build artifacts. [Implementation contract and evidence gates](docs/GPU_CLIENT_IMPLEMENTATION.md).
 
+### GPU environment, night cycle and PSX UI
+
+The GPU walkthrough now has a procedural retro skybox with sun, moon, stars, dawn/dusk fog and a 24-minute preview day/night cycle. Actual Kenney streetlight meshes create local point-light pools (up to eight nearest per fragment). The seeded city assembles connected streets from modular Kenney asphalt/pavement and builds category-sensitive SAFE, RESOURCE, HAZARD and OPEN plots with licensed walls, roofs and dressing.
+
+The **main menu uses the original CC BY 4.0 PSX Horror UI Free sprites and Ribbon bitmap font**, with keyboard/mouse menu navigation, graphics controls and an attribution screen. Controls: main-menu arrows/Enter; in-world Escape for menu, F10 for graphics, `[ ]` to scrub the clock, WASD/arrows for movement, +/- for visual range. Current graphics controls adjust view range, local light count and visual clock rate. This is still a **local GPU world preview**; server-synchronized time and multiplayer functionality are not yet ported.
+
+**Required UI credit:** PSX Horror UI Free by heyheythere — https://heyheythere.itch.io/psx-horror-ui-free — CC BY 4.0. The commercial full pack has a separate license and is not used here. [Detailed asset attribution, screenshots and pending gates](docs/PSX_UI_SKY_LIGHTING_IMPLEMENTATION.md).
+
 ## Continental population, vehicles and dedicated host (development slices)
 
 A deterministic continental **macro blueprint** now includes seven connected city sites, biome/wilderness areas, categorized plots, 3 player-spawn candidates per city, extra wilderness rally points, NPC encounter sites, and multicell/rotated parcel-level construction denial over world-owned features. **The actual playable game remains the original 132×132 city sector**: continental chunk rendering, collision, movement, NPC actors, and seamless city-to-city driving are not ready yet.

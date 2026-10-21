@@ -61,11 +61,25 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             int mode=JOptionPane.showOptionDialog(null,"THE MALEFIC VEIL — PROTOTYPE\nSelect play mode",
                 "The Malefic Veil",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,modes,modes[0]);
             if(mode<0)return;
-            String[] classes={"WARDEN — turret specialist","MEDIC — field recovery","SHADE — invisibility","OCCULTIST — sanity control"};
-            Object selected=JOptionPane.showInputDialog(null,"Select character ability","Character Select",
-                JOptionPane.PLAIN_MESSAGE,null,classes,classes[0]);
+            CharacterRoster.Faction faction=(CharacterRoster.Faction)JOptionPane.showInputDialog(
+                null,"Choose faction","Faction Selection",JOptionPane.PLAIN_MESSAGE,
+                null,CharacterRoster.Faction.values(),CharacterRoster.Faction.THE_UNRAVELED);
+            if(faction==null)return;
+            java.util.List<FactionClasses.Role> choices=FactionClasses.faction(faction);
+            String[] labels=choices.stream().map(role->role.name()+" — "+role.purpose()+
+                (role.playable()?"":" [COMING SOON]")).toArray(String[]::new);
+            Object selected=JOptionPane.showInputDialog(null,"Choose "+faction.display+" class",
+                "Character Selection",JOptionPane.PLAIN_MESSAGE,null,labels,labels[0]);
             if(selected==null)return;
-            int character=0;for(int i=0;i<classes.length;i++)if(classes[i].equals(selected))character=i;
+            int chosen=java.util.Arrays.asList(labels).indexOf(selected.toString());
+            if(chosen<0)return;
+            FactionClasses.Role role=choices.get(chosen);
+            if(!role.playable()){
+                JOptionPane.showMessageDialog(null,"This faction class awaits its gameplay and character model integration.",
+                    "Class Not Yet Playable",JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            int character=role.existingAbilityId();
             long seed=Long.getLong("veil.seed",20261020L);
             NetLink link=null;
             try {

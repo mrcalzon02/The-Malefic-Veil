@@ -66,6 +66,23 @@ jobs:
           test -s build/test-visuals/gpu-kenney-vehicles.png
           test -s build/test-visuals/gpu-kenney-foliage.png
           file build/test-visuals/gpu-kenney-city.png
+      - name: Three seeded real GPU worlds, six in-game camera angles each
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          for seed in 20261020 42 887766; do
+            xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+              timeout 150s java -Djava.awt.headless=false \
+              -jar gpu-client/target/MaleficVeil-GPU.jar --gallery --seed="$seed" \
+              | tee "build/test-visuals/gallery-seed-$seed.log"
+            test "$(grep -c 'GALLERY_CAPTURE seed=' "build/test-visuals/gallery-seed-$seed.log")" -eq 6
+            test "$(find build/test-visuals -maxdepth 1 -name "gallery-seed-$seed-*.png" | wc -l)" -eq 6
+          done
+          printf 'Real OpenGL world gallery: 3 seeds x 6 camera poses = 18 PNGs\n'
+          file build/test-visuals/gallery-seed-*.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -78,4 +95,6 @@ jobs:
             build/test-visuals/gpu-continental-edge.png
             build/test-visuals/gpu-kenney-vehicles.png
             build/test-visuals/gpu-kenney-foliage.png
+            build/test-visuals/gallery-seed-*.png
+            build/test-visuals/gallery-seed-*.log
           if-no-files-found: warn

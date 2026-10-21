@@ -60,6 +60,14 @@ The ground/air contract is documented in **[Faction vehicles and air power](FACT
 
 V2 requires actually converted GGBot CC0 runtime cars, multiple chassis, server materialization/tombstones and physical collision/access checks. V3 adds component repairs, multi-slot cargo and chassis manufacturing; V4 adds faction access and ally-safe vehicle combat. Aircraft are gated behind late-game industry, nine original airframes (three distinct classes per faction), actual host flight and mixed-arms counterplay; no aircraft are implemented yet.
 
+### Character-owned settlements and dual-role faction anti-air [POLICY CODE ADDED; LIVE WORLD GATED]
+
+The [facility authority contract](FACTION_FACILITIES_BASE_CONSTRUCTION.md) now gives **a specific persistent founder character** settlement control, rather than automatic faction/crew/global ownership. The new host-side `SettlementAuthority` is a policy-only module: founder-managed blueprint-specific builder ACLs, fixed versioned charters, one founding charter per character, dynamic level-1–50 budgets, separate defense/production/extension caps, idempotent structure IDs and cold-start snapshots. `SettlementAuthorityTest` exercises grant/deny, foreign faction, high-level helper cap bypass, revocation after ownership transfer, duplicate placements and hardcore level reset.
+
+**Not yet shipped:** character-slot identity and offline directory backed by real saved characters; wilderness Claim Heart materialization and claim geometry; transactional inventory/material debit + placement ledger in the streamed world; zone persistence storage and replication; suspend excess defenses after hardcore rank rollback. The new policy API must not be exposed to client packets or mistaken for placed settlement structures.
+
+The [vehicle and aviation contract](FACTION_VEHICLES_AND_AIR_POWER.md) adds exactly **two specialist AA towers per faction** (six distinct custom art contracts): precise, rapid, low-caliber light anti-air versus slow, armor-piercing heavy-breaker artillery. The intentional **medium-aircraft survival window** is represented by `AntiAirBalance`'s isolated illustrative matchup curve and `AntiAirBalanceTest`. These are balance-specification data and tests, **not** runtime turret entities, projectiles, visual assets or real multiplayer combat. Power/ammunition, line of sight, persistent damage and faction-friendly-fire constraints gate a playable AA release.
+
 ## Phase P5 — Horror, traversal and production gameplay [PLANNED]
 
 **Deliver:** Full health/sanity effects, darkness and visibility gem affecting actual remote alpha, stealth/detection AI, combat feedback, sound staging, classes, team objectives, extraction/holdout, health regen pacing, repair/assembly and supply/cash economy, dynamic environments.

@@ -62,6 +62,9 @@ jobs:
       - name: Atomic cargo v2 realm save and restart compatibility
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.CargoRealmPersistenceTest
+      - name: Backwards compatible V1 realm read and atomic V2 upgrade
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.V1RealmCompatibilityTest
       - name: Wilderness resource regeneration and city immunity
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WildernessResourcesTest

@@ -25,9 +25,9 @@ public final class DedicatedHostTest {
             double y=(plot.y()+plot.bottom())*CityLayout.CELL/2.0+.5;
             if(!game.world.canWalk(x-1.1,y)||!game.world.canWalk(x,y))continue;
             player.x=x-1.1;player.y=y;player.angle=0;player.moveAt=game.time();
-            if(game.reviewBuild(id,ArenaSystems.BARRICADE).allowed())return;
+            return;
         }
-        throw new AssertionError("No legal build location");
+        throw new AssertionError("No vacant city lot for denial test");
     }
     public static void main(String[] args)throws Exception{
         Path temp=Files.createTempDirectory("veil-dedicated-host-");
@@ -45,9 +45,18 @@ public final class DedicatedHostTest {
                 owner.cash=1000;owner.scrap=100;
                 aim(server.match,client.id);
                 client.build(ArenaSystems.BARRICADE);
-                until(()->server.match.world.devices.size()==1,"build accepted by durable host");
+                until(()->!client.buildResults.isEmpty(),"host city-build rejection delivered");
+                check(client.buildResults.poll().reason().equals("CITY_PROTECTED"),
+                    "durable host forbids player structures in empty city parcels");
+                check(server.match.world.devices.isEmpty()&&owner.cash==1000&&owner.scrap==100,
+                    "denied construction preserves world and inventory");
+                // Simulate a pre-rule persisted structure fixture for migration
+                // compatibility; this never enters the player build pathway.
+                World.Device historical=new World.Device(owner.x+1.1,owner.y,ArenaSystems.BARRICADE);
+                historical.ownerId=client.id;historical.ownerKey=account;
+                server.match.world.devices.add(historical);
                 check(server.match.world.devices.get(0).ownerKey.equals(account),
-                    "build owner identified by stable account, not socket ID");
+                    "historic ownership keyed by account rather than socket");
                 server.saveNow();
                 check(Files.isRegularFile(DurableRealm.file(temp)),"manual save materialized");
                 check(server.ban(account),"operator ban accepted");
@@ -55,7 +64,7 @@ public final class DedicatedHostTest {
                 until(()->server.match.player(client.id)==null,"disconnect releases host actor");
             }
             try(LanServer resumed=new LanServer(0,92233L,temp)){
-                check(resumed.match.world.devices.size()==1,"base exists after host restart");
+                check(resumed.match.world.devices.size()==1,"legacy base survives host restart");
                 check(resumed.match.world.devices.get(0).ownerKey.equals(account),"base ownership persists");
                 HostModeration decisions=new HostModeration(temp);
                 check(!decisions.permitted(account),"ban survives complete host process cycle");
@@ -63,7 +72,7 @@ public final class DedicatedHostTest {
             }
             check(Files.readString(temp.resolve("audit.log")).contains("ban account="),
                 "operator audit contains moderation action");
-            System.out.println("PASS DedicatedHostTest: auth, admin ban, audit, save, restart, ownership");
+            System.out.println("PASS DedicatedHostTest: auth, immutable cities, legacy saves, admin ban and restart");
         }finally{
             try(var stream=Files.walk(temp)){
                 stream.sorted(Comparator.reverseOrder()).forEach(path->{

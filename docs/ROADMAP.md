@@ -68,6 +68,17 @@ The [facility authority contract](FACTION_FACILITIES_BASE_CONSTRUCTION.md) now g
 
 The [vehicle and aviation contract](FACTION_VEHICLES_AND_AIR_POWER.md) adds exactly **two specialist AA towers per faction** (six distinct custom art contracts): precise, rapid, low-caliber light anti-air versus slow, armor-piercing heavy-breaker artillery. The intentional **medium-aircraft survival window** is represented by `AntiAirBalance`'s isolated illustrative matchup curve and `AntiAirBalanceTest`. These are balance-specification data and tests, **not** runtime turret entities, projectiles, visual assets or real multiplayer combat. Power/ammunition, line of sight, persistent damage and faction-friendly-fire constraints gate a playable AA release.
 
+### City miasma, level-50 settlements and three incompatible industrial supply architectures [SOURCE DATA AND SPEC]
+
+The [city miasma, crude structure, full economy and trade spec](CITY_MIASMA_SETTLEMENT_ECONOMY_AND_TRADE.md) adds:
+- `CityMiasma`: deterministic city-wide aircraft exclusion columns at all altitudes, swept-crossing validation and test data; **not yet an integrated flight server or rendered purple billows**.
+- `CrudeStructureIndex` and `CraftingEraRegistry` **v2**: full proxy-art index, primitive farming/survival structures and ordered processing recipes; **not instantiated farms or model replacements**.
+- `EquipmentUpgrades`: single-stage level-2→50 upgrade plans for structures, vehicles and defenses with cost/time/era and upkeep escalation; **not world-entity upgrades or stored recipes**.
+- `FactionTradeNetworks`: different five-stage+ Unraveled freight metallurgy, Penitent multi-performer timed rites and Begotten living maturation products, all requiring independent base contributions for final endgame lots; **not transactional or authenticated trade**.
+- `SettlementSupplyBalance`: exhaustive 28-facility / ten-tower modeled inequality proving even optimistic local power and ammo plants cannot self-supply maximum defenses; **not an active power-grid simulation**.
+
+Next gates: consistent fine world/air coordinates, real miasma particle/cloud art and air-launched projectile blocking, verified character ownership and wilderness construction, actual planted crop states and industrial machines, founder-level upgrade transactions, physical convoy/lot receipts across streamed sectors, and full production/defense two-client tests.
+
 ## Phase P5 — Horror, traversal and production gameplay [PLANNED]
 
 **Deliver:** Full health/sanity effects, darkness and visibility gem affecting actual remote alpha, stealth/detection AI, combat feedback, sound staging, classes, team objectives, extraction/holdout, health regen pacing, repair/assembly and supply/cash economy, dynamic environments.

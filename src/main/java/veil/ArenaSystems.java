@@ -13,6 +13,7 @@ public final class ArenaSystems {
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
+    private final Map<Integer,Integer> shieldedShot=new HashMap<>();
     public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3;
     public static final class Player {
         public final int id;
@@ -212,11 +213,14 @@ public final class ArenaSystems {
                 return new ShotReport(sequence,true,"DEVICE",i,
                     deviceHealth[i]-world.devices.get(i).hp,ammo(shooter,weapon));
         }
+        Integer shield=shieldedShot.remove(id);
+        if(shield!=null)return new ShotReport(sequence,true,"SHIELDED",shield,0,ammo(shooter,weapon));
         return new ShotReport(sequence,true,"MISS",0,0,ammo(shooter,weapon));
     }
     public synchronized boolean fire(int id,int weapon){
         Player p=player(id);
         if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||weapon<0||weapon>1)return false;
+        shieldedShot.remove(id);
         long cooldown=weapon==0?210:850;
         if(clock-p.shotAt<cooldown)return false;
         if(weapon==0&&p.pistolClip<=0||weapon==1&&p.shellClip<=0)return false;
@@ -256,7 +260,10 @@ public final class ArenaSystems {
             boolean wasAlive=!victim.dead;damage(victim,amount,weapon==1?6:2);
             if(wasAlive&&victim.dead){p.frags++;p.cash+=25;}
         } else if(target instanceof World.Device device){
-            damageDevice(id,world.devices.indexOf(device),amount,System.currentTimeMillis());
+            int index=world.devices.indexOf(device);
+            if(!damageDevice(id,index,amount,System.currentTimeMillis()) &&
+               raidProtection.protectedOffline(device.ownerKey,System.currentTimeMillis()))
+                shieldedShot.put(id,index);
         } else if(target instanceof World.Npc npc){
             npc.hp-=amount;
             if(npc.hp<=0){p.frags++;p.cash+=25;}

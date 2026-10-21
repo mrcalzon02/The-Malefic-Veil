@@ -50,6 +50,7 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentHashMap<Integer,CargoDrop> cargoDrops=new ConcurrentHashMap<>();
     public final ConcurrentLinkedQueue<String> cargoResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> factionResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> craftResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> rideResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<Integer> pickedUp=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<DeviceEvent> structures=new ConcurrentLinkedQueue<>();
@@ -106,6 +107,9 @@ public final class NetLink implements AutoCloseable {
                             }
                             case "SERVER_MODE" -> {
                                 if(s.length==2)hardcore=s[1].equals("HARDCORE");
+                            }
+                            case "CRAFT_RESULT" -> {
+                                if(s.length==3)craftResults.add(s[1]+"|"+s[2]);
                             }
                             case "FACTION_RESULT", "CREW_RESULT", "CREW_INVITE" -> {
                                 factionResults.add(line);
@@ -270,6 +274,7 @@ public final class NetLink implements AutoCloseable {
     public void build(int kind){send("BUILD|"+kind);}
     public void respawn(int index){send("RESPAWN|"+index);}
     public void sceneReady(){send("SCENE_READY");}
+    public void craftHand(String recipeId){send("CRAFT_HAND|"+recipeId);}
     public void selectFaction(CharacterRoster.Faction chosen){send("FACTION_JOIN|"+chosen.name());}
     public void createCrew(String name){send("CREW_CREATE|"+name);}
     public void inviteCrew(int targetPlayerId){send("CREW_INVITE|"+targetPlayerId);}

@@ -36,8 +36,17 @@ public final class WorldSelfTest {
                 check(a.canWalk(s[0],s[1]),"spawn blocked");
                 check(seen[x][y],"spawn inaccessible on seed "+seed);
             }
-            for(World.Pickup item:a.pickups)check(a.canWalk(item.x,item.y),"pickup inside wall or urban collider");
-            for(World.Npc npc:a.npcs)check(a.canWalk(npc.x,npc.y),"npc inside wall or urban collider");
+            for(World.Pickup item:a.pickups){
+                check(a.canWalk(item.x,item.y),"pickup inside wall or urban collider");
+                CityLayout.Category zone=a.city.categoryAt((int)item.x,(int)item.y);
+                if(item.kind==0||item.kind==6)check(zone==CityLayout.Category.SAFE,"medical pickup outside safe zone");
+                if(item.kind>=2&&item.kind<=5)check(zone==CityLayout.Category.RESOURCE,"supplies outside resource plot");
+            }
+            for(World.Npc npc:a.npcs){
+                check(a.canWalk(npc.x,npc.y),"npc inside wall or urban collider");
+                CityLayout.Category zone=a.city.categoryAt((int)npc.x,(int)npc.y);
+                check(zone==CityLayout.Category.HAZARD||zone==CityLayout.Category.OPEN,"hostile spawned in protected zone");
+            }
             check(!a.lineClear(-4,-4,10,10),"line-of-sight crossed outside city");
             System.out.println("PASS seed "+seed+": "+open+" open tiles, spawns connected");
         }

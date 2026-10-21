@@ -1,8 +1,6 @@
 package veil;
 
 import java.awt.*;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 import java.util.*;
 
 /**
@@ -30,7 +28,17 @@ public final class PropRenderer {
                     double playerX,double playerY,double heading,double[] wallDepth,
                     int width,int height){
         java.util.List<Face> faces=new ArrayList<>();
+        // One depth threshold per column per frame, not one expensive trig call
+        // for every column of every Kenney source triangle.
+        double[] visibleDepth=new double[width];
+        double focal=width/(2*TAN);
+        for(int col=0;col<width;col++){
+            double angle=Math.atan(((col+.5)/width-.5)*2*TAN);
+            visibleDepth[col]=wallDepth[col]*Math.cos(angle);
+        }
         int meshCount=0;
+        int triangleBudget=Math.min(14000,Math.max(1500,meshBudget*115));
+        int submittedTriangles=0;
         for(UrbanScene.ModelInstance placement:instances){
             if(placement.opacity()<=0)continue;
             double dx=placement.x()-playerX,dy=placement.y()-playerY;
@@ -47,24 +55,25 @@ public final class PropRenderer {
             int faceStep=dist>highDetailDistance?4:1;
             int faceIndex=0;
             for(GlbMesh.Triangle f:mesh.triangles()){
+                if(submittedTriangles>=triangleBudget)break;
                 if(faceIndex++%faceStep!=0)continue;
-                float[][] vert={
-                    {f.ax(),f.ay(),f.az()},{f.bx(),f.by(),f.bz()},{f.cx(),f.cy(),f.cz()}
-                };
                 int[] sx=new int[3],screenY=new int[3];
                 double minDepth=Double.POSITIVE_INFINITY,meanDepth=0;
                 boolean near=false;
                 for(int i=0;i<3;i++){
-                    double ox=(vert[i][0]*cy-vert[i][2]*sy)*placement.scale();
-                    double oy=(vert[i][0]*sy+vert[i][2]*cy)*placement.scale();
+                    float vx=i==0?f.ax():i==1?f.bx():f.cx();
+                    float vy=i==0?f.ay():i==1?f.by():f.cy();
+                    float vz=i==0?f.az():i==1?f.bz():f.cz();
+                    double ox=(vx*cy-vz*sy)*placement.scale();
+                    double oy=(vx*sy+vz*cy)*placement.scale();
                     double a=dx+ox,b=dy+oy;
                     double side=-Math.sin(heading)*a+Math.cos(heading)*b;
                     double z=Math.cos(heading)*a+Math.sin(heading)*b;
                     if(z<.07){near=true;break;}
                     minDepth=Math.min(z,minDepth);meanDepth+=z;
-                    sx[i]=(int)Math.round(width*.5+side/z*width/(2*TAN));
+                    sx[i]=(int)Math.round(width*.5+side/z*focal);
                     screenY[i]=(int)Math.round(height*.5-
-                        (vert[i][1]*placement.scale()+placement.heightOffset()-1.55)/z*width/(2*TAN));
+                        (vy*placement.scale()+placement.heightOffset()-1.55)/z*focal);
                 }
                 if(near)continue;
                 if(sx[0]==sx[1]&&sx[1]==sx[2])continue;
@@ -74,8 +83,7 @@ public final class PropRenderer {
                 // Do not draw behind walls. Approximate by center depth until per-pixel Z gate.
                 boolean exposed=false;
                 for(int col=lo;col<=hi;col++){
-                    double off=Math.atan(((col+.5)/width-.5)*2*TAN);
-                    if(minDepth<wallDepth[col]*Math.cos(off)){exposed=true;break;}
+                    if(minDepth<visibleDepth[col]){exposed=true;break;}
                 }
                 if(!exposed)continue;
                 int source=f.rgb();
@@ -83,6 +91,7 @@ public final class PropRenderer {
                 int r=(int)(((source>>16)&255)*shade),green=(int)(((source>>8)&255)*shade);
                 int blue=(int)((source&255)*shade);
                 faces.add(new Face(sx,screenY,(r<<16)|(green<<8)|blue,meanDepth/3,placement.opacity()));
+                submittedTriangles++;
             }
         }
         faces.sort((a,b)->Double.compare(b.depth(),a.depth()));
@@ -91,20 +100,25 @@ public final class PropRenderer {
         for(Face face:faces){
             // Painter's order for static props; background wall always stays authoritative.
             Polygon triangle=new Polygon(face.px(),face.py(),3);
-            int min=Math.max(0,Arrays.stream(face.px()).min().orElse(0));
-            int max=Math.min(width-1,Arrays.stream(face.px()).max().orElse(width-1));
-            Area vis=new Area();
-            for(int col=min;col<=max;col++){
-                double off=Math.atan(((col+.5)/width-.5)*2*TAN);
-                if(face.depth()<wallDepth[col]*Math.cos(off))
-                    vis.add(new Area(new Rectangle2D.Double(col,0,1,height)));
-            }
-            if(vis.isEmpty())continue;
-            g.setClip(vis);
+            int min=Math.max(0,Math.min(face.px()[0],Math.min(face.px()[1],face.px()[2])));
+            int max=Math.min(width-1,Math.max(face.px()[0],Math.max(face.px()[1],face.px()[2])));
+            if(min>max)continue;
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
                 (float)Math.max(0,Math.min(1,face.opacity()))));
             g.setColor(new Color(face.color()));
-            g.fillPolygon(triangle);
+            // Coalesce contiguous visible columns into clipping runs. Creating
+            // one java.awt.geom.Area per column was pathological for large cities.
+            int run=-1;
+            for(int col=min;col<=max+1;col++){
+                boolean visible=col<=max&&face.depth()<visibleDepth[col];
+                if(visible&&run<0)run=col;
+                else if(!visible&&run>=0){
+                    g.setClip(run,0,col-run,height);
+                    if(old!=null)g.clip(old);
+                    g.fillPolygon(triangle);
+                    run=-1;
+                }
+            }
         }
         g.setClip(old);
         g.setComposite(previous);

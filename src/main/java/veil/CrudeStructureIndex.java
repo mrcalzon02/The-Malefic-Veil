@@ -13,7 +13,8 @@ public final class CrudeStructureIndex {
         TENT_FRAME, STACKED_CRATES, RAISED_BEDS, FENCED_CORRAL,
         STAKE_WALL, WATER_CISTERN, STONE_HEARTH, WATCH_PLATFORM,
         SMOKESTACK, MACHINE_FRAME, PIPE_ARRAY, TRANSPORT_SHED,
-        FOUNDRY_SHED, RITUAL_ALTAR, LIVING_NEST, MONUMENT
+        FOUNDRY_SHED, RITUAL_ALTAR, LIVING_NEST, MONUMENT,
+        ROTARY_TOWER, HEAVY_AA_PEDESTAL, GROUND_TURRET
     }
     public record Proxy(String id,Primitive primitive,int width,int depth,
                         CraftingEraRegistry.Era minimumEra,
@@ -28,6 +29,17 @@ public final class CrudeStructureIndex {
                     f.depth(),f.era(),"SOURCE_VERIFIED_PSX_MESH_PENDING",true))!=null)
                 throw new IllegalStateException("Duplicate proxy ID");
         }
+        // All three defensive template types also receive constructible
+        // proxy targets; faction-specific working art must later replace them.
+        entries.put("aa-fast",new Proxy("aa-fast",Primitive.ROTARY_TOWER,
+            6,6,CraftingEraRegistry.Era.AUTOMATION,
+            "SIX_FACTION_AA_ART_PENDING",true));
+        entries.put("aa-heavy",new Proxy("aa-heavy",Primitive.HEAVY_AA_PEDESTAL,
+            8,8,CraftingEraRegistry.Era.AUTOMATION,
+            "SIX_FACTION_AA_ART_PENDING",true));
+        entries.put("automated-turret",new Proxy("automated-turret",
+            Primitive.GROUND_TURRET,5,5,CraftingEraRegistry.Era.ELECTRIC,
+            "FACTION_DEFENSE_MESH_PENDING",true));
         INDEX=Collections.unmodifiableMap(entries);
     }
     private CrudeStructureIndex(){}

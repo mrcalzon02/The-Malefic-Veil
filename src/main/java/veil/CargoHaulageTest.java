@@ -72,6 +72,28 @@ public final class CargoHaulageTest {
             System.out.println("PASS CargoHaulageTest seed="+seed+" yards="+game.cargo.sites().size()+
                 " loaded="+site.resource()+" recovered=1");
         }
+        // Shoot an ACTUAL LOADED TRUCK with the normal pistol hitscan.
+        // Damage must consume legitimate ammo and eject cargo exactly once.
+        ArenaSystems shots=new ArenaSystems(42L);
+        shots.world.npcs.clear();
+        shots.join(1);
+        var shootSite=position(shots,1,0);
+        check(shots.loadTruck(1,0,shootSite.id()),"Shot test truck loads real cargo");
+        ArenaSystems.Player shooter=shots.player(1);
+        Vehicles.State target=shots.vehicles.state(0);
+        shooter.angle=Math.atan2(target.y()-shooter.y,target.x()-shooter.x);
+        int pistolBefore=shooter.pistolClip;
+        for(int shot=0;shot<5;shot++){
+            if(shot>0)shots.advance(250);
+            var result=shots.fireReport(1,0,shot+1);
+            check(result.fired()&&result.status().equals("VEHICLE")&&result.targetId()==0,
+                "PvP hitscan did not register parked cargo truck, shot="+shot+" "+result);
+        }
+        check(shooter.pistolClip==pistolBefore-5,"Truck shots did not consume real ammunition");
+        check(shots.vehicles.state(0).hp()<=CargoHaulage.CARGO_DAMAGE_THRESHOLD,
+            "Truck weapon damage below cargo-loss threshold");
+        check(shots.cargo.drops().size()==1&&shots.vehicles.cargo(0).resourceType()==null,
+            "Shooting cargo truck should eject exactly one recoverable load");
         try(LanServer server=new LanServer(0,42);
             NetLink client=new NetLink("127.0.0.1",server.port())){
             until(()->!client.cargoYards.isEmpty()&&!client.cars.isEmpty(),

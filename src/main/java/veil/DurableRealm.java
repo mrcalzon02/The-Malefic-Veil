@@ -11,19 +11,19 @@ import java.util.zip.CRC32;
  * Corrupt snapshots fail closed and may recover from an independently validated .bak.
  */
 public final class DurableRealm {
-    private static final int MAGIC=0x5645494c, VERSION=1, LIMIT=2_000_000;
+    private static final int MAGIC=0x5645494c, VERSION=2, LIMIT=2_000_000;
     private DurableRealm(){}
-    private record DeviceSave(int kind,double x,double y,int hp,String owner){}
+    private record DeviceSave(int kind,double x,double y,int hp,String owner,int tier){}
     private record CarSave(int id,double x,double y,double heading,double fuel,int hp){}
     private record NpcSave(double x,double y,int hp){}
     private record Snapshot(long seed,long timestamp,List<DeviceSave> devices,List<CarSave> cars,
-        boolean[] picked,List<NpcSave> npcs,List<RaidProtection.Presence> owners){}
+        boolean[] picked,List<NpcSave> npcs,List<RaidProtection.Presence> owners,byte[] arsenal){}
     public static Path file(Path root){return root.resolve("realm.dat");}
     private static Snapshot capture(ArenaSystems game){
         List<DeviceSave> devices=new ArrayList<>();
         for(World.Device d:game.world.devices)
             devices.add(new DeviceSave(d.kind,d.x,d.y,d.hp,
-                d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:""));
+                d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:"",d.tier));
         List<CarSave> cars=new ArrayList<>();
         for(Vehicles.State c:game.vehicles.states())
             cars.add(new CarSave(c.id(),c.x(),c.y(),c.heading(),c.fuel(),c.hp()));
@@ -31,8 +31,9 @@ public final class DurableRealm {
         for(int i=0;i<picked.length;i++)picked[i]=game.world.pickups.get(i).taken;
         List<NpcSave> npcs=new ArrayList<>();
         for(World.Npc n:game.world.npcs)npcs.add(new NpcSave(n.x,n.y,n.hp));
-        return new Snapshot(game.world.seed,System.currentTimeMillis(),List.copyOf(devices),
-            List.copyOf(cars),picked,List.copyOf(npcs),game.raidProtection.snapshot());
+        try{return new Snapshot(game.world.seed,System.currentTimeMillis(),List.copyOf(devices),
+            List.copyOf(cars),picked,List.copyOf(npcs),game.raidProtection.snapshot(),game.arsenal.save());}
+        catch(IOException ex){throw new UncheckedIOException(ex);}
     }
     private static byte[] serialize(Snapshot snap)throws IOException{
         ByteArrayOutputStream payload=new ByteArrayOutputStream();
@@ -43,6 +44,7 @@ public final class DurableRealm {
             for(DeviceSave d:snap.devices){
                 out.writeInt(d.kind);out.writeDouble(d.x);out.writeDouble(d.y);
                 out.writeInt(d.hp);out.writeUTF(d.owner);
+                out.writeInt(d.tier);
             }
             out.writeInt(snap.cars.size());
             for(CarSave c:snap.cars){
@@ -59,6 +61,7 @@ public final class DurableRealm {
             for(RaidProtection.Presence p:snap.owners){
                 out.writeUTF(p.account());out.writeLong(p.lastLogoutUtcMs());out.writeInt(p.sessions());
             }
+            out.writeInt(snap.arsenal.length);out.write(snap.arsenal);
         }
         byte[] bytes=payload.toByteArray();
         if(bytes.length>LIMIT-8)throw new IOException("Snapshot exceeds storage cap");
@@ -81,7 +84,8 @@ public final class DurableRealm {
         CRC32 crc=new CRC32();crc.update(bytes,0,bytes.length-8);
         if(recorded!=crc.getValue())throw new IOException("Snapshot checksum mismatch");
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes,0,bytes.length-8))){
-            if(in.readInt()!=MAGIC||in.readInt()!=VERSION)throw new IOException("Unsupported snapshot version");
+            if(in.readInt()!=MAGIC)throw new IOException("Unsupported snapshot magic");
+            int version=in.readInt();if(version<1||version>VERSION)throw new IOException("Unsupported snapshot version");
             long seed=in.readLong(),timestamp=in.readLong(),now=System.currentTimeMillis();
             if(seed!=target.world.seed)throw new IOException("Save seed mismatch: no world reset allowed");
             if(timestamp<0||timestamp>now+300000)throw new IOException("Unreasonable snapshot timestamp");
@@ -89,11 +93,12 @@ public final class DurableRealm {
             for(int i=count(in,500);i>0;i--){
                 int kind=in.readInt();double x=in.readDouble(),y=in.readDouble();
                 int hp=in.readInt();String owner=in.readUTF();
-                if(kind<0||kind>3||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
+                int tier=version>=2?in.readInt():1;
+                if(kind<0||kind>4||tier<1||tier>3||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
                    target.world.worldStructureAt(x,y,.55)||
                    (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}")))
                     throw new IOException("Invalid persisted device");
-                devices.add(new DeviceSave(kind,x,y,hp,owner));
+                devices.add(new DeviceSave(kind,x,y,hp,owner,tier));
             }
             List<CarSave> cars=new ArrayList<>();
             int carCount=count(in,64);
@@ -127,8 +132,10 @@ public final class DurableRealm {
                    !account.matches("[a-zA-Z0-9:_-]{1,96}"))throw new IOException("Invalid owner presence");
                 owners.add(new RaidProtection.Presence(account,loggedOut,sessions));
             }
+            byte[] arsenal=new byte[0];if(version>=2){int length=count(in,1_000_000);if(length>in.available())throw new IOException("Truncated arsenal payload");arsenal=in.readNBytes(length);}
+            if(version>=2)target.arsenal.restore(arsenal,false);
             if(in.available()!=0)throw new IOException("Unexpected snapshot trailing data");
-            return new Snapshot(seed,timestamp,devices,cars,picked,npcs,owners);
+            return new Snapshot(seed,timestamp,devices,cars,picked,npcs,owners,arsenal);
         }catch(EOFException e){throw new IOException("Incomplete world snapshot",e);}
     }
     /** Only call before accepting connections. Refuse corrupt data when no valid backup exists. */
@@ -152,6 +159,7 @@ public final class DurableRealm {
             for(DeviceSave d:snapshot.devices){
                 World.Device device=new World.Device(d.x,d.y,d.kind);
                 device.hp=d.hp;device.ownerKey=d.owner.isEmpty()?null:d.owner;
+                device.tier=d.tier;
                 game.world.devices.add(device);
             }
             for(CarSave car:snapshot.cars){
@@ -166,6 +174,7 @@ public final class DurableRealm {
             }
             try{game.raidProtection.restore(snapshot.owners,System.currentTimeMillis());}
             catch(IllegalArgumentException ex){throw new IOException("Invalid raid presence data",ex);}
+            game.arsenal.restore(snapshot.arsenal,true);
         }
         return true;
     }

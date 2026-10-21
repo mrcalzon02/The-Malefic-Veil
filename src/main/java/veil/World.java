@@ -36,6 +36,7 @@ public final class World {
         public final int kind; // turret, heal, revive
         public int hp=100;
         public int ownerId=-1;
+        public int tier=1;
         public String ownerKey;
         public double cooldown;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}

@@ -9,6 +9,7 @@ import java.util.*;
 public final class ArenaSystems {
     public final World world;
     public final Vehicles vehicles;
+    public final ArsenalSystems arsenal;
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
@@ -65,7 +66,7 @@ public final class ArenaSystems {
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     private final Map<Integer,Integer> shieldedShot=new HashMap<>();
-    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3;
+    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, WORKBENCH=4;
     public static final class Player {
         public final int id;
         public double x,y,angle,visibility;
@@ -84,16 +85,18 @@ public final class ArenaSystems {
             accountKey="guest_"+id;
         }
     }
-    public ArenaSystems(long seed){world=new World(seed);vehicles=new Vehicles(world);}
+    public ArenaSystems(long seed){world=new World(seed);vehicles=new Vehicles(world);arsenal=new ArsenalSystems(this);}
     public synchronized Player join(int id){
         if(players.containsKey(id))throw new IllegalArgumentException("duplicate peer");
         Player p=new Player(id,world.spawns[0][0],world.spawns[0][1],clock);
         players.put(id,p);
+        arsenal.join(id);
         // Disposable guest peers have no durable property claim; only authenticated accounts do.
         refreshVisibility(p);return p;
     }
     public synchronized void leave(int id){
         vehicles.disconnect(id);
+        arsenal.leave(id);
         Player departing=players.remove(id);
         if(departing!=null){
             if(departing.accountKey.startsWith("acct_"))
@@ -112,6 +115,7 @@ public final class ArenaSystems {
         String prior=p.accountKey;
         raidProtection.logout(prior,System.currentTimeMillis());
         p.accountKey=key;
+        arsenal.bind(id,key);
         raidProtection.login(key,System.currentTimeMillis());
         for(World.Device d:world.devices)if(d.ownerId==id&&prior.equals(d.ownerKey))
             d.ownerKey=key;
@@ -136,7 +140,7 @@ public final class ArenaSystems {
             if(d.hp>0&&d.kind==BARRICADE&&Math.hypot(d.x-x,d.y-y)<.52)return false;
         return true;
     }
-    private boolean clear(double x,double y,double tx,double ty){
+    boolean clear(double x,double y,double tx,double ty){
         if(!world.lineClear(x,y,tx,ty))return false;
         double len=Math.hypot(tx-x,ty-y);
         for(World.Device d:world.devices){
@@ -151,7 +155,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
         long elapsed=Math.max(0,clock-p.moveAt);
-        double max=(flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85;
+        double max=((flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85)*arsenal.speed(p);
         double permitted=.33+Math.min(elapsed,500)*max/1000;
         if(Math.hypot(x-p.x,y-p.y)>permitted)return false;
         p.x=x;p.y=y;p.angle=angle;p.flags=flags&3;p.moveAt=clock;
@@ -333,9 +337,9 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>3)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
-        int price=kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
-        int supplies=kind==0?3:kind==1?1:kind==2?2:1;
+        if(kind<0||kind>4)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        int price=kind==4?150:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
+        int supplies=kind==4?12:kind==0?3:kind==1?1:kind==2?2:1;
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
         if(world.devices.size()>=100)return new BuildReview(false,"BUILD_LIMIT",price,supplies,x,y);
         if(p.cash<price||p.scrap<supplies)return new BuildReview(false,"RESOURCES",price,supplies,x,y);
@@ -479,6 +483,7 @@ public final class ArenaSystems {
     public synchronized void advance(long ms){
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
         clock+=ms;
+        arsenal.advance(ms);
         vehicles.advance(ms);
         for(Player p:players.values()){
             int carId=vehicles.carDrivenBy(p.id);
@@ -534,8 +539,8 @@ public final class ArenaSystems {
             }
             if(nearest==null)continue;
             if(best>.85){
-                double nx=n.x+(nearest.x-n.x)/best*.55*ms/1000;
-                double ny=n.y+(nearest.y-n.y)/best*.55*ms/1000;
+                double nx=n.x+(nearest.x-n.x)/best*.55*arsenal.speed(n)*ms/1000;
+                double ny=n.y+(nearest.y-n.y)/best*.55*arsenal.speed(n)*ms/1000;
                 if(free(nx,n.y))n.x=nx;if(free(n.x,ny))n.y=ny;
             } else if(n.cooldown<=0){
                 damage(nearest,8,8);n.cooldown=1.2;

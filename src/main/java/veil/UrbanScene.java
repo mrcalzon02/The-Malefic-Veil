@@ -25,10 +25,16 @@ public final class UrbanScene {
     private final Map<Long,List<ModelInstance>> spatial=new HashMap<>();
     private static long bucketId(int x,int y){return ((long)x<<32)|(y&0xffffffffL);}
     public UrbanScene(World city)throws IOException{
-        // Expand only source mesh IDs that the authoritative world actually places.
+        this(city,List.of());
+    }
+    /** Append render-only *continental* scenery outside the still-authoritative city. */
+    public UrbanScene(World city,List<World.UrbanProp> extraScenery)throws IOException{
+        Objects.requireNonNull(extraScenery);
+        // Expand only actual licensed Kenney modules from world or continent.
         KenneyAssetPack pack=KenneyAssetPack.load();
         Set<String> used=new LinkedHashSet<>(Arrays.asList(IDS));
         for(World.UrbanProp p:city.urbanProps)used.add(p.model());
+        for(World.UrbanProp p:extraScenery)used.add(p.model());
         for(String id:used){
             if(!pack.modelNames().contains(id+".glb"))
                 throw new IOException("Generated unlicensed/unavailable urban model "+id);
@@ -36,6 +42,8 @@ public final class UrbanScene {
         }
         List<ModelInstance> items=new ArrayList<>();
         for(World.UrbanProp p:city.urbanProps)
+            items.add(new ModelInstance(p.model(),p.x(),p.y(),p.heading(),p.scale(),1,p.heightOffset()));
+        for(World.UrbanProp p:extraScenery)
             items.add(new ModelInstance(p.model(),p.x(),p.y(),p.heading(),p.scale(),1,p.heightOffset()));
         positions=List.copyOf(items);
         instanceBatches=new UrbanInstanceBatches(models,positions);

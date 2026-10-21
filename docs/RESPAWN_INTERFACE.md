@@ -1,0 +1,7 @@
+# Death and respawn screen — October 2026 increment
+
+Death overlay now contains three selectable spawn locations, server-calculated SAFE/CAUTION/DANGER/BLOCKED risk, a host-derived remaining lockout timer, explicit READY status and single pending-request control. Keys 1–3 select the spawn, mouse clicks select a row, and Enter submits the choice. Host responses distinguish WAIT from unavailable/rejected locations. Blocked sites are visibly labeled and rejected locally as an optimization; the server still enforces all conditions.
+
+`ArenaSystems.respawnRemainingMs(id)` derives lockout from the authoritative arena clock and existing 1200ms server rule, not from local client elapsed time. `LanServer` sends `RESPAWN_TIMER|milliseconds` while a client is dead, alongside the existing `SPAWNS` danger-score packet. The NetLink reader stores the latest server value without modifying Swing components directly.
+
+This is a **three-location arena UI**, not the full continental city/outpost spawn browser. Follow-up release gates: real sector/location names and coordinates, dynamic map markers, spawn scoring explanation, controller navigation, validated starting character selection, server-authenticated login/resume state, accessibility and small-window responsive layout, stale packet recovery, reconnect, multiple spawn pages, and high-latency test cases. Production must run tests verifying a respawn is impossible before server eligibility and not duplicated by double submission. No claim that full continent spawning is implemented.

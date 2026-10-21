@@ -30,6 +30,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private int health=100,sanity=100,cash=150,scrap=4,medkits=2,pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
     private int gun=0,spawn=0,frags=0,previousMouse=-1;
     private boolean mapVisible=false,continentVisible=false,help=true,dead=false;
+    private boolean inventoryVisible=false,skillsVisible=false;
     private boolean respawnPending=false;
     private long respawnRequestAt=0;
     private long ticks=0;
@@ -103,6 +104,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             MaleficVeil game=new MaleficVeil(frame,seed,character,link);
             frame.setContentPane(game);frame.pack();frame.setLocationRelativeTo(null);frame.setVisible(true);
             game.requestFocusInWindow();
+            if(link!=null){
+                link.selectFaction(faction);
+                link.sceneReady(); // scene and source model assets are now constructed
+            }
         });
     }
     private boolean down(int key){return held.contains(key);}
@@ -136,6 +141,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 toast(cargoMessage.endsWith("|OK")?
                     "TRUCK "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" COMPLETE":
                     "CARGO "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" REJECTED");
+            String factionMessage;
+            while((factionMessage=net.factionResults.poll())!=null)
+                toast(factionMessage.replace('|',' ').replace('_',' '));
             if(respawnPending&&(!net.connected()||
                 System.nanoTime()-respawnRequestAt>5_000_000_000L)){
                 respawnPending=false;
@@ -533,7 +541,20 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(net.connected()?new Color(181,196,177):new Color(247,107,105));
             g.drawString(diagnostic,w-218,39);
         }
+        if(net!=null&&net.rpg()!=null){
+            NetLink.Rpg progress=net.rpg();
+            g.setFont(new Font(Font.MONOSPACED,Font.BOLD,12));
+            g.setColor(net.hardcore()?new Color(237,99,102):new Color(171,221,179));
+            g.drawString((net.hardcore()?"HARDCORE":"NORMAL")+"  LV "+progress.level()+
+                "  STREAK "+String.format("%.1fx",progress.streakBonus())+
+                "  "+net.faction().replace("THE_","").replace('_',' '),15,40);
+            if(progress.protectionMs()>0){
+                g.setColor(new Color(247,210,119));
+                g.drawString("PROTECTED "+String.format("%.1fs",progress.protectionMs()/1000.0),15,58);
+            }
+        }
         if(noticeTicks>0){g.setFont(new Font(Font.MONOSPACED,Font.BOLD,17));g.setColor(new Color(234,202,132));g.drawString(notice,15,52);}
+        if(inventoryVisible||skillsVisible)drawCharacterPanel(g,w,h);
         if(continentVisible)drawContinentMap(g,w,h);
         else if(mapVisible)drawMap(g,w,h);
         int activeCar=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
@@ -551,7 +572,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("L LOAD CARGO  G RECOVER  Q TRUCK  E MEDKIT",23,127);
-            g.drawString("Q enter/exit car  M city map  N continent  TAB / Esc help",23,147);}
+            g.drawString("I inventory  K skills  O crews  M city  N continent",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
@@ -670,9 +691,83 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_SPACE -> shoot();
             case KeyEvent.VK_M -> {mapVisible=!mapVisible;continentVisible=false;}
             case KeyEvent.VK_N -> {continentVisible=!continentVisible;mapVisible=false;}
+            case KeyEvent.VK_I -> {inventoryVisible=!inventoryVisible;skillsVisible=false;}
+            case KeyEvent.VK_K -> {skillsVisible=!skillsVisible;inventoryVisible=false;}
+            case KeyEvent.VK_O -> crewDialog();
             case KeyEvent.VK_F10 -> performanceDialog();
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
         }
+    }
+    private void drawCharacterPanel(Graphics2D g,int width,int height){
+        int x=Math.max(12,width-302),y=58,h=260;
+        g.setColor(new Color(8,11,17,236));g.fillRoundRect(x,y,290,h,9,9);
+        g.setColor(new Color(228,228,218));
+        g.setFont(new Font(Font.MONOSPACED,Font.BOLD,15));
+        g.drawString(inventoryVisible?"INVENTORY / CARRIED":"CHARACTER / ABILITIES",x+13,y+26);
+        g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
+        int row=y+49;
+        if(net==null){
+            g.drawString("Solo survival inventory not yet linked",x+13,row);
+        }else if(inventoryVisible){
+            var items=new java.util.TreeMap<>(net.survivalInventory);
+            if(items.isEmpty())g.drawString("EMPTY — LOST ON DEATH",x+13,row);
+            for(var entry:items.entrySet()){
+                if(row>=y+h-32)break;
+                g.drawString(entry.getKey().replace('_',' ')+"  x"+entry.getValue(),x+13,row);
+                row+=21;
+            }
+            g.drawString("Equipped gear is also lost on death",x+13,y+h-15);
+        }else{
+            NetLink.Rpg progress=net.rpg();
+            if(progress!=null){
+                String[] values={"LEVEL  "+progress.level()+"  XP "+progress.experience(),
+                    "NEXT XP  "+progress.next(),
+                    "MARKSMANSHIP   "+progress.marksmanship(),
+                    "ATHLETICS      "+progress.athletics(),
+                    "ENGINEERING    "+progress.engineering(),
+                    "SCAVENGING     "+progress.scavenging(),
+                    "SURVIVAL       "+progress.survival(),
+                    "HUNGER "+progress.hunger()+"  HYDRATION "+progress.hydration(),
+                    "LIFE "+progress.aliveMs()/60000+"m  BOOST "+String.format("%.1fx",progress.streakBonus())};
+                for(String value:values){g.drawString(value,x+13,row);row+=21;}
+                g.drawString(net.hardcore()?"DEATH RESETS ALL SKILLS":"DEATH RESETS LIFE BOOST",
+                    x+13,y+h-15);
+            }
+        }
+    }
+    /** One compact real host management prompt, not a screen of inert controls. */
+    private void crewDialog(){
+        if(net==null){toast("CREWS REQUIRE A MULTIPLAYER ACCOUNT");return;}
+        String[] choices={"CREATE","INVITE PLAYER ID","ACCEPT INVITE",
+            "LEAVE CREW","TRANSFER LEADERSHIP","DISBAND CREW","CANCEL"};
+        String choice=(String)JOptionPane.showInputDialog(window,
+            "FACTION "+net.faction()+" / CREW "+net.crew()+" / "+net.crewRole(),
+            "Crew Management",JOptionPane.PLAIN_MESSAGE,null,choices,choices[0]);
+        if(choice==null)return;
+        try{
+            switch(choice){
+                case "CREATE" -> {
+                    String name=JOptionPane.showInputDialog(window,"New crew name (3-32 characters)");
+                    if(name!=null)net.createCrew(name);
+                }
+                case "INVITE PLAYER ID" -> {
+                    String id=JOptionPane.showInputDialog(window,"Same-faction player ID");
+                    if(id!=null)net.inviteCrew(Integer.parseInt(id));
+                }
+                case "ACCEPT INVITE" -> net.acceptCrew();
+                case "LEAVE CREW" -> net.leaveCrew();
+                case "TRANSFER LEADERSHIP" -> {
+                    String id=JOptionPane.showInputDialog(window,"Successor player ID");
+                    if(id!=null)net.transferCrew(Integer.parseInt(id));
+                }
+                case "DISBAND CREW" -> {
+                    if(JOptionPane.showConfirmDialog(window,"Disband this crew?","Crew",
+                        JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)net.disbandCrew();
+                }
+                default -> {}
+            }
+        }catch(NumberFormatException invalid){toast("INVALID PLAYER ID");}
+        requestFocusInWindow();
     }
     /** Compact graphics panel; local display preferences do not modify network simulation. */
     private void performanceDialog(){

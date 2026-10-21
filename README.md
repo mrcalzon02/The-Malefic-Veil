@@ -16,6 +16,19 @@ java -cp out veil.MaleficVeil
 
 Run `java -cp out veil.WorldSelfTest` for headless city checks and `java -cp out veil.LanSmokeTest` for localhost network checks. A local experimental server can also be run with `java -cp out veil.LanServer 7777`; the launcher offers SOLO, HOST LAN or JOIN LAN. Protocol v3 hosts PvP damage, visibility, NPCs, inventory, pickups and construction. Internet security, robust movement reconciliation and real gameplay loads are **not** accepted yet. For Windows double-click `play.bat` with JDK 17+ installed.
 
+## Opt-in GPU Kenney client (libGDX / OpenGL 3.3)
+
+The separate `gpu-client/` Maven project produces an actual **hardware-instanced** PSX-resolution desktop renderer from the same generated Kenney city tile placements. Identical GLB meshes are uploaded once; visible transforms draw with real `glDrawArraysInstanced` calls. It renders via a 320×200 framebuffer, nearest-neighbor upscale, hardware depth and fog, with a separate executable shaded JAR.
+
+Build with JDK 17 and Maven:
+
+```sh
+mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
+java -jar gpu-client/target/MaleficVeil-GPU.jar
+```
+
+WASD moves, arrow keys turn, Left Shift sprints, plus/minus changes view distance. This is currently a **real GPU Kenney environment walkthrough**, **not yet** a port of the existing shooter client, authentication, LAN combat or UI. The original Java2D launchers and headless server remain unchanged. The [GPU CI workflow](.github/workflows/gpu-client.yml) builds on Linux and Windows, executes a Mesa/Xvfb OpenGL smoke screenshot on Linux, and publishes a downloadable JAR and screenshot in its build artifacts. [Implementation contract and evidence gates](docs/GPU_CLIENT_IMPLEMENTATION.md).
+
 ## Continental population, vehicles and dedicated host (development slices)
 
 A deterministic continental **macro blueprint** now includes seven connected city sites, biome/wilderness areas, categorized plots, 3 player-spawn candidates per city, extra wilderness rally points, NPC encounter sites, and multicell/rotated parcel-level construction denial over world-owned features. **The actual playable game remains the original 132×132 city sector**: continental chunk rendering, collision, movement, NPC actors, and seamless city-to-city driving are not ready yet.

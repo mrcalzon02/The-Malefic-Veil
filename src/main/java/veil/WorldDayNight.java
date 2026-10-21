@@ -24,8 +24,8 @@ public final class WorldDayNight {
         double rise=smooth(5.0,7.4,hour);
         double set=smooth(17.1,19.5,hour);
         double day=clamp(rise*(1-set));
-        double dusk=clamp((1-Math.abs(hour-6.4)/1.8)*0.7+
-                           (1-Math.abs(hour-18.3)/1.8)*0.7);
+        double dusk=clamp(1-Math.abs(hour-6.4)/1.8)*0.7+
+                    clamp(1-Math.abs(hour-18.3)/1.8)*0.7;
         dusk*=1-day*0.35;
         double ambient=0.11+0.70*day+0.10*dusk;
         float skyR=mix(.018f,.27f,day),skyG=mix(.020f,.43f,day),

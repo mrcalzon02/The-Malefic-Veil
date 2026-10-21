@@ -13,6 +13,18 @@ public final class LanSmokeTest {
         }
         throw new AssertionError("Timed out: "+why);
     }
+    private static void aimAtVacant(ArenaSystems host,int id,int kind) {
+        ArenaSystems.Player p=host.player(id);
+        for(CityLayout.Plot lot:host.world.city.plots()){
+            if(lot.template().category()!=CityLayout.Category.OPEN||lot.template().variant()!=2)continue;
+            double x=(lot.x()+lot.right())*CityLayout.CELL/2.0+.5;
+            double y=(lot.y()+lot.bottom())*CityLayout.CELL/2.0+.5;
+            if(!host.world.canWalk(x-1.1,y)||!host.world.canWalk(x,y))continue;
+            p.x=x-1.1;p.y=y;p.angle=0;p.moveAt=host.time();
+            if(host.reviewBuild(id,kind).allowed())return;
+        }
+        throw new AssertionError("No legal building site on seed "+host.world.seed);
+    }
     public static void main(String[] unused)throws Exception{
         try(LanServer host=new LanServer(0,887766L);
             NetLink attacker=new NetLink("127.0.0.1",host.port());
@@ -37,7 +49,8 @@ public final class LanSmokeTest {
             until(()->victim.self()!=null&&victim.self().health()<=75,"health replicated to client");
             check(host.match.player(attacker.id).pistolClip==11,"ammo decremented by host");
             ArenaSystems.Player shooter=host.match.player(attacker.id);
-            shooter.cash=400;shooter.scrap=20;shooter.x=14.5;shooter.y=1.5;shooter.angle=Math.PI/2;
+            shooter.cash=400;shooter.scrap=20;
+            aimAtVacant(host.match,attacker.id,ArenaSystems.HEALTH_STATION);
             attacker.build(1);
             until(()->host.match.world.devices.size()==1,"healing station built over socket");
             until(()->!attacker.structures.isEmpty()||!victim.structures.isEmpty(),"structure streamed to a client");
@@ -58,21 +71,24 @@ public final class LanSmokeTest {
             until(()->victim.pickedUp.contains(0),"pickup removal replicated to other client");
             check(!host.match.pickup(victim.id,0),"pickup remains exclusively acquired");
             // Assemble several distinct real structures through the connected client.
-            shooter.x=26.5;shooter.y=1.5;shooter.angle=0;
+            aimAtVacant(host.match,attacker.id,ArenaSystems.TURRET);
             attacker.build(ArenaSystems.TURRET);
             until(()->host.match.world.devices.size()==2,"turret constructed over socket");
-            shooter.x=38.5;shooter.y=1.5;shooter.angle=0;
+            World.Device turret=host.match.world.devices.get(1);
+            aimAtVacant(host.match,attacker.id,ArenaSystems.REVIVE_STATION);
             attacker.build(ArenaSystems.REVIVE_STATION);
             until(()->host.match.world.devices.size()==3,"revival structure assembled over socket");
-            shooter.angle=Math.PI/2;
+            World.Device reviver=host.match.world.devices.get(2);
+            aimAtVacant(host.match,attacker.id,ArenaSystems.BARRICADE);
             attacker.build(ArenaSystems.BARRICADE);
             until(()->host.match.world.devices.size()==4,"barricade assembled over socket");
             check(host.match.world.devices.get(3).kind==ArenaSystems.BARRICADE,"correct constructed structure kind");
             // Live turret damage occurs in the host tick, not the client.
-            prey.x=29.5;prey.y=1.5;
+            prey.x=turret.x;prey.y=turret.y+1.1;
             int beforeTurret=prey.hp;
             until(()->prey.hp<beforeTurret,"turret attacked opposing player");
             // Revive station heals its nearby dead owner after the revive countdown.
+            shooter.x=reviver.x;shooter.y=reviver.y+1.1;
             host.match.damage(shooter,300,10);
             check(shooter.dead,"fatal wound recorded before revival");
             until(()->!shooter.dead&&shooter.hp==35,"revival station resurrected fallen player");

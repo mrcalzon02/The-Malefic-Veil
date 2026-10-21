@@ -18,6 +18,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final World world;
     private final UrbanScene urban;
     private final PropRenderer urbanRenderer=new PropRenderer();
+    private final PerformanceSettings performance=new PerformanceSettings();
     private final GameplayMeshes actorModels=new GameplayMeshes();
     private final WeaponViewRenderer weaponRenderer=new WeaponViewRenderer();
     private final NetLink net;
@@ -46,10 +47,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             world.pickups.add(new World.Pickup(4.5,1.5,3));
             world.pickups.add(new World.Pickup(1.5,4.5,4));
         }else net.choose(archetype);
+        urbanRenderer.setBudgets(performance);
         setBackground(Color.BLACK);setPreferredSize(new Dimension(1024,640));
         setFocusable(true);
         addKeyListener(this);addMouseListener(this);addMouseMotionListener(this);
-        timer=new javax.swing.Timer(33,this);timer.start();
+        timer=new javax.swing.Timer(Math.max(16,1000/performance.frameCap),this);timer.start();
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(()->{
@@ -581,8 +583,27 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_SPACE -> shoot();
             case KeyEvent.VK_M -> {mapVisible=!mapVisible;continentVisible=false;}
             case KeyEvent.VK_N -> {continentVisible=!continentVisible;mapVisible=false;}
+            case KeyEvent.VK_F10 -> performanceDialog();
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
         }
+    }
+    /** Compact graphics panel; local display preferences do not modify network simulation. */
+    private void performanceDialog(){
+        JSlider distance=new JSlider(4,64,performance.propDistance);
+        JSlider detail=new JSlider(2,32,performance.highDetailDistance);
+        JSlider models=new JSlider(8,500,performance.meshBudget);
+        JSlider cap=new JSlider(15,60,performance.frameCap);
+        JPanel panel=new JPanel(new GridLayout(4,2,8,3));
+        panel.add(new JLabel("View distance"));panel.add(distance);
+        panel.add(new JLabel("High detail range"));panel.add(detail);
+        panel.add(new JLabel("Visible model budget"));panel.add(models);
+        panel.add(new JLabel("Target FPS"));panel.add(cap);
+        if(JOptionPane.showConfirmDialog(window,panel,"Graphics / LOD",JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE)!=JOptionPane.OK_OPTION)return;
+        performance.apply(distance.getValue(),detail.getValue(),models.getValue(),cap.getValue());
+        urbanRenderer.setBudgets(performance);
+        timer.setDelay(Math.max(16,1000/performance.frameCap));
+        toast("GRAPHICS SETTINGS SAVED");
     }
     private void toggleCar(){
         if(net!=null){

@@ -16,6 +16,22 @@ java -cp out veil.MaleficVeil
 
 Run `java -cp out veil.WorldSelfTest` for headless city checks and `java -cp out veil.LanSmokeTest` for localhost network checks. A local experimental server can also be run with `java -cp out veil.LanServer 7777`; the launcher offers SOLO, HOST LAN or JOIN LAN. Protocol v3 hosts PvP damage, visibility, NPCs, inventory, pickups and construction. Internet security, robust movement reconciliation and real gameplay loads are **not** accepted yet. For Windows double-click `play.bat` with JDK 17+ installed.
 
+## Continental population, vehicles and dedicated host (development slices)
+
+A deterministic continental **macro blueprint** now includes seven connected city sites, biome/wilderness areas, categorized plots, 3 player-spawn candidates per city, extra wilderness rally points, NPC encounter sites, and multicell/rotated parcel-level construction denial over world-owned features. **The actual playable game remains the original 132×132 city sector**: continental chunk rendering, collision, movement, NPC actors, and seamless city-to-city driving are not ready yet.
+
+Cars are **drivable in the playable city sector** in solo and LAN: press `Q` at a car to enter/exit; use `W/S` to accelerate/reverse and `A/D` to steer. Host authority controls occupancy, car collision, fuel, and car pose. Cars currently use licensed truck GLB geometry; tuning, refueling, passengers, repairs and intercity streaming are subsequent gates.
+
+The headless **persistent dedicated-host development mode** adds verified world snapshots with a last-good backup, autosaves, console moderation (players/status/save/kick/ban/allowlist), stable hashed account-based build ownership, and offline base protection (default 30 minutes **of vulnerability after logout**, then shielded while offline). A local LAN connection is not safe for exposed internet hosting; the authentication token traverses plaintext sockets and encrypted transport is a release blocker. Server recovery of character inventory, clan claims, world-streaming persistence and long-load Internet scalability remain unimplemented.
+
+```sh
+javac --release 17 -encoding UTF-8 -d out src/main/java/veil/*.java
+java -Dveil.bind=127.0.0.1 -Dveil.offlineGraceMinutes=30 \
+  -cp out veil.LanServer 7777 20261020 server-data
+```
+
+The dedicated server binds loopback by default; launch on trusted networks only during development. Full operator procedures, limitations and an example Linux service are in **[Dedicated hosting and security gates](docs/DEDICATED_HOSTING.md)**. Run `java -cp out veil.QualityGateTest` to exercise combat, drivable car physics, saves/backups, operator actions and deterministic continental spawn candidates.
+
 ## Play concept
 
 - PSX-resolution software renderer in a Swing window; compact keyboard/mouse interface

@@ -62,6 +62,10 @@ public final class LanServer implements AutoCloseable {
                 }
                 for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
                 for(Vehicles.State car:match.vehicles.states())broadcast(carPacket(car),-1);
+                if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++){
+                    World.Device d=match.world.devices.get(i);
+                    broadcast("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
+                }
                 for(int i=0;i<match.world.npcs.size();i++){
                     World.Npc n=match.world.npcs.get(i);
                     broadcast("NPC|"+i+"|"+n.x+"|"+n.y+"|"+n.hp,-1);

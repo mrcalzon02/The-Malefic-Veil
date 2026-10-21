@@ -55,6 +55,8 @@ public final class UrbanScene {
             List<ModelInstance> bucket=spatial.get(bucketId(bx,by));
             if(bucket!=null)result.addAll(bucket);
         }
+        result.sort(Comparator.comparingDouble(item->
+            Math.pow(item.x()-x,2)+Math.pow(item.y()-y,2)));
         return result;
     }
 }

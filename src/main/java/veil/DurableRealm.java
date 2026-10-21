@@ -113,7 +113,7 @@ public final class DurableRealm {
                 // newly protected city plots. load() will archive and quarantine
                 // them; active city placement is never restored.
                 if(kind<0||kind>3||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
-                   x<0||y<0||x>=World.SIZE||y>=World.SIZE||
+                   !target.world.continent().inBounds(target.world.parcelX(x),target.world.parcelY(y))||
                    (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}")))
                     throw new IOException("Invalid persisted device");
                 devices.add(new DeviceSave(kind,x,y,hp,owner));

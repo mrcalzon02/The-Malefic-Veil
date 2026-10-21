@@ -10,6 +10,7 @@ public final class World {
     public final long seed;
     private final byte[][] walls = new byte[SIZE][SIZE];
     public final CityLayout city;
+    private volatile ContinentLayout continent;
     public final List<Npc> npcs = new ArrayList<>();
     public final List<Pickup> pickups = new ArrayList<>();
     public final List<Device> devices = new ArrayList<>();
@@ -93,6 +94,19 @@ public final class World {
         a=(a^(a>>>30))*0xbf58476d1ce4e5b9L;
         a=(a^(a>>>27))*0x94d049bb133111ebL;
         return a^(a>>>31);
+    }
+    /** Seed-identical continental plan, generated lazily until chunk streaming is implemented. */
+    public ContinentLayout continent() {
+        ContinentLayout map=continent;
+        if(map==null)synchronized(this){if(continent==null)continent=ContinentLayout.generate(seed);map=continent;}
+        return map;
+    }
+    /** Generated structures are not overwriteable by player-built devices or buildings. */
+    public boolean worldStructureAt(double x,double y,double radius) {
+        if(!Double.isFinite(x)||!Double.isFinite(y)||radius<0)return true;
+        if(city.worldStructureAt(x,y,radius))return true;
+        for(UrbanProp p:urbanProps)if(p.solid()&&Math.hypot(x-p.x,y-p.y)<radius+p.radius)return true;
+        return false;
     }
     private double[] randomOpen(Random r,CityLayout.Category preferred) {
         for(int i=0;i<10000;i++) {

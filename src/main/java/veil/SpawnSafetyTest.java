@@ -48,10 +48,10 @@ public final class SpawnSafetyTest {
         ArenaSystems.Player builder=arena.join(4);
         builder.cash=1000;builder.scrap=100;
         builder.angle=0;
-        check(arena.reviewBuild(4,ArenaSystems.TURRET).reason().equals("SPAWN_CLEARANCE"),
-            "turret must not be buildable at spawn exit");
-        check(arena.reviewBuild(4,ArenaSystems.BARRICADE).reason().equals("SPAWN_CLEARANCE"),
-            "barricade must not be buildable at spawn exit");
+        check(arena.reviewBuild(4,ArenaSystems.TURRET).reason().equals("CITY_PROTECTED"),
+            "city-owned spawn exits cannot accept turrets");
+        check(arena.reviewBuild(4,ArenaSystems.BARRICADE).reason().equals("CITY_PROTECTED"),
+            "city-owned spawn exits cannot accept barricades");
         System.out.println("PASS SpawnSafetyTest "+assertions+
             " assertions: 20 seeds x 100 enemy positions, risk previews, respawn protection, nonoffensive cooldown");
     }

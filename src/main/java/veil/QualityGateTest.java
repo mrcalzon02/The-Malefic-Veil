@@ -110,6 +110,7 @@ public final class QualityGateTest {
         VehicleTest.main(new String[0]);
         HostPersistenceTest.main(new String[0]);
         DedicatedHostTest.main(new String[0]);
+        RaidCombatTest.main(new String[0]);
         ContinentPopulationTest.main(new String[0]);
         System.out.println("PASS QualityGateTest "+assertions+
             " checks: host-confirmed hits, anti-replay, truthful denied construction, 20 map seeds");

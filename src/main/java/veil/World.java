@@ -12,6 +12,11 @@ public final class World {
     public final List<Npc> npcs = new ArrayList<>();
     public final List<Pickup> pickups = new ArrayList<>();
     public final List<Device> devices = new ArrayList<>();
+    /** Same deterministic prop placements used by the client renderer and host collision. */
+    public final List<UrbanProp> urbanProps = new ArrayList<>();
+    public record UrbanProp(String model,double x,double y,double heading,double scale,double radius) {
+        public boolean solid(){return radius>0;}
+    }
     public final double[][] spawns = {{1.5,1.5},{61.5,61.5},{121.5,121.5}};
     public static final class Npc {
         public double x, y, cooldown;
@@ -51,6 +56,7 @@ public final class World {
             for(int x=Math.max(1,sx-1);x<=Math.min(SIZE-2,sx+1);x++)
                 for(int y=Math.max(1,sy-1);y<=Math.min(SIZE-2,sy+1);y++) walls[x][y]=0;
         }
+        generateUrbanProps();
         Random r=new Random(seed^0x4D414C45464943L);
         for(int i=0;i<170;i++) {
             double[] p=randomOpen(r);
@@ -61,6 +67,34 @@ public final class World {
             npcs.add(new Npc(p[0],p[1]));
         }
     }
+    private void generateUrbanProps() {
+        // Deliberate recognizable urban furniture on the initial thoroughfare.
+        urbanProps.add(new UrbanProp("detail-barrier-type-a",5.2,1.5,0,1.7,.43));
+        urbanProps.add(new UrbanProp("detail-bench",4.3,2.5,0,1.8,.58));
+        urbanProps.add(new UrbanProp("detail-dumpster-closed",9.1,2.2,0,1.6,.59));
+        urbanProps.add(new UrbanProp("detail-light-single",7.8,2.2,0,3.0,.15));
+        urbanProps.add(new UrbanProp("road-asphalt-straight",4.7,1.5,Math.PI/2,1.0,0));
+        String[] models={"road-asphalt-straight","detail-barrier-type-a","detail-bench",
+            "detail-dumpster-closed","detail-light-single"};
+        for(int bx=0;bx<SIZE/12;bx++)for(int by=0;by<SIZE/12;by++) {
+            long hash=mix(seed^((long)bx*42137)^((long)by*99497));
+            if((hash&3)==0)continue;
+            int x=bx*12,y=by*12;
+            if(x>SIZE-10||y>SIZE-10)continue;
+            String model=models[(int)Math.floorMod(hash>>>5,models.length)];
+            double px=x+5.5,py=y+1.45;
+            if(solid(px,py))continue;
+            double scale=model.contains("light")?2.8:model.contains("road")?1.0:1.5;
+            double rad=switch(model){
+                case "detail-barrier-type-a" -> .38;
+                case "detail-bench" -> .5;
+                case "detail-dumpster-closed" -> .55;
+                case "detail-light-single" -> .14;
+                default -> 0;
+            };
+            urbanProps.add(new UrbanProp(model,px,py,0,scale,rad));
+        }
+    }
     public static long mix(long a) {
         a=(a^(a>>>30))*0xbf58476d1ce4e5b9L;
         a=(a^(a>>>27))*0x94d049bb133111ebL;
@@ -69,7 +103,7 @@ public final class World {
     private double[] randomOpen(Random r) {
         for(int i=0;i<10000;i++) {
             double x=1.5+r.nextInt(SIZE-3), y=1.5+r.nextInt(SIZE-3);
-            if(!solid(x,y)) return new double[]{x,y};
+            if(canWalk(x,y)) return new double[]{x,y};
         }
         throw new IllegalStateException("No traversable city tiles");
     }
@@ -80,13 +114,21 @@ public final class World {
     public boolean solid(double x,double y){return tile((int)Math.floor(x),(int)Math.floor(y))!=0;}
     public boolean canWalk(double x,double y) {
         double r=.19;
-        return !solid(x-r,y-r)&&!solid(x+r,y-r)&&!solid(x-r,y+r)&&!solid(x+r,y+r);
+        if(solid(x-r,y-r)||solid(x+r,y-r)||solid(x-r,y+r)||solid(x+r,y+r))return false;
+        for(UrbanProp p:urbanProps)
+            if(p.solid()&&Math.hypot(x-p.x,y-p.y)<p.radius+r)return false;
+        return true;
     }
     public boolean lineClear(double x,double y,double tx,double ty) {
         double dx=tx-x,dy=ty-y,len=Math.hypot(dx,dy);
         if(len<.01) return true;
         for(double d=.08;d<len-.08;d+=.08)
             if(solid(x+dx*d/len,y+dy*d/len))return false;
+        for(UrbanProp p:urbanProps) {
+            if(!p.solid())continue;
+            double t=Math.max(0,Math.min(1,((p.x-x)*dx+(p.y-y)*dy)/(len*len)));
+            if(t>.05&&t<.95&&Math.hypot(x+dx*t-p.x,y+dy*t-p.y)<p.radius)return false;
+        }
         return true;
     }
 }

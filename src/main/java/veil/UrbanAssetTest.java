@@ -20,6 +20,9 @@ public final class UrbanAssetTest {
         }
         check(triangles>150,"incomplete source geometry");
         check(city.instances().size()>35,"seeded city lacks meaningful prop density");
+        check(!world.canWalk(5.2,1.5),"actual barricade should be solid to players");
+        check(!world.lineClear(4.4,1.5,6.4,1.5),"barricade should occlude projectile ray");
+        check(world.canWalk(world.spawns[0][0],world.spawns[0][1]),"spawn blocked by decorations");
         double[] walls=new double[320];Arrays.fill(walls,40);
         BufferedImage image=new BufferedImage(320,200,BufferedImage.TYPE_INT_RGB);
         Graphics2D g=image.createGraphics();

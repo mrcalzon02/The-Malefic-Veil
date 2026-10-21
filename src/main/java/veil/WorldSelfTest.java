@@ -36,8 +36,8 @@ public final class WorldSelfTest {
                 check(a.canWalk(s[0],s[1]),"spawn blocked");
                 check(seen[x][y],"spawn inaccessible on seed "+seed);
             }
-            for(World.Pickup item:a.pickups)check(!a.solid(item.x,item.y),"pickup inside wall");
-            for(World.Npc npc:a.npcs)check(!a.solid(npc.x,npc.y),"npc inside wall");
+            for(World.Pickup item:a.pickups)check(a.canWalk(item.x,item.y),"pickup inside wall or urban collider");
+            for(World.Npc npc:a.npcs)check(a.canWalk(npc.x,npc.y),"npc inside wall or urban collider");
             check(!a.lineClear(-4,-4,10,10),"line-of-sight crossed outside city");
             System.out.println("PASS seed "+seed+": "+open+" open tiles, spawns connected");
         }

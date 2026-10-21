@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "generator": "build_malefic_aircraft.py",
+  "game": "The Malefic Veil",
+  "status": "static geometry; no flight mechanics or animation",
+  "models": [
+    {
+      "id": "unraveled_needlewing",
+      "faction": "unraveled",
+      "triangles": 732,
+      "vertices": 2196,
+      "size_bytes": 95640,
+      "sha256": "70c22be7ee0720befb15c683a393ee373250e014b93557fb915afcd79950058e",
+      "bounds_min": [
+        -5.173,
+        -0.465,
+        -4.146
+      ],
+      "bounds_max": [
+        5.173,
+        1.155,
+        2.898
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Light / scrap A-10 nose, pusher prop"
+    },
+    {
+      "id": "unraveled_harrier",
+      "faction": "unraveled",
+      "triangles": 796,
+      "vertices": 2388,
+      "size_bytes": 100232,
+      "sha256": "8545e14b3b8ad342af1c61492223a86baf24bb939c7011adb8ee1bc1cf4b499d",
+      "bounds_min": [
+        -7.06,
+        -0.559,
+        -5.436
+      ],
+      "bounds_max": [
+        7.06,
+        1.317,
+        4.14
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Medium / improvised salvage attack aircraft"
+    },
+    {
+      "id": "unraveled_leviathan",
+      "faction": "unraveled",
+      "triangles": 1104,
+      "vertices": 3312,
+      "size_bytes": 122440,
+      "sha256": "86850fede5fa017e5f6b5d346ed6f97b5e5e57893677ef275d186bf6957ffee3",
+      "bounds_min": [
+        -10.297,
+        -0.975,
+        -7.638
+      ],
+      "bounds_max": [
+        10.297,
+        1.479,
+        6.486
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Heavy / bolted salvage freight gunship"
+    },
+    {
+      "id": "penitent_shrike",
+      "faction": "penitent",
+      "triangles": 1056,
+      "vertices": 3168,
+      "size_bytes": 119580,
+      "sha256": "be808313d38184670d841074b9088978b06ff41117fa8cc3e9a3f6672e51d00c",
+      "bounds_min": [
+        -4.7,
+        -1.375,
+        -3.707
+      ],
+      "bounds_max": [
+        4.7,
+        1.736,
+        2.208
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Light / airborne tractor-dozer shredder"
+    },
+    {
+      "id": "penitent_censer",
+      "faction": "penitent",
+      "triangles": 1114,
+      "vertices": 3342,
+      "size_bytes": 123708,
+      "sha256": "13f85c07ee19b6d17fedc5cd11129d498a1fab9f44d7a6fab9b9f407035085e7",
+      "bounds_min": [
+        -6.6,
+        -1.481,
+        -4.229
+      ],
+      "bounds_max": [
+        6.6,
+        2.703,
+        3.25
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Medium / thresher crop-harvest rig"
+    },
+    {
+      "id": "penitent_cathedral",
+      "faction": "penitent",
+      "triangles": 2312,
+      "vertices": 6936,
+      "size_bytes": 210032,
+      "sha256": "bfce9a55081b76ecf6e86b5a45042a7f45e5be26c374743874170344da529f3a",
+      "bounds_min": [
+        -10.7,
+        -2.415,
+        -6.374
+      ],
+      "bounds_max": [
+        10.7,
+        3.692,
+        5.151
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Heavy / flying industrial abattoir"
+    },
+    {
+      "id": "begotten_gnat",
+      "faction": "begotten",
+      "triangles": 1626,
+      "vertices": 4878,
+      "size_bytes": 160628,
+      "sha256": "3c3e36db4a9f4c0904b605d29d299f2399a4ed8ea6193ea5556ff48009f53c95",
+      "bounds_min": [
+        -5.71,
+        -1.076,
+        -3.632
+      ],
+      "bounds_max": [
+        5.71,
+        1.822,
+        1.85
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Light / mangy bat, machine gun legs"
+    },
+    {
+      "id": "begotten_mantis",
+      "faction": "begotten",
+      "triangles": 1524,
+      "vertices": 4572,
+      "size_bytes": 151468,
+      "sha256": "d02162101f2f62884e00a6c65b7133a5ef57c0c46a3919e01ff635965a42b8b6",
+      "bounds_min": [
+        -7.02,
+        -2.07,
+        -3.75
+      ],
+      "bounds_max": [
+        7.02,
+        1.96,
+        2.17
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Medium / vulture-lion four-clawed hunter"
+    },
+    {
+      "id": "begotten_behemoth",
+      "faction": "begotten",
+      "triangles": 3544,
+      "vertices": 10632,
+      "size_bytes": 297488,
+      "sha256": "ecfc45c2c9bf5e7ca3a68eb709ebeb77ddc8ef625ddb543a4ff0718de8f0babf",
+      "bounds_min": [
+        -13.2,
+        -3.028,
+        -11.22
+      ],
+      "bounds_max": [
+        13.2,
+        3.584,
+        7.95
+      ],
+      "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
+      "description": "Heavy / raw whale, shark jaw, four dragon wings"
+    }
+  ]
+}

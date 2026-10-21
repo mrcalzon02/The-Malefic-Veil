@@ -71,6 +71,7 @@ public final class LanServer implements AutoCloseable {
                         broadcast(cargoTruckPacket(car),-1);
                     for(CargoHaulage.Site yard:match.cargo.sites())
                         broadcast(cargoYardPacket(yard),-1);
+                    broadcast(cargoDropIdsPacket(),-1);
                     for(CargoHaulage.Drop drop:match.cargo.drops())
                         broadcast(cargoDropPacket(drop),-1);
                 }
@@ -114,6 +115,13 @@ public final class LanServer implements AutoCloseable {
         return "CARGO_YARD|"+yard.id()+"|"+yard.x()+"|"+yard.y()+"|"+
             yard.resource()+"|"+yard.stock();
     }
+    private String cargoDropIdsPacket(){
+        List<CargoHaulage.Drop> drops=match.cargo.drops();
+        if(drops.isEmpty())return "CARGO_DROP_IDS|-";
+        StringJoiner names=new StringJoiner(",");
+        for(CargoHaulage.Drop drop:drops)names.add(Integer.toString(drop.id()));
+        return "CARGO_DROP_IDS|"+names;
+    }
     private static String cargoDropPacket(CargoHaulage.Drop drop){
         return "CARGO_DROP|"+drop.id()+"|"+drop.x()+"|"+drop.y()+"|"+drop.resource();
     }
@@ -130,6 +138,7 @@ public final class LanServer implements AutoCloseable {
             peer.send(carPacket(car));peer.send(cargoTruckPacket(car));
         }
         for(CargoHaulage.Site yard:match.cargo.sites())peer.send(cargoYardPacket(yard));
+        peer.send(cargoDropIdsPacket());
         for(CargoHaulage.Drop drop:match.cargo.drops())peer.send(cargoDropPacket(drop));
         for(int i=0;i<match.world.devices.size();i++){
             World.Device d=match.world.devices.get(i);

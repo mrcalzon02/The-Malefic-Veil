@@ -115,31 +115,52 @@ public final class ContinentVista {
             }
         return List.copyOf(chunks);
     }
-    /** Scene-only Kenney trees beyond the authoritative city edge. */
+    /**
+     * Seeded jittered-forest samples: no visible 7-by-7 planting lattice.
+     * Macro candidates are moved to irregular offsets, and local clumps have
+     * independent positions. No claim of live wilderness collision yet.
+     */
     public List<World.UrbanProp> foliage(){
         List<World.UrbanProp> props=new ArrayList<>();
-        for(int z=-EXTENT+4;z<World.SIZE+EXTENT-4;z+=7)
-            for(int x=-EXTENT+4;x<World.SIZE+EXTENT-4;x+=7){
-                if(!outside(x,z)||cityDistance(x,z)<7)continue;
-                long n=World.mix(seed^((long)x*2147483647L)^((long)z*281474976710L));
-                Sample at=sample(x+3,z+3);
-                boolean grow=switch(at.biome()){
-                    case FOREST -> (n&3)!=0;                // dense woodland
-                    case PLAINS -> Math.floorMod(n,3)==0;  // isolated copses
-                    case MARSH -> (n&1)==0;                 // low wet brush
-                    case HILLS -> (n&7)<=1;                 // sporadic trees
-                    case BEACH -> (n&31)==0;                // coastal shrubs
-                    default -> false;                       // no trees in open water
+        final int spacing=11;
+        for(int gy=-EXTENT;gy<World.SIZE+EXTENT;gy+=spacing)
+            for(int gx=-EXTENT;gx<World.SIZE+EXTENT;gx+=spacing){
+                long hash=World.mix(seed^((long)gx*2147483647L)^
+                    ((long)gy*281474976710L));
+                double cx=gx+5.5+((hash>>>11)&1023)/1023.0*8-4;
+                double cz=gy+5.5+((hash>>>24)&1023)/1023.0*8-4;
+                if(!outside((int)cx,(int)cz)||cityDistance(cx,cz)<7)continue;
+                Sample at=sample(cx,cz);
+                boolean plant=switch(at.biome()){
+                    case FOREST -> (hash&7)!=0;
+                    case PLAINS -> Math.floorMod(hash,5)==0;
+                    case MARSH -> (hash&3)<=1;
+                    case HILLS -> (hash&7)<=2;
+                    case BEACH -> (hash&31)==0;
+                    default -> false;
                 };
-                if(grow&&!at.road()){
-                    String id=at.biome()==ContinentLayout.Biome.MARSH||
-                        at.biome()==ContinentLayout.Biome.BEACH?"tree-shrub":
-                        (n&3)==0?"tree-pine-small":
-                        (n&3)==1?"tree-small":(n&3)==2?"tree-pine-large":"tree-park-large";
-                    double px=x+2.5,pz=z+2.5;
-                    props.add(new World.UrbanProp(id,px,pz,0,
-                        id.equals("tree-shrub")?1.05:(n&8)==0?1.5:1.8,
-                        0,sample(px,pz).elevation()));
+                if(!plant||at.road())continue;
+                int count=at.biome()==ContinentLayout.Biome.FOREST?
+                    2+(int)((hash>>>6)&3):at.biome()==ContinentLayout.Biome.MARSH?2:1;
+                for(int n=0;n<count;n++){
+                    long branch=World.mix(hash^(n*0x9e3779b97f4a7c15L));
+                    double dx=n==0?0:((branch>>>12)&1023)/1023.0*10-5;
+                    double dz=n==0?0:((branch>>>25)&1023)/1023.0*10-5;
+                    double x=cx+dx,z=cz+dz;
+                    if(x<-EXTENT+1||z<-EXTENT+1||
+                        x>World.SIZE+EXTENT-1||z>World.SIZE+EXTENT-1||
+                        !outside((int)x,(int)z)||cityDistance(x,z)<7)continue;
+                    Sample location=sample(x,z);
+                    if(location.biome()==ContinentLayout.Biome.WATER||location.road())continue;
+                    String id=location.biome()==ContinentLayout.Biome.MARSH||
+                        location.biome()==ContinentLayout.Biome.BEACH?"tree-shrub":
+                        (branch&3)==0?"tree-pine-small":
+                        (branch&3)==1?"tree-small":
+                        (branch&3)==2?"tree-pine-large":"tree-park-large";
+                    double scale=id.equals("tree-shrub")?.8:
+                        1.0+((branch>>>37)&1023)/1023.0*.9;
+                    props.add(new World.UrbanProp(id,x,z,((branch>>>48)&7)*Math.PI/4,
+                        scale,0,location.elevation()));
                 }
             }
         return List.copyOf(props);

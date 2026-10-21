@@ -80,6 +80,9 @@ jobs:
       - name: Industrial work-order cost, 24-7 restart, idempotency and incursion budget
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IndustrialWorkstationTest
+      - name: RPG death/reset, 5-8 second grace, slow skills and protected hand crafting
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.CharacterProgressionTest
       - name: Absolute faction alliance and permanent hardcore-death RPG reset
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.FactionGroupHardcoreTest

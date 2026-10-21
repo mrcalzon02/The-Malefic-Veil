@@ -151,7 +151,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private record GalleryView(String name,double x,double z,double elevation,
         double heading,double pitch,float distance,double hour){}
     private static final GalleryView[] GALLERY={
-        new GalleryView("01-city-street",6.5,6.5,1.55,0.25,-.06f,45,12),
+        new GalleryView("01-city-street",61.5,61.5,1.55,1.10,-.05f,48,12),
         new GalleryView("02-central-streets",61.5,61.5,3.1,0.67,-.15f,78,16.5),
         new GalleryView("03-urban-rooftops",66,66,43,0.45,-.81f,100,18.2),
         new GalleryView("04-city-overhead",66,66,115,0.30,-1.55f,100,12),
@@ -160,6 +160,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     };
     private void setGalleryView(GalleryView view){
         x=view.x();y=view.z();cameraHeight=view.elevation();heading=view.heading();
+        if(view.name().equals("02-central-streets")){
+            for(CityLayout.Road road:world.city.roadTiles()){
+                if(Integer.bitCount(road.connections())<3)continue;
+                double cx=road.x()*CityLayout.CELL+3.5;
+                double cz=road.y()*CityLayout.CELL+3.5;
+                if(Math.hypot(cx-61.5,cz-61.5)<25||!world.canWalk(cx,cz))continue;
+                x=cx;y=cz;break;
+            }
+        }
         cameraPitch=view.pitch();visualDistance=view.distance();
         worldTimeMs=(long)(WorldDayNight.DAY_MS*view.hour()/24.0);
         menu.showRunning();
@@ -318,7 +327,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         camera.direction.set((float)(Math.cos(heading)*plane),
             (float)Math.sin(cameraPitch),(float)(Math.sin(heading)*plane)).nor();
         camera.up.set(Vector3.Y);
-        camera.far=visualDistance+12;
+        // At elevated inspection cameras the ground is farther away in 3D
+        // than the horizontal view radius. The old far plane clipped entire
+        // rooftops and produced near-empty fake-looking aerial screenshots.
+        camera.far=(float)Math.max(visualDistance+12,
+            Math.hypot(cameraHeight,visualDistance)+28);
         camera.update();
         int visibleTerrain=terrain.render(camera,environment,visualDistance+10);
         visibleTerrainPatches=visibleTerrain;

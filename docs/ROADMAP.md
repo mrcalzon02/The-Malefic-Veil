@@ -6,16 +6,16 @@
 - [ ] Recursive ZIP inventories, attribution and hashes for each archive (source metadata != reviewed content).
 
 ## Phase 1 — runnable local vertical slice
-- [ ] Compile with `javac --release 17`, run desktop Swing (source committed; execution unverified here).
+- [x] Compile with `javac --release 17` and render Swing offscreen in CI (interactive desktop session not yet verified).
 - [x] Seeded city map and walkable building grammar with collision and raycast view (source implemented; tests pending).
 - [x] Player movement, input, handgun/shotgun, pickup loop, NPCs (source implemented; playtest pending).
 - [x] Health/sanity and functional visibility gem, class ability (source implemented; playtest pending).
 - [x] Spawn selection on death and basic defensive deployables (source implemented; multiplayer sync pending).
-- [x] Automated headless world invariants and LAN smoke-check source committed; execution pending.
+- [x] Automated headless city/combat/health/pickups/deployables, live LAN and Swing tests executed in GitHub Actions.
 
 ## Phase 2 — multiplayer correctness
-- [ ] Versioned server protocol, remote player rendering and state snapshots (experimental unversioned LAN protocol and peer visuals exist; versioning/interpolation pending).
-- [ ] Host-authoritative shots, collision, inventory, cash, NPC AI, devices and respawn (server resolves PvP shots, but client movement, ammo, devices and NPCs are NOT authoritative).
+- [x] Protocol v2 greeting, authoritative visibility snapshots and remote alpha blending (interpolation and hardening pending).
+- [x] Host resolves PvP shots, speed-bounded collision, inventory, cash, AI, devices, items and respawn (security hardening and prediction pending).
 - [ ] LAN soak testing (two clients, reconnect and join-in-progress), packet misuse tests.
 - [ ] Ping/interpolation, dedicated server mode and optional LAN discovery.
 

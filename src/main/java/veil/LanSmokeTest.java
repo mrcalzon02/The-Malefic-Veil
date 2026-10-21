@@ -42,10 +42,41 @@ public final class LanSmokeTest {
             attacker.useMedkit();
             until(()->attacker.self()!=null&&attacker.self().medkits()==1,"item usage acknowledged");
             check(shooter.hp>=100,"medkit restores damaged health");
+            // Actual host-controlled healing station effect, not merely a placed structure.
+            host.match.damage(shooter,30,10);
+            int stationWound=shooter.hp;
+            until(()->shooter.hp>stationWound,"healing station restores health automatically");
+            // Acquire a real shared pickup via the network command and verify visibility to the other client.
+            World.Pickup healthDrop=host.match.world.pickups.get(0);
+            shooter.x=healthDrop.x;shooter.y=healthDrop.y;shooter.hp=35;
+            attacker.pickup(0);
+            until(()->healthDrop.taken,"host pickup claimed");
+            until(()->shooter.hp>=65,"health pickup restored health");
+            until(()->victim.pickedUp.contains(0),"pickup removal replicated to other client");
+            check(!host.match.pickup(victim.id,0),"pickup remains exclusively acquired");
+            // Assemble several distinct real structures through the connected client.
+            shooter.x=1.5;shooter.y=1.5;shooter.angle=0;
+            attacker.build(ArenaSystems.TURRET);
+            until(()->host.match.world.devices.size()==2,"turret constructed over socket");
+            shooter.x=6.5;shooter.y=1.5;shooter.angle=Math.PI;
+            attacker.build(ArenaSystems.REVIVE_STATION);
+            until(()->host.match.world.devices.size()==3,"revival structure assembled over socket");
+            shooter.angle=Math.PI/2;
+            attacker.build(ArenaSystems.BARRICADE);
+            until(()->host.match.world.devices.size()==4,"barricade assembled over socket");
+            check(host.match.world.devices.get(3).kind==ArenaSystems.BARRICADE,"correct constructed structure kind");
+            // Live turret damage occurs in the host tick, not the client.
+            prey.x=4.5;prey.y=1.5;
+            int beforeTurret=prey.hp;
+            until(()->prey.hp<beforeTurret,"turret attacked opposing player");
+            // Revive station heals its nearby dead owner after the revive countdown.
+            host.match.damage(shooter,300,10);
+            check(shooter.dead,"fatal wound recorded before revival");
+            until(()->!shooter.dead&&shooter.hp==35,"revival station resurrected fallen player");
             attacker.respawn(0); // living actor must NOT be allowed to respawn
             Thread.sleep(150);
             check(!shooter.dead&&shooter.hp>0,"invalid respawn cannot reset living actor");
-            System.out.println("PASS LanSmokeTest: real host, transparency, PvP hit, replication, inventory, assembly");
+            System.out.println("PASS LanSmokeTest: host, PvP alpha/damage, regen, pickup broadcast, consumables, turret, heal/revive, barricade");
         }
     }
 }

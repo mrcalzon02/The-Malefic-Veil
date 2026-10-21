@@ -198,6 +198,7 @@ public final class ArenaSystems {
             case 6 -> p.medkits++;
             default -> throw new IllegalStateException("Invalid pickup kind");
         }
+        if(item.kind==2||item.kind==3)arsenal.legacyAmmo(id,item.kind);
         return true;
     }
     public synchronized boolean useMedkit(int id){

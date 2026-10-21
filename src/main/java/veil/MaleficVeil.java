@@ -20,9 +20,13 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final PropRenderer urbanRenderer=new PropRenderer();
     private final PerformanceSettings performance=new PerformanceSettings();
     private final GameplayMeshes actorModels=new GameplayMeshes();
-    private final WeaponViewRenderer weaponRenderer=new WeaponViewRenderer();
     private final NetLink net;
     private final Vehicles localVehicles;
+    private final ArenaSystems simulation;
+    private final ArsenalMeshes arsenalMeshes=new ArsenalMeshes();
+    private boolean primaryHeld,alternateHeld;
+    private long arsenalSequence;
+    private JDialog fabrication;
     private final int archetype;
     private final javax.swing.Timer timer;
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
@@ -38,8 +42,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
 
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {
         this.window=window;this.net=net;this.archetype=archetype;
-        world=new World(seed);
-        localVehicles=new Vehicles(world);
+        simulation=new ArenaSystems(seed);world=simulation.world;
+        localVehicles=simulation.vehicles;
+        if(net==null){simulation.join(1);simulation.choose(1,archetype);}
         try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
@@ -52,6 +57,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         setBackground(Color.BLACK);setPreferredSize(new Dimension(1024,640));
         setFocusable(true);
         addKeyListener(this);addMouseListener(this);addMouseMotionListener(this);
+        addFocusListener(new FocusAdapter(){@Override public void focusLost(FocusEvent e){held.clear();primaryHeld=alternateHeld=false;releaseTrigger();}});
         timer=new javax.swing.Timer(33,this);timer.start();
     }
     public static void main(String[] args) {
@@ -139,6 +145,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 if(!result.fired())toast("SHOT REJECTED: "+result.outcome());
                 else if(result.damage()>0)toast("CONFIRMED "+result.outcome()+" HIT "+result.damage());
             }
+            String arsenalReply;while((arsenalReply=net.arsenalResults.poll())!=null){if(arsenalReply.equals("FIRED")||arsenalReply.startsWith("HIT_")){attackFlash=.12;if(arsenalReply.startsWith("HIT_"))toast(arsenalReply.replace('_',' '));}else toast(arsenalReply.replace('_',' '));}
+            Integer arsenalIndex;while((arsenalIndex=net.arsenalPicked.poll())!=null)if(arsenalIndex>=0&&arsenalIndex<simulation.arsenal.loot.size())simulation.arsenal.loot.get(arsenalIndex).taken=true;
+            for(var tier:net.benchTiers.entrySet())if(tier.getKey()>=0&&tier.getKey()<world.devices.size())world.devices.get(tier.getKey()).tier=tier.getValue();
+            ArsenalSystems.View av=net.arsenal();if(av!=null){gun=av.selected();pistolClip=av.clip()[0];}
             NetLink.BuildEvent construction;
             while((construction=net.buildResults.poll())!=null){
                 toast(construction.reason().equals("OK")?"CONSTRUCTION ACCEPTED":
@@ -173,7 +183,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
             if(ticks%90==0)net.ping();
         }
-        if(net==null)localVehicles.advance(33);
+        if(net==null){simulation.advance(33);syncSolo(false);}
         if(!dead){
             int carId=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
             if(carId>=0){
@@ -202,125 +212,58 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     if(!item.taken&&Math.hypot(px-item.x,py-item.y)<.57)net.pickup(i);
                 }
             }else{
-            for(World.Pickup item:world.pickups){
-                if(item.taken||Math.hypot(px-item.x,py-item.y)>.55)continue;
-                item.taken=true;
-                switch(item.kind){
-                    case 0 -> {health=Math.min(100,health+30);toast("+30 HEALTH");}
-                    case 1 -> {sanity=Math.min(100,sanity+30);toast("+30 SANITY");}
-                    case 2 -> {pistolReserve+=24;toast("+24 ROUNDS");}
-                    case 3 -> {shellReserve+=10;toast("+10 SHELLS");}
-                    case 4 -> {cash+=50;toast("+$50");}
-                    case 5 -> {scrap+=2;toast("+2 SUPPLIES");}
-                    case 6 -> {medkits++;toast("+1 MEDKIT");}
-                }
+                simulation.move(1,px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
+                if(carId<0)for(int i=0;i<world.pickups.size();i++)if(!world.pickups.get(i).taken&&Math.hypot(px-world.pickups.get(i).x,py-world.pickups.get(i).y)<.55)simulation.pickup(1,i);
+                syncSolo(true);
             }
-            simulateNpc(step);
-            for(World.Device d:world.devices) {
-                if(d.hp<=0)continue;
-                d.cooldown=Math.max(0,d.cooldown-step);
-                if(d.kind==1&&Math.hypot(d.x-px,d.y-py)<1.8&&ticks%20==0){
-                    health=Math.min(100,health+2);sanity=Math.min(100,sanity+1);
-                }
-                if(d.kind==0&&d.cooldown==0){
-                    World.Npc target=null;double best=7;
-                    for(World.Npc n:world.npcs){
-                        double dist=Math.hypot(n.x-d.x,n.y-d.y);
-                        if(n.hp>0&&dist<best&&world.lineClear(d.x,d.y,n.x,n.y)){target=n;best=dist;}
-                    }
-                    if(target!=null){target.hp-=18;d.cooldown=.45;}
-                }
+            if(carId<0&&(net==null||ticks%5==0))for(int i=0;i<simulation.arsenal.loot.size();i++){
+                var l=simulation.arsenal.loot.get(i);if(!l.taken&&Math.hypot(px-l.x,py-l.y)<.57){if(net!=null)net.arsenalPickup(i);else{var r=simulation.arsenal.pickup(1,i);if(r.ok())toast(l.type==0?"ACQUIRED "+ArsenalCatalog.get(l.value).name():l.type==1?"SALVAGED "+ArsenalCatalog.MATERIALS[l.value]:"AMMUNITION");}}
             }
-            if(sanity<25&&ticks%33==0)health=Math.max(1,health-1);
-            }
+            if((fabrication==null||!fabrication.isVisible())&&(primaryHeld||alternateHeld||down(KeyEvent.VK_SPACE)))shoot(alternateHeld);
         }
         if(performance.frameCap>=30 || ticks%2==0)repaint();
     }
-    private void simulateNpc(double dt){
-        for(World.Npc n:world.npcs) {
-            if(n.hp<=0)continue;
-            double dx=px-n.x,dy=py-n.y,d=Math.hypot(dx,dy);
-            if(d<11&&visibility()>.13&&world.lineClear(n.x,n.y,px,py)&&d>.7){
-                double speed=.72*dt;
-                double nx=n.x+dx/d*speed,ny=n.y+dy/d*speed;
-                if(world.canWalk(nx,n.y))n.x=nx;
-                if(world.canWalk(n.x,ny))n.y=ny;
-            } else if(ticks%8==0){
-                double dir=(World.mix(world.seed+ticks/8+n.hashCode())&1023)*Math.PI/512;
-                double nx=n.x+Math.cos(dir)*.09,ny=n.y+Math.sin(dir)*.09;
-                if(world.canWalk(nx,ny)){n.x=nx;n.y=ny;}
-            }
-            n.cooldown=Math.max(0,n.cooldown-dt);
-            if(d<1.05&&n.cooldown<=0){
-                hurt(8,9);n.cooldown=1.15;
-            }else if(d<3&&ticks%45==0)sanity=Math.max(0,sanity-1);
-        }
+    private ArsenalSystems.View arsenalView(){return net==null?simulation.arsenal.view(1):net.arsenal();}
+    private void syncSolo(boolean position){
+        ArenaSystems.Player p=simulation.player(1);if(p==null)return;
+        health=p.hp;sanity=p.sanity;cash=p.cash;scrap=p.scrap;medkits=p.medkits;frags=p.frags;dead=p.dead;
+        var a=simulation.arsenal.view(1);gun=a.selected();pistolClip=a.clip()[0];pistolReserve=a.reserve()[0];
+        if(position){px=p.x;py=p.y;if(localVehicles.carDrivenBy(1)>=0)angle=p.angle;}
     }
-    private void hurt(int h,int s){
-        health=Math.max(0,health-h);sanity=Math.max(0,sanity-s);
-        if(health==0){dead=true;toast("YOU HAVE FALLEN — 1/2/3 CHOOSE RESPAWN");}
+    private void shoot(){shoot(false);}
+    private void shoot(boolean alternate){
+        if(dead||fireCooldown>0)return;var v=arsenalView();if(v==null)return;
+        if(v.clip()[v.selected()]<=0&&!alternate){if(!primaryHeld)toast("EMPTY — R TO RELOAD");return;}
+        fireCooldown=.05;
+        if(net!=null){net.arsenalFire(alternate);return;}
+        simulation.move(1,px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
+        var r=simulation.arsenal.fire(1,alternate,++arsenalSequence);if(r.fired()){attackFlash=.12;if(r.damage()>0)toast("HIT "+r.damage());}
+        else if(!java.util.List.of("COOLDOWN","CHARGING","COOLING","NO_ACTIVE_PROJECTILE","NO_AMMO").contains(r.reason()))toast(r.reason().replace('_',' '));syncSolo(false);
     }
-    private void shoot(){
-        if(dead||fireCooldown>0)return;
-        int clip=gun==0?pistolClip:shellClip;
-        if(clip<=0){toast("EMPTY — R TO RELOAD");return;}
-        if(gun==0)pistolClip--;else shellClip--;
-        fireCooldown=gun==0?.22:.88;
-        attackFlash=.18;
-        if(net!=null){net.fire(gun);return;}
-        World.Npc hit=null;double best=gun==0?13:4.5;
-        double spread=gun==0?.065:.20;
-        for(World.Npc n:world.npcs){
-            if(n.hp<=0)continue;
-            double dx=n.x-px,dy=n.y-py,dist=Math.hypot(dx,dy);
-            if(dist>best||dist<.01||!world.lineClear(px,py,n.x,n.y))continue;
-            double da=Math.atan2(Math.sin(Math.atan2(dy,dx)-angle),Math.cos(Math.atan2(dy,dx)-angle));
-            if(Math.abs(da)<Math.atan2(.3,dist)+spread&&dist<best){best=dist;hit=n;}
-        }
-        if(hit!=null){
-            hit.hp-=gun==0?27:Math.max(25,85-(int)(best*8));
-            if(hit.hp<=0){cash+=25;frags++;toast("HOSTILE DOWN  +$25");}
-        }
-    }
-    private void reload(){
-        if(dead)return;
-        if(net!=null){net.reload(gun);return;}
-        if(gun==0){
-            int used=Math.min(12-pistolClip,pistolReserve);
-            pistolReserve-=used;pistolClip+=used;
-        }else{
-            int used=Math.min(6-shellClip,shellReserve);
-            shellReserve-=used;shellClip+=used;
-        }
+    private void reload(){if(dead)return;if(net!=null)net.arsenalReload();else{var r=simulation.arsenal.reload(1);toast(r.reason().replace('_',' '));}}
+    private void selectWeapon(int w){if(net!=null)net.arsenalSelect(w);else{var r=simulation.arsenal.select(1,w);if(!r.ok())toast(r.reason().replace('_',' '));syncSolo(false);}}
+    private void cycleWeapon(int step){var v=arsenalView();if(v==null)return;for(int i=1;i<=32;i++){int w=Math.floorMod(v.selected()+step*i,32);if((v.owned()&(1L<<w))!=0){selectWeapon(w);return;}}}
+    private void releaseTrigger(){if(net!=null)net.arsenalRelease();else simulation.arsenal.release(1);}
+    private void craftingMenu(){
+        primaryHeld=alternateHeld=false;held.clear();releaseTrigger();
+        if(fabrication!=null&&fabrication.isDisplayable()){fabrication.setVisible(!fabrication.isVisible());return;}
+        fabrication=new JDialog(window,"Inventory / Fabrication",false);
+        fabrication.setContentPane(new FabricationPanel(this::arsenalView,
+            code->{if(net!=null)net.arsenalCraft(code);else toast(simulation.arsenal.craft(1,code).reason().replace('_',' '));},
+            this::selectWeapon, f->{if(net!=null)net.arsenalFaction(f);else toast(simulation.arsenal.faction(1,f).reason().replace('_',' '));},
+            ()->{if(net!=null)net.arsenalUpgrade();else toast(simulation.arsenal.upgrade(1).reason().replace('_',' '));},()->deploy(4)));
+        fabrication.pack();fabrication.setLocationRelativeTo(window);fabrication.setVisible(true);
     }
     private void deploy(int kind){
         if(dead)return;
         if(net!=null){net.build(kind);return;}
-        int price=kind==0?(archetype==0?60:100):kind==1?75:kind==2?120:45;
-        int cost=kind==0?3:kind==1?1:kind==2?2:1;
-        if(cash<price||scrap<cost){toast("NEED $"+price+" AND "+cost+" SUPPLIES");return;}
-        double x=px+Math.cos(angle)*1.1,y=py+Math.sin(angle)*1.1;
-        if(world.worldStructureAt(x,y,.55)){toast("WORLD STRUCTURE PROTECTED");return;}
-        if(!world.canWalk(x,y)){toast("BUILD SPACE BLOCKED");return;}
-        for(World.Device d:world.devices)if(Math.hypot(x-d.x,y-d.y)<1.2){toast("TOO CLOSE TO ANOTHER DEVICE");return;}
-        cash-=price;scrap-=cost;
-        world.devices.add(new World.Device(x,y,kind));
-        toast(kind==0?"TURRET DEPLOYED":kind==1?"HEAL STATION DEPLOYED":"REVIVE STATION DEPLOYED");
+        simulation.move(1,px,py,angle,0);var r=simulation.buildOutcome(1,kind);syncSolo(false);toast(r.built()?"CONSTRUCTION ACCEPTED":r.review().reason().replace('_',' '));
     }
     private void ability(){
         if(dead||abilityCooldown>0)return;
         abilityCooldown=18;
         if(net!=null){net.ability();return;}
-        switch(archetype){
-            case 0 -> {cash+=35;scrap++;toast("SALVAGE PROTOCOL +$35 +1 SUPPLY");}
-            case 1 -> {health=Math.min(100,health+55);sanity=Math.min(100,sanity+20);toast("FIELD RECOVERY");}
-            case 2 -> {abilitySeconds=7;toast("SHADE ACTIVE — LOW VISIBILITY");}
-            case 3 -> {
-                sanity=Math.min(100,sanity+45);
-                for(World.Npc n:world.npcs)if(n.hp>0&&Math.hypot(n.x-px,n.y-py)<4)n.hp-=38;
-                toast("PSYCHIC REPULSE");
-            }
-        }
+        simulation.ability(1);syncSolo(false);if(archetype==2)abilitySeconds=7;
     }
     private void respawnAt(int index){
         if(!dead)return;
@@ -331,11 +274,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(respawnPending)return;
             respawnPending=true;net.respawn(index);toast("RESPAWN REQUESTED");return;
         }
-        spawn=index;px=world.spawns[index][0];py=world.spawns[index][1];
-        health=100;sanity=75;dead=false;pistolClip=12;shellClip=6;
-        pistolReserve=Math.max(24,pistolReserve);shellReserve=Math.max(12,shellReserve);
-        if(net!=null)net.respawn(index);
-        toast("RESPAWN: SECTOR "+(index+1));
+        if(simulation.respawn(1,index)){syncSolo(true);toast("RESPAWN: SECTOR "+(index+1));}else toast("RESPAWN COUNTDOWN OR OBSTRUCTION");
     }
     private void renderScene(Graphics2D g){
         g.setColor(new Color(14,14,27));g.fillRect(0,0,RW,RH/2);
@@ -389,10 +328,20 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
         }
         urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
+        java.util.List<UrbanScene.ModelInstance> arsenalLoot=new java.util.ArrayList<>();
+        for(var l:simulation.arsenal.loot)if(!l.taken){
+            if(l.type==0)arsenalLoot.add(new UrbanScene.ModelInstance(arsenalMeshes.worldId(l.value),l.x,l.y,ticks*.018,.9,1,.88));
+        }
+        // Resource/ammo meshes use the existing authored pickup shapes; weapon loot uses the working arsenal.
+        java.util.List<UrbanScene.ModelInstance> resourceLoot=new java.util.ArrayList<>();for(var l:simulation.arsenal.loot)if(!l.taken&&l.type!=0)resourceLoot.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[l.type==1?5:2],l.x,l.y,ticks*.012,1,1,.7));
+        urbanRenderer.draw(g,actorModels.meshes(),resourceLoot,px,py,angle,depth,RW,RH);
+        urbanRenderer.draw(g,arsenalMeshes.worldModels(),arsenalLoot,px,py,angle,depth,RW,RH);
+        ArsenalEffects.draw(g,net==null?simulation.arsenal.effects():net.arsenalEffects(),world,px,py,angle,RW,RH);
         g.setColor(new Color(187,176,149));
         g.fillRect(RW/2-5,RH/2,11,1);g.fillRect(RW/2,RH/2-5,1,11);
         int bob=(int)(Math.sin(ticks*.15)*(down(KeyEvent.VK_W)?2:0));
-        weaponRenderer.draw(g,actorModels.meshes().get(GameplayMeshes.WEAPON[gun]),RW,RH,bob);
+        var av=arsenalView();long age=av==null?0:(net==null?simulation.time():System.nanoTime()/1_000_000)-av.actionAt();
+        arsenalMeshes.draw(g,av==null?0:av.selected(),av,age,RW,RH,bob);
         if(attackFlash>0){
             g.setColor(new Color(255,207,85));
             g.fillOval(RW/2-12,RH-64+bob,24,22);
@@ -452,8 +401,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.setColor(new Color(10,11,16,225));g.fillRect(0,h-70,w,70);
         g.setColor(new Color(215,215,207));
         g.drawString("HP "+health+"   SAN "+sanity+"   CASH $"+cash+"   SUP "+scrap+"   MED "+medkits+"   KILLS "+frags,105,h-44);
-        g.drawString((gun==0?"HANDGUN ":"SHOTGUN ")+(gun==0?pistolClip:shellClip)+"/"+(gun==0?pistolReserve:shellReserve)+
+        var inventory=arsenalView();int equipped=inventory==null?0:inventory.selected();
+        g.drawString(ArsenalCatalog.get(equipped).name()+" "+(inventory==null?0:inventory.clip()[equipped])+"/"+(inventory==null?0:inventory.reserve()[equipped])+
             "     "+names[archetype]+"  F "+(abilityCooldown==0?"READY":String.format("%.0fs",abilityCooldown)),105,h-17);
+        if(inventory!=null&&(inventory.reloadRemaining()>0||inventory.action()==2)){g.setColor(new Color(232,184,103));g.drawString(inventory.reloadRemaining()>0?"RELOADING":"CHARGING",w-170,h-42);}
         double gem=net!=null&&net.self()!=null?net.self().visibility():visibility();
         drawGem(g,gem,31,h-35);
         g.setFont(new Font(Font.MONOSPACED,Font.BOLD,15));
@@ -484,9 +435,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         if(help&&!dead){g.setColor(new Color(9,10,17,220));g.fillRect(12,64,440,100);
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
-            g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
+            g.drawString("LMB/SPACE fire  RMB alt  1–8 / [ ] weapons  R reload",23,107);
             g.drawString("T turret  H heal  V revive  B barricade  E medkit",23,127);
-            g.drawString("Q enter/exit car  M city map  N continent  TAB / Esc help",23,147);}
+            g.drawString("K inventory / craft  J bench  Q car  M/N maps  F ability",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
@@ -500,7 +451,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(new Color(10,12,19,238));g.fillRoundRect(left,top,panelWidth,282,14,14);
             g.setColor(new Color(238,114,128));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,24));
             g.drawString("YOU HAVE FALLEN",left+20,top+37);
-            long wait=net==null?0:net.respawnRemainingMs();
+            long wait=net==null?simulation.respawnRemainingMs(1):net.respawnRemainingMs();
             g.setFont(new Font(Font.MONOSPACED,Font.BOLD,14));
             g.setColor(wait>0?new Color(240,191,103):new Color(127,224,161));
             g.drawString(wait>0?"RESPAWN IN "+String.format("%.1f",wait/1000.0)+"s":"RESPAWN READY",
@@ -587,8 +538,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             return;
         }
         switch(k){
-            case KeyEvent.VK_1 -> gun=0;
-            case KeyEvent.VK_2 -> gun=1;
+            case KeyEvent.VK_1,KeyEvent.VK_2,KeyEvent.VK_3,KeyEvent.VK_4,KeyEvent.VK_5,KeyEvent.VK_6,KeyEvent.VK_7,KeyEvent.VK_8 -> selectWeapon(k-KeyEvent.VK_1);
+            case KeyEvent.VK_OPEN_BRACKET -> cycleWeapon(-1);
+            case KeyEvent.VK_CLOSE_BRACKET -> cycleWeapon(1);
+            case KeyEvent.VK_K -> craftingMenu();
+            case KeyEvent.VK_J -> deploy(4);
             case KeyEvent.VK_R -> reload();
             case KeyEvent.VK_F -> ability();
             case KeyEvent.VK_T -> deploy(0);
@@ -596,7 +550,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_V -> deploy(2);
             case KeyEvent.VK_E -> {
                 if(net!=null)net.useMedkit();
-                else if(medkits>0&&health<100){medkits--;health=Math.min(100,health+55);toast("MEDKIT USED");}
+                else {simulation.useMedkit(1);syncSolo(false);}
             }
             case KeyEvent.VK_B -> deploy(3);
             case KeyEvent.VK_Q -> toggleCar();
@@ -636,9 +590,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(chosen<0)toast("NO VEHICLE IN REACH");else net.ride(chosen);
         }else{
             if(localVehicles.carDrivenBy(1)>=0){
-                double[] exited=localVehicles.exit(1);
-                if(exited==null)toast("STOP AND CLEAR THE DOOR");
-                else{px=exited[0];py=exited[1];toast("EXITED VEHICLE");}
+                if(!simulation.exitVehicle(1))toast("STOP AND CLEAR THE DOOR");else{syncSolo(true);toast("EXITED VEHICLE");}
                 return;
             }
             int chosen=-1;double best=2.0;
@@ -646,14 +598,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 double dist=Math.hypot(px-car.x(),py-car.y());
                 if(car.hp()>0&&car.driverId()<0&&dist<best){best=dist;chosen=car.id();}
             }
-            if(chosen<0||!localVehicles.enter(1,px,py,chosen))toast("NO VEHICLE IN REACH");
+            if(chosen<0||!simulation.enterVehicle(1,chosen))toast("NO VEHICLE IN REACH");
             else toast("ENGINE ENGAGED");
         }
     }
-    @Override public void keyReleased(KeyEvent e){held.remove(e.getKeyCode());}
+    @Override public void keyReleased(KeyEvent e){held.remove(e.getKeyCode());if(e.getKeyCode()==KeyEvent.VK_SPACE)releaseTrigger();}
     @Override public void keyTyped(KeyEvent e){}
     @Override public void mousePressed(MouseEvent e){
         requestFocusInWindow();
+        if(e.getButton()==MouseEvent.BUTTON3){alternateHeld=true;shoot(true);return;}
         if(e.getButton()!=MouseEvent.BUTTON1)return;
         if(dead){
             int top=Math.max(46,(getHeight()-282)/2);
@@ -666,9 +619,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
             return;
         }
-        shoot();
+        primaryHeld=true;shoot();
     }
-    @Override public void mouseReleased(MouseEvent e){}
+    @Override public void mouseReleased(MouseEvent e){if(e.getButton()==MouseEvent.BUTTON1)primaryHeld=false;if(e.getButton()==MouseEvent.BUTTON3)alternateHeld=false;releaseTrigger();}
     @Override public void mouseClicked(MouseEvent e){}
     @Override public void mouseEntered(MouseEvent e){previousMouse=-1;}
     @Override public void mouseExited(MouseEvent e){previousMouse=-1;}

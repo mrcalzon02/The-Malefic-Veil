@@ -50,6 +50,12 @@ jobs:
       - name: Original arsenal blockout GLB import verification
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArsenalBlockoutTest
+      - name: Functional arsenal, fabrication, runtime animation and two-client replication
+        shell: bash
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.ArsenalSystemsTest
+          java -Djava.awt.headless=true -cp build/classes veil.ArsenalAssetTest
+          java -Djava.awt.headless=true -cp build/classes veil.ArsenalNetworkTest
       - name: QoL gate for confirmed hits and obstacle-aware construction
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.QualityGateTest
@@ -68,12 +74,14 @@ jobs:
           echo 'Main-Class: veil.MaleficVeil' > build/manifest.mf
           jar cfm build/MaleficVeil.jar build/manifest.mf -C build/classes .
           jar uf build/MaleficVeil.jar -C assets/game kenney
+          jar uf build/MaleficVeil.jar -C assets/game arsenal
           jar tf build/MaleficVeil.jar | grep 'kenney/retro-urban-kit-2.0.zip'
       - name: Validate self-contained runnable JAR model resources
         shell: bash
         run: |
           cd build
           java -Djava.awt.headless=true -cp MaleficVeil.jar veil.UrbanAssetTest
+          java -Djava.awt.headless=true -cp MaleficVeil.jar veil.ArsenalAssetTest
       - uses: actions/upload-artifact@v4
         if: always()
         with:

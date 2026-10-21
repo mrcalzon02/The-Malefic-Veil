@@ -1,0 +1,386 @@
+[
+  {
+    "id": "w01-vesper",
+    "triangles": 380,
+    "components": 9,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "f06b2bd3b082f2014fb0eb6bbfe2be81a2f4db53365fce7577eac48b5d207017"
+  },
+  {
+    "id": "w02-ossuary",
+    "triangles": 488,
+    "components": 10,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "640bd67fbfb6326ecbe0404e2fdd951f8d4fd92d601020468bd389d9d5618df9"
+  },
+  {
+    "id": "w03-needle-choir",
+    "triangles": 432,
+    "components": 10,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "77094b7a8599e301c504f69515c0234f3efa4386422b0f0baed741fd0876d1f4"
+  },
+  {
+    "id": "w04-rivet-saint",
+    "triangles": 432,
+    "components": 10,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "5ede1ad50a8829a2f3950cd36154ffb5cec8acf51837d8fbc965b95f32e1d4e4"
+  },
+  {
+    "id": "w05-grave-bell",
+    "triangles": 524,
+    "components": 11,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "4073b63f1d197002cc9327515b550d1cc27d1fd58a8ad2004d5b5a434b6a22be"
+  },
+  {
+    "id": "w06-cerberus",
+    "triangles": 660,
+    "components": 13,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "c077d9e04c115d1baee197b09614c13a2a2eb0b179b365d6c7fc960f163678f2"
+  },
+  {
+    "id": "w07-reliquary",
+    "triangles": 588,
+    "components": 11,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "638f7dde82aad3684be80cc2e2ab25acee2da821093368a5ec65d5cd464d218d"
+  },
+  {
+    "id": "w08-furnace-organ",
+    "triangles": 1492,
+    "components": 25,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "cc873595493556c35fbbead4d0fde5a45d2826b0236ac87def3ba4d2c8a43e85"
+  },
+  {
+    "id": "w09-hailstorm",
+    "triangles": 2492,
+    "components": 39,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "01336016a043d4d71a0ef21657cbe7ccb1256cd2f9df4a9406941c85839aea46"
+  },
+  {
+    "id": "w10-cautery",
+    "triangles": 616,
+    "components": 12,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "a14fa4d9beed204aeba9689377b062bdc5d52fd9841a1eda7176c5e7a1ab311e"
+  },
+  {
+    "id": "w11-prism-writ",
+    "triangles": 1044,
+    "components": 17,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "263bb878de791de42b4968e23b8a00e3b336d570b87837c50b696585c729659f"
+  },
+  {
+    "id": "w12-longwake",
+    "triangles": 656,
+    "components": 14,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "507bc45113183830994efaad0175ba1903286e264ee06497b00c946cc9ccd258"
+  },
+  {
+    "id": "w13-ion-psalm",
+    "triangles": 792,
+    "components": 13,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "eb119f07011bc865ccb4d2610234360a1a8732e25a5241b43a78b27b6b52655f"
+  },
+  {
+    "id": "w14-sun-eater",
+    "triangles": 1200,
+    "components": 16,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "f2204943f72ab6963d9a744dc10a68f18eeb4f569fad31b3dff414689afadb44"
+  },
+  {
+    "id": "w15-storm-rosary",
+    "triangles": 816,
+    "components": 14,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "4e1793e9872528740d38ee9b459cb2bf8fa8bbff6731d7f4c4512b267530d4e6"
+  },
+  {
+    "id": "w16-forked-benediction",
+    "triangles": 860,
+    "components": 15,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "ceb5ee50b87f749543d33bf0cbe7870da50ca164583e4eca2d4604e176476f04"
+  },
+  {
+    "id": "w17-ball-lightning",
+    "triangles": 712,
+    "components": 12,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "1beaf5dfdc27060adeacbecf986c2ed1c8cc280d828ec2b06a17755b17c26a96"
+  },
+  {
+    "id": "w18-thunder-loom",
+    "triangles": 1220,
+    "components": 21,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "da2171cea566aeb883d0c3a1c49955ca9425bc3d498147188a2ed5dd490d9149"
+  },
+  {
+    "id": "w19-pilgrim",
+    "triangles": 680,
+    "components": 14,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "f5362ade1776d66ce7cd49444f50222bd975bb94e70e82d7002f82657a534a19"
+  },
+  {
+    "id": "w20-widow-choir",
+    "triangles": 932,
+    "components": 19,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "d579f0adf16245aceeeb198b11bf5aced6bbe13131236fc5225271cb3ed1048e"
+  },
+  {
+    "id": "w21-basilisk",
+    "triangles": 680,
+    "components": 14,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "b680c9f7e96d89dc3ba717251bccb49c1d023adb938a3c658ec40b41ceace6d8"
+  },
+  {
+    "id": "w22-censer",
+    "triangles": 436,
+    "components": 9,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "9885a4ad1c46259ee4bf871e30a933421be1d188ae84f3d7dff8a7c019e356d9"
+  },
+  {
+    "id": "w23-vigil-mortar",
+    "triangles": 668,
+    "components": 13,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "47b61e4cea7f2b6b1808c1c475fe053a3dd17bad7146edf366d60007ff6c00c9"
+  },
+  {
+    "id": "w24-cathedral",
+    "triangles": 736,
+    "components": 14,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "497f43f860a63c8906b784d33a32ec0adef407b90579d8d823eee0420308a031"
+  },
+  {
+    "id": "w25-shrapnel-mass",
+    "triangles": 568,
+    "components": 12,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "231631890c2e2ad17c011ab9a07e4c106ba08a3b3fb660d0646213381df04726"
+  },
+  {
+    "id": "w26-ricochet-gospel",
+    "triangles": 1012,
+    "components": 21,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "7e9fb9dd266e362750f09e0107b1caf50762e8096d49d4dd907b82f83dd899af"
+  },
+  {
+    "id": "w27-bankshot",
+    "triangles": 584,
+    "components": 11,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "e569eb328cb2ed1ec056246c4a35cf80d1d01867c1892eaac80ec0812bce1df9"
+  },
+  {
+    "id": "w28-scrap-cyclone",
+    "triangles": 568,
+    "components": 12,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "64ceddd9448b52b2773083b0ec2816dbd565f6bce7b46a7bd9420fba120bc015"
+  },
+  {
+    "id": "w29-miasma",
+    "triangles": 1296,
+    "components": 17,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "b94c31b27ee2f6647118450b77a27654f55d376a21fc152b2f3861c9840d440f"
+  },
+  {
+    "id": "w30-winter-verdict",
+    "triangles": 1232,
+    "components": 17,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "c97c348a0ae5b2b40436476d6f5a0a4c6db355c6ab3b5ecfb61df779fa9c34c7"
+  },
+  {
+    "id": "w31-eventide",
+    "triangles": 840,
+    "components": 13,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "9aefb9d48bf657da845095a8d4b8332eb561b2059f39e21333c9415e60dbf829"
+  },
+  {
+    "id": "w32-veilbreaker",
+    "triangles": 968,
+    "components": 14,
+    "clips": [
+      "idle",
+      "fire",
+      "alternate",
+      "reload"
+    ],
+    "sha256": "2712a585d435158b0e107efd8b7837856b7a814241b06649ac4d8d44e946f611"
+  }
+]

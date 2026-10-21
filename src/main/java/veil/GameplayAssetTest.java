@@ -28,7 +28,7 @@ public final class GameplayAssetTest {
     }
     public static void main(String[] ignored)throws Exception{
         GameplayMeshes lib=new GameplayMeshes();
-        check(lib.meshes().size()==18,"four heroes + enemy + two weapons + seven pickups + four devices");
+        check(lib.meshes().size()==19,"four heroes + enemy + two legacy weapons + seven pickups + five devices");
         int triangles=0;
         for(var entry:lib.meshes().entrySet()){
             GlbMesh mesh=entry.getValue();int count=mesh.triangleCount();

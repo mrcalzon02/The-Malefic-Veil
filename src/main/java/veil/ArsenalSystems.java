@@ -116,7 +116,17 @@ public final class ArsenalSystems {
         if(s.reloadWeapon>=0)return new Result(false,"RELOADING");if(s.clip[w]>=get(w).capacity()||s.reserve[w]==0)return new Result(false,"NO_RELOAD");
         s.charging=-1;s.chargeAt=-1;s.reloadWeapon=w;s.reloadEnd=host.time()+get(w).reloadMs();s.action=3;s.actionAt=host.time();return new Result(true,"RELOADING");
     }}
+    void legacyAmmo(int id,int kind){State s=state(id);if(s==null)return;for(int w=0;w<8;w++)if(owns(s,w)&&((kind==3)==(w>=4&&w<=6)))s.reserve[w]=Math.min(get(w).capacity()*8,s.reserve[w]+get(w).capacity());}
     private static Mode mode(int w,boolean alt){return alt?get(w).alternate():get(w).primary();}
+    public ArenaSystems.ShotReport compatibilityFire(int id,int oldWeapon,long sequence){synchronized(host){
+        int w=oldWeapon==0?0:oldWeapon==1?6:-1;State s=state(id);if(w<0||!owns(s,w))return new ArenaSystems.ShotReport(sequence,false,"WEAPON",0,0,0);
+        if(s.selected!=w){Result r=select(id,w);if(!r.ok())return new ArenaSystems.ShotReport(sequence,false,r.reason(),0,0,s.clip[w]);}
+        Map<Integer,Integer> before=new HashMap<>();for(var p:host.roster())before.put(p.id,p.hp);int[] npcs=host.world.npcs.stream().mapToInt(n->n.hp).toArray();Shot shot=fire(id,false,sequence);
+        int target=0;String reason=shot.fired()?"MISS":shot.reason();
+        for(var p:host.roster())if(p.hp<before.getOrDefault(p.id,p.hp)){target=p.id;reason="PLAYER";break;}
+        if(reason.equals("MISS"))for(int i=0;i<npcs.length;i++)if(host.world.npcs.get(i).hp<npcs[i]){target=i;reason="NPC";break;}
+        return new ArenaSystems.ShotReport(sequence,shot.fired(),reason,target,shot.damage(),shot.ammo());
+    }}
     private static int cost(int w,boolean alt,Mode m){
         if(m.kind()==Kind.MISSILE)return m.pellets();if(alt&&w==18)return 3;if(alt&&w==4)return 2;if(alt&&w==5)return 3;if(alt&&(w==1||w==12||w==10))return 2;if(alt&&w==13)return get(w).capacity();return w==27&&!alt?4:1;
     }
@@ -139,6 +149,7 @@ public final class ArsenalSystems {
             if(now-s.chargeAt<m.charge())return new Shot(false,"CHARGING",0,remaining);
         }
         s.charging=-1;s.chargeAt=-1;s.spinUntil=now+300;s.clip[w]-=price;s.readyAt=now+m.cooldown();s.action=alt?4:1;s.actionAt=now;s.damage=0;
+        if(w==0)host.player(id).pistolClip=s.clip[w];
         s.heat=Math.min(1.2,s.heat+(get(w).mechanism().equals("rotor")?.065:m.kind()==Kind.BEAM?.10:.025));
         if(s.heat>=1)s.readyAt=Math.max(s.readyAt,now+2200);
         ArenaSystems.Player p=host.player(id);p.protectedUntil=0;p.shotAt=now;host.refreshVisibility(p);

@@ -1,0 +1,325 @@
+{
+  "count": 32,
+  "items": [
+    {
+      "id": "w01-vesper",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w02-ossuary",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 3
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w03-needle-choir",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w04-rivet-saint",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w05-grave-bell",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 3
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w06-cerberus",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 3
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w07-reliquary",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w08-furnace-organ",
+      "clips": {
+        "idle": 1,
+        "fire": 3,
+        "alternate": 3,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w09-hailstorm",
+      "clips": {
+        "idle": 1,
+        "fire": 4,
+        "alternate": 4,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w10-cautery",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w11-prism-writ",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w12-longwake",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w13-ion-psalm",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w14-sun-eater",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w15-storm-rosary",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w16-forked-benediction",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w17-ball-lightning",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w18-thunder-loom",
+      "clips": {
+        "idle": 1,
+        "fire": 3,
+        "alternate": 3,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w19-pilgrim",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w20-widow-choir",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w21-basilisk",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w22-censer",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 3
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w23-vigil-mortar",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 3
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w24-cathedral",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w25-shrapnel-mass",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w26-ricochet-gospel",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w27-bankshot",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w28-scrap-cyclone",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 3
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w29-miasma",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w30-winter-verdict",
+      "clips": {
+        "idle": 1,
+        "fire": 1,
+        "alternate": 1,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w31-eventide",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    },
+    {
+      "id": "w32-veilbreaker",
+      "clips": {
+        "idle": 1,
+        "fire": 2,
+        "alternate": 2,
+        "reload": 2
+      },
+      "embedded_images": 1
+    }
+  ]
+}

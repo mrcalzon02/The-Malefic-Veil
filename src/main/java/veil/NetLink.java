@@ -33,6 +33,13 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<NpcEvent> npcs=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<ShotEvent> shots=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<BuildEvent> buildResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> arsenalResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<Integer> arsenalPicked=new ConcurrentLinkedQueue<>();
+    public final ConcurrentHashMap<Integer,Integer> benchTiers=new ConcurrentHashMap<>();
+    private volatile ArsenalSystems.View arsenal;
+    private volatile java.util.List<ArsenalSystems.Effect> arsenalEffects=java.util.List.of();
+    public ArsenalSystems.View arsenal(){return arsenal;}
+    public java.util.List<ArsenalSystems.Effect> arsenalEffects(){return arsenalEffects;}
     private final AtomicLong shotIds=new AtomicLong();
     private volatile Self self;
     private volatile String accountKey;
@@ -64,6 +71,12 @@ public final class NetLink implements AutoCloseable {
                     String[] s=line.split("\\|");
                     try{
                         switch(s[0]){
+                            case "ARS_STATE" -> arsenal=ArsenalWire.state(s);
+                            case "ARS_FX" -> arsenalEffects=ArsenalWire.effects(s.length==2?s[1]:"");
+                            case "ARS_PICKED" -> {if(s.length==2)arsenalPicked.add(Integer.parseInt(s[1]));}
+                            case "ARS_BENCH" -> {if(s.length==3)benchTiers.put(Integer.parseInt(s[1]),Integer.parseInt(s[2]));}
+                            case "ARS_RESULT" -> {if(s.length==2&&arsenalResults.size()<64)arsenalResults.add(s[1]);}
+                            case "ARS_SHOT" -> {if(s.length==5&&Boolean.parseBoolean(s[1])&&arsenalResults.size()<64)arsenalResults.add(Integer.parseInt(s[3])>0?"HIT_"+s[3]:"FIRED");}
                             case "PEER" -> {
                                 if(s.length!=8)continue;
                                 int pid=Integer.parseInt(s[1]);
@@ -137,7 +150,7 @@ public final class NetLink implements AutoCloseable {
                             }
                             default -> {}
                         }
-                    }catch(NumberFormatException ignored){}
+                    }catch(IllegalArgumentException ignored){}
                 }
             }catch(IOException ignored){}
             finally{connected=false;}
@@ -161,6 +174,14 @@ public final class NetLink implements AutoCloseable {
         send("PING|"+nonce);
     }
     public void choose(int id){send("CHOOSE|"+id);}
+    public void arsenalFire(boolean alternate){send("ARS_FIRE|"+shotIds.incrementAndGet()+"|"+(alternate?1:0));}
+    public void arsenalSelect(int weapon){send("ARS_SELECT|"+weapon);}
+    public void arsenalReload(){send("ARS_RELOAD");}
+    public void arsenalRelease(){send("ARS_RELEASE");}
+    public void arsenalPickup(int index){send("ARS_PICKUP|"+index);}
+    public void arsenalCraft(int recipe){send("ARS_CRAFT|"+recipe);}
+    public void arsenalUpgrade(){send("ARS_UPGRADE");}
+    public void arsenalFaction(int faction){send("ARS_FACTION|"+faction);}
     public void state(double x,double y,double angle,int stanceFlags){send("STATE|"+x+"|"+y+"|"+angle+"|"+stanceFlags);}
     public long fire(int gun){
         long sequence=shotIds.incrementAndGet();

@@ -2,7 +2,7 @@
 
 A Java 17, PSX-inspired urban horror arena shooter: fast Doom/Unreal Tournament-style combat overlaid with health, sanity, stealth, resources, equipment, character abilities and deployable infrastructure.
 
-**Current build:** Java 17 Swing prototype with the **entire licensed 124-GLB / 22-texture Kenney Retro Urban CC0 source kit**, 42 selected procedural city model types, and **18 original low-poly gameplay models** covering classes, hostiles, both weapons, seven pickups and four deployables. Models use original mesh triangles and per-triangle source PNG color sampling; full UV/pixel rasterization, skinned characters and animation are separate gated phases. No purchased PSX Mega Pack originals are published.
+**Current build:** Java 17 Swing prototype with the licensed Kenney urban kit, **32 working primitive weapons** with shared textures and rigid animation, and 19 authored legacy gameplay models including the fabrication bench. The first eight weapons spawn as map loot; the other 24 require base fabrication, materials, faction recipes and bench upgrades. Both solo and LAN use host-owned combat/inventory rules. Full UV/pixel rasterization and skinned characters remain separate phases. No purchased source packs are published.
 
 ## Quick start
 
@@ -22,7 +22,7 @@ A deterministic continental **macro blueprint** now includes seven connected cit
 
 Cars are **drivable in the playable city sector** in solo and LAN: press `Q` at a car to enter/exit; use `W/S` to accelerate/reverse and `A/D` to steer. Host authority controls occupancy, car collision, fuel, and car pose. Cars currently use licensed truck GLB geometry; tuning, refueling, passengers, repairs and intercity streaming are subsequent gates.
 
-The headless **persistent dedicated-host development mode** adds verified world snapshots with a last-good backup, autosaves, console moderation (players/status/save/kick/ban/allowlist), stable hashed account-based build ownership, and offline base protection (default 30 minutes **of vulnerability after logout**, then shielded while offline). A local LAN connection is not safe for exposed internet hosting; the authentication token traverses plaintext sockets and encrypted transport is a release blocker. Server recovery of character inventory, clan claims, world-streaming persistence and long-load Internet scalability remain unimplemented.
+The headless **persistent dedicated-host development mode** adds verified world snapshots with a last-good backup, autosaves, console moderation, stable account-based build ownership, and offline base protection. Snapshot v2 also saves arsenal ownership, ammunition, crafting materials, faction research, bench tiers and collected arsenal loot, and reads older v1 world saves. Character-stat recovery, clans, world streaming and exposed-Internet hardening remain incomplete.
 
 ```sh
 javac --release 17 -encoding UTF-8 -d out src/main/java/veil/*.java
@@ -44,11 +44,13 @@ The dedicated server binds loopback by default; launch on trusted networks only 
 
 Read the [asset implementation audit and release gates](docs/ASSET_PIPELINE_AUDIT.md) for source rights, importer capabilities and rigged-character blockers.
 
-## Arsenal design and primitive review
+## Working arsenal and fabrication
 
-The [32-weapon proposal](design/ARSENAL.md) now has **32 original primitive blockouts**, separate receiver/mechanism/ammo groups, movement pivots and muzzle/hand sockets. Open [the Blender master](assets/game/arsenal-blockouts/arsenal-blockouts.blend) or review the [four contact sheets](docs/ARSENAL_STATUS.md). These are silhouettes for proportion and attachment review, not finished kitbash weapons or additional playable combat behaviors. The current game still uses its original handgun and shotgun rules.
+The [32-weapon roster](design/ARSENAL.md) uses the approved primitive models as the current working art. [Implementation and controls](docs/ARSENAL_IMPLEMENTATION.md) describe the prototype behavior and progression. The working [Blender master](assets/game/arsenal/working-arsenal.blend) and 32 textured animated GLBs are in `assets/game/arsenal/`; matching component meshes drive the Java first-person animations. The [original blockout review](docs/ARSENAL_STATUS.md) remains as design history.
 
-The [component replacement plan](design/COMPONENT_REPLACEMENT.md) maps functional blocks to the local supplied mech parts. Detailed source prototypes remain local and retain their full geometry. See [power-ups and inventory proposals](design/PICKUPS.md) for the later health/armor/ammo/resource and timed-buff work; food/water mechanics remain deferred. Validate the committed blockout exports with `java -cp build/classes veil.ArsenalBlockoutTest` after compilation.
+Hold left mouse / Space for primary fire, right mouse for alternate fire; `R` reloads, `1–8` selects basic weapons, and `[` / `]` cycles owned guns. `K` opens inventory/fabrication; `J` places a bench for $150 and 12 scrap. Select a faction in the fabrication menu; specialist crafting locks that choice. Stand within 2.6 m of your own bench to fabricate or upgrade it. The menu lists component costs, prerequisites and bench tiers. Advanced weapons never appear in random weapon loot.
+
+Detailed kitbash replacement and [power-up art/mechanics](design/PICKUPS.md) are deferred. Run `ArsenalSystemsTest`, `ArsenalAssetTest` and `ArsenalNetworkTest` after compiling for the functional weapon checks.
 
 ## Asset policy
 

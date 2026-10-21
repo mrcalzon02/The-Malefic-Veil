@@ -57,6 +57,7 @@ public final class LanServer implements AutoCloseable {
                     ArenaSystems.Player self=match.player(p.id);
                     if(self!=null){
                         p.send(selfPacket(self));
+                        p.send(ArsenalWire.state(match.arsenal.view(p.id),match.time()));
                         if(self.dead){
                             List<ArenaSystems.SpawnRisk> risks=match.spawnRisks(p.id);
                             p.send("SPAWNS|"+risks.get(0).score()+"|"+risks.get(1).score()+"|"+risks.get(2).score());
@@ -65,6 +66,8 @@ public final class LanServer implements AutoCloseable {
                     }
                 }
                 for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
+                broadcast(ArsenalWire.effects(match.arsenal.effects()),-1);
+                if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++)if(match.world.devices.get(i).kind==ArenaSystems.WORKBENCH)broadcast("ARS_BENCH|"+i+"|"+match.world.devices.get(i).tier,-1);
                 for(Vehicles.State car:match.vehicles.states())broadcast(carPacket(car),-1);
                 if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++){
                     World.Device d=match.world.devices.get(i);
@@ -103,6 +106,7 @@ public final class LanServer implements AutoCloseable {
             "|"+(p.dead?1:0)+"|"+p.frags+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.visibility;
     }
     private void sendWorld(Peer peer){
+        for(int i=0;i<match.arsenal.loot.size();i++)if(match.arsenal.loot.get(i).taken)peer.send("ARS_PICKED|"+i);
         for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
         for(int i=0;i<match.world.pickups.size();i++)
             if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
@@ -139,6 +143,18 @@ public final class LanServer implements AutoCloseable {
                         peer.send("AUTH_DENIED|REQUIRED");return;
                     }
                     switch(s[0]){
+                        case "ARS_FIRE" -> {
+                            if(s.length!=3)continue;
+                            ArsenalSystems.Shot shot=match.arsenal.fire(peer.id,Integer.parseInt(s[2])!=0,Long.parseLong(s[1]));
+                            peer.send("ARS_SHOT|"+shot.fired()+"|"+shot.reason()+"|"+shot.damage()+"|"+shot.ammo());changed=true;
+                        }
+                        case "ARS_SELECT" -> {if(s.length==2){var r=match.arsenal.select(peer.id,Integer.parseInt(s[1]));peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}}
+                        case "ARS_RELOAD" -> {var r=match.arsenal.reload(peer.id);peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}
+                        case "ARS_RELEASE" -> match.arsenal.release(peer.id);
+                        case "ARS_PICKUP" -> {if(s.length==2){int i=Integer.parseInt(s[1]);var r=match.arsenal.pickup(peer.id,i);if(r.ok()){broadcast("ARS_PICKED|"+i,-1);changed=true;}}}
+                        case "ARS_CRAFT" -> {if(s.length==2){var r=match.arsenal.craft(peer.id,Integer.parseInt(s[1]));peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}}
+                        case "ARS_UPGRADE" -> {var r=match.arsenal.upgrade(peer.id);peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}
+                        case "ARS_FACTION" -> {if(s.length==2){var r=match.arsenal.faction(peer.id,Integer.parseInt(s[1]));peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}}
                         case "AUTH" -> {
                             if(s.length!=2)continue;
                             String account;
@@ -170,7 +186,7 @@ public final class LanServer implements AutoCloseable {
                         case "FIRE" -> {
                             if(s.length!=3)continue;
                             long sequence=Long.parseLong(s[1]);
-                            ArenaSystems.ShotReport shot=match.fireReport(peer.id,Integer.parseInt(s[2]),sequence);
+                            ArenaSystems.ShotReport shot=match.arsenal.compatibilityFire(peer.id,Integer.parseInt(s[2]),sequence);
                             peer.send("SHOT|"+shot.sequence()+"|"+shot.fired()+"|"+shot.status()+"|"+
                                 shot.targetId()+"|"+shot.damage()+"|"+shot.ammo());
                             changed=shot.fired();
@@ -184,7 +200,7 @@ public final class LanServer implements AutoCloseable {
                         case "MEDKIT" -> changed=match.useMedkit(peer.id);
                         case "RELOAD" -> {
                             if(s.length!=2)continue;
-                            changed=match.reload(peer.id,Integer.parseInt(s[1]));
+                            changed=match.arsenal.reload(peer.id).ok();
                         }
                         case "ABILITY" -> changed=match.ability(peer.id);
                         case "BUILD" -> {
@@ -257,6 +273,7 @@ public final class LanServer implements AutoCloseable {
                         ArenaSystems.Player updated=match.player(peer.id);
                         if(updated!=null){
                             peer.send(selfPacket(updated));
+                            peer.send(ArsenalWire.state(match.arsenal.view(peer.id),match.time()));
                             broadcast(peerPacket(updated),peer.id);
                         }
                     }

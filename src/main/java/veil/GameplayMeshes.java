@@ -13,7 +13,7 @@ public final class GameplayMeshes {
     public static final String[] HERO={"hero-warden","hero-medic","hero-shade","hero-occultist"};
     public static final String[] PICKUP={"pickup-health","pickup-sanity","pickup-pistol-ammo",
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
-    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade"};
+    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-fabricator"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -167,6 +167,8 @@ public final class GameplayMeshes {
         barricade.box(0,.53,-.11,1.17,.18,.04,0xC6A963);
         barricade.box(0,.18,.12,1.44,.12,.24,0x5A6068);
         meshes.put(DEVICE[3],barricade.done());
+        Model bench=new Model();bench.box(0,.72,0,1.15,.18,.62,0x526775);bench.box(-.43,.33,0,.14,.65,.48,0x303A44);bench.box(.43,.33,0,.14,.65,.48,0x303A44);
+        bench.box(0,1.10,.17,.95,.62,.10,0x3C4958);bench.box(-.22,1.13,.10,.28,.24,.04,0x67C4C8);bench.box(.25,.87,-.10,.35,.17,.30,0xB18E54);meshes.put(DEVICE[4],bench.done());
     }
     public Map<String,GlbMesh> meshes(){return Collections.unmodifiableMap(meshes);}
 }

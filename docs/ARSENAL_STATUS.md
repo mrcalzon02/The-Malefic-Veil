@@ -1,5 +1,7 @@
 # Arsenal checkpoint — 21 October 2026
 
+**Historical blockout checkpoint.** The subsequent functional run now uses these primitives as working textured/animated weapons. See [implementation status and controls](ARSENAL_IMPLEMENTATION.md) and the `assets/game/arsenal/` working assets. The notes below describe the earlier blockout review stage.
+
 ## Ready for review
 
 - [32-weapon roster and primary/alternate fire proposals](../design/ARSENAL.md).

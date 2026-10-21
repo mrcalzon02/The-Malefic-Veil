@@ -98,7 +98,7 @@ public final class QualityGateTest {
             long seq=a.fire(0);
             until(()->!a.shots.isEmpty());
             NetLink.ShotEvent result=a.shots.poll();
-            check(result.sequence()==seq&&result.fired()&&result.damage()==25,"real socket shot receipt");
+            check(result.sequence()==seq&&result.fired()&&result.damage()==24,"real socket arsenal shot receipt");
             check(result.targetId()==b.id,"host returns true victim ID");
             ArenaSystems.Player actor=server.match.player(a.id);
             actor.angle=Math.PI;

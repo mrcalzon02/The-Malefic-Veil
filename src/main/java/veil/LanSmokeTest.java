@@ -45,8 +45,8 @@ public final class LanSmokeTest {
             // Test a combat scenario with a positioned authoritative actor, not fabricated damage messages.
             prey.x=4.5;prey.y=1.5;
             attacker.fire(0);
-            until(()->prey.hp<=75,"authoritative combat damage");
-            until(()->victim.self()!=null&&victim.self().health()<=75,"health replicated to client");
+            until(()->prey.hp<=76,"authoritative combat damage");
+            until(()->victim.self()!=null&&victim.self().health()<=76,"health replicated to client");
             check(host.match.player(attacker.id).pistolClip==11,"ammo decremented by host");
             ArenaSystems.Player shooter=host.match.player(attacker.id);
             shooter.cash=400;shooter.scrap=20;

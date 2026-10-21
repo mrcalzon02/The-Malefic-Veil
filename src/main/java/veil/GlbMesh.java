@@ -30,8 +30,14 @@ public final class GlbMesh {
     public List<Triangle> triangles(){return triangles;}
     public float[] bounds(){return bounds.clone();}
     public int triangleCount(){return triangles.size();}
-    public static GlbMesh asset(String name)throws IOException {
-        if(!name.matches("[a-z0-9-]+"))throw new IOException("Invalid model name");
+    // The urban source pack is immutable for the lifetime of a game process.
+    // One parsed mesh object is reused across scenes, world seeds and all instances.
+    // Cache is bounded by the fixed 124-model Kenney catalog.
+    private static final Map<String,GlbMesh> ASSET_CACHE=new HashMap<>();
+    public static synchronized GlbMesh asset(String name)throws IOException {
+        if(name==null||!name.matches("[a-z0-9-]+"))throw new IOException("Invalid model name");
+        GlbMesh cached=ASSET_CACHE.get(name);
+        if(cached!=null)return cached;
         Path local=Path.of("assets","game","kenney",name+".glb");
         byte[] bytes;
         if(Files.isRegularFile(local))bytes=Files.readAllBytes(local);
@@ -40,7 +46,11 @@ public final class GlbMesh {
                 bytes=in==null?KenneyAssetPack.load().model(name+".glb"):in.readAllBytes();
             }
         }
-        return read(bytes,fileName->KenneyAssetPack.load().texture(fileName));
+        GlbMesh parsed=read(bytes,fileName->KenneyAssetPack.load().texture(fileName));
+        if(ASSET_CACHE.size()>=124)
+            throw new IOException("Unexpected mesh cache cardinality");
+        ASSET_CACHE.put(name,parsed);
+        return parsed;
     }
     @SuppressWarnings("unchecked")
     private static Map<String,Object> obj(Object v)throws IOException {

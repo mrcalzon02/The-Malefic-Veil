@@ -124,6 +124,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
     public BitmapFont font(){return packFont;}
     public Screen screen(){return screen;}
     public void showMain(){screen=Screen.MAIN;selection=0;}
+    public void showRunning(){screen=Screen.RUNNING;selection=0;}
     public boolean running(){return screen==Screen.RUNNING;}
     private int size(){return switch(screen){
         case MAIN -> 4; case GRAPHICS -> 4; case CREDITS -> 1; case RUNNING -> 0;

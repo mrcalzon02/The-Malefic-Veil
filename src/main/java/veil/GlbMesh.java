@@ -91,6 +91,7 @@ public final class GlbMesh {
         List<Object> images=root.containsKey("images")?list(root.get("images")):List.of();
         List<Object> textures=root.containsKey("textures")?list(root.get("textures")):List.of();
         Map<String,Integer> palette=new HashMap<>();
+        Map<String,java.awt.image.BufferedImage> sourceImages=new HashMap<>();
         List<Triangle> triangles=new ArrayList<>();
         float[] bounds={Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,
             Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY};
@@ -134,6 +135,8 @@ public final class GlbMesh {
                     indices=new int[count];for(int i=0;i<count;i++)indices[i]=i;
                 }
                 int rgb=0x7f8084;
+                String faceTexture=null;
+                float[] factorTint={1,1,1};
                 int mat=val(prim,"material",-1);
                 if(mat>=0&&mat<materials.size()){
                     Map<String,Object> material=obj(get(materials,mat));
@@ -152,13 +155,22 @@ public final class GlbMesh {
                                     color=samplePalette(source.open(tex));
                                     palette.put(tex,color);
                                 }
-                                rgb=color;
+                                rgb=color;faceTexture=tex;
+                                if(!sourceImages.containsKey(tex)){
+                                    java.awt.image.BufferedImage imageData=javax.imageio.ImageIO.read(
+                                        new ByteArrayInputStream(source.open(tex)));
+                                    if(imageData==null||imageData.getWidth()>4096||imageData.getHeight()>4096)
+                                        throw new IOException("Unusable GLB texture: "+tex);
+                                    sourceImages.put(tex,imageData);
+                                }
                             }
                         }
                         Object factor=params.get("baseColorFactor");
                         if(factor!=null){
                             List<Object> color=list(factor);
                             if(color.size()>=3){
+                                for(int channel=0;channel<3;channel++)
+                                    factorTint[channel]=number(color.get(channel));
                                 rgb=(Math.max(0,Math.min(255,(int)(((rgb>>>16)&255)*number(color.get(0)))))<<16)|
                                     (Math.max(0,Math.min(255,(int)(((rgb>>>8)&255)*number(color.get(1)))))<<8)|
                                     Math.max(0,Math.min(255,(int)((rgb&255)*number(color.get(2)))));
@@ -173,20 +185,53 @@ public final class GlbMesh {
                         rgb=0x686868|((hash&7)<<16)|(((hash>>>4)&7)<<8)|((hash>>>8)&7);
                     }
                 }
+                float[][] uv=null;
+                if(faceTexture!=null&&attr.containsKey("TEXCOORD_0")){
+                    Map<String,Object> texCoords=obj(get(accessors,num(attr.get("TEXCOORD_0"))));
+                    if(val(texCoords,"componentType",0)==5126&&"VEC2".equals(texCoords.get("type"))
+                        &&val(texCoords,"count",0)==count){
+                        uv=new float[count][2];
+                        int uvOffset=offset(texCoords,views,bin.length,8);
+                        int uvStride=stride(texCoords,views,8);
+                        for(int vertex=0;vertex<count;vertex++){
+                            uv[vertex][0]=data.getFloat(uvOffset+vertex*uvStride);
+                            uv[vertex][1]=data.getFloat(uvOffset+vertex*uvStride+4);
+                        }
+                    }
+                }
                 for(int i=0;i+2<indices.length;i+=3){
                     int a=indices[i],b=indices[i+1],c=indices[i+2];
                     if(a<0||b<0||c<0||a>=count||b>=count||c>=count)
                         throw new IOException("Invalid mesh index");
                     float[] v=vertices[a],w=vertices[b],z=vertices[c];
+                    int faceColor=rgb;
+                    if(uv!=null){
+                        java.awt.image.BufferedImage texture=sourceImages.get(faceTexture);
+                        double u=(uv[a][0]+uv[b][0]+uv[c][0])/3.0;
+                        double vv=(uv[a][1]+uv[b][1]+uv[c][1])/3.0;
+                        if(Double.isFinite(u)&&Double.isFinite(vv)){
+                            u=u-Math.floor(u);vv=vv-Math.floor(vv);
+                            int px=Math.min(texture.getWidth()-1,(int)(u*texture.getWidth()));
+                            int py=Math.min(texture.getHeight()-1,
+                                (int)((1-vv)*texture.getHeight()));
+                            int texel=texture.getRGB(px,py);
+                            if((texel>>>24)>=32){
+                                int rr=(int)Math.max(0,Math.min(255,((texel>>>16)&255)*factorTint[0]));
+                                int gg=(int)Math.max(0,Math.min(255,((texel>>>8)&255)*factorTint[1]));
+                                int bb=(int)Math.max(0,Math.min(255,(texel&255)*factorTint[2]));
+                                faceColor=(rr<<16)|(gg<<8)|bb;
+                            }
+                        }
+                    }
                     triangles.add(new Triangle(v[0],v[1],v[2],w[0],w[1],w[2],
-                        z[0],z[1],z[2],rgb));
+                        z[0],z[1],z[2],faceColor));
                 }
             }
         }
         if(triangles.isEmpty()||triangles.size()>500_000)throw new IOException("GLB has no usable triangles");
         return new GlbMesh(triangles,bounds);
     }
-    /** Palette-based PSX rendering from the original texture pixels; UV sampling is a separate gate. */
+    /** Source-pixel average fallback when UVs are absent; normal triangles sample actual UV texels. */
     private static int samplePalette(byte[] raw)throws IOException{
         java.awt.image.BufferedImage image=javax.imageio.ImageIO.read(new ByteArrayInputStream(raw));
         if(image==null||image.getWidth()>4096||image.getHeight()>4096)throw new IOException("Bad source texture");

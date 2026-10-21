@@ -36,8 +36,10 @@ public final class UrbanDressing {
             int width=x1-x0,height=y1-y0;
             // Trees form meaningful park clusters, with thinner growth on
             // abandoned/damaged lots. They are not planted in active streets.
+            // OPEN variant 2 is legally VACANT construction land: never plant
+            // collidable trees there or remove the only building site.
             boolean park=category==CityLayout.Category.OPEN&&(variant==3||variant==7||
-                variant==2||variant==5);
+                variant==5);
             boolean neglected=category==CityLayout.Category.HAZARD&&(n&3)==0;
             if(park||neglected){
                 int count=park?3+Math.min(7,width*height/65):2;

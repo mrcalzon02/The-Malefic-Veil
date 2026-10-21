@@ -419,12 +419,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.setColor(new Color(8,9,13,225));g.fillRect(left-6,top-6,World.SIZE*tile+12,World.SIZE*tile+12);
         for(int x=0;x<World.SIZE;x++)for(int y=0;y<World.SIZE;y++) {
             CityLayout.Category category=world.city.categoryAt(x,y);
-            Color tint=switch(category){
+            Color tint=category==null?new Color(43,45,54):switch(category){
                 case HAZARD -> new Color(184,77,73);
                 case RESOURCE -> new Color(95,152,81);
                 case SAFE -> new Color(75,132,172);
                 case OPEN -> new Color(169,144,104);
-                case null -> new Color(43,45,54);
             };
             g.setColor(world.tile(x,y)==0?tint:tint.darker().darker());
             g.fillRect(left+x*tile,top+y*tile,tile,tile);

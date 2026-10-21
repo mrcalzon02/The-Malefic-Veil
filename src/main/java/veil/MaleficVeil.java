@@ -592,7 +592,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         JSlider distance=new JSlider(4,64,performance.propDistance);
         JSlider detail=new JSlider(2,32,performance.highDetailDistance);
         JSlider models=new JSlider(8,500,performance.meshBudget);
-        JSlider cap=new JSlider(15,60,performance.frameCap);
+        JSlider cap=new JSlider(15,30,performance.frameCap);
         JPanel panel=new JPanel(new GridLayout(4,2,8,3));
         panel.add(new JLabel("View distance"));panel.add(distance);
         panel.add(new JLabel("High detail range"));panel.add(detail);

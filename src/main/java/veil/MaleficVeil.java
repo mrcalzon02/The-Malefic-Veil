@@ -29,6 +29,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private int health=100,sanity=100,cash=150,scrap=4,medkits=2,pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
     private int gun=0,spawn=0,frags=0,previousMouse=-1;
     private boolean mapVisible=false,continentVisible=false,help=true,dead=false;
+    private boolean respawnPending=false;
     private long ticks=0;
     private final String[] names={"WARDEN","MEDIC","SHADE","OCCULTIST"};
     private String notice="THE VEIL HAS THINNED";
@@ -115,8 +116,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         if(net!=null) {
             NetLink.Self s=net.self();
             if(s!=null){
-                if(s.dead()&&!dead)toast("YOU HAVE FALLEN — CHOOSE RESPAWN 1/2/3");
-                if(dead&&!s.dead()){px=s.x();py=s.y();toast("RETURNED FROM THE VEIL");}
+                if(s.dead()&&!dead){respawnPending=false;toast("YOU HAVE FALLEN — SELECT A RESPAWN POINT");}
+                if(dead&&!s.dead()){respawnPending=false;px=s.x();py=s.y();toast("RETURNED FROM THE VEIL");}
                 dead=s.dead();
                 health=s.health();sanity=s.sanity();cash=s.cash();scrap=s.supplies();
                 medkits=s.medkits();pistolReserve=s.pistolReserve();shellReserve=s.shellReserve();
@@ -132,7 +133,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     "EXITED VEHICLE":"VEHICLE ACTION REJECTED");
             String respawnReply;
             while((respawnReply=net.respawnResults.poll())!=null)
-                if(!respawnReply.equals("OK"))toast("RESPAWN REJECTED");
+                if(!respawnReply.equals("OK")){respawnPending=false;toast(respawnReply.equals("WAIT")?"RESPAWN COUNTDOWN ACTIVE":"RESPAWN LOCATION UNAVAILABLE");}
             NetLink.ShotEvent result;
             while((result=net.shots.poll())!=null){
                 if(!result.fired())toast("SHOT REJECTED: "+result.outcome());
@@ -323,7 +324,13 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void respawnAt(int index){
         if(!dead)return;
-        if(net!=null){net.respawn(index);toast("RESPAWN REQUESTED");return;}
+        spawn=index;
+        if(net!=null){
+            if(net.respawnRemainingMs()>0){toast("RESPAWN COUNTDOWN ACTIVE");return;}
+            if(net.spawnScores()[index]>=1000){toast("SPAWN POINT BLOCKED");return;}
+            if(respawnPending)return;
+            respawnPending=true;net.respawn(index);toast("RESPAWN REQUESTED");return;
+        }
         spawn=index;px=world.spawns[index][0];py=world.spawns[index][1];
         health=100;sanity=75;dead=false;pistolClip=12;shellClip=6;
         pistolReserve=Math.max(24,pistolReserve);shellReserve=Math.max(12,shellReserve);
@@ -489,21 +496,33 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 Math.max(15,w/2-235),h/2+27);
         }
         if(dead){
-            g.setColor(new Color(0,0,0,210));g.fillRect(0,h/3,w,h/3);
-            g.setColor(new Color(238,114,128));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,26));
-            g.drawString("YOU HAVE FALLEN",w/2-150,h/2-30);
-            g.setFont(new Font(Font.MONOSPACED,Font.BOLD,17));g.setColor(Color.WHITE);
-            g.drawString("SELECT RESPAWN:  [1] NORTH  [2] CENTER  [3] SOUTH",w/2-285,h/2+10);
-            if(net!=null){
-                int[] risk=net.spawnScores();
-                String[] marks=new String[3];
-                for(int i=0;i<3;i++)marks[i]=risk[i]>=1000?"BLOCKED":
-                    risk[i]>=55?"DANGER":risk[i]>=20?"CAUTION":"SAFE";
-                g.setColor(new Color(237,210,129));
+            int panelWidth=Math.min(590,w-30),left=(w-panelWidth)/2,top=Math.max(46,(h-282)/2);
+            g.setColor(new Color(10,12,19,238));g.fillRoundRect(left,top,panelWidth,282,14,14);
+            g.setColor(new Color(238,114,128));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,24));
+            g.drawString("YOU HAVE FALLEN",left+20,top+37);
+            long wait=net==null?0:net.respawnRemainingMs();
+            g.setFont(new Font(Font.MONOSPACED,Font.BOLD,14));
+            g.setColor(wait>0?new Color(240,191,103):new Color(127,224,161));
+            g.drawString(wait>0?"RESPAWN IN "+String.format("%.1f",wait/1000.0)+"s":"RESPAWN READY",
+                left+20,top+64);
+            int[] risks=net==null?new int[]{0,0,0}:net.spawnScores();
+            String[] labels={"NORTH","CENTER","SOUTH"};
+            for(int i=0;i<3;i++){
+                int score=risks[i],rowTop=top+79+i*52;
+                boolean blocked=score>=1000,selected=spawn==i;
+                g.setColor(selected?new Color(54,65,80):new Color(28,32,41));
+                g.fillRoundRect(left+16,rowTop,panelWidth-32,46,8,8);
+                g.setColor(blocked?new Color(238,114,128):
+                    score>=55?new Color(240,154,111):score>=20?new Color(244,211,134):
+                    new Color(133,218,164));
                 g.setFont(new Font(Font.MONOSPACED,Font.BOLD,15));
-                g.drawString("[1] "+marks[0]+"    [2] "+marks[1]+"    [3] "+marks[2],
-                    w/2-245,h/2+36);
+                g.drawString("["+ (i+1) +"]  "+labels[i],left+30,rowTop+29);
+                String status=blocked?"BLOCKED":score>=55?"DANGER":score>=20?"CAUTION":"SAFE";
+                g.drawString(status,left+panelWidth-155,rowTop+29);
             }
+            g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
+            g.drawString("1–3 SELECT   ENTER DEPLOY   CLICK ROW TO SELECT",left+20,top+258);
+            if(net!=null&&!net.connected())g.drawString("CONNECTION LOST — RECONNECT REQUIRED",left+20,top+275);
         }
         g.dispose();
     }
@@ -563,7 +582,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         boolean fresh=held.add(k);
         if(!fresh)return;
         if(dead){
-            if(k>=KeyEvent.VK_1&&k<=KeyEvent.VK_3)respawnAt(k-KeyEvent.VK_1);
+            if(k>=KeyEvent.VK_1&&k<=KeyEvent.VK_3)spawn=k-KeyEvent.VK_1;
+            if(k==KeyEvent.VK_ENTER)respawnAt(spawn);
             return;
         }
         switch(k){

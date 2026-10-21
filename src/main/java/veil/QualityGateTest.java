@@ -90,6 +90,7 @@ public final class QualityGateTest {
             NetLink a=new NetLink("127.0.0.1",server.port());
             NetLink b=new NetLink("127.0.0.1",server.port())){
             server.match.world.npcs.clear();
+            for(int step=0;step<11;step++)server.match.advance(1000);
             ArenaSystems.Player target=server.match.player(b.id);
             target.x=4.5;target.y=1.5;
             server.match.player(a.id).angle=0;

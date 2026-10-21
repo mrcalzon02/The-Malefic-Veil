@@ -34,7 +34,7 @@ public final class ContinentPopulationTest {
                     if(review.allowed()){
                         validWilderness=true;
                         for(int dx=-1;dx<=2;dx++)for(int dy=-1;dy<=2;dy++)
-                            check(layout.cityAt(x+dx,y+dy)=='\\0',
+                            check(layout.cityAt(x+dx,y+dy)==0,
                                 "accepted construction intersects protected city buffer");
                     }
                 }
@@ -42,7 +42,7 @@ public final class ContinentPopulationTest {
             int protectedCityCells=0,emptyLots=0;
             for(int x=0;x<ContinentLayout.SIZE;x++)
                 for(int y=0;y<ContinentLayout.SIZE;y++){
-                    if(layout.cityAt(x,y)=='\\0')continue;
+                    if(layout.cityAt(x,y)==0)continue;
                     protectedCityCells++;
                     check(layout.cityProtected(x,y)&&layout.worldStructureAt(x,y)&&
                         !layout.buildableGround(x,y),"all city territory is protected");

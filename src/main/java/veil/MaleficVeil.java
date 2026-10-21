@@ -24,7 +24,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
     private int health=100,sanity=100,cash=150,scrap=4,medkits=2,pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
     private int gun=0,spawn=0,frags=0,previousMouse=-1;
-    private boolean mapVisible=false,help=true,dead=false;
+    private boolean mapVisible=false,continentVisible=false,help=true,dead=false;
     private long ticks=0;
     private final String[] names={"WARDEN","MEDIC","SHADE","OCCULTIST"};
     private String notice="THE VEIL HAS THINNED";
@@ -263,10 +263,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private void deploy(int kind){
         if(dead)return;
         if(net!=null){net.build(kind);return;}
-        int price=kind==0?(archetype==0?60:100):kind==1?75:120;
-        int cost=kind==0?3:kind==1?1:2;
+        int price=kind==0?(archetype==0?60:100):kind==1?75:kind==2?120:45;
+        int cost=kind==0?3:kind==1?1:kind==2?2:1;
         if(cash<price||scrap<cost){toast("NEED $"+price+" AND "+cost+" SUPPLIES");return;}
         double x=px+Math.cos(angle)*1.1,y=py+Math.sin(angle)*1.1;
+        if(world.worldStructureAt(x,y,.55)){toast("WORLD STRUCTURE PROTECTED");return;}
         if(!world.canWalk(x,y)){toast("BUILD SPACE BLOCKED");return;}
         for(World.Device d:world.devices)if(Math.hypot(x-d.x,y-d.y)<1.2){toast("TOO CLOSE TO ANOTHER DEVICE");return;}
         cash-=price;scrap-=cost;
@@ -411,13 +412,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString(diagnostic,w-218,39);
         }
         if(noticeTicks>0){g.setFont(new Font(Font.MONOSPACED,Font.BOLD,17));g.setColor(new Color(234,202,132));g.drawString(notice,15,52);}
-        if(mapVisible)drawMap(g,w,h);
+        if(continentVisible)drawContinentMap(g,w,h);
+        else if(mapVisible)drawMap(g,w,h);
         if(help&&!dead){g.setColor(new Color(9,10,17,220));g.fillRect(12,64,440,100);
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("T turret  H heal  V revive  B barricade  E medkit",23,127);
-            g.drawString("M city map  TAB help    Esc toggle help",23,147);}
+            g.drawString("M city map  N continent  TAB / Esc help",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
@@ -470,6 +472,32 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         for(double[] s:world.spawns){g.setColor(Color.YELLOW);g.fillRect(left+(int)(s[0]*tile)-2,top+(int)(s[1]*tile)-2,5,5);}
         g.setColor(Color.CYAN);g.fillOval(left+(int)(px*tile)-3,top+(int)(py*tile)-3,7,7);
     }
+    /** Continental overview is a generation preview; actual traversal is still city-sector only. */
+    private void drawContinentMap(Graphics2D g,int w,int h){
+        ContinentLayout map=world.continent();
+        int tile=2,left=w-ContinentLayout.SIZE*tile-16,top=35;
+        g.setColor(new Color(8,9,13,225));
+        g.fillRect(left-6,top-6,ContinentLayout.SIZE*tile+12,ContinentLayout.SIZE*tile+12);
+        for(int x=0;x<ContinentLayout.SIZE;x++)for(int y=0;y<ContinentLayout.SIZE;y++){
+            Color tint=switch(map.biome(x,y)){
+                case WATER -> new Color(37,67,107);
+                case BEACH -> new Color(170,149,108);
+                case PLAINS -> new Color(99,145,78);
+                case FOREST -> new Color(38,91,60);
+                case HILLS -> new Color(121,121,91);
+                case MOUNTAINS -> new Color(131,136,141);
+                case MARSH -> new Color(81,107,91);
+            };
+            if(map.cityAt(x,y)!='\\0')tint=map.worldStructureAt(x,y)?new Color(108,104,109):new Color(135,128,98);
+            if(map.road(x,y))tint=new Color(192,186,165);
+            g.setColor(tint);g.fillRect(left+x*tile,top+y*tile,tile,tile);
+        }
+        for(ContinentLayout.City city:map.cities()){
+            g.setColor(Color.BLACK);g.fillOval(left+city.x()*tile-8,top+city.y()*tile-8,16,16);
+            g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.BOLD,12));
+            g.drawString(String.valueOf(city.id()),left+city.x()*tile-4,top+city.y()*tile+5);
+        }
+    }
     @Override public void keyPressed(KeyEvent e){
         int k=e.getKeyCode();
         boolean fresh=held.add(k);
@@ -492,7 +520,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
             case KeyEvent.VK_B -> deploy(3);
             case KeyEvent.VK_SPACE -> shoot();
-            case KeyEvent.VK_M -> mapVisible=!mapVisible;
+            case KeyEvent.VK_M -> {mapVisible=!mapVisible;continentVisible=false;}
+            case KeyEvent.VK_N -> {continentVisible=!continentVisible;mapVisible=false;}
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
         }
     }

@@ -9,6 +9,7 @@ import java.util.*;
 public final class ArenaSystems {
     public final World world;
     public final Vehicles vehicles;
+    public final CargoHaulage cargo;
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
@@ -84,7 +85,10 @@ public final class ArenaSystems {
             accountKey="guest_"+id;
         }
     }
-    public ArenaSystems(long seed){world=new World(seed);vehicles=new Vehicles(world);}
+    public ArenaSystems(long seed){
+        world=new World(seed);vehicles=new Vehicles(world);
+        cargo=new CargoHaulage(world,vehicles);
+    }
     public synchronized Player join(int id){
         if(players.containsKey(id))throw new IllegalArgumentException("duplicate peer");
         Player p=new Player(id,world.spawns[0][0],world.spawns[0][1],clock);
@@ -480,11 +484,35 @@ public final class ArenaSystems {
         Player p=players.get(id);
         return p!=null&&!p.dead&&vehicles.input(id,throttle,steering);
     }
+    /** Players must leave the cab and physically visit a fixed resource yard. */
+    public synchronized boolean loadTruck(int playerId,int carId,int yardId){
+        Player player=players.get(playerId);
+        return player!=null&&!player.dead&&
+            cargo.load(playerId,player.x,player.y,carId,yardId);
+    }
+    public synchronized boolean recoverTruckLoad(int playerId,int carId,int droppedId){
+        Player player=players.get(playerId);
+        return player!=null&&!player.dead&&
+            cargo.recover(playerId,player.x,player.y,carId,droppedId);
+    }
+    /** Damage originates at host-verified attack events, never client HP reports. */
+    public synchronized boolean damageTruck(int attackerId,int carId,int amount){
+        Player attacker=players.get(attackerId);
+        Vehicles.State car=vehicles.state(carId);
+        if(attacker==null||attacker.dead||car==null||amount<1||amount>100||
+           vehicles.carDrivenBy(attackerId)>=0||
+           Math.hypot(attacker.x-car.x(),attacker.y-car.y())>8||
+           !world.lineClear(attacker.x,attacker.y,car.x(),car.y()))return false;
+        boolean hit=vehicles.damageCar(carId,amount);
+        if(hit)cargo.advance(0);
+        return hit;
+    }
     /** Drives health regeneration, devices and host-owned hostile AI. */
     public synchronized void advance(long ms){
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
         clock+=ms;
         vehicles.advance(ms);
+        cargo.advance(ms);
         // Server-owned Lost spawning: fixed ruin ownership, local caps,
         // lifetime/death tracking and no appearance within player sight.
         List<double[]> observers=new ArrayList<>();

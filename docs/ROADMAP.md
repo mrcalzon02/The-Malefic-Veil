@@ -32,6 +32,12 @@ Each phase has **entry criteria**, concrete deliverables, automated acceptance e
 
 **Release gate R2:** 20 deterministic map seeds with connected spawn routes; traversal and geometry/collision matching; no visual wall-through; 30-minute Windows desktop tour; memory/frame profiling at small, medium and large city sizes; licensed pack references/hashes and authored conversion evidence. Target `v0.2.0-alpha`.
 
+### Continental world-generation expansion [BLUEPRINT IMPLEMENTED; GAME STREAMING PENDING]
+
+The hand-drawn island/cities A–G layout now has a deterministic 224×224 parcel-scale `ContinentLayout` with coast/water, seven biome types, irregular city masks (square City C), intercity network, connected city arteries and categorized local plots. World-owned roads/sites have a separate protected construction mask, with undeveloped vacant lots left buildable. The `N` preview exposes macro topology beside the existing `M` city map. **The live combat world is still the existing 132×132 city sector**; continental chunk streaming, road meshes, fine elevation, adjacent city traversal and terrain-specific 3D assets are unimplemented gates. See [CONTINENT_WORLD_GENERATION.md](CONTINENT_WORLD_GENERATION.md).
+
+Next gates: verified Java 17/21 topology and host-build regressions, macro-to-fine sector conversion, terrain transition artistry, uninterrupted intercity traversal and large building-footprint enforcement.
+
 ## Phase P3 — Character, arsenal and animations [PLANNED]
 
 **Deliver:** Inventory and rig audit of `Characters_psx_1.2.zip`, reusable asset importer (GLB/FBX only after source conversion), character select with real approved models, idle/run/crouch/shoot/reload/death/revive animations, weapon models, animation replication and compact loadout UI.

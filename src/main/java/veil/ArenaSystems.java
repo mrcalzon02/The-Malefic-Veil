@@ -38,7 +38,7 @@ public final class ArenaSystems {
         if(players.containsKey(id))throw new IllegalArgumentException("duplicate peer");
         Player p=new Player(id,world.spawns[0][0],world.spawns[0][1],clock);
         players.put(id,p);
-        raidProtection.login(p.accountKey,System.currentTimeMillis());
+        // Disposable guest peers have no durable property claim; only authenticated accounts do.
         refreshVisibility(p);return p;
     }
     public synchronized void leave(int id){

@@ -48,7 +48,7 @@ public final class LostSpawnSites {
                     if(protectedSpawn)continue;
                     Site site=new Site();
                     site.id=sites.size();site.x=x;site.y=y;
-                    site.capacity=variant==0||variant==3?2:1;
+                    site.capacity=2; // max two active Lost NPCs per named ruin
                     site.building=plot.template().id();
                     site.appearance=lostModel(world.seed,plot.x(),plot.y(),variant);
                     sites.add(site);created=true;

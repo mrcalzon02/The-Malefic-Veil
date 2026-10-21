@@ -16,6 +16,20 @@ public final class ArenaSystemsTest {
         // Test harness can set spawn-state directly; public move() is separately boundary-tested.
         p.x=x;p.y=y;p.moveAt=a.time();a.refreshVisibility(p);
     }
+    /** Find a legal vacant lot instead of assuming pavement is a build surface. */
+    private static void aimAtBuildable(ArenaSystems game,int id,int kind) {
+        ArenaSystems.Player p=game.player(id);
+        for(CityLayout.Plot lot:game.world.city.plots()) {
+            if(lot.template().category()!=CityLayout.Category.OPEN||lot.template().variant()!=2)continue;
+            double tx=(lot.x()+lot.right())*CityLayout.CELL/2.0+.5;
+            double ty=(lot.y()+lot.bottom())*CityLayout.CELL/2.0+.5;
+            double px=tx-1.1;
+            if(!game.world.canWalk(px,ty)||!game.world.canWalk(tx,ty))continue;
+            p.x=px;p.y=ty;p.angle=0;p.moveAt=game.time();
+            if(game.reviewBuild(id,kind).allowed()){game.refreshVisibility(p);return;}
+        }
+        throw new AssertionError("No accessible undeveloped construction site on seed "+game.world.seed);
+    }
     public static void main(String[] args){
         ArenaSystems host=new ArenaSystems(42);
         isolateNpcs(host);
@@ -59,22 +73,25 @@ public final class ArenaSystemsTest {
         check(host.pickup(1,0),"nearby pickup");
         check(shooter.hp==75&&item.taken,"health pickup restored 30 HP");
         check(!host.pickup(2,0),"pickup cannot be duplicated");
-        moveTo(host,1,14.5,1.5);
         shooter.cash=500;shooter.scrap=30;
-        shooter.angle=0;
+        moveTo(host,1,14.5,1.5);shooter.angle=0;
+        check(host.reviewBuild(1,ArenaSystems.TURRET).reason().equals("WORLD_STRUCTURE"),
+            "generated street footprint rejects construction");
+        aimAtBuildable(host,1,ArenaSystems.TURRET);
         check(host.build(1,ArenaSystems.TURRET),"turret assembly");
         check(host.world.devices.size()==1&&shooter.cash==400&&shooter.scrap==27,"turret costs");
         check(!host.build(1,ArenaSystems.TURRET),"deny overlapping structure");
-        shooter.angle=Math.PI/2;
+        aimAtBuildable(host,1,ArenaSystems.HEALTH_STATION);
         check(host.build(1,ArenaSystems.HEALTH_STATION),"health station assembly");
         check(host.world.devices.size()==2,"two real structures");
+        World.Device healer=host.world.devices.get(1);
+        moveTo(host,1,healer.x,healer.y);
         shooter.hp=40;shooter.sanity=50;
         advance(host,500);
         check(shooter.hp>=43&&shooter.sanity>=52,"medical station restores health and sanity");
-        moveTo(host,1,26.5,1.5);
-        shooter.angle=0;
+        aimAtBuildable(host,1,ArenaSystems.REVIVE_STATION);
         check(host.build(1,ArenaSystems.REVIVE_STATION),"revive station assembly");
-        shooter.angle=Math.PI/2;
+        aimAtBuildable(host,1,ArenaSystems.BARRICADE);
         check(host.build(1,ArenaSystems.BARRICADE),"barricade structure assembly");
         check(host.world.devices.size()==4,"four distinct devices committed to world");
         check(host.world.devices.get(3).kind==ArenaSystems.BARRICADE,"barricade kind");
@@ -92,10 +109,11 @@ public final class ArenaSystemsTest {
         ArenaSystems turretHost=new ArenaSystems(123);isolateNpcs(turretHost);
         ArenaSystems.Player builder=turretHost.join(3);
         builder.cash=1000;builder.scrap=20;builder.angle=0;
-        moveTo(turretHost,3,14.5,1.5);
+        aimAtBuildable(turretHost,3,ArenaSystems.TURRET);
         check(turretHost.build(3,ArenaSystems.TURRET),"test turret built");
+        World.Device turret=turretHost.world.devices.get(0);
         ArenaSystems.Player intruder=turretHost.join(4);
-        moveTo(turretHost,4,17.5,1.5);
+        moveTo(turretHost,4,turret.x,turret.y+1.1);
         int old=intruder.hp;
         advance(turretHost,100);
         check(intruder.hp<old,"host turret deals actual damage");

@@ -359,6 +359,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
         g.setComposite(old);
     }
+    /** A disposed/reparented Swing view must not keep an event timer running. */
+    @Override public void removeNotify(){
+        timer.stop();
+        super.removeNotify();
+    }
+    @Override public void addNotify(){
+        super.addNotify();
+        if(timer!=null)timer.start();
+    }
     @Override protected void paintComponent(Graphics raw){
         super.paintComponent(raw);
         Graphics2D g=(Graphics2D)raw.create();

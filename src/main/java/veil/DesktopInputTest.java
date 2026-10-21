@@ -79,6 +79,11 @@ public final class DesktopInputTest {
             System.out.println("PASS DesktopInputTest: actual Swing Robot movement, real mouse firing, "+pixels.size()+" visible colors");
         }finally{
             SwingUtilities.invokeAndWait(()->{
+                try {
+                    Field field=MaleficVeil.class.getDeclaredField("timer");
+                    field.setAccessible(true);
+                    ((javax.swing.Timer)field.get(game[0])).stop();
+                }catch(Exception e){throw new RuntimeException("Cannot stop game timer",e);}
                 game[0].setVisible(false);
                 window[0].dispose();
             });

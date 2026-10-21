@@ -15,6 +15,10 @@ public final class UrbanTileAssembler {
                             double rotation,double scale,double radius){
         out.add(new World.UrbanProp(id,x,y,rotation,scale,radius));
     }
+    private static void add(List<World.UrbanProp> out,String id,double x,double y,
+                            double rotation,double scale,double radius,double heightOffset){
+        out.add(new World.UrbanProp(id,x,y,rotation,scale,radius,heightOffset));
+    }
     private static long roll(long seed,int x,int y,int salt){
         return World.mix(seed ^ ((long)x*0x9e3779b97f4a7c15L) ^
             ((long)y*0x632be59bd9b4e019L) ^ ((long)salt*0x1234f017L));
@@ -72,7 +76,7 @@ public final class UrbanTileAssembler {
                         // Height is a render offset, never an extra gameplay collider.
                         String roof=from(n>>>7,"roof-metal-type-a","roof-metal-type-b",
                             "wall-a-roof","wall-b-roof");
-                        add(assembled,roof,cx,cy,((n>>>9)&1)==0?0:Math.PI/2,5.2,0);
+                        add(assembled,roof,cx,cy,((n>>>9)&1)==0?0:Math.PI/2,5.2,0,2.0);
                     }
                 }
             // Lot dressing respects the existing authored plot categorization, rather
@@ -125,7 +129,7 @@ public final class UrbanTileAssembler {
             double angle=(hash&3)*Math.PI/2;
             add(assembled,wall,x+.5,y+.5,angle,1,0);
             // Height stacking uses existing facade GLBs, not extruded proxy cubes.
-            add(assembled,wall,x+.5,y+.5,angle,1,0);
+            add(assembled,wall,x+.5,y+.5,angle,1,0,1.0);
         }
         // Reserve the existing spawn-near source-grounded proof props and obstacles.
         // Their explicit physical radii intentionally participate in canWalk/lineClear.

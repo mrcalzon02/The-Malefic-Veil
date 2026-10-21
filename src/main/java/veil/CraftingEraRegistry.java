@@ -11,7 +11,7 @@ import java.util.*;
  * so missing prereqs and circular or free recipes are CI-breaking.
  */
 public final class CraftingEraRegistry {
-    public static final int SCHEMA_VERSION=1;
+    public static final int SCHEMA_VERSION=2;
     public enum Era { STRANDED, ENCAMPMENT, SALVAGE, STEAM, ELECTRIC, AUTOMATION, INCURSION }
     public enum Faction { ALL, UNRAVELED, PENITENT, BEGOTTEN }
     public record Facility(String id,Era era,Faction faction,
@@ -66,6 +66,28 @@ public final class CraftingEraRegistry {
         // actual arriving pallets can be deposited here before full freight.
         facility("cargo-laydown",Era.ENCAMPMENT,Faction.ALL,"claim-heart",8,10,450,0,
             "TIMBER",12,"FIELD_STONE",10,"FIBER",6);
+        // Functional coarse/crude settlement index: shapes can use authored
+        // primitive meshes until exact PSX replacements pass asset gates.
+        facility("field-shelter",Era.ENCAMPMENT,Faction.ALL,"claim-heart",
+            6,8,300,0,"TIMBER",10,"FIBER",8,"FIELD_STONE",4);
+        facility("forager-garden",Era.ENCAMPMENT,Faction.ALL,"rain-catcher",
+            12,12,450,0,"TIMBER",12,"FIBER",6,"FIELD_STONE",6);
+        facility("seed-nursery",Era.ENCAMPMENT,Faction.ALL,"forager-garden",
+            6,10,600,0,"TIMBER",12,"FIBER",8,"FIELD_STONE",5);
+        facility("compost-yard",Era.ENCAMPMENT,Faction.ALL,"forager-garden",
+            8,8,420,0,"TIMBER",10,"FIELD_STONE",7,"FIBER",5);
+        facility("herb-plot",Era.ENCAMPMENT,Faction.ALL,"forager-garden compost-yard",
+            8,12,500,0,"TIMBER",8,"FIBER",6,"FIELD_STONE",5);
+        facility("root-cellar",Era.ENCAMPMENT,Faction.ALL,"dry-store",
+            8,10,600,0,"TIMBER",18,"FIELD_STONE",12,"FIBER",4);
+        facility("smokehouse",Era.ENCAMPMENT,Faction.ALL,"cooking-hearth dry-store",
+            8,10,600,0,"TIMBER",16,"FIELD_STONE",10,"FIBER",5);
+        facility("fiber-loom",Era.ENCAMPMENT,Faction.ALL,"hand-workshop",
+            6,8,420,0,"TIMBER",14,"FIBER",12);
+        facility("watch-post",Era.ENCAMPMENT,Faction.ALL,"field-shelter",
+            6,8,900,0,"TIMBER",14,"FIELD_STONE",8,"FIBER",6);
+        facility("palisade-section",Era.ENCAMPMENT,Faction.ALL,"claim-heart",
+            2,8,240,0,"TIMBER",12,"FIELD_STONE",3,"FIBER",3);
         facility("charcoal-kiln",Era.SALVAGE,Faction.ALL,"hand-workshop cooking-hearth",
             8,8,900,0,"TIMBER",14,"FIELD_STONE",16,"FIBER",3);
         facility("stone-furnace",Era.SALVAGE,Faction.ALL,"charcoal-kiln",8,10,1800,0,
@@ -76,6 +98,14 @@ public final class CraftingEraRegistry {
         facility("freight-bay",Era.SALVAGE,Faction.ALL,"dry-store cargo-laydown hand-workshop",
             16,18,2400,0,"METAL_STOCK",4,"MACHINE_PARTS",3,
             "FIELD_STONE",24,"TIMBER",16);
+        facility("grain-mill",Era.SALVAGE,Faction.ALL,"forager-garden hand-workshop",
+            8,10,1500,0,"TIMBER",18,"FIELD_STONE",16,"FIBER",6);
+        facility("irrigation-works",Era.SALVAGE,Faction.ALL,"forager-garden cargo-laydown",
+            10,12,2100,0,"METAL_STOCK",1,"MACHINE_PARTS",1,"FIELD_STONE",16);
+        facility("animal-pen",Era.SALVAGE,Faction.ALL,"forager-garden rain-catcher",
+            12,14,1800,0,"TIMBER",30,"FIBER",12,"FIELD_STONE",8);
+        facility("materials-recycler",Era.SALVAGE,Faction.ALL,"forge freight-bay",
+            12,10,2100,0,"METAL_STOCK",2,"MACHINE_PARTS",3,"TIMBER",10);
         facility("steam-boiler",Era.STEAM,Faction.ALL,"forge rain-catcher",
             12,14,3600,0,"METAL_STOCK",4,"MACHINE_PARTS",2,
             "FIELD_STONE",28,"RAW_ORE",8);
@@ -95,8 +125,14 @@ public final class CraftingEraRegistry {
             8,10,3000,4,"METAL_STOCK",3,"MACHINE_PARTS",5,"FIELD_STONE",12);
         facility("water-works",Era.ELECTRIC,Faction.ALL,"generator rain-catcher",
             10,10,3600,4,"METAL_STOCK",2,"MACHINE_PARTS",2,"FIELD_STONE",18);
+        facility("fuel-refinery",Era.ELECTRIC,Faction.ALL,"water-works precision-lathe",
+            14,14,4800,10,"METAL_STOCK",5,"MACHINE_PARTS",6,"RAW_ORE",12);
+        facility("controlled-greenhouse",Era.ELECTRIC,Faction.ALL,"forager-garden water-works",
+            12,16,3600,8,"METAL_STOCK",3,"MACHINE_PARTS",2,"TIMBER",18);
         facility("industrial-workshop",Era.AUTOMATION,Faction.ALL,"precision-lathe freight-bay",
             14,14,7200,12,"METAL_STOCK",6,"MACHINE_PARTS",6,"FIELD_STONE",28);
+        facility("motor-pool",Era.AUTOMATION,Faction.ALL,"industrial-workshop fuel-refinery",
+            16,18,7200,12,"METAL_STOCK",6,"MACHINE_PARTS",5,"FIELD_STONE",30);
         facility("assembly-line",Era.AUTOMATION,Faction.ALL,"industrial-workshop automatic-sorter",
             18,20,9600,18,"METAL_STOCK",10,"MACHINE_PARTS",9,"FIELD_STONE",35);
         facility("command-hall",Era.AUTOMATION,Faction.ALL,"industrial-workshop dry-store",
@@ -133,6 +169,20 @@ public final class CraftingEraRegistry {
             "CLEAN_WATER",1,90,0,"DIRTY_WATER",1,"FIREWOOD",1);
         process("preserve-rations",Era.ENCAMPMENT,Faction.ALL,"cooking-hearth",
             "RATIONS",2,180,0,"EDIBLES",3,"CLEAN_WATER",1);
+        process("compost-ferment",Era.ENCAMPMENT,Faction.ALL,"compost-yard",
+            "COMPOST",2,480,0,"EDIBLES",2,"FIBER",2);
+        process("grow-field-crops",Era.ENCAMPMENT,Faction.ALL,"forager-garden",
+            "FIELD_CROPS",4,3600,0,"EDIBLES",2,"CLEAN_WATER",3,"COMPOST",1);
+        process("grow-medicinals",Era.ENCAMPMENT,Faction.ALL,"herb-plot",
+            "HERBAL_BUNDLE",2,3600,0,"MEDICINAL_HERBS",1,"CLEAN_WATER",2,"COMPOST",1);
+        process("weave-cloth",Era.ENCAMPMENT,Faction.ALL,"fiber-loom",
+            "CLOTH_ROLL",2,420,0,"FIBER",4);
+        process("smoke-rations",Era.ENCAMPMENT,Faction.ALL,"smokehouse",
+            "SMOKED_RATIONS",2,540,0,"EDIBLES",4,"FIREWOOD",2);
+        process("cellar-vegetables",Era.ENCAMPMENT,Faction.ALL,"root-cellar",
+            "CELLARED_CROPS",2,420,0,"FIELD_CROPS",3,"FIBER",1);
+        process("mill-crops",Era.SALVAGE,Faction.ALL,"grain-mill",
+            "MEAL_SACK",2,600,0,"FIELD_CROPS",4,"FIELD_STONE",1);
         process("charcoal-burn",Era.SALVAGE,Faction.ALL,"charcoal-kiln",
             "CHARCOAL",2,420,0,"TIMBER",4,"FIREWOOD",1);
         process("firebrick-batch",Era.SALVAGE,Faction.ALL,"stone-furnace",

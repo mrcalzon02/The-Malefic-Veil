@@ -114,6 +114,11 @@ public final class QualityGateTest {
         ContinentVehicleSitesTest.main(new String[0]);
         SettlementAuthorityTest.main(new String[0]);
         AntiAirBalanceTest.main(new String[0]);
+        CityMiasmaTest.main(new String[0]);
+        CrudeStructureIndexTest.main(new String[0]);
+        EquipmentUpgradesTest.main(new String[0]);
+        SettlementSupplyBalanceTest.main(new String[0]);
+        FactionTradeNetworksTest.main(new String[0]);
         System.out.println("PASS QualityGateTest "+assertions+
             " checks: host-confirmed hits, anti-replay, immutable cities, 20 map seeds");
     }

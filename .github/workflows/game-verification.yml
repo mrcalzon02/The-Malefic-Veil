@@ -44,6 +44,9 @@ jobs:
       - name: Import all 124 CC0 GLBs and render seeded district models
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
+      - name: Dense Kenney city performance and source instancing benchmarks
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.UrbanPerformanceTest
       - name: Rig-independent PSX character, weapon, item and power-up render verification
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.GameplayAssetTest
@@ -89,4 +92,5 @@ jobs:
             build/test-visuals/arena-screenshot.png
             build/test-visuals/gameplay-models.png
             build/test-visuals/kenney-assembled-city.png
+            build/test-visuals/urban-performance.csv
           if-no-files-found: warn

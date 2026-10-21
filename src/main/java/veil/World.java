@@ -16,6 +16,8 @@ public final class World {
     public final List<Device> devices = new ArrayList<>();
     /** Same deterministic prop placements used by the client renderer and host collision. */
     public final List<UrbanProp> urbanProps = new ArrayList<>();
+    /** Only extra physical obstacles, never every decorative Kenney tile. */
+    private final List<UrbanProp> physicalProps = new ArrayList<>();
     public record UrbanProp(String model,double x,double y,double heading,double scale,double radius,
                             double heightOffset) {
         public UrbanProp(String model,double x,double y,double heading,double scale,double radius){
@@ -71,6 +73,7 @@ public final class World {
         // Kenney's original modular assets are the physical city construction grammar.
         // The CityLayout map continues to own all solid collision and LOS rules.
         urbanProps.addAll(UrbanTileAssembler.assemble(seed,city,spawns));
+        for(UrbanProp p:urbanProps)if(p.solid())physicalProps.add(p);
     }
     public static long mix(long a) {
         a=(a^(a>>>30))*0xbf58476d1ce4e5b9L;
@@ -87,7 +90,7 @@ public final class World {
     public boolean worldStructureAt(double x,double y,double radius) {
         if(!Double.isFinite(x)||!Double.isFinite(y)||radius<0)return true;
         if(city.worldStructureAt(x,y,radius))return true;
-        for(UrbanProp p:urbanProps)if(p.solid()&&Math.hypot(x-p.x,y-p.y)<radius+p.radius)return true;
+        for(UrbanProp p:physicalProps)if(Math.hypot(x-p.x,y-p.y)<radius+p.radius)return true;
         return false;
     }
     private double[] randomOpen(Random r,CityLayout.Category preferred) {
@@ -107,8 +110,8 @@ public final class World {
     public boolean canWalk(double x,double y) {
         double r=.19;
         if(solid(x-r,y-r)||solid(x+r,y-r)||solid(x-r,y+r)||solid(x+r,y+r))return false;
-        for(UrbanProp p:urbanProps)
-            if(p.solid()&&Math.hypot(x-p.x,y-p.y)<p.radius+r)return false;
+        for(UrbanProp p:physicalProps)
+            if(Math.hypot(x-p.x,y-p.y)<p.radius+r)return false;
         return true;
     }
     public boolean lineClear(double x,double y,double tx,double ty) {
@@ -116,8 +119,7 @@ public final class World {
         if(len<.01) return true;
         for(double d=.08;d<len-.08;d+=.08)
             if(solid(x+dx*d/len,y+dy*d/len))return false;
-        for(UrbanProp p:urbanProps) {
-            if(!p.solid())continue;
+        for(UrbanProp p:physicalProps) {
             double t=Math.max(0,Math.min(1,((p.x-x)*dx+(p.y-y)*dy)/(len*len)));
             if(t>.05&&t<.95&&Math.hypot(x+dx*t-p.x,y+dy*t-p.y)<p.radius)return false;
         }

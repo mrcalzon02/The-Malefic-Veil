@@ -20,7 +20,7 @@ Run `java -cp out veil.WorldSelfTest` for headless city checks and `java -cp out
 
 The five consistent inventory sheets—shared materials, shared equipment, Unraveled manufacturing, Penitent ritual supplies and Begotten biological goods—are now checked in as **five archives of 30 individually sliced transparent PNGs**, together with five matching WebP visual references. Every asset has a stable uppercase item ID and SHA-256 recorded in [the crafting icon index](assets/game/crafting/icons_index.csv). [Crafting art readme](assets/game/crafting/README.md) explains the exact archive paths and naming rules.
 
-`CraftingIconPacks.load(Path.of("."))` reads the committed ZIPs directly and returns a real 128×128 RGBA sprite via `icon("TIMBER")`, `icon("RITUAL_CLOTH")`, etc. The dedicated headless `CraftingIconPacksTest` checks all **150** actual sprites, with no remote art service or external runtime dependency. The sprites are placeholder art for the planned economies; they are **not** a claim that every corresponding item can already be crafted, traded or placed in the live city-sector game.
+`CraftingIconPacks.load(Path.of("."))` reads the committed ZIPs directly and returns a real 128×128 RGBA sprite via `icon("TIMBER")`, `icon("RITUAL_CLOTH")`, etc. The dedicated headless `CraftingIconPacksTest` checks all **150** actual sprites, with no remote art service or external runtime dependency. The sprites are placeholder art for the planned economies; the base survival resource subset can now be physically harvested in the continuous world, but not every indexed specialty item is craftable or tradeable yet.
 
 ## Opt-in GPU Kenney client (libGDX / OpenGL 3.3)
 
@@ -45,7 +45,7 @@ The **main menu uses the original CC BY 4.0 PSX Horror UI Free sprites and Ribbo
 
 ## Continental population, vehicles and dedicated host (development slices)
 
-A deterministic continental **macro blueprint** now includes seven connected city sites, biome/wilderness areas, categorized plots, 3 player-spawn candidates per city, extra wilderness rally points, NPC encounter sites, and multicell/rotated parcel-level construction denial over world-owned features. **The actual playable game remains the original 132×132 city sector**: continental chunk rendering, collision, movement, NPC actors, and seamless city-to-city driving are not ready yet.
+A deterministic continent contains seven city sites, biomes, roads, categorized plots, NPC encounter and resource sites. **City A's detailed 132×132-metre district and the 224×224×6-metre continental terrain now share one authoritative world coordinate system**. Walkers cross the City A boundary with ordinary movement; there is no scene portal, wilderness dimension, or separated harvesting session. Simple resources have Beckenburg-style E aim prompts, host-validated gathering, common survival inventory, and durable depletion. **The rest of the cities still use coarse procedural terrain and incomplete 3D buildings/collision**; fully authored city-to-city roads, NPC placement, complete settlements and driving routes remain gated. See [the continuous-world correction](docs/ONE_CONTINUOUS_WORLD_AND_HARVESTING.md).
 
 Cars are **drivable in the playable city sector** in solo and LAN: press `Q` at a car to enter/exit; use `W/S` to accelerate/reverse and `A/D` to steer. Host authority controls occupancy, car collision, fuel, and car pose. Cars currently use licensed truck GLB geometry; tuning, refueling, passengers, repairs and intercity streaming are subsequent gates.
 

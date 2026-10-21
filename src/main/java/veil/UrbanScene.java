@@ -15,7 +15,7 @@ public final class UrbanScene {
         }
     }
     private static final String[] IDS={
-        "road-asphalt-straight","detail-barrier-type-a","detail-bench",
+        "road-asphalt-straight","detail-barrier-type-a","detail-bench","truck-green",
         "detail-dumpster-closed","detail-light-single"
     };
     private final Map<String,GlbMesh> models=new LinkedHashMap<>();

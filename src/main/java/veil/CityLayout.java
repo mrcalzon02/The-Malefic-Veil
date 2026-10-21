@@ -51,6 +51,7 @@ public final class CityLayout {
     private static final Map<Footprint, EnumMap<Category, List<Template>>> LIBRARY = library();
     private final long seed;
     private final boolean[][] roads = new boolean[GRID][GRID];
+    private final boolean[][] protectedParcels = new boolean[GRID][GRID];
     private final byte[][] walls = new byte[World.SIZE][World.SIZE];
     private final Category[][] zones = new Category[GRID][GRID];
     private final List<Plot> plots = new ArrayList<>();
@@ -61,6 +62,16 @@ public final class CityLayout {
     public List<Plot> plots() { return Collections.unmodifiableList(plots); }
     public List<Road> roadTiles() { return Collections.unmodifiableList(roadTiles); }
     public boolean road(int x, int y) { return inSite(x,y) && roads[x][y]; }
+    /** Immutable generated footprints; enforce across the entire proposed player structure. */
+    public boolean worldStructureAt(double x,double y,double radius) {
+        int x0=(int)Math.floor(x-radius),x1=(int)Math.floor(x+radius);
+        int y0=(int)Math.floor(y-radius),y1=(int)Math.floor(y+radius);
+        for(int xx=x0;xx<=x1;xx++)for(int yy=y0;yy<=y1;yy++) {
+            if(xx<1||yy<1||xx>=World.SIZE-1||yy>=World.SIZE-1)return true;
+            if(tile(xx,yy)!=0||protectedParcels[xx/CELL][yy/CELL])return true;
+        }
+        return false;
+    }
     public Category categoryAt(int tileX,int tileY) {
         if(tileX<0 || tileY<0 || tileX>=World.SIZE || tileY>=World.SIZE)return null;
         return zones[tileX/CELL][tileY/CELL];
@@ -199,6 +210,11 @@ public final class CityLayout {
         }
         for(int x=0;x<GRID;x++)for(int y=0;y<GRID;y++)
             if(!used[x][y])throw new IllegalStateException("World contains unassigned land");
+        // Roads and developed sites predate the match and are never player construction sites.
+        for(Road road:roadTiles)protectedParcels[road.x()][road.y()]=true;
+        for(Plot lot:plots)if(lot.template().category()!=Category.OPEN || lot.template().variant()!=2)
+            for(int x=lot.x();x<lot.right();x++)for(int y=lot.y();y<lot.bottom();y++)
+                protectedParcels[x][y]=true;
     }
     private void carveRect(int left,int top,int right,int bottom){
         for(int x=Math.max(1,left);x<Math.min(World.SIZE-1,right);x++)
@@ -213,6 +229,8 @@ public final class CityLayout {
         Category category=plot.template().category();
         int variant=plot.template().variant();
         carveRect(x0,y0,x1,y1);
+        // A vacant lot must actually be bare land, unlike a paved square or existing park.
+        if(category==Category.OPEN && variant==2)return;
         if(category!=Category.OPEN){
             // Four outward entrances keep buildings permeable to alleys and neighboring plots.
             for(int x=x0;x<x1;x++){

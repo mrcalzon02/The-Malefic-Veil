@@ -24,3 +24,10 @@ The scene's spatial grid lists only nearby candidate instances. For view budgeti
 - A mesh naming match does not prove seams, door placement, roof alignment or collision parity; all require visual screenshot review and corrections.
 
 The parallel *The Lost* NPC source-casting work remains separate from the Kenney world kit.
+
+
+## Actual source dimensions and correction
+
+The original CC0 Kenney GLBs have been inspected as geometry, not inferred by filenames. Road-asphalt-center, road-asphalt-pavement, grass and many facade modules occupy approximately **1×1 horizontal source units**; the asphalt straight is roughly **1×2** and the road corner **2×2**. Accordingly, the authoritative 6×6 city-layout macrocell now fills its footprint with 36 **individual 1×1 Kenney tile instances** (and adds an optional 1×2/2×2 route detail at its center). Plot ground and roof assemblies likewise use native-scale repeated source pieces. We removed the earlier 6× stretched squares and 5.2× roof wedges after real screenshot inspection showed oversized, implausible forms.
+
+These replacements substantially increase instance count, which is exactly why shared immutable GLB geometry, packed instance buffers, spatial prefiltering, and a future true GPU instanced draw path are required. This is still a staging implementation: module edge seam alignment, roof and upper-storey accuracy, and source-matched collision need screenshot-based validation before declaring a city complete.

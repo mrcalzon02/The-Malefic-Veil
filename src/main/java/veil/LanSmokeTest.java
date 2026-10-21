@@ -17,6 +17,7 @@ public final class LanSmokeTest {
         try(LanServer host=new LanServer(0,887766L);
             NetLink attacker=new NetLink("127.0.0.1",host.port());
             NetLink victim=new NetLink("127.0.0.1",host.port())){
+            host.match.world.npcs.clear(); // isolate network PvP scenario from hostile random spawns
             check(attacker.seed==887766L&&victim.seed==887766L,"host seed");
             check(attacker.id!=victim.id,"unique IDs");
             attacker.choose(2);

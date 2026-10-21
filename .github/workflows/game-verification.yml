@@ -1,0 +1,57 @@
+name: Full host combat and game verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  java17-game:
+    name: ${{ matrix.os }} / JDK ${{ matrix.java }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java: ['17', '21']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - name: Compile all Java 17 sources
+        shell: bash
+        run: |
+          mkdir -p build/classes
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+      - name: City generation and geometry
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest
+      - name: Authoritative combat, regeneration, pickups, medicine, turrets, structures
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.ArenaSystemsTest
+      - name: Real localhost server and multiplayer replication
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.LanSmokeTest
+      - name: Real Swing renderer in headless mode
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.RenderSmokeTest
+      - name: Assemble runnable jar
+        shell: bash
+        run: |
+          echo 'Main-Class: veil.MaleficVeil' > build/manifest.mf
+          jar cfm build/MaleficVeil.jar build/manifest.mf -C build/classes .
+          jar tf build/MaleficVeil.jar | grep 'veil/MaleficVeil.class'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: malefic-verification-${{ matrix.os }}-jdk${{ matrix.java }}
+          path: |
+            build/MaleficVeil.jar
+            build/test-visuals/arena-screenshot.png
+          if-no-files-found: warn

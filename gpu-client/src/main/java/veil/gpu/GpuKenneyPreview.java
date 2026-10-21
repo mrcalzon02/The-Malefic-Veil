@@ -36,6 +36,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         uniform vec3 u_eye;
         out vec4 v_color;
         out float v_distance;
+        out vec3 v_world;
         void main() {
             float cs=cos(a_instance.z),sn=sin(a_instance.z);
             vec3 scaled=a_position*a_instance.w;
@@ -46,19 +47,37 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             gl_Position=u_projView*vec4(world,1.0);
             v_color=vec4(a_color.rgb,a_color.a*a_extra.x);
             v_distance=length(world-u_eye);
+            v_world=world;
         }
         """;
     static final String FRAGMENT_SHADER="""
         #version 330 core
         in vec4 v_color;
         in float v_distance;
+        in vec3 v_world;
         uniform float u_fogFar;
+        uniform float u_ambient;
+        uniform float u_lampStrength;
+        uniform int u_lightCount;
+        uniform vec4 u_pointLights[8];
+        uniform vec3 u_haze;
+        uniform vec3 u_dayTint;
         out vec4 fragColor;
         void main() {
-            float fog=smoothstep(u_fogFar*0.32,u_fogFar,v_distance);
-            vec3 shaded=v_color.rgb*max(0.35,1.0-v_distance/(u_fogFar*1.5));
-            vec3 fogColor=vec3(0.055,0.061,0.080);
-            fragColor=vec4(mix(shaded,fogColor,fog),v_color.a);
+            float warm=0.0;
+            for(int i=0;i<8;i++){
+                if(i>=u_lightCount)break;
+                vec4 lamp=u_pointLights[i];
+                float distance=length(v_world.xz-lamp.xy);
+                float falloff=max(0.0,1.0-distance/lamp.z);
+                warm+=falloff*falloff*lamp.w*u_lampStrength;
+            }
+            // Ambient daylight and real sourced streetlight pools: no fake
+            // emissive cubes, and at most eight lights tested per fragment.
+            vec3 brightness=u_dayTint*u_ambient+vec3(1.00,0.73,0.46)*warm;
+            vec3 shaded=v_color.rgb*min(brightness,vec3(1.65));
+            float fog=smoothstep(u_fogFar*.35,u_fogFar,v_distance);
+            fragColor=vec4(mix(shaded,u_haze,fog),v_color.a);
         }
         """;
 
@@ -93,11 +112,18 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private FrameBuffer framebuffer;
     private SpriteBatch sprites;
     private BitmapFont font;
+    private GpuSkybox skybox;
+    private UrbanLighting lighting;
+    private PsxHorrorMenu menu;
     private final Map<String,GpuModel> models=new LinkedHashMap<>();
     private final Map<String,FloatList> visible=new LinkedHashMap<>();
     private double x=1.5,y=1.5,heading=0.2;
     private float visualDistance=30f;
     private int frames,visibleInstances,drawCalls;
+    private int activeLights,maxLights=8,timeSpeed=1;
+    private long worldTimeMs=WorldDayNight.DAY_MS/2;
+    private final float[] lightUniforms=new float[8*4];
+    private WorldDayNight.Conditions environment=WorldDayNight.atHour(12);
     private boolean shownFailure;
 
     public GpuKenneyPreview(long seed,boolean smoke){
@@ -109,6 +135,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         world=new World(seed);
         try{scene=new UrbanScene(world);}
         catch(Exception ex){throw new IllegalStateException("Kenney source pack unavailable",ex);}
+        lighting=new UrbanLighting(world);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
         for(UrbanInstanceBatches.Batch batch:scene.batches().all()){
@@ -144,12 +171,29 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         sprites=new SpriteBatch();
         font=new BitmapFont();
         font.getData().setScale(0.62f);
+        skybox=new GpuSkybox();
+        menu=new PsxHorrorMenu(smoke);
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
             scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
     }
 
     private void control() {
+        PsxHorrorMenu.Settings actions=new PsxHorrorMenu.Settings(){
+            public void changeView(int delta){
+                visualDistance=Math.max(8,Math.min(80,visualDistance+delta));
+            }
+            public void changeLights(int delta){
+                maxLights=Math.max(0,Math.min(8,maxLights+delta));
+            }
+            public void changeTimeSpeed(int direction){
+                int[] speeds={0,1,2,4,8};
+                int index=1;
+                for(int i=0;i<speeds.length;i++)if(speeds[i]==timeSpeed)index=i;
+                timeSpeed=speeds[Math.max(0,Math.min(speeds.length-1,index+direction))];
+            }
+        };
+        if(!menu.input(actions))return;
         float dt=Math.min(.04f,Math.max(0,Gdx.graphics.getDeltaTime()));
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))heading-=dt*1.8;
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))heading+=dt*1.8;
@@ -167,17 +211,24 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             if(world.canWalk(x+vx,y))x+=vx;
             if(world.canWalk(x,y+vy))y+=vy;
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.MINUS))visualDistance=Math.max(8,visualDistance-4);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.EQUALS))visualDistance=Math.min(80,visualDistance+4);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))Gdx.app.exit();
+        if(Gdx.input.isKeyJustPressed(Input.Keys.MINUS))actions.changeView(-4);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.EQUALS))actions.changeView(4);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT_BRACKET))
+            worldTimeMs=Math.floorMod(worldTimeMs-WorldDayNight.DAY_MS/24,WorldDayNight.DAY_MS);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT_BRACKET))
+            worldTimeMs=(worldTimeMs+WorldDayNight.DAY_MS/24)%WorldDayNight.DAY_MS;
+        worldTimeMs=(worldTimeMs+(long)(Gdx.graphics.getDeltaTime()*1000*timeSpeed))%WorldDayNight.DAY_MS;
     }
 
     private void drawWorld() {
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthMask(true);
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
-        Gdx.gl.glClearColor(.055f,.061f,.080f,1);
+        environment=WorldDayNight.atElapsedMs(worldTimeMs);
+        Gdx.gl.glClearColor(environment.hazeRed(),environment.hazeGreen(),environment.hazeBlue(),1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+        skybox.render(environment);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         camera.position.set((float)x,1.55f,(float)y);
         camera.direction.set((float)Math.cos(heading),-.04f,(float)Math.sin(heading)).nor();
         camera.up.set(Vector3.Y);
@@ -199,6 +250,22 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         shader.setUniformMatrix("u_projView",camera.combined);
         shader.setUniformf("u_eye",camera.position);
         shader.setUniformf("u_fogFar",visualDistance);
+        shader.setUniformf("u_ambient",(float)environment.ambient());
+        shader.setUniformf("u_lampStrength",(float)environment.lampStrength());
+        shader.setUniformf("u_dayTint",environment.sunRed(),environment.sunGreen(),environment.sunBlue());
+        shader.setUniformf("u_haze",environment.hazeRed(),environment.hazeGreen(),environment.hazeBlue());
+        java.util.Arrays.fill(lightUniforms,0);
+        var nearest=lighting.nearby(x,y,maxLights);
+        activeLights=nearest.size();
+        for(int i=0;i<nearest.size();i++){
+            UrbanLighting.Light light=nearest.get(i);
+            lightUniforms[4*i]=(float)light.x();
+            lightUniforms[4*i+1]=(float)light.z();
+            lightUniforms[4*i+2]=(float)light.radius();
+            lightUniforms[4*i+3]=(float)light.intensity();
+        }
+        shader.setUniformi("u_lightCount",activeLights);
+        shader.setUniform4fv("u_pointLights[0]",lightUniforms,0,lightUniforms.length);
         for(var entry:visible.entrySet()){
             GpuModel gpu=models.get(entry.getKey());
             FloatList transforms=entry.getValue();
@@ -213,20 +280,25 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
         sprites.begin();
-        font.draw(sprites,"THE MALEFIC VEIL - KENNEY GPU",5,195);
-        font.draw(sprites,"INST "+visibleInstances+"  DRAWS "+drawCalls+"  LOD "+(int)visualDistance,5,184);
-        font.draw(sprites,"WASD MOVE  ARROWS TURN  +/- VIEW  ESC EXIT",5,10);
+        if(menu.running()){
+            font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),5,195);
+            font.draw(sprites,"TILES "+visibleInstances+"  DRAWS "+drawCalls+
+                "  LAMPS "+activeLights+"  VIEW "+(int)visualDistance,5,183);
+            font.draw(sprites,"WASD MOVE   [ ] TIME   F10 GRAPHICS   ESC MENU",5,10);
+        }else{
+            menu.draw(sprites,font,visualDistance,maxLights,timeSpeed);
+        }
         sprites.end();
     }
 
-    private void saveFrame() {
+    private void saveFrame(String filename) {
         // Read back the *actual* GPU framebuffer, correcting GL's bottom-left origin.
         Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);
         Pixmap flipped=new Pixmap(WIDTH,HEIGHT,Pixmap.Format.RGBA8888);
         for(int row=0;row<HEIGHT;row++)for(int col=0;col<WIDTH;col++)
             flipped.drawPixel(col,HEIGHT-1-row,pixels.getPixel(col,row));
         FileHandle destination=Gdx.files.absolute(
-            new java.io.File("build/test-visuals/gpu-kenney-city.png").getAbsolutePath());
+            new java.io.File("build/test-visuals/"+filename).getAbsolutePath());
         destination.parent().mkdirs();
         PixmapIO.writePNG(destination,flipped);
         Set<Integer> colors=new HashSet<>();
@@ -245,11 +317,20 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(!smoke)control();
         framebuffer.begin();
         drawWorld();
-        if(smoke&&++frames==12){
-            saveFrame();
-            framebuffer.end();
-            Gdx.app.exit();
-            return;
+        if(smoke){
+            frames++;
+            if(frames==12){
+                saveFrame("gpu-kenney-city.png");
+                worldTimeMs=0;
+            }else if(frames==24){
+                saveFrame("gpu-kenney-night.png");
+                menu.showMain();
+            }else if(frames==36){
+                saveFrame("gpu-psx-menu.png");
+                framebuffer.end();
+                Gdx.app.exit();
+                return;
+            }
         }
         framebuffer.end();
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
@@ -270,5 +351,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(framebuffer!=null)framebuffer.dispose();
         if(sprites!=null)sprites.dispose();
         if(font!=null)font.dispose();
+        if(skybox!=null)skybox.close();
+        if(menu!=null)menu.close();
     }
 }

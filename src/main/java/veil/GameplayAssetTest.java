@@ -1,0 +1,79 @@
+package veil;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.*;
+import javax.imageio.ImageIO;
+
+/** Real triangle, palette, and opacity acceptance test for authored game PSX models. */
+public final class GameplayAssetTest {
+    private static int checks;
+    private static void check(boolean ok,String msg){checks++;if(!ok)throw new AssertionError(msg);}
+    private static BufferedImage render(GameplayMeshes pack,double alpha){
+        BufferedImage img=new BufferedImage(320,200,BufferedImage.TYPE_INT_RGB);
+        Graphics2D g=img.createGraphics();
+        g.setColor(new Color(18,20,28));g.fillRect(0,0,320,200);
+        double[] depth=new double[320];Arrays.fill(depth,40);
+        java.util.List<UrbanScene.ModelInstance> models=java.util.List.of(
+            new UrbanScene.ModelInstance(GameplayMeshes.HERO[0],4.5,-.7,0,1,alpha),
+            new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[0],5.5,.5,0,1),
+            new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[0],6.5,.3,0,1));
+        int visible=new PropRenderer().draw(g,pack.meshes(),models,1.5,1.5,0,
+            depth,320,200);
+        g.dispose();
+        check(visible==3,"all near models submitted to renderer");
+        return img;
+    }
+    public static void main(String[] ignored)throws Exception{
+        GameplayMeshes lib=new GameplayMeshes();
+        check(lib.meshes().size()==18,"four heroes + enemy + two weapons + seven pickups + four devices");
+        int triangles=0;
+        for(var entry:lib.meshes().entrySet()){
+            GlbMesh mesh=entry.getValue();int count=mesh.triangleCount();
+            check(count>=12,entry.getKey()+" should be actual triangulated geometry");
+            float[] bounds=mesh.bounds();
+            check(bounds[4]>bounds[1]&&bounds[3]>bounds[0],"nonzero 3D bounds: "+entry.getKey());
+            triangles+=count;
+        }
+        check(triangles>700,"models are too simple to be meaningful 3D geometry");
+        BufferedImage opaque=render(lib,1),translucent=render(lib,.25),empty=render(lib,0);
+        int changed=0,lessVisible=0;
+        for(int y=0;y<200;y++)for(int x=0;x<320;x++){
+            int full=opaque.getRGB(x,y),quarter=translucent.getRGB(x,y),none=empty.getRGB(x,y);
+            if(full!=none){
+                changed++;
+                if(full!=quarter&&quarter!=none)lessVisible++;
+            }
+        }
+        check(changed>40,"mesh geometry never rasterized");
+        check(lessVisible>20,"25%-opaque character did not alpha blend into the scene");
+        BufferedImage sheet=new BufferedImage(960,600,BufferedImage.TYPE_INT_RGB);
+        Graphics2D g=sheet.createGraphics();
+        for(int row=0;row<3;row++)for(int col=0;col<3;col++){
+            int index=row*3+col;
+            String id=index<4?GameplayMeshes.HERO[index]:
+                index<6?GameplayMeshes.WEAPON[index-4]:
+                GameplayMeshes.DEVICE[index-6];
+            BufferedImage panel=new BufferedImage(320,200,BufferedImage.TYPE_INT_RGB);
+            Graphics2D pg=panel.createGraphics();
+            pg.setColor(new Color(19,20,28));pg.fillRect(0,0,320,200);
+            double[] depth=new double[320];Arrays.fill(depth,40);
+            if(index<4||index>=6)new PropRenderer().draw(pg,lib.meshes(),
+                java.util.List.of(new UrbanScene.ModelInstance(id,5.5,1.5,0,1,1)),
+                1.5,1.5,0,depth,320,200);
+            else new WeaponViewRenderer().draw(pg,lib.meshes().get(id),320,200,0);
+            pg.setFont(new Font(Font.MONOSPACED,Font.BOLD,13));
+            pg.setColor(Color.WHITE);pg.drawString(id,10,22);
+            pg.dispose();g.drawImage(panel,col*320,row*200,null);
+        }
+        g.dispose();
+        File image=new File("build/test-visuals/gameplay-models.png");
+        image.getParentFile().mkdirs();
+        check(ImageIO.write(sheet,"png",image),"cannot write PSX model QA image");
+        check(image.length()>4000,"QA image blank");
+        System.out.println("PASS GameplayAssetTest: "+lib.meshes().size()+
+            " authored 3D models, "+triangles+" triangles, "+checks+
+            " assertions, "+lessVisible+" alpha-blended pixels");
+    }
+}

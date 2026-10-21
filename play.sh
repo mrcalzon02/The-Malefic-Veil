@@ -4,6 +4,7 @@ cd "$(dirname "$0")"
 mkdir -p out
 javac --release 17 -d out src/main/java/veil/*.java
 java -cp out veil.WorldSelfTest
+java -Djava.awt.headless=true -cp out veil.UrbanAssetTest
 java -cp out veil.ArenaSystemsTest
 java -Djava.awt.headless=true -cp out veil.RenderSmokeTest
 java -cp out veil.LanSmokeTest

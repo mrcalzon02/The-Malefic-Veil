@@ -35,6 +35,9 @@ jobs:
       - name: Authoritative combat, regeneration, pickups, medicine, turrets, structures
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArenaSystemsTest
+      - name: Import and render five real CC0 urban meshes
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
       - name: Real localhost server and multiplayer replication
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.LanSmokeTest
@@ -46,7 +49,13 @@ jobs:
         run: |
           echo 'Main-Class: veil.MaleficVeil' > build/manifest.mf
           jar cfm build/MaleficVeil.jar build/manifest.mf -C build/classes .
-          jar tf build/MaleficVeil.jar | grep 'veil/MaleficVeil.class'
+          jar uf build/MaleficVeil.jar -C assets/game kenney
+          jar tf build/MaleficVeil.jar | grep 'kenney/detail-bench.glb'
+      - name: Validate self-contained runnable JAR model resources
+        shell: bash
+        run: |
+          cd build
+          java -Djava.awt.headless=true -cp MaleficVeil.jar veil.UrbanAssetTest
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -24,3 +24,9 @@
 3. Revival stations now actually revive nearby fallen players after delay; team targeting, station ownership, balance and persistent profiles remain to implement.
 4. Software raycaster does not parse GLB. Need format ingestion/adapter, materials, floors/ceilings and collision import to represent archived urban sets.
 5. CI tests are green, but physical Windows input/gameplay and larger hosted matches still require playtesting.
+
+## Current development increment — verified archive intake / urban model code
+
+Retrieved **Kenney Retro Urban Kit 2.0** archive and its `License.txt` directly from shared Drive. License states Creative Commons Zero (CC0), including commercial use. The specific `road-asphalt-straight.glb` source SHA-256 matched the separately staged Drive GLB exactly (`33d5a25df63fdbfd696564972326de0dc7bdcf100649b8beb7bcd4dffec19c4e`). Five selected GLB originals are now source files in `assets/game/kenney`; the runtime Java loader extracts their **actual mesh triangles**, projecting them into the first-person scene with provisional flat material colors. The currently supported subset does **not** sample texture PNGs, evaluate animations, skinning or node hierarchies, or supply geometric physics for decorative props. That is an explicit R1 follow-up, not a completed claim.
+
+The authoritative release-gated phase plan is in [ROADMAP.md](ROADMAP.md). GitHub Actions now must verify GLB geometry and rendered framebuffer, and test packaged-JAR classpath asset access. Human desktop playtesting remains an independent gate.

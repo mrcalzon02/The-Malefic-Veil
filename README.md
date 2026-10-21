@@ -2,11 +2,11 @@
 
 A Java 17, PSX-inspired urban horror arena shooter: fast Doom/Unreal Tournament-style combat overlaid with health, sanity, stealth, resources, equipment, character abilities and deployable infrastructure.
 
-**Phase 0/1:** Java Swing software-rendered prototype and an authoritative inventory of upstream Google Drive assets. No proprietary archived asset is bundled automatically.
+**Current build:** playable Java 17 Swing prototype with five **real, curated CC0 Kenney Retro Urban GLB meshes** rendered geometrically within the city. The full purchased PSX archive remains outside this public repository. Texture mapping/animation and full avatar imports are separate gated phases.
 
 ## Quick start
 
-JDK 17+ (no dependencies, no GitHub Actions):
+JDK 17+ (no external dependencies; GitHub Actions compile, run combat tests and package the source with licensed models):
 
 ```sh
 mkdir -p out
@@ -14,7 +14,7 @@ javac --release 17 -d out src/main/java/veil/*.java
 java -cp out veil.MaleficVeil
 ```
 
-Run `java -cp out veil.WorldSelfTest` for headless city checks and `java -cp out veil.LanSmokeTest` for localhost network checks. A local experimental server can also be run with `java -cp out veil.LanServer 7777`; the launcher offers SOLO, HOST LAN or JOIN LAN. LAN currently relays player positions and checks PvP hits only. It does **not** yet authoritatively synchronize NPCs, inventories, pickups or devices and is not ready for public servers. For Windows double-click `play.bat` with JDK 17+ installed.
+Run `java -cp out veil.WorldSelfTest` for headless city checks and `java -cp out veil.LanSmokeTest` for localhost network checks. A local experimental server can also be run with `java -cp out veil.LanServer 7777`; the launcher offers SOLO, HOST LAN or JOIN LAN. Protocol v2 hosts PvP damage, visibility, NPCs, inventory, pickups and construction. Internet security, robust movement reconciliation and real gameplay loads are **not** accepted yet. For Windows double-click `play.bat` with JDK 17+ installed.
 
 ## Play concept
 

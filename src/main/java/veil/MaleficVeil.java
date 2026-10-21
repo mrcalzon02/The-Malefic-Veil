@@ -16,6 +16,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final double[] depth=new double[RW];
     private final Set<Integer> held=new HashSet<>();
     private final World world;
+    private final UrbanScene urban;
+    private final PropRenderer urbanRenderer=new PropRenderer();
     private final NetLink net;
     private final int archetype;
     private final javax.swing.Timer timer;
@@ -32,6 +34,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {
         this.window=window;this.net=net;this.archetype=archetype;
         world=new World(seed);
+        try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
             world.npcs.add(new World.Npc(7.5,1.5));
@@ -305,6 +308,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(new Color(r,gg,b));g.drawLine(i,Math.max(0,top),i,Math.min(RH,top+h));
             if((tx+ty)%5==0){g.setColor(new Color(r/2,gg/2,b/2));g.drawLine(i,Math.max(0,top+h/2),i,Math.min(RH,top+h/2));}
         }
+        urbanRenderer.draw(g,urban,px,py,angle,depth,RW,RH);
         for(World.Pickup p:world.pickups)if(!p.taken) sprite(g,p.x,p.y,p.kind==0?0x7ad36c:p.kind==1?0x87a3fd:p.kind==4?0xF2D36B:0xE6AD54,16,false);
         for(World.Device d:world.devices)if(d.hp>0)sprite(g,d.x,d.y,d.kind==0?0x57CCD6:d.kind==1?0x62E696:0xB88FF5,56,true);
         for(World.Npc n:world.npcs)if(n.hp>0)sprite(g,n.x,n.y,0xD85569,74,true);

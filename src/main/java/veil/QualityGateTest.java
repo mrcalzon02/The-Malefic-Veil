@@ -120,6 +120,7 @@ public final class QualityGateTest {
         EquipmentUpgradesTest.main(new String[0]);
         SettlementSupplyBalanceTest.main(new String[0]);
         FactionTradeNetworksTest.main(new String[0]);
+        CraftingIconPacksTest.main(new String[0]);
         System.out.println("PASS QualityGateTest "+assertions+
             " checks: host-confirmed hits, anti-replay, immutable cities, 20 map seeds");
     }

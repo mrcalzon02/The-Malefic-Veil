@@ -87,6 +87,9 @@
     </plugins>
     <resources>
       <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+      </resource>
+      <resource>
         <directory>${project.basedir}/../assets/game</directory>
         <includes><include>kenney/retro-urban-kit-2.0.zip</include></includes>
       </resource>

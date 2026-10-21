@@ -16,7 +16,11 @@ public final class World {
     public final List<Device> devices = new ArrayList<>();
     /** Same deterministic prop placements used by the client renderer and host collision. */
     public final List<UrbanProp> urbanProps = new ArrayList<>();
-    public record UrbanProp(String model,double x,double y,double heading,double scale,double radius) {
+    public record UrbanProp(String model,double x,double y,double heading,double scale,double radius,
+                            double heightOffset) {
+        public UrbanProp(String model,double x,double y,double heading,double scale,double radius){
+            this(model,x,y,heading,scale,radius,0);
+        }
         public boolean solid(){return radius>0;}
     }
     public final double[][] spawns = {{1.5,1.5},{61.5,61.5},{121.5,121.5}};
@@ -64,88 +68,9 @@ public final class World {
         }
     }
     private void generateUrbanProps() {
-        // Deliberate recognizable urban furniture on the initial thoroughfare.
-        urbanProps.add(new UrbanProp("detail-barrier-type-a",5.2,1.5,0,1.7,.43));
-        urbanProps.add(new UrbanProp("detail-bench",4.3,2.5,0,1.8,.58));
-        urbanProps.add(new UrbanProp("detail-dumpster-closed",9.1,2.2,0,1.6,.59));
-        urbanProps.add(new UrbanProp("detail-light-single",7.8,2.2,0,3.0,.15));
-        urbanProps.add(new UrbanProp("road-asphalt-straight",4.7,1.5,Math.PI/2,1.0,0));
-        String[] models={
-            "detail-barrier-type-a",
-            "detail-barrier-type-b",
-            "detail-barrier-strong-type-a",
-            "detail-barrier-strong-damaged",
-            "detail-bench",
-            "detail-dumpster-closed",
-            "detail-dumpster-open",
-            "detail-light-single",
-            "detail-light-double",
-            "detail-light-traffic",
-            "pallet",
-            "pallet-small",
-            "planks",
-            "detail-bricks-type-a",
-            "detail-bricks-type-b",
-            "detail-cables-type-a",
-            "scaffolding-structure",
-            "scaffolding-floor",
-            "scaffolding-poles",
-            "detail-awning-small",
-            "detail-awning-wide",
-            "wall-broken-type-a",
-            "wall-broken-type-b",
-            "wall-a-flat-window",
-            "wall-a-open",
-            "wall-b-window",
-            "wall-fence",
-            "wall-steps-type-a",
-            "wall-steps-type-b",
-            "tree-small",
-            "tree-shrub",
-            "tree-pine-small",
-            "truck-flat",
-            "truck-green",
-            "truck-grey",
-            "road-asphalt-damaged",
-            "road-asphalt-side",
-            "road-dirt-damaged",
-            "roof-metal-type-a",
-            "roof-metal-type-b",
-            "balcony-type-a",
-            "window-wide-type-a"
-        };
-        for(int bx=0;bx<SIZE/12;bx++)for(int by=0;by<SIZE/12;by++){
-            for(int slot=0;slot<2;slot++){
-                long hash=mix(seed^((long)bx*42137)^((long)by*99497)^(slot*0x77F3L));
-                if((hash&3)==0)continue;
-                double px=bx*12+(slot==0?5.5:9.5);
-                double py=by*12+(slot==0?1.45:2.45);
-                if(px>=SIZE-3||py>=SIZE-3||solid(px,py))continue;
-                String model=models[(int)Math.floorMod(hash>>>5,models.length)];
-                double scale=model.startsWith("road")?1:
-                    model.contains("light")?3:
-                    model.contains("truck")?2:
-                    model.contains("tree")?2.2:
-                    model.startsWith("wall")?1.5:
-                    model.contains("scaffolding")?2:1.8;
-                double radius=model.startsWith("road")||model.startsWith("roof")||
-                    model.contains("awni")||model.contains("window")?0:
-                    model.contains("light")||model.contains("cables")?.14:
-                    model.contains("bench")||model.contains("pallet")?.40:
-                    model.contains("barrier")?.36:
-                    model.contains("truck")?.75:
-                    model.contains("tree")?.38:.42;
-                boolean safe=true;
-                for(double[] spawn:spawns)
-                    if(radius>0&&Math.hypot(px-spawn[0],py-spawn[1])<3.2)safe=false;
-                if(!safe)continue;
-                boolean crowd=false;
-                for(UrbanProp p:urbanProps)
-                    if(p.solid()&&radius>0&&Math.hypot(px-p.x,py-p.y)<radius+p.radius+.25){crowd=true;break;}
-                if(crowd)continue;
-                urbanProps.add(new UrbanProp(model,px,py,(hash&1)==0?0:Math.PI/2,scale,radius));
-            }
-        }
+        // Kenney's original modular assets are the physical city construction grammar.
+        // The CityLayout map continues to own all solid collision and LOS rules.
+        urbanProps.addAll(UrbanTileAssembler.assemble(seed,city,spawns));
     }
     public static long mix(long a) {
         a=(a^(a>>>30))*0xbf58476d1ce4e5b9L;

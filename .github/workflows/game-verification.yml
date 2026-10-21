@@ -50,6 +50,9 @@ jobs:
       - name: Kenney modular city assembly and screenshot gate
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.KenneyCityAssemblyTest
+      - name: Shared Kenney geometry and packed instance buffer invariants
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.UrbanInstanceBatchesTest
       - name: The Lost and cast source registry invariants
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.PsxCastingAndLostTest

@@ -14,7 +14,10 @@ public final class UrbanAssetTest {
         int triangles=0;
         for(var asset:city.models().entrySet()){
             GlbMesh model=asset.getValue();
-            check(model.triangleCount()>2,asset.getKey()+" did not parse geometry");
+            check(model.triangleCount()>=2,asset.getKey()+" did not parse usable GLB triangle geometry");
+            float[] bounds=model.bounds();
+            check(bounds[3]>bounds[0]&&bounds[5]>bounds[2],
+                asset.getKey()+" has degenerate plan dimensions");
             check(model.bounds()[1]>=0,asset.getKey()+" invalid floor");
             triangles+=model.triangleCount();
         }

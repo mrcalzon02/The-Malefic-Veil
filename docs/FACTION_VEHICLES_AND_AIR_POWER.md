@@ -105,6 +105,27 @@ Flight model: server-owned six-degree motion with clear arcade-readable controls
 
 **Support facilities:** aircraft assembly plant, hangars, repair stands, refuel/rearm depot, radar/lookout and anti-air defenses. Placeable only on validated wilderness plots, not generated city rooftops or roads. Building prerequisites cross-link existing industry/crafting era and faction facility systems.
 
+## Two specialist anti-air towers per faction — deliberate medium-aircraft gap
+
+These are **six custom faction models**, not a reskin-only set; each faction gets exactly two equivalent mechanical roles. The defenses use wilderness-only settlement facility rules, character-owner permissions, owner-level capacity and faction friend-or-foe; they never spawn player-owned towers on immutable world roads or inside city lots.
+
+| Role | Unraveled | Penitent | Begotten |
+|---|---|---|---|
+| **FAST_TRACKER** (rapid precision, small strikes) | **Needle Array** — radar/servo rotary cannon, feed belts, spinning barrel array | **Confessor's Choir** — ring of chanting warders and repeated directed bolts | **Spineweaver** — swiveling living stalk with high-rate barbed spines |
+| **HEAVY_BREAKER** (slow tracking, devastating projectile) | **Siegebreaker** — costly slow heavy guided missile rack with weak turn authority | **Judgment Bell** — deliberate arcing consecrated siege shell/bolt, loud warning | **Maw Spire** — huge organic piercing pod, slow flight, visible pressure buildup |
+
+**Targeting contract:** only genuinely hostile aircraft may be targeted. Every crew and individual of the same playable faction is always allied; settlements within that faction do not fire on each other even with different owners or access roles. Neutral or unverified aircraft follow a server policy (never client-reported faction). AA ammunition/fuel/nutrient, power/ritual upkeep, range, unobstructed firing arcs, cooldown, projectile speed and rotation speed all matter. The guns are destructible, repairable, salvageable and disable on supply/power loss.
+
+**Desired engagement envelope:** fast tracker has excellent acquisition, traverse, hit chance and anti-light damage but low penetration/low per-shot damage. Medium hull/armor reduces its effective damage; heavy armor renders it mostly harassment. Heavy breaker deals large chunks of high-penetration damage to large, durable and slow airframes, but telegraphs firing, takes time to rotate/lock, has slow projectiles with limited midflight corrections and poor hit chance on moving light/medium airframes. No universal homing that erases medium evasion.
+
+**Attackers' decision:** light flyers die rapidly if exposed to tracker coverage; heavy bombers can be disabled quickly by a few heavy direct hits; medium flyers have the **longest expected survival against both standard AA systems** and are the preferred assault force. This is a deliberate additional incentive to take medium craft, without changing the existing air-to-air triangle of LIGHT > HEAVY > MEDIUM > LIGHT. Mixed tower grids, concentrated fire, bomber escorts, weather, elevation, line-of-sight breaks, ground attackers and aircraft maneuvering retain meaningful counterplay. Medium aircraft are **not invulnerable** and still burn fuel/ammunition or risk subsystem disablement.
+
+**Illustrative balancing target (non-runtime):** tracker projectile 10–12 raw damage with ~0.35s fire interval, high anti-light tracking and poor armor penetration; breaker projectile ~300 raw damage with ~9s cycle and highly limited turn rate / evadable warning. Test target classes in identical skill/equipment situations for (a) fast-tracker defeats light faster than medium; (b) heavy-breaker defeats heavy faster than medium; (c) medium endures a standard one-of-each two-tower array longer than both light and heavy. Require actual flight-combat simulation and human tests before tuning is accepted. Counterplay must remain possible with skilled pilots and targeted base suppression.
+
+**Progression:** these are high-tier **DEFENSE** structures after power/command/security infrastructure and anti-air research, not starter improvised turrets. Each consumes one settlement automated-defense slot from its owner's level-derived cap; its construction, ammunition, utility hookups and repair remain paid, staged and raid-vulnerable. Faction-specific production inputs (metal/machine parts, consecrated reagents, nutrients) require equivalent economic effort.
+
+**Release gates AA0–AA3:** AA0 six distinct PSX silhouettes and component/recipe data; AA1 trusted target/faction selection and owner-authorized wilderness placement with defensive-cap accounting; AA2 host-authoritative rotation, projectiles, damage, ammunition and utility outages; AA3 reproducible fast-vs-light, heavy-vs-heavy and two-tower medium-survivability tests under latency, line-of-sight, rain/fog and multi-faction conditions. No functional tower claim before all three implemented behavior slices are tested.
+
 ## Implementation and release gates
 
 | Gate | Deliverable | Verification |

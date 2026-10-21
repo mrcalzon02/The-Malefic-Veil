@@ -35,6 +35,7 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<BuildEvent> buildResults=new ConcurrentLinkedQueue<>();
     private final AtomicLong shotIds=new AtomicLong();
     private volatile Self self;
+    private volatile String accountKey;
     private volatile boolean connected=true;
     private volatile long roundTripMs=-1;
     private final AtomicLong pingIds=new AtomicLong();
@@ -52,6 +53,8 @@ public final class NetLink implements AutoCloseable {
             throw new IOException("Unsupported or invalid LAN protocol");
         try{id=Integer.parseInt(parts[1]);seed=Long.parseLong(parts[2]);}
         catch(NumberFormatException e){throw new IOException("Malformed host greeting",e);}
+        writer.println("AUTH|"+PlayerIdentity.forServer(host,port));
+        if(writer.checkError())throw new IOException("Authentication greeting not sent");
         Thread t=new Thread(()->{
             String line;
             try{
@@ -98,6 +101,10 @@ public final class NetLink implements AutoCloseable {
                             case "RIDE_RESULT" -> {
                                 if(s.length==2)rideResults.add(s[1]);
                             }
+                            case "AUTH_OK" -> {
+                                if(s.length==2)accountKey=s[1];
+                            }
+                            case "AUTH_DENIED" -> {connected=false;}
                             case "PONG" -> {
                                 if(s.length==2){
                                     long nonce=Long.parseLong(s[1]);
@@ -133,6 +140,7 @@ public final class NetLink implements AutoCloseable {
         t.setDaemon(true);t.start();
     }
     public Self self(){return self;}
+    public String accountKey(){return accountKey;}
     public int[] spawnScores(){return spawnScores.clone();}
     public boolean connected(){return connected;}
     public long roundTripMs(){return roundTripMs;}

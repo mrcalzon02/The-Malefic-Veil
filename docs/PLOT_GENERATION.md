@@ -19,6 +19,12 @@ Placement preferences do not yet confer immunity, area healing, scripted traps, 
 
 A final accessibility pass connects isolated walkable interiors using minimal doorway cuts without breaking the sealed outer border. The current minimap colors categories (hazard red, resource green, safe blue, open ochre; roads gray) and player visibility tests use actual road classification rather than fixed modulo-12 streets.
 
+## Continental composition and player construction
+
+The 132×132 active city is now one component of a larger 224×224 macro-parcel island generator. The continent is an independently seedable topology blueprint, not streamed gameplay yet; it places seven cities with varied footprints, road connections and categorized lots. See [CONTINENT_WORLD_GENERATION.md](CONTINENT_WORLD_GENERATION.md).
+
+The city active in the current match treats generated roads and developed lots as immutable world structures. Only actual `OPEN / empty-lot` ground is eligible for player structures after host checks for footprint, props, navigation and costs. Player-owned structures are a separate layer. World-structure overlap rejects with `WORLD_STRUCTURE`; former tests that placed turrets on paved streets are replaced with vacant-site tests.
+
 ## Acceptance gates
 
 1. **Foundation (implemented/tested locally):** deterministic seed; road graph fully connected; all parcel cells assigned exactly once; at least four 2x2 standard plots per tested seed, one of each category; closed outer border; connected playable floor; prior world spawn, pickup and NPC collision invariants. Run `javac --release 17 -d out src/main/java/veil/*.java`, then `java -cp out veil.CityLayoutTest` and `java -cp out veil.WorldSelfTest`.

@@ -160,7 +160,8 @@ public final class IndustrialWorkstation {
             snap.acceptedRequests().size())
             throw new IllegalArgumentException("Impossible industrial inventory");
         if(snap.job()!=null){
-            var job=snap.job(),process=recipe(job.processId());
+            Job job=snap.job();
+            CraftingEraRegistry.Process process=recipe(job.processId());
             if(process==null||job.requestId()==null||
                !snap.acceptedRequests().contains(job.requestId())||
                job.elapsedMs()<0||job.elapsedMs()>process.seconds()*1000L||

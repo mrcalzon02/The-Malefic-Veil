@@ -30,6 +30,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private int gun=0,spawn=0,frags=0,previousMouse=-1;
     private boolean mapVisible=false,continentVisible=false,help=true,dead=false;
     private boolean respawnPending=false;
+    private long respawnRequestAt=0;
     private long ticks=0;
     private final String[] names={"WARDEN","MEDIC","SHADE","OCCULTIST"};
     private String notice="THE VEIL HAS THINNED";
@@ -114,6 +115,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         attackFlash=Math.max(0,attackFlash-step);
         if(noticeTicks>0)noticeTicks--;
         if(net!=null) {
+            if(respawnPending&&(!net.connected()||
+                System.nanoTime()-respawnRequestAt>5_000_000_000L)){
+                respawnPending=false;
+                toast(net.connected()?"RESPAWN TIMED OUT — RETRY":"DISCONNECTED — RECONNECT REQUIRED");
+            }
             NetLink.Self s=net.self();
             if(s!=null){
                 if(s.dead()&&!dead){respawnPending=false;toast("YOU HAVE FALLEN — SELECT A RESPAWN POINT");}
@@ -329,7 +335,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(net.respawnRemainingMs()>0){toast("RESPAWN COUNTDOWN ACTIVE");return;}
             if(net.spawnScores()[index]>=1000){toast("SPAWN POINT BLOCKED");return;}
             if(respawnPending)return;
-            respawnPending=true;net.respawn(index);toast("RESPAWN REQUESTED");return;
+            if(!net.connected()){toast("DISCONNECTED — RECONNECT REQUIRED");return;}
+            respawnPending=true;respawnRequestAt=System.nanoTime();
+            net.respawn(index);toast("RESPAWN REQUESTED");return;
         }
         spawn=index;px=world.spawns[index][0];py=world.spawns[index][1];
         health=100;sanity=75;dead=false;pistolClip=12;shellClip=6;
@@ -503,7 +511,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             long wait=net==null?0:net.respawnRemainingMs();
             g.setFont(new Font(Font.MONOSPACED,Font.BOLD,14));
             g.setColor(wait>0?new Color(240,191,103):new Color(127,224,161));
-            g.drawString(wait>0?"RESPAWN IN "+String.format("%.1f",wait/1000.0)+"s":"RESPAWN READY",
+            g.drawString(respawnPending?"DEPLOYING — AWAITING SERVER":wait>0?"RESPAWN IN "+String.format("%.1f",wait/1000.0)+"s":"RESPAWN READY",
                 left+20,top+64);
             int[] risks=net==null?new int[]{0,0,0}:net.spawnScores();
             String[] labels={"NORTH","CENTER","SOUTH"};

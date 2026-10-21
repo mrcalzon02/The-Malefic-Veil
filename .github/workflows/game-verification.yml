@@ -68,6 +68,9 @@ jobs:
       - name: QoL gate for confirmed hits and obstacle-aware construction
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.QualityGateTest
+      - name: Preserve and quarantine old city structures without data loss
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.LegacyCitySaveMigrationTest
       - name: Spawn safety scoring and nonoffensive respawn protection
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.SpawnSafetyTest

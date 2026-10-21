@@ -28,6 +28,8 @@ public final class CargoHaulage {
     private long clock;
     private int nextDrop=1;
     public static final long REFILL_MS=180_000L;
+    public static final long DROP_LIFETIME_MS=1_800_000L;
+    public static final int DROP_CAP=128;
     public static final int CARGO_DAMAGE_THRESHOLD=80;
     public CargoHaulage(World world,Vehicles vehicles){
         this.world=Objects.requireNonNull(world);
@@ -121,6 +123,10 @@ public final class CargoHaulage {
     public synchronized void advance(long ms){
         if(ms<0||ms>1000)throw new IllegalArgumentException("Bad cargo world tick");
         clock+=ms;
+        // Wreckage cannot be an unbounded denial-of-service vector on public
+        // hosts. Recoverable loads remain for 30 in-game minutes; expiry is
+        // based on persisted world time, with deterministic oldest-first order.
+        drops.removeIf(drop->clock-drop.createdAt()>=DROP_LIFETIME_MS);
         for(Yard yard:yards)if(yard.stock==0&&clock>=yard.refillAt)
             yard.stock=1;
         for(Vehicles.State vehicle:vehicles.states()){
@@ -128,8 +134,8 @@ public final class CargoHaulage {
             if(load==null||load.resourceType()==null||vehicle.hp()>CARGO_DAMAGE_THRESHOLD)continue;
             String resource=vehicles.ejectCargo(vehicle.id());
             if(resource!=null){
+                if(drops.size()>=DROP_CAP)drops.remove(0);
                 drops.add(new Drop(nextDrop++,vehicle.x(),vehicle.y(),resource,clock));
-                if(drops.size()>128)throw new IllegalStateException("Cargo drop budget exceeded");
             }
         }
     }
@@ -146,7 +152,7 @@ public final class CargoHaulage {
     /** Load must be applied only after corresponding validated car restoration. */
     public synchronized void restore(Snapshot snap){
         if(snap==null||snap.clock<0||snap.nextDrop<1||snap.yards.size()!=yards.size()||
-            snap.trucks.size()!=vehicles.states().size()||snap.drops.size()>128)
+            snap.trucks.size()!=vehicles.states().size()||snap.drops.size()>DROP_CAP)
             throw new IllegalArgumentException("Corrupt cargo snapshot");
         Set<Integer> ids=new HashSet<>();
         int highest=0;

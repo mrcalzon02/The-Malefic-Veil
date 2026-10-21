@@ -27,6 +27,11 @@ public final class UrbanAssetTest {
             GlbMesh parsed=GlbMesh.read(pack.model(id),pack::texture);
             check(parsed.triangleCount()>0,id+" has no triangles");
         }
+        for(String id:java.util.List.of("truck-green","wall-a-flat-window","road-asphalt-damaged")){
+            GlbMesh textured=GlbMesh.asset(id);
+            long colors=textured.triangles().stream().map(GlbMesh.Triangle::rgb).distinct().count();
+            check(colors>10,"Source UV texture palette flattened for "+id+": "+colors+" colors");
+        }
         // The ZIP must load as a bundled classpath resource in the runnable JAR as well.
         check(pack.model("road-asphalt-straight.glb").length>1000,"source archive truncated");
         check(!world.canWalk(5.2,1.5),"actual barricade should be solid to players");

@@ -123,17 +123,23 @@ public final class ContinentVista {
                 if(!outside(x,z)||cityDistance(x,z)<7)continue;
                 long n=World.mix(seed^((long)x*2147483647L)^((long)z*281474976710L));
                 Sample at=sample(x+3,z+3);
-                boolean forest=at.biome()==ContinentLayout.Biome.FOREST;
-                boolean shrubs=at.biome()==ContinentLayout.Biome.MARSH||
-                    at.biome()==ContinentLayout.Biome.PLAINS;
-                if(!forest&&!shrubs&&at.biome()!=ContinentLayout.Biome.HILLS)continue;
-                if(forest&&(n&3)==0||shrubs&&(n&7)==0||
-                    at.biome()==ContinentLayout.Biome.HILLS&&(n&15)==0){
-                    String id=(n&15)==1?"tree-shrub":(n&3)==0?"tree-pine-small":
-                        (n&3)==1?"tree-small":(n&3)==2?"tree-pine-large":"tree-large";
+                boolean grow=switch(at.biome()){
+                    case FOREST -> (n&3)!=0;                // dense woodland
+                    case PLAINS -> Math.floorMod(n,3)==0;  // isolated copses
+                    case MARSH -> (n&1)==0;                 // low wet brush
+                    case HILLS -> (n&7)<=1;                 // sporadic trees
+                    case BEACH -> (n&31)==0;                // coastal shrubs
+                    default -> false;                       // no trees in open water
+                };
+                if(grow&&!at.road()){
+                    String id=at.biome()==ContinentLayout.Biome.MARSH||
+                        at.biome()==ContinentLayout.Biome.BEACH?"tree-shrub":
+                        (n&3)==0?"tree-pine-small":
+                        (n&3)==1?"tree-small":(n&3)==2?"tree-pine-large":"tree-park-large";
                     double px=x+2.5,pz=z+2.5;
                     props.add(new World.UrbanProp(id,px,pz,0,
-                        (n&8)==0?1.1:1.35,0,sample(px,pz).elevation()));
+                        id.equals("tree-shrub")?1.05:(n&8)==0?1.5:1.8,
+                        0,sample(px,pz).elevation()));
                 }
             }
         return List.copyOf(props);

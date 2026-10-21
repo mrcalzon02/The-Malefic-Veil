@@ -505,11 +505,17 @@ public final class LanServer implements AutoCloseable {
         if(dataDirectory!=null)saveNow();
     }
     public static void main(String[] args)throws Exception{
-        int port=args.length>0?Integer.parseInt(args[0]):7777;
-        long seed=args.length>1?Long.parseLong(args[1]):20261020L;
-        Path root=args.length>2?Path.of(args[2]):Path.of("server-data");
         boolean hardcore=Boolean.getBoolean("veil.hardcore");
-        for(String input:args)if("--hardcore".equals(input))hardcore=true;
+        List<String> positional=new ArrayList<>();
+        for(String arg:args){
+            if("--hardcore".equals(arg))hardcore=true;
+            else if(arg.startsWith("--"))throw new IllegalArgumentException("Unknown host option "+arg);
+            else positional.add(arg);
+        }
+        int port=positional.size()>0?Integer.parseInt(positional.get(0)):7777;
+        long seed=positional.size()>1?Long.parseLong(positional.get(1)):20261020L;
+        Path root=positional.size()>2?Path.of(positional.get(2)):Path.of("server-data");
+        if(positional.size()>3)throw new IllegalArgumentException("Expected port seed save-path [--hardcore]");
         LanServer host=new LanServer(port,seed,root,hardcore);
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             try{host.close();}catch(IOException e){System.err.println("Shutdown save failed: "+e);}

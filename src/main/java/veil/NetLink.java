@@ -27,6 +27,8 @@ public final class NetLink implements AutoCloseable {
     public record Car(int id,double x,double y,double heading,double speed,double fuel,int hp,int driverId){}
     public record CargoYard(int id,int x,int y,String type,int stock){}
     public record CargoDrop(int id,double x,double y,String type){}
+    public record WildNode(int id,int x,int y,String type,int remaining,int capacity){}
+    public record WildPosition(double x,double y,double angle) {}
 
     private final Socket socket;
     private final PrintWriter writer;
@@ -36,6 +38,12 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentHashMap<Integer,Car> cars=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,NpcRank> npcRanks=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String,Integer> survivalInventory=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,WildNode> wildNodes=new ConcurrentHashMap<>();
+    public final ConcurrentLinkedQueue<String> wildResults=new ConcurrentLinkedQueue<>();
+    private volatile boolean wildActive;
+    private volatile WildPosition wildPosition;
+    public boolean wildActive(){return wildActive;}
+    public WildPosition wildPosition(){return wildPosition;}
     private volatile Rpg rpg;
     private volatile boolean hardcore;
     private volatile String faction="NONE",crew="NONE",crewRole="NONE";
@@ -101,6 +109,36 @@ public final class NetLink implements AutoCloseable {
                             }
                             case "LEFT" -> {if(s.length==2)others.remove(Integer.parseInt(s[1]));}
                             case "PICKUP" -> {if(s.length==2)pickedUp.add(Integer.parseInt(s[1]));}
+                            case "WILD_ENTERED" -> {
+                                if(s.length==4){
+                                    wildPosition=new WildPosition(Double.parseDouble(s[1]),
+                                        Double.parseDouble(s[2]),Double.parseDouble(s[3]));
+                                    wildActive=true;wildNodes.clear();wildResults.add("ENTERED");
+                                }
+                            }
+                            case "WILD_EXITED" -> {
+                                wildActive=false;wildPosition=null;wildNodes.clear();
+                                wildResults.add("EXITED");
+                            }
+                            case "WILD_POSITION" -> {
+                                if(s.length==4&&wildActive)
+                                    wildPosition=new WildPosition(Double.parseDouble(s[1]),
+                                        Double.parseDouble(s[2]),Double.parseDouble(s[3]));
+                            }
+                            case "WILD_NODE" -> {
+                                if(s.length==7&&wildActive){
+                                    WildNode node=new WildNode(Integer.parseInt(s[1]),
+                                        Integer.parseInt(s[2]),Integer.parseInt(s[3]),s[4],
+                                        Integer.parseInt(s[5]),Integer.parseInt(s[6]));
+                                    wildNodes.put(node.id(),node);
+                                }
+                            }
+                            case "WILD_HARVEST_RESULT" -> {
+                                if(s.length==3)wildResults.add("HARVEST "+s[1]+" "+s[2]);
+                            }
+                            case "WILD_DENIED" -> {
+                                if(s.length==2)wildResults.add("DENIED "+s[1]);
+                            }
                             case "DEVICE" -> {
                                 if(s.length==6)structures.add(new DeviceEvent(Integer.parseInt(s[1]),
                                     Integer.parseInt(s[2]),Double.parseDouble(s[3]),Double.parseDouble(s[4]),Integer.parseInt(s[5])));
@@ -275,6 +313,12 @@ public final class NetLink implements AutoCloseable {
     public void respawn(int index){send("RESPAWN|"+index);}
     public void sceneReady(){send("SCENE_READY");}
     public void craftHand(String recipeId){send("CRAFT_HAND|"+recipeId);}
+    public void enterWilderness(){send("WILD_ENTER");}
+    public void exitWilderness(){send("WILD_EXIT");}
+    public void moveWilderness(double x,double y,double angle,int flags){
+        send("WILD_MOVE|"+x+"|"+y+"|"+angle+"|"+flags);
+    }
+    public void harvestWilderness(int nodeId){send("WILD_HARVEST|"+nodeId);}
     public void selectFaction(CharacterRoster.Faction chosen){send("FACTION_JOIN|"+chosen.name());}
     public void createCrew(String name){send("CREW_CREATE|"+name);}
     public void inviteCrew(int targetPlayerId){send("CREW_INVITE|"+targetPlayerId);}

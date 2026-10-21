@@ -2,6 +2,7 @@ package veil.gpu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +34,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
     private int selection;
     private final Map<String,Texture> textures=new LinkedHashMap<>();
     private final Map<String,NinePatch> patches=new HashMap<>();
+    private BitmapFont packFont;
 
     public PsxHorrorMenu(boolean startImmediately){
         if(startImmediately)screen=Screen.RUNNING;
@@ -45,6 +47,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
         // central directory correctly. A short-lived 135 KB temp copy avoids
         // extracting assets into game data folders or redistributing content.
         Path archive=null;
+        byte[] fontDefinition=null,fontAtlas=null;
         try(InputStream file=PsxHorrorMenu.class.getResourceAsStream(ZIP)){
             if(file==null)throw new IOException("Missing CC BY 4.0 PSX Horror UI Free resource "+ZIP);
             archive=Files.createTempFile("malefic-psx-ui-", ".zip");
@@ -54,6 +57,14 @@ public final class PsxHorrorMenu implements AutoCloseable {
                 while(entries.hasMoreElements()){
                     ZipEntry entry=entries.nextElement();
                     String name=entry.getName();
+                    if(name.endsWith("/font/psx_horror_ui_font.fnt")){
+                        try(InputStream raw=zip.getInputStream(entry)){fontDefinition=raw.readAllBytes();}
+                        continue;
+                    }
+                    if(name.endsWith("/font/psx_horror_ui_font.png")){
+                        try(InputStream raw=zip.getInputStream(entry)){fontAtlas=raw.readAllBytes();}
+                        continue;
+                    }
                     if(!name.startsWith(base)||!name.endsWith(".png"))continue;
                     String key=name.substring(base.length(),name.length()-4);
                     if(!required.contains(key))continue;
@@ -73,6 +84,29 @@ public final class PsxHorrorMenu implements AutoCloseable {
         }finally{
             if(archive!=null)try{Files.deleteIfExists(archive);}catch(IOException ignored){}
         }
+        if(fontDefinition==null||fontAtlas==null)
+            throw new IllegalStateException("The PSX UI source bitmap font is missing");
+        Path glyphDir=null;
+        try{
+            glyphDir=Files.createTempDirectory("malefic-psx-glyphs-");
+            Path descriptor=glyphDir.resolve("psx_horror_ui_font.fnt");
+            Path atlas=glyphDir.resolve("psx_horror_ui_font.png");
+            Files.write(descriptor,fontDefinition);Files.write(atlas,fontAtlas);
+            packFont=new BitmapFont(new FileHandle(descriptor.toFile()),
+                new FileHandle(atlas.toFile()),false);
+            packFont.getRegion().getTexture().setFilter(
+                Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
+        }catch(IOException problem){
+            close();throw new IllegalStateException("Cannot load PSX bitmap typeface",problem);
+        }finally{
+            if(glyphDir!=null){
+                try{
+                    Files.deleteIfExists(glyphDir.resolve("psx_horror_ui_font.fnt"));
+                    Files.deleteIfExists(glyphDir.resolve("psx_horror_ui_font.png"));
+                    Files.deleteIfExists(glyphDir);
+                }catch(IOException ignored){}
+            }
+        }
         if(!textures.keySet().containsAll(required))
             throw new IllegalStateException("Incomplete PSX UI kit: "+required+" vs "+textures.keySet());
         patch("window",5,18,5,5);
@@ -87,6 +121,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
         patches.put(id,new NinePatch(new TextureRegion(textures.get(id)),
             left,right,top,bottom));
     }
+    public BitmapFont font(){return packFont;}
     public Screen screen(){return screen;}
     public void showMain(){screen=Screen.MAIN;selection=0;}
     public boolean running(){return screen==Screen.RUNNING;}
@@ -184,5 +219,6 @@ public final class PsxHorrorMenu implements AutoCloseable {
     @Override public void close(){
         for(Texture texture:textures.values())texture.dispose();
         textures.clear();patches.clear();
+        if(packFont!=null){packFont.dispose();packFont=null;}
     }
 }

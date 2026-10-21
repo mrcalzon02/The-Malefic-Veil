@@ -150,6 +150,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 if(built.index()==world.devices.size()){
                     World.Device device=new World.Device(built.x(),built.y(),built.kind());
                     device.hp=built.hp();world.devices.add(device);
+                }else if(built.index()>=0&&built.index()<world.devices.size()){
+                    World.Device device=world.devices.get(built.index());
+                    if(device.kind==built.kind()&&device.x==built.x()&&device.y==built.y())
+                        device.hp=built.hp();
                 }
             }
             NetLink.NpcEvent npc;

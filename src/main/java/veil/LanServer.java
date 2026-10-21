@@ -57,6 +57,10 @@ public final class LanServer implements AutoCloseable {
                     ArenaSystems.Player self=match.player(p.id);
                     if(self!=null){
                         p.send(selfPacket(self));
+                        if(match.time()%500==0){
+                            p.send(progressionPacket(self));
+                            p.send(inventoryPacket(self));
+                        }
                         if(self.dead){
                             List<ArenaSystems.SpawnRisk> risks=match.spawnRisks(p.id);
                             p.send("SPAWNS|"+risks.get(0).score()+"|"+risks.get(1).score()+"|"+risks.get(2).score());
@@ -125,6 +129,24 @@ public final class LanServer implements AutoCloseable {
     private static String cargoDropPacket(CargoHaulage.Drop drop){
         return "CARGO_DROP|"+drop.id()+"|"+drop.x()+"|"+drop.y()+"|"+drop.resource();
     }
+    private String progressionPacket(ArenaSystems.Player p){
+        var v=p.progression.view();
+        return "RPG|"+v.level()+"|"+v.experience()+"|"+v.nextLevelExperience()+
+            "|"+v.aliveMs()+"|"+v.bonus()+
+            "|"+v.skills().get(CharacterProgression.Skill.MARKSMANSHIP)+
+            "|"+v.skills().get(CharacterProgression.Skill.ATHLETICS)+
+            "|"+v.skills().get(CharacterProgression.Skill.ENGINEERING)+
+            "|"+v.skills().get(CharacterProgression.Skill.SCAVENGING)+
+            "|"+v.skills().get(CharacterProgression.Skill.SURVIVAL)+
+            "|"+Math.max(0,p.protectedUntil-match.time())+
+            "|"+p.survival.status().hunger()+"|"+p.survival.status().hydration();
+    }
+    private static String inventoryPacket(ArenaSystems.Player p){
+        StringJoiner content=new StringJoiner(",");
+        for(var item:p.survival.inventory().entrySet())
+            content.add(item.getKey().name()+"="+item.getValue());
+        return "INVENTORY|"+(content.length()==0?"-":content.toString());
+    }
     private static String selfPacket(ArenaSystems.Player p){
         return "SELF|"+p.hp+"|"+p.sanity+"|"+p.cash+"|"+p.scrap+"|"+p.medkits+
             "|"+p.pistolReserve+"|"+p.shellReserve+"|"+p.pistolClip+"|"+p.shellClip+
@@ -134,6 +156,11 @@ public final class LanServer implements AutoCloseable {
         for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
         for(int i=0;i<match.world.pickups.size();i++)
             if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
+        for(int i=0;i<match.world.npcs.size();i++){
+            World.Npc n=match.world.npcs.get(i);
+            peer.send("NPC_RANK|"+i+"|"+CharacterProgression.monsterLevel(
+                match.world.seed,n)+"|"+n.kind);
+        }
         for(Vehicles.State car:match.vehicles.states()){
             peer.send(carPacket(car));peer.send(cargoTruckPacket(car));
         }
@@ -156,6 +183,7 @@ public final class LanServer implements AutoCloseable {
             peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|3");
             connections.put(peer.id,peer);
             sendWorld(peer);peer.send(selfPacket(actor));
+            peer.send(progressionPacket(actor));peer.send(inventoryPacket(actor));
             broadcast(peerPacket(actor),peer.id);
             String line;
             while((line=in.readLine())!=null){
@@ -190,6 +218,11 @@ public final class LanServer implements AutoCloseable {
                                 // The second session stays an unowned guest; never duplicate an account.
                                 peer.send("AUTH_GUEST|DUPLICATE");
                             }else{peer.send("AUTH_DENIED|DUPLICATE");return;}
+                        }
+                        case "SCENE_READY" -> {
+                            if(s.length!=1)continue;
+                            boolean admitted=match.sceneReady(peer.id);
+                            peer.send("SCENE_READY_RESULT|"+(admitted?"OK":"IGNORED"));
                         }
                         case "STATE" -> {
                             if(s.length!=5)continue;

@@ -437,6 +437,12 @@ public final class ArenaSystems {
         }
         return List.copyOf(ranks);
     }
+    /** Remaining mandatory death lockout, measured only by the host simulation clock. */
+    public synchronized long respawnRemainingMs(int id){
+        Player p=player(id);
+        if(p==null||!p.dead)return 0;
+        return Math.max(0,1200-(clock-p.respawnAt));
+    }
     public synchronized boolean respawn(int id,int spawn){
         Player p=player(id);
         if(p==null||!p.dead||spawn<0||spawn>=world.spawns.length||clock-p.respawnAt<1200)return false;

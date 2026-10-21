@@ -28,6 +28,18 @@ public final class NetLink implements AutoCloseable {
     public record CargoYard(int id,int x,int y,String type,int stock){}
     public record CargoDrop(int id,double x,double y,String type){}
     public record ResourceNode(int id,double x,double y,String type,int remaining,int capacity){}
+
+    // Core session state from the original LAN transport. Preserve it when
+    // extending ordinary world-resource replication; NEVER replace it.
+    private final Socket socket;
+    private final PrintWriter writer;
+    public final long seed;
+    public final int id;
+    public final ConcurrentHashMap<Integer,Remote> others=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,Car> cars=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,NpcRank> npcRanks=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<String,Integer> survivalInventory=new ConcurrentHashMap<>();
+
     public final ConcurrentHashMap<Integer,ResourceNode> resourceNodes=new ConcurrentHashMap<>();
     public final ConcurrentLinkedQueue<String> harvestResults=new ConcurrentLinkedQueue<>();
     private volatile Rpg rpg;

@@ -224,7 +224,7 @@ public final class CityLayout {
         }
         if(w<5||h<5)return;
         int cx=x0+w/2,cy=y0+h/2;
-        switch(variant%6){
+        switch(variant){
             case 0 -> { // Rooms with open doorways, not unbroken internal dividers.
                 if(category!=Category.OPEN)for(int x=x0+2;x<x1-2;x++)if(Math.abs(x-cx)>1)wall(x,cy);
             }
@@ -244,6 +244,17 @@ public final class CityLayout {
             case 5 -> {
                 if(category==Category.RESOURCE||category==Category.HAZARD)
                     for(int y=y0+3;y<y1-3;y+=3)wall(cx-1,y);
+            }
+            case 6 -> { // Offset sheltered recess and counter-cover.
+                for(int x=x0+2;x<cx-1;x++)wall(x,y0+3);
+                for(int y=cy+2;y<y1-2;y++)wall(x1-4,y);
+            }
+            case 7 -> { // Two offset lanes and central crossfire cover.
+                if(w>=10&&h>=10){
+                    for(int y=y0+2;y<cy-1;y++)wall(x0+4,y);
+                    for(int y=cy+2;y<y1-2;y++)wall(x1-5,y);
+                    wall(cx,cy);
+                }
             }
         }
         // Open sites remain generally open; hazard areas carry more hard cover.

@@ -115,6 +115,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
 
     private final long seed;
     private final boolean smoke;
+    private final boolean gallery;
+    private int galleryIndex;
+    private int visibleTerrainPatches;
+    private int visibleTerrainTriangles;
     private World world;
     private UrbanScene scene;
     private ShaderProgram shader;
@@ -138,9 +142,32 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private WorldDayNight.Conditions environment=WorldDayNight.atHour(12);
     private boolean shownFailure;
 
-    public GpuKenneyPreview(long seed,boolean smoke){
-        this.seed=seed;this.smoke=smoke;
+    private double cameraHeight=1.55, cameraPitch=-.04;
+    public GpuKenneyPreview(long seed,boolean smoke){this(seed,smoke,false);}
+    public GpuKenneyPreview(long seed,boolean smoke,boolean gallery){
+        this.seed=seed;this.smoke=smoke;this.gallery=gallery;
     }
+    /** Deterministic photography poses: no fabricated scenery or composited backgrounds. */
+    private record GalleryView(String name,double x,double z,double elevation,
+        double heading,double pitch,float distance,double hour){}
+    private static final GalleryView[] GALLERY={
+        new GalleryView("01-city-street",6.5,6.5,1.55,0.25,-.06f,45,12),
+        new GalleryView("02-central-streets",61.5,61.5,3.1,0.67,-.15f,78,16.5),
+        new GalleryView("03-urban-rooftops",66,66,43,0.45,-.81f,100,18.2),
+        new GalleryView("04-city-overhead",66,66,115,0.30,-1.55f,100,12),
+        new GalleryView("05-city-woodland-edge",125,66,38,0.12,-.64f,100,10),
+        new GalleryView("06-urban-night",61.5,61.5,40,0.42,-.80f,90,0)
+    };
+    private void setGalleryView(GalleryView view){
+        x=view.x();y=view.z();cameraHeight=view.elevation();heading=view.heading();
+        cameraPitch=view.pitch();visualDistance=view.distance();
+        worldTimeMs=(long)(WorldDayNight.DAY_MS*view.hour()/24.0);
+        menu.showRunning();
+        System.out.println("GALLERY_POSE seed="+seed+" view="+view.name()+" xyz="+
+            x+","+cameraHeight+","+y+" angle="+heading+" pitch="+cameraPitch+
+            " hour="+view.hour());
+    }
+
 
     @Override public void create() {
         if(Gdx.gl30==null)throw new IllegalStateException("GPU client requires OpenGL 3.3 instancing");
@@ -226,10 +253,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         font=new BitmapFont();
         font.getData().setScale(0.62f);
         skybox=new GpuSkybox();
-        menu=new PsxHorrorMenu(smoke);
+        menu=new PsxHorrorMenu(smoke||gallery);
         font.dispose();
         font=menu.font();
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
+        if(gallery)setGalleryView(GALLERY[0]);
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
             scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
     }
@@ -285,16 +313,20 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
         skybox.render(environment);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-        camera.position.set((float)x,1.55f,(float)y);
-        camera.direction.set((float)Math.cos(heading),-.04f,(float)Math.sin(heading)).nor();
+        camera.position.set((float)x,(float)cameraHeight,(float)y);
+        double plane=Math.cos(cameraPitch);
+        camera.direction.set((float)(Math.cos(heading)*plane),
+            (float)Math.sin(cameraPitch),(float)(Math.sin(heading)*plane)).nor();
         camera.up.set(Vector3.Y);
         camera.far=visualDistance+12;
         camera.update();
         int visibleTerrain=terrain.render(camera,environment,visualDistance+10);
+        visibleTerrainPatches=visibleTerrain;
+        visibleTerrainTriangles=terrain.visibleTriangles();
 
         visible.clear();
         visibleInstances=0;drawCalls=0;
-        for(UrbanScene.ModelInstance placement:scene.nearby(x,y,visualDistance)){
+        for(UrbanScene.ModelInstance placement:scene.nearby(x,y,Math.min(100.0,visualDistance))){
             double dx=placement.x()-x,dy=placement.y()-y;
             double distance2=dx*dx+dy*dy;
             if(distance2>9 && dx*Math.cos(heading)+dy*Math.sin(heading)<-2)continue;
@@ -400,9 +432,29 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
 
     @Override public void render() {
-        if(!smoke)control();
+        if(!smoke&&!gallery)control();
         framebuffer.begin();
         drawWorld();
+        if(gallery){
+            frames++;
+            if(frames%5==0){
+                GalleryView view=GALLERY[galleryIndex];
+                saveFrame("gallery-seed-"+seed+"-"+view.name()+".png");
+                String log="GALLERY_CAPTURE seed="+seed+" view="+view.name()+
+                    " camera="+x+","+cameraHeight+","+y+
+                    " heading="+heading+" pitch="+cameraPitch+
+                    " time="+WorldDayNight.clock(environment.hour())+
+                    " tiles="+visibleInstances+" drawCalls="+drawCalls+
+                    " terrainPatches="+visibleTerrainPatches+
+                    " terrainTriangles="+visibleTerrainTriangles;
+                System.out.println(log);
+                galleryIndex++;
+                if(galleryIndex==GALLERY.length){
+                    framebuffer.end();Gdx.app.exit();return;
+                }
+                setGalleryView(GALLERY[galleryIndex]);
+            }
+        }
         if(smoke){
             frames++;
             if(frames==12){

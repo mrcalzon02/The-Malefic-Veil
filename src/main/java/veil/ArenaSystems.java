@@ -93,7 +93,6 @@ public final class ArenaSystems {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
         public final SurvivalCrafting survival=new SurvivalCrafting();
-        public boolean inWilderness; // Authoritative dimension flag, not a client capability.
         public boolean ready;
         public long joinedAt,loadingDeadline,reloadAt=-100000,craftReadyAt;
         public double distanceTowardAthletics;
@@ -226,11 +225,17 @@ public final class ArenaSystems {
     /** Crouch/sprint are intents; host caps actual movement to reject teleport attempts. */
     public synchronized boolean move(int id,double x,double y,double angle,int flags){
         Player p=player(id);
-        if(p==null||p.dead||p.inWilderness||vehicles.carDrivenBy(id)>=0||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
+        if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
         long elapsed=Math.max(0,clock-p.moveAt);
         double max=((flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85)*p.progression.movementMultiplier();
         double permitted=.33+Math.min(elapsed,500)*max/1000;
-        if(Math.hypot(x-p.x,y-p.y)>permitted)return false;
+        double distance=Math.hypot(x-p.x,y-p.y);
+        if(distance>permitted)return false;
+        int steps=Math.max(1,(int)Math.ceil(distance/.18));
+        for(int step=1;step<=steps;step++){
+            double q=step/(double)steps;
+            if(!free(p.x+(x-p.x)*q,p.y+(y-p.y)*q))return false;
+        }
         double travelled=Math.hypot(x-p.x,y-p.y);
         p.x=x;p.y=y;p.angle=angle;p.flags=flags&3;p.moveAt=clock;
         // Athletics XP needs actual distance walked, not idle movement packet spam.
@@ -273,7 +278,7 @@ public final class ArenaSystems {
     }
     public synchronized boolean pickup(int id,int itemIndex){
         Player p=player(id);
-        if(p==null||p.dead||p.inWilderness||itemIndex<0||itemIndex>=world.pickups.size())return false;
+        if(p==null||p.dead||itemIndex<0||itemIndex>=world.pickups.size())return false;
         World.Pickup item=world.pickups.get(itemIndex);
         if(item.taken||Math.hypot(item.x-p.x,item.y-p.y)>.63)return false;
         item.taken=true;
@@ -294,7 +299,7 @@ public final class ArenaSystems {
     /** The city pickup packet must match the object under the actual host-owned aim. */
     public synchronized boolean interactPickup(int playerId,int index){
         Player p=players.get(playerId);
-        if(p==null||p.dead||p.inWilderness||index<0||index>=world.pickups.size())return false;
+        if(p==null||p.dead||index<0||index>=world.pickups.size())return false;
         List<InteractionFocus.Candidate> candidates=new ArrayList<>();
         for(int i=0;i<world.pickups.size();i++){
             World.Pickup item=world.pickups.get(i);
@@ -360,7 +365,7 @@ public final class ArenaSystems {
         Long last=lastShotSequence.get(id);
         if(last!=null&&sequence<=last)return new ShotReport(sequence,false,"DUPLICATE",0,0,remaining);
         lastShotSequence.put(id,sequence);
-        if(shooter.dead||shooter.inWilderness)return new ShotReport(sequence,false,"DIMENSION",0,0,remaining);
+        if(shooter.dead)return new ShotReport(sequence,false,"DEAD",0,0,remaining);
         if(weapon<0||weapon>1)return new ShotReport(sequence,false,"WEAPON",0,0,remaining);
         if(clock-shooter.shotAt<(weapon==0?210:850))
             return new ShotReport(sequence,false,"COOLDOWN",0,0,remaining);
@@ -399,7 +404,7 @@ public final class ArenaSystems {
     }
     public synchronized boolean fire(int id,int weapon){
         Player p=player(id);
-        if(p==null||p.dead||p.inWilderness||vehicles.carDrivenBy(id)>=0||weapon<0||weapon>1)return false;
+        if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||weapon<0||weapon>1)return false;
         shieldedShot.remove(id);
         long cooldown=weapon==0?210:850;
         if(clock-p.shotAt<cooldown)return false;
@@ -411,7 +416,7 @@ public final class ArenaSystems {
         Object target=null;
         double nearest=max;
         for(Player other:players.values()){
-            if(other.id==p.id||other.dead||other.inWilderness)continue;
+            if(other.id==p.id||other.dead)continue;
             double range=Math.hypot(other.x-p.x,other.y-p.y);
             if(range>=nearest||range<.01||!clear(p.x,p.y,other.x,other.y))continue;
             double diff=Math.atan2(Math.sin(Math.atan2(other.y-p.y,other.x-p.x)-p.angle),
@@ -482,7 +487,7 @@ public final class ArenaSystems {
         // The current 132x132 arena is an ENTIRE fixed city sector. Player
         // structures are wilderness-only; reject here before any resource debit
         // or spawn/route heuristics. Continental wilderness activation is gated.
-        if(world.city.worldStructureAt(x,y,.55))
+        if(world.detailedCity(x,y)&&world.city.worldStructureAt(x,y,.55))
             return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
         if(world.devices.size()>=100)return new BuildReview(false,"BUILD_LIMIT",price,supplies,x,y);
         if(p.cash<price||p.scrap<supplies)return new BuildReview(false,"RESOURCES",price,supplies,x,y);
@@ -671,7 +676,7 @@ public final class ArenaSystems {
         // Server-owned Lost spawning: fixed ruin ownership, local caps,
         // lifetime/death tracking and no appearance within player sight.
         List<double[]> observers=new ArrayList<>();
-        for(Player p:players.values())if(!p.dead&&!p.inWilderness)observers.add(new double[]{p.x,p.y});
+        for(Player p:players.values())if(!p.dead)observers.add(new double[]{p.x,p.y});
         world.lostSites.advance(clock,observers);
         for(Player p:players.values()){
             int carId=vehicles.carDrivenBy(p.id);
@@ -695,19 +700,19 @@ public final class ArenaSystems {
             if(d.hp<=0)continue;
             d.cooldown=Math.max(0,d.cooldown-ms/1000.0);
             if(d.kind==HEALTH_STATION&&clock%500<ms)for(Player p:players.values()){
-                if(!p.dead&&!p.inWilderness&&Math.hypot(p.x-d.x,p.y-d.y)<2){
+                if(!p.dead&&Math.hypot(p.x-d.x,p.y-d.y)<2){
                     p.hp=Math.min(100,p.hp+3);p.sanity=Math.min(100,p.sanity+2);
                 }
             }
             if(d.kind==REVIVE_STATION)for(Player p:players.values()){
-                if(p.dead&&!p.inWilderness&&clock-p.respawnAt>=3000&&Math.hypot(p.x-d.x,p.y-d.y)<2){
+                if(p.dead&&clock-p.respawnAt>=3000&&Math.hypot(p.x-d.x,p.y-d.y)<2){
                     p.hp=35;p.sanity=40;p.dead=false;p.moveAt=clock;refreshVisibility(p);
                 }
             }
             if(d.kind==TURRET&&d.cooldown<=0){
                 Player opponent=null;double nearest=6;
                 for(Player p:players.values()){
-                    if(p.dead||p.inWilderness||p.id==d.ownerId||p.accountKey.equals(d.ownerKey)||
+                    if(p.dead||p.id==d.ownerId||p.accountKey.equals(d.ownerKey)||
                         Math.hypot(p.x-d.x,p.y-d.y)>=nearest||!clear(d.x,d.y,p.x,p.y))continue;
                     // Prototype turret is a public hazard; future build owner/team should be recorded.
                     opponent=p;nearest=Math.hypot(p.x-d.x,p.y-d.y);
@@ -727,7 +732,7 @@ public final class ArenaSystems {
             Player nearest=null;double best=10;
             for(Player p:players.values()){
                 double dist=Math.hypot(p.x-n.x,p.y-n.y);
-                if(!p.dead&&!p.inWilderness&&p.visibility>.10&&dist<best&&clear(n.x,n.y,p.x,p.y)){
+                if(!p.dead&&p.visibility>.10&&dist<best&&clear(n.x,n.y,p.x,p.y)){
                     nearest=p;best=dist;
                 }
             }

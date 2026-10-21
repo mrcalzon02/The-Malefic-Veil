@@ -32,7 +32,9 @@ public final class UrbanPerformanceTest {
         double sceneLoadMs=millis(System.nanoTime()-loadStart);
         UrbanScene second=new UrbanScene(duplicate);
         check(scene.batches().instanceCount()==world.urbanProps.size(),"Instance buffer incomplete");
-        check(scene.batches().uniqueGeometryCount()==scene.models().size(),"Shared geometry count mismatch");
+        long uniquePlacedModels=world.urbanProps.stream().map(World.UrbanProp::model).distinct().count();
+        check(scene.batches().uniqueGeometryCount()==uniquePlacedModels,
+            "Instancing batches must match distinct PLACED meshes, not preloaded utility meshes");
         for(String id:scene.models().keySet())
             check(scene.models().get(id)==second.models().get(id),
                 "Parsed GLB not reused across scenes: "+id);

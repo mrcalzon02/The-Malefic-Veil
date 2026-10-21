@@ -22,7 +22,8 @@ public final class GameplayAssetTest {
         int visible=new PropRenderer().draw(g,pack.meshes(),models,1.5,1.5,0,
             depth,320,200);
         g.dispose();
-        check(visible==3,"all near models submitted to renderer");
+        check(visible==(alpha==0?2:3),
+            "visible instances must exclude a fully transparent character");
         return img;
     }
     public static void main(String[] ignored)throws Exception{

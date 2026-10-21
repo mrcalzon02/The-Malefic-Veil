@@ -1,33 +1,48 @@
 package veil;
 
-/** Headless localhost test; validates transport, shared seed, presence and first PvP hit. */
+import java.util.function.BooleanSupplier;
+
+/** Actual loopback sockets, real protocol reader/writer and host match state. */
 public final class LanSmokeTest {
-    private static void require(boolean ok,String s) {if(!ok)throw new AssertionError(s);}
+    private static void check(boolean b,String why){if(!b)throw new AssertionError(why);}
+    private static void until(BooleanSupplier condition,String why)throws Exception{
+        long deadline=System.nanoTime()+5_000_000_000L;
+        while(System.nanoTime()<deadline){
+            if(condition.getAsBoolean())return;
+            Thread.sleep(20);
+        }
+        throw new AssertionError("Timed out: "+why);
+    }
     public static void main(String[] unused)throws Exception{
-        try(LanServer server=new LanServer(0,887766L);
-            NetLink shooter=new NetLink("127.0.0.1",server.port());
-            NetLink victim=new NetLink("127.0.0.1",server.port())){
-            require(shooter.seed==887766L&&victim.seed==887766L,"map seed mismatch");
-            require(shooter.id!=victim.id,"duplicate player ID");
-            shooter.state(1.5,1.5,0);
-            victim.state(4.5,1.5,0);
-            long until=System.nanoTime()+3_000_000_000L;
-            while(System.nanoTime()<until){
-                NetLink.Remote a=shooter.others.get(victim.id);
-                NetLink.Remote b=victim.others.get(shooter.id);
-                if(a!=null&&b!=null&&Math.abs(a.x-4.5)<.01)break;
-                Thread.sleep(20);
-            }
-            require(shooter.others.containsKey(victim.id),"presence not broadcast");
-            require(Math.abs(shooter.others.get(victim.id).x-4.5)<.01,"state update not broadcast");
-            shooter.fire(0);
-            int dealt=0;until=System.nanoTime()+3_000_000_000L;
-            while(System.nanoTime()<until&&dealt==0){
-                dealt=victim.drainDamage();
-                if(dealt==0)Thread.sleep(20);
-            }
-            require(dealt==25,"expected authoritative handgun hit, actual="+dealt);
-            System.out.println("PASS LAN localhost: seed, peer state, line-of-sight hit");
+        try(LanServer host=new LanServer(0,887766L);
+            NetLink attacker=new NetLink("127.0.0.1",host.port());
+            NetLink victim=new NetLink("127.0.0.1",host.port())){
+            check(attacker.seed==887766L&&victim.seed==887766L,"host seed");
+            check(attacker.id!=victim.id,"unique IDs");
+            attacker.choose(2);
+            attacker.state(1.5,1.5,0,1);
+            until(()->victim.others.containsKey(attacker.id),"peer joined");
+            until(()->victim.others.get(attacker.id).opacity<.5,"host crouch visibility replicated");
+            attacker.ability();
+            until(()->victim.others.get(attacker.id).opacity<.1,"Shade PvP transparency");
+            ArenaSystems.Player prey=host.match.player(victim.id);
+            // Test a combat scenario with a positioned authoritative actor, not fabricated damage messages.
+            prey.x=4.5;prey.y=1.5;
+            attacker.fire(0);
+            until(()->prey.hp<=75,"authoritative combat damage");
+            until(()->victim.self()!=null&&victim.self().health()<=75,"health replicated to client");
+            check(host.match.player(attacker.id).pistolClip==11,"ammo decremented by host");
+            ArenaSystems.Player shooter=host.match.player(attacker.id);
+            shooter.cash=400;shooter.scrap=20;shooter.angle=Math.PI/2;
+            attacker.build(1);
+            until(()->host.match.world.devices.size()==1,"healing station built over socket");
+            until(()->!attacker.structures.isEmpty()||!victim.structures.isEmpty(),"structure streamed to a client");
+            attacker.useMedkit();
+            until(()->attacker.self()!=null&&attacker.self().medkits()==1,"item usage acknowledged");
+            attacker.respawn(0); // living actor must NOT be allowed to respawn
+            Thread.sleep(150);
+            check(!shooter.dead&&shooter.hp>0,"invalid respawn cannot reset living actor");
+            System.out.println("PASS LanSmokeTest: real host, transparency, PvP hit, replication, inventory, assembly");
         }
     }
 }

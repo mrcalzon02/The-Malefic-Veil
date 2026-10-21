@@ -28,6 +28,7 @@ public final class World {
         public final double x,y;
         public final int kind; // turret, heal, revive
         public int hp=100;
+        public int ownerId=-1;
         public double cooldown;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }

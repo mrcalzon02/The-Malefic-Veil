@@ -183,7 +183,9 @@ public final class ArenaSystems {
         for(World.Device d:world.devices)
             if(d.hp>0&&Math.hypot(d.x-x,d.y-y)<1.2)return false;
         p.cash-=cash;p.scrap-=scrap;
-        world.devices.add(new World.Device(x,y,kind));return true;
+        World.Device device=new World.Device(x,y,kind);
+        device.ownerId=p.id;
+        world.devices.add(device);return true;
     }
     public synchronized boolean respawn(int id,int spawn){
         Player p=player(id);
@@ -220,7 +222,7 @@ public final class ArenaSystems {
             if(d.kind==TURRET&&d.cooldown<=0){
                 Player opponent=null;double nearest=6;
                 for(Player p:players.values()){
-                    if(p.dead||Math.hypot(p.x-d.x,p.y-d.y)>=nearest||!clear(d.x,d.y,p.x,p.y))continue;
+                    if(p.dead||p.id==d.ownerId||Math.hypot(p.x-d.x,p.y-d.y)>=nearest||!clear(d.x,d.y,p.x,p.y))continue;
                     // Prototype turret is a public hazard; future build owner/team should be recorded.
                     opponent=p;nearest=Math.hypot(p.x-d.x,p.y-d.y);
                 }

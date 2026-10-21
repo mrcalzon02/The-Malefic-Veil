@@ -33,10 +33,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         this.window=window;this.net=net;this.archetype=archetype;
         world=new World(seed);
         px=world.spawns[0][0];py=world.spawns[0][1];
-        world.npcs.add(new World.Npc(7.5,1.5));
-        world.npcs.add(new World.Npc(1.5,8.5));
-        world.pickups.add(new World.Pickup(4.5,1.5,3));
-        world.pickups.add(new World.Pickup(1.5,4.5,4));
+        if(net==null){
+            world.npcs.add(new World.Npc(7.5,1.5));
+            world.npcs.add(new World.Npc(1.5,8.5));
+            world.pickups.add(new World.Pickup(4.5,1.5,3));
+            world.pickups.add(new World.Pickup(1.5,4.5,4));
+        }else net.choose(archetype);
         setBackground(Color.BLACK);setPreferredSize(new Dimension(1024,640));
         setFocusable(true);
         addKeyListener(this);addMouseListener(this);addMouseMotionListener(this);
@@ -102,9 +104,35 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         attackFlash=Math.max(0,attackFlash-step);
         if(noticeTicks>0)noticeTicks--;
         if(net!=null) {
-            int damage=net.drainDamage();
-            if(damage>0&&!dead)hurt(damage,6);
-            if(ticks%3==0)net.state(px,py,angle);
+            NetLink.Self s=net.self();
+            if(s!=null){
+                if(s.dead()&&!dead)toast("YOU HAVE FALLEN — CHOOSE RESPAWN 1/2/3");
+                if(dead&&!s.dead()){px=s.x();py=s.y();toast("RETURNED FROM THE VEIL");}
+                dead=s.dead();
+                health=s.health();sanity=s.sanity();cash=s.cash();scrap=s.supplies();
+                medkits=s.medkits();pistolReserve=s.pistolReserve();shellReserve=s.shellReserve();
+                pistolClip=s.pistolClip();shellClip=s.shellClip();frags=s.frags();
+                if(Math.hypot(px-s.x(),py-s.y())>1.0){px=s.x();py=s.y();}
+            }
+            Integer pickupIndex;
+            while((pickupIndex=net.pickedUp.poll())!=null){
+                if(pickupIndex>=0&&pickupIndex<world.pickups.size())world.pickups.get(pickupIndex).taken=true;
+            }
+            NetLink.DeviceEvent built;
+            while((built=net.structures.poll())!=null){
+                if(built.index()==world.devices.size()){
+                    World.Device device=new World.Device(built.x(),built.y(),built.kind());
+                    device.hp=built.hp();world.devices.add(device);
+                }
+            }
+            NetLink.NpcEvent npc;
+            while((npc=net.npcs.poll())!=null){
+                if(npc.index()>=0&&npc.index()<world.npcs.size()){
+                    World.Npc n=world.npcs.get(npc.index());
+                    n.x=npc.x();n.y=npc.y();n.hp=npc.hp();
+                }
+            }
+            if(ticks%3==0)net.state(px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
         }
         if(!dead){
             if(down(KeyEvent.VK_LEFT))angle-=step*2.1;
@@ -118,6 +146,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 slide((Math.cos(angle)*forward-Math.sin(angle)*sideways)*speed*step,
                     (Math.sin(angle)*forward+Math.cos(angle)*sideways)*speed*step);
             }
+            if(net!=null){
+                if(ticks%8==0)for(int i=0;i<world.pickups.size();i++){
+                    World.Pickup item=world.pickups.get(i);
+                    if(!item.taken&&Math.hypot(px-item.x,py-item.y)<.57)net.pickup(i);
+                }
+            }else{
             for(World.Pickup item:world.pickups){
                 if(item.taken||Math.hypot(px-item.x,py-item.y)>.55)continue;
                 item.taken=true;
@@ -148,6 +182,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 }
             }
             if(sanity<25&&ticks%33==0)health=Math.max(1,health-1);
+            }
         }
         repaint();
     }
@@ -182,7 +217,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         if(gun==0)pistolClip--;else shellClip--;
         fireCooldown=gun==0?.22:.88;
         attackFlash=.18;
-        if(net!=null)net.fire(gun);
+        if(net!=null){net.fire(gun);return;}
         World.Npc hit=null;double best=gun==0?13:4.5;
         double spread=gun==0?.065:.20;
         for(World.Npc n:world.npcs){
@@ -199,6 +234,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void reload(){
         if(dead)return;
+        if(net!=null){net.reload(gun);return;}
         if(gun==0){
             int used=Math.min(12-pistolClip,pistolReserve);
             pistolReserve-=used;pistolClip+=used;
@@ -209,6 +245,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void deploy(int kind){
         if(dead)return;
+        if(net!=null){net.build(kind);toast("CONSTRUCTION REQUEST SENT");return;}
         int price=kind==0?(archetype==0?60:100):kind==1?75:120;
         int cost=kind==0?3:kind==1?1:2;
         if(cash<price||scrap<cost){toast("NEED $"+price+" AND "+cost+" SUPPLIES");return;}
@@ -222,6 +259,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private void ability(){
         if(dead||abilityCooldown>0)return;
         abilityCooldown=18;
+        if(net!=null){net.ability();return;}
         switch(archetype){
             case 0 -> {cash+=35;scrap++;toast("SALVAGE PROTOCOL +$35 +1 SUPPLY");}
             case 1 -> {health=Math.min(100,health+55);sanity=Math.min(100,sanity+20);toast("FIELD RECOVERY");}
@@ -235,6 +273,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void respawnAt(int index){
         if(!dead)return;
+        if(net!=null){net.respawn(index);toast("RESPAWN REQUESTED");return;}
         spawn=index;px=world.spawns[index][0];py=world.spawns[index][1];
         health=100;sanity=75;dead=false;pistolClip=12;shellClip=6;
         pistolReserve=Math.max(24,pistolReserve);shellReserve=Math.max(12,shellReserve);
@@ -269,7 +308,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         for(World.Pickup p:world.pickups)if(!p.taken) sprite(g,p.x,p.y,p.kind==0?0x7ad36c:p.kind==1?0x87a3fd:p.kind==4?0xF2D36B:0xE6AD54,16,false);
         for(World.Device d:world.devices)if(d.hp>0)sprite(g,d.x,d.y,d.kind==0?0x57CCD6:d.kind==1?0x62E696:0xB88FF5,56,true);
         for(World.Npc n:world.npcs)if(n.hp>0)sprite(g,n.x,n.y,0xD85569,74,true);
-        if(net!=null)for(NetLink.Remote p:net.others.values())if(p.hp>0)sprite(g,p.x,p.y,0x77D2F5,80,true);
+        if(net!=null)for(NetLink.Remote p:net.others.values())
+            if(p.hp>0)sprite(g,p.x,p.y,0x77D2F5,80,true,p.opacity);
         g.setColor(new Color(187,176,149));
         g.fillRect(RW/2-5,RH/2,11,1);g.fillRect(RW/2,RH/2-5,1,11);
         int bob=(int)(Math.sin(ticks*.15)*(down(KeyEvent.VK_W)?2:0));
@@ -288,6 +328,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
     }
     private void sprite(Graphics2D g,double x,double y,int rgb,int scale,boolean humanoid){
+        sprite(g,x,y,rgb,scale,humanoid,1.0);
+    }
+    private void sprite(Graphics2D g,double x,double y,int rgb,int scale,boolean humanoid,double opacity){
+        opacity=ArenaSystems.opacity(opacity);
+        if(opacity==0)return;
         double dx=x-px,dy=y-py,d=Math.hypot(dx,dy);
         if(d<.15||d>27)return;
         double theta=Math.atan2(Math.sin(Math.atan2(dy,dx)-angle),Math.cos(Math.atan2(dy,dx)-angle));
@@ -299,6 +344,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         int width=humanoid?Math.max(3,size/3):Math.max(2,size/2);
         int top=humanoid?RH/2-size/2:RH/2+Math.max(1,32/(int)Math.max(1,d))-size/2;
         int left=col-width/2;
+        Composite old=g.getComposite();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float)opacity));
         g.setColor(new Color(rgb));
         g.fillRect(left,top,width,size);
         if(humanoid){
@@ -306,6 +353,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.fillRect(left+width/5,top+size/4,Math.max(1,width/5),Math.max(2,size/9));
             g.fillRect(left+width*3/5,top+size/4,Math.max(1,width/5),Math.max(2,size/9));
         }
+        g.setComposite(old);
     }
     @Override protected void paintComponent(Graphics raw){
         super.paintComponent(raw);
@@ -321,7 +369,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.drawString("HP "+health+"   SAN "+sanity+"   CASH $"+cash+"   SUP "+scrap+"   MED "+medkits+"   KILLS "+frags,105,h-44);
         g.drawString((gun==0?"HANDGUN ":"SHOTGUN ")+(gun==0?pistolClip:shellClip)+"/"+(gun==0?pistolReserve:shellReserve)+
             "     "+names[archetype]+"  F "+(abilityCooldown==0?"READY":String.format("%.0fs",abilityCooldown)),105,h-17);
-        drawGem(g,visibility(),31,h-35);
+        double gem=net!=null&&net.self()!=null?net.self().visibility():visibility();
+        drawGem(g,gem,31,h-35);
         g.setFont(new Font(Font.MONOSPACED,Font.BOLD,15));
         g.setColor(new Color(236,234,228));
         g.drawString("THE MALEFIC VEIL",15,22);
@@ -333,7 +382,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
-            g.drawString("T turret  H heal station  V revive station  E medkit",23,127);
+            g.drawString("T turret  H heal  V revive  B barricade  E medkit",23,127);
             g.drawString("M city map  TAB help    Esc toggle help",23,147);}
         if(dead){
             g.setColor(new Color(0,0,0,210));g.fillRect(0,h/3,w,h/3);
@@ -378,7 +427,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_T -> deploy(0);
             case KeyEvent.VK_H -> deploy(1);
             case KeyEvent.VK_V -> deploy(2);
-            case KeyEvent.VK_E -> {if(medkits>0&&health<100){medkits--;health=Math.min(100,health+55);toast("MEDKIT USED");}}
+            case KeyEvent.VK_E -> {
+                if(net!=null)net.useMedkit();
+                else if(medkits>0&&health<100){medkits--;health=Math.min(100,health+55);toast("MEDKIT USED");}
+            }
+            case KeyEvent.VK_B -> deploy(3);
             case KeyEvent.VK_SPACE -> shoot();
             case KeyEvent.VK_M -> mapVisible=!mapVisible;
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;

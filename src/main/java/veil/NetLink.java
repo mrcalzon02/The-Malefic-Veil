@@ -14,7 +14,7 @@ public final class NetLink implements AutoCloseable {
     }
     public record Self(int health,int sanity,int cash,int supplies,int medkits,
         int pistolReserve,int shellReserve,int pistolClip,int shellClip,boolean dead,int frags,
-        double x,double y,double angle){}
+        double x,double y,double angle,double visibility){}
     public record DeviceEvent(int index,int kind,double x,double y,int hp){}
     public record NpcEvent(int index,double x,double y,int hp){}
     private final Socket socket;
@@ -62,11 +62,12 @@ public final class NetLink implements AutoCloseable {
                                     Double.parseDouble(s[2]),Double.parseDouble(s[3]),Integer.parseInt(s[4])));
                             }
                             case "SELF" -> {
-                                if(s.length==15)self=new Self(Integer.parseInt(s[1]),Integer.parseInt(s[2]),
+                                if(s.length==16)self=new Self(Integer.parseInt(s[1]),Integer.parseInt(s[2]),
                                     Integer.parseInt(s[3]),Integer.parseInt(s[4]),Integer.parseInt(s[5]),
                                     Integer.parseInt(s[6]),Integer.parseInt(s[7]),Integer.parseInt(s[8]),
                                     Integer.parseInt(s[9]),Integer.parseInt(s[10])!=0,Integer.parseInt(s[11]),
-                                    Double.parseDouble(s[12]),Double.parseDouble(s[13]),Double.parseDouble(s[14]));
+                                    Double.parseDouble(s[12]),Double.parseDouble(s[13]),Double.parseDouble(s[14]),
+                                    ArenaSystems.opacity(Double.parseDouble(s[15])));
                             }
                             default -> {}
                         }

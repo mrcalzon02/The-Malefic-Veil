@@ -71,6 +71,19 @@ public final class ContinentLayoutTest {
             System.out.println("PASS continent seed "+seed+" land="+land+" routes="+map.routes().size()+" lots="+map.lots().size());
         }
         check(footprints.size()==seeds.length,"city sites do not vary with seed");
-        System.out.println("CONTINENT GENERATION GATE PASS");
+        // Broad procedural stress must catch seed-specific route and city-site fragmentation.
+        for(int i=0;i<100;i++){
+            long candidate=(i*0x9e3779b97f4a7c15L)^0x4c8fbd23;
+            ContinentLayout stress=ContinentLayout.generate(candidate);
+            check(stress.cities().size()==7&&stress.routes().size()>=6,
+                "continent topology collapsed for seed "+candidate);
+            checkConnected(stress);
+            int usable=0;
+            for(int x=0;x<ContinentLayout.SIZE;x++)
+                for(int y=0;y<ContinentLayout.SIZE;y++)
+                    if(stress.buildableGround(x,y))usable++;
+            check(usable>1000,"no buildable wilderness for seed "+candidate);
+        }
+        System.out.println("CONTINENT GENERATION GATE PASS (6 exact invariants + 100 stress seeds)");
     }
 }

@@ -59,6 +59,28 @@ public final class QualityGateTest {
             }
             check(count>0,"seed produces usable build locations "+seed);
         }
+        // Simultaneous host requests must not charge both clients for one footprint.
+        ArenaSystems contested=new ArenaSystems(42);
+        contested.world.npcs.clear();
+        ArenaSystems.Player alpha=contested.join(51),beta=contested.join(52);
+        for(ArenaSystems.Player player:List.of(alpha,beta)){
+            player.x=14.5;player.y=1.5;player.angle=0;
+            player.cash=300;player.scrap=10;
+        }
+        java.util.concurrent.CountDownLatch start=new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.ExecutorService pool=java.util.concurrent.Executors.newFixedThreadPool(2);
+        try {
+            var first=pool.submit(()->{start.await();return contested.buildOutcome(51,ArenaSystems.TURRET);});
+            var second=pool.submit(()->{start.await();return contested.buildOutcome(52,ArenaSystems.TURRET);});
+            start.countDown();
+            ArenaSystems.BuildOutcome one=first.get(),two=second.get();
+            check(one.built()!=two.built(),"exactly one simultaneous build accepted");
+            check(contested.world.devices.size()==1,"one footprint, one actual device");
+            check(alpha.cash+beta.cash==500,"only one 100-credit debit");
+            check(alpha.scrap+beta.scrap==17,"only one 3-supply debit");
+            check((one.built()?two:one).review().reason().equals("DEVICE_CLEARANCE"),
+                "loser receives a real concurrency rejection reason");
+        } finally {pool.shutdownNow();}
         try(LanServer server=new LanServer(0,999L);
             NetLink a=new NetLink("127.0.0.1",server.port());
             NetLink b=new NetLink("127.0.0.1",server.port())){

@@ -16,6 +16,7 @@ public final class LostSpawnSites {
         int id,x,y,capacity;
         String building,appearance;
         long nextAt;
+        int lastLiving;
         final List<World.Npc> owned=new ArrayList<>();
     }
     private final World world;
@@ -54,9 +55,25 @@ public final class LostSpawnSites {
                 }
             }
         }
-        if(sites.isEmpty())throw new IllegalStateException("No inhabited Lost ruins");
-        // Spawn cautiously at startup, then independently replenish per ruin.
+        if(sites.size()<23)throw new IllegalStateException("Too few source ruins to bound Lost creatures");
+        // Fixed 45 stable NPC indices preserve the existing on-disk v1 NPC
+        // catalog and socket indices. Dormant slots (hp=0) are not live threats.
+        for(Site site:sites){
+            if(world.npcs.size()>=MAX_GLOBAL)break;
+            reserve(site);
+        }
+        for(Site site:sites){
+            if(world.npcs.size()>=MAX_GLOBAL)break;
+            if(site.capacity>1)reserve(site);
+        }
+        if(world.npcs.size()!=MAX_GLOBAL)
+            throw new IllegalStateException("Could not reserve 45 stable Lost NPC slots");
         advance(0,List.of());
+    }
+    private void reserve(Site site){
+        World.Npc npc=new World.Npc(site.x+.5,site.y+.5);
+        npc.hp=0;npc.sourceSite=site.id;npc.kind=site.appearance;
+        site.owned.add(npc);world.npcs.add(npc);
     }
     private static long keyed(long seed,CityLayout.Plot plot,int salt){
         return World.mix(seed ^ ((long)plot.x()<<32) ^ plot.y() ^ salt*7919L);
@@ -81,7 +98,9 @@ public final class LostSpawnSites {
         for(Site site:sites){
             int living=0;
             for(World.Npc npc:site.owned)if(npc.hp>0)living++;
-            if(living<site.owned.size()&&site.nextAt==0)site.nextAt=now+COOLDOWN_MS;
+            // Detect death transitions even after an older spawn cooldown expired.
+            if(living<site.lastLiving)site.nextAt=Math.max(site.nextAt,now+COOLDOWN_MS);
+            site.lastLiving=living;
             if(living>=site.capacity||now<site.nextAt||aliveTotal()>=MAX_GLOBAL||
                 aliveNear(site.x+.5,site.y+.5,AREA_RADIUS)>=MAX_NEAR)continue;
             boolean watched=false;
@@ -90,17 +109,11 @@ public final class LostSpawnSites {
             if(watched)continue; // no pop-in near living players
             World.Npc npc=null;
             for(World.Npc previous:site.owned)if(previous.hp<=0){npc=previous;break;}
-            if(npc==null){
-                npc=new World.Npc(site.x+.5,site.y+.5);
-                npc.sourceSite=site.id;
-                npc.kind=site.appearance;
-                site.owned.add(npc);
-                world.npcs.add(npc);
-            }else{
-                npc.hp=80;
-                npc.x=site.x+.5;npc.y=site.y+.5;
-                npc.cooldown=0;
-            }
+            if(npc==null)continue;
+            npc.hp=80;
+            npc.x=site.x+.5;npc.y=site.y+.5;
+            npc.cooldown=0;
+            site.lastLiving++;
             site.nextAt=now+COOLDOWN_MS;generation++;
         }
     }

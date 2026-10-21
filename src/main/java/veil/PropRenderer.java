@@ -21,7 +21,8 @@ public final class PropRenderer {
     private record Face(int[] px,int[] py,int color,double depth,double opacity){}
     public int draw(Graphics2D g,UrbanScene scene,double playerX,double playerY,
                     double heading,double[] wallDepth,int width,int height){
-        return draw(g,scene.models(),scene.instances(),playerX,playerY,heading,wallDepth,width,height);
+        return draw(g,scene.models(),scene.nearby(playerX,playerY,drawDistance+7),
+            playerX,playerY,heading,wallDepth,width,height);
     }
     /** Shared projection for licensed environment geometry and authored gameplay meshes. */
     public int draw(Graphics2D g,Map<String,GlbMesh> models,

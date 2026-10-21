@@ -60,6 +60,10 @@ public final class SurvivalCrafting {
     public synchronized Status status(){
         return new Status(hunger,hydration,Map.copyOf(items));
     }
+    /** Server death rule: every physically carried survival item is gone. */
+    public synchronized void clearOnDeath(){items.clear();}
+    /** Solo client and persistence may inspect, but cannot mint consumed items. */
+    public synchronized Map<Item,Integer> inventory(){return Map.copyOf(items);}
     public synchronized int count(Item kind){return items.getOrDefault(kind,0);}
     private static int weight(Item item){return switch(item){
         case METAL_STOCK,MACHINE_PARTS,WORKBENCH,SHELTER_KIT -> 25;

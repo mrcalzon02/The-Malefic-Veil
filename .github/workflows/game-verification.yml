@@ -71,6 +71,9 @@ jobs:
       - name: Real Swing renderer in headless mode
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.RenderSmokeTest
+      - name: Profile complete Swing PSX game frames, not just prop meshes
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.FullFramePerformanceTest
       - name: Assemble runnable jar
         shell: bash
         run: |
@@ -93,4 +96,5 @@ jobs:
             build/test-visuals/gameplay-models.png
             build/test-visuals/kenney-assembled-city.png
             build/test-visuals/urban-performance.csv
+            build/test-visuals/full-frame-performance.csv
           if-no-files-found: warn

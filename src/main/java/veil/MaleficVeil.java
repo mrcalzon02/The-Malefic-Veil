@@ -162,6 +162,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             NetLink.BuildEvent construction;
             while((construction=net.buildResults.poll())!=null){
                 toast(construction.reason().equals("OK")?"CONSTRUCTION ACCEPTED":
+                    construction.reason().equals("CITY_PROTECTED")?
+                    "CITY IS IMMUTABLE — BUILD IN WILDERNESS":
                     "BUILD REJECTED: "+construction.reason());
             }
             Integer pickupIndex;
@@ -315,7 +317,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void deploy(int kind){
         if(dead)return;
+        // This build UI still runs inside the fixed city-only sector.
+        // Tell the player why construction is unavailable without pretending
+        // a vacant urban plot is wilderness.
         if(net!=null){net.build(kind);return;}
+        if(world.city.worldStructureAt(px+Math.cos(angle)*1.1,
+                                       py+Math.sin(angle)*1.1,.55)){
+            toast("CITY IS IMMUTABLE — BUILD IN WILDERNESS");return;
+        }
         int price=kind==0?(archetype==0?60:100):kind==1?75:kind==2?120:45;
         int cost=kind==0?3:kind==1?1:kind==2?2:1;
         if(cash<price||scrap<cost){toast("NEED $"+price+" AND "+cost+" SUPPLIES");return;}
@@ -507,7 +516,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
-            g.drawString("T turret  H heal  V revive  B barricade  E medkit",23,127);
+            g.drawString("T/H/V/B wilderness build only  E medkit",23,127);
             g.drawString("Q enter/exit car  M city map  N continent  TAB / Esc help",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);

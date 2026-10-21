@@ -8,7 +8,7 @@ public final class CraftingEraRegistryTest {
         CraftingEraRegistry.validate();
         var buildings=CraftingEraRegistry.facilities();
         var recipes=CraftingEraRegistry.processes();
-        check(CraftingEraRegistry.SCHEMA_VERSION==1,"Registry persistence schema unspecified");
+        check(CraftingEraRegistry.SCHEMA_VERSION==2,"Registry expansion must be versioned");
         check(buildings.size()>=28&&recipes.size()>=18,
             "Incomplete industrial and faction registry");
         EnumSet<CraftingEraRegistry.Era> eras=EnumSet.noneOf(CraftingEraRegistry.Era.class);

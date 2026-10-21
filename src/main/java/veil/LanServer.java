@@ -240,7 +240,10 @@ public final class LanServer implements AutoCloseable {
                             int car=Integer.parseInt(s[1]),drop=Integer.parseInt(s[2]);
                             changed=match.recoverTruckLoad(peer.id,car,drop);
                             peer.send("CARGO_RESULT|RECOVER|"+(changed?"OK":"REJECTED"));
-                            if(changed)broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
+                            if(changed){
+                                broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
+                                broadcast("CARGO_DROP_TAKEN|"+drop,-1);
+                            }
                         }
                         case "RIDE" -> {
                             if(s.length!=2)continue;

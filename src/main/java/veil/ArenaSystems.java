@@ -9,6 +9,7 @@ import java.util.*;
 public final class ArenaSystems {
     public final World world;
     public final Vehicles vehicles;
+    public final RaidProtection raidProtection=new RaidProtection(30);
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
@@ -19,6 +20,7 @@ public final class ArenaSystems {
         public int hp=100,sanity=100,cash=150,scrap=4,medkits=2;
         public int pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
         public int classId,frags,flags;
+        public String accountKey;
         public long lastHurt=-100000,shotAt=-100000,shadeUntil,abilityAt=-100000,respawnAt=-100000,moveAt;
         public boolean dead;
         public long protectedUntil,lastSpawnAt=-100000;
@@ -27,18 +29,37 @@ public final class ArenaSystems {
         public double spawnX,spawnY;
         Player(int id,double x,double y,long now){
             this.id=id;this.x=x;this.y=y;moveAt=now;
+            accountKey="guest_"+id;
         }
     }
     public ArenaSystems(long seed){world=new World(seed);vehicles=new Vehicles(world);}
     public synchronized Player join(int id){
         if(players.containsKey(id))throw new IllegalArgumentException("duplicate peer");
         Player p=new Player(id,world.spawns[0][0],world.spawns[0][1],clock);
-        players.put(id,p);refreshVisibility(p);return p;
+        players.put(id,p);
+        raidProtection.login(p.accountKey,System.currentTimeMillis());
+        refreshVisibility(p);return p;
     }
     public synchronized void leave(int id){
         vehicles.disconnect(id);
-        players.remove(id);
+        Player departing=players.remove(id);
+        if(departing!=null)raidProtection.logout(departing.accountKey,System.currentTimeMillis());
         lastShotSequence.remove(id);
+    }
+    /** Only the host may assign a verified session identity, never raw client user IDs. */
+    public synchronized boolean assignAccount(int id,String key){
+        Player p=players.get(id);
+        if(p==null||key==null||!key.matches("acct_[a-f0-9]{64}"))return false;
+        for(Player other:players.values())
+            if(other.id!=id&&other.accountKey.equals(key))return false;
+        if(p.accountKey.equals(key))return true;
+        String prior=p.accountKey;
+        raidProtection.logout(prior,System.currentTimeMillis());
+        p.accountKey=key;
+        raidProtection.login(key,System.currentTimeMillis());
+        for(World.Device d:world.devices)if(d.ownerId==id&&prior.equals(d.ownerKey))
+            d.ownerKey=key;
+        return true;
     }
     public synchronized Collection<Player> roster(){return List.copyOf(players.values());}
     public synchronized Player player(int id){return players.get(id);}
@@ -172,6 +193,8 @@ public final class ArenaSystems {
         if(remaining==0)return new ShotReport(sequence,false,"NO_AMMO",0,0,remaining);
         Map<Integer,Integer> before=new HashMap<>();
         for(Player other:players.values())if(other.id!=id)before.put(other.id,other.hp);
+        int[] deviceHealth=new int[world.devices.size()];
+        for(int i=0;i<deviceHealth.length;i++)deviceHealth[i]=world.devices.get(i).hp;
         int[] npcHealth=new int[world.npcs.size()];
         for(int i=0;i<npcHealth.length;i++)npcHealth[i]=world.npcs.get(i).hp;
         if(!fire(id,weapon))return new ShotReport(sequence,false,"REJECTED",0,0,ammo(shooter,weapon));
@@ -183,6 +206,11 @@ public final class ArenaSystems {
         for(int i=0;i<npcHealth.length;i++){
             if(world.npcs.get(i).hp<npcHealth[i])
                 return new ShotReport(sequence,true,"NPC",i,npcHealth[i]-world.npcs.get(i).hp,ammo(shooter,weapon));
+        }
+        for(int i=0;i<deviceHealth.length;i++){
+            if(world.devices.get(i).hp<deviceHealth[i])
+                return new ShotReport(sequence,true,"DEVICE",i,
+                    deviceHealth[i]-world.devices.get(i).hp,ammo(shooter,weapon));
         }
         return new ShotReport(sequence,true,"MISS",0,0,ammo(shooter,weapon));
     }
@@ -214,10 +242,21 @@ public final class ArenaSystems {
                                     Math.cos(Math.atan2(n.y-p.y,n.x-p.x)-p.angle));
             if(Math.abs(diff)<=Math.atan2(.4,range)){nearest=range;target=n;}
         }
+        for(int i=0;i<world.devices.size();i++){
+            World.Device d=world.devices.get(i);
+            if(d.hp<=0||p.id==d.ownerId||p.accountKey.equals(d.ownerKey))continue;
+            double range=Math.hypot(d.x-p.x,d.y-p.y);
+            if(range>=nearest||range<.01||!world.lineClear(p.x,p.y,d.x,d.y))continue;
+            double diff=Math.atan2(Math.sin(Math.atan2(d.y-p.y,d.x-p.x)-p.angle),
+                Math.cos(Math.atan2(d.y-p.y,d.x-p.x)-p.angle));
+            if(Math.abs(diff)<=Math.atan2(.43,range)){nearest=range;target=d;}
+        }
         int amount=weapon==0?25:Math.max(18,70-(int)(nearest*8));
         if(target instanceof Player victim){
             boolean wasAlive=!victim.dead;damage(victim,amount,weapon==1?6:2);
             if(wasAlive&&victim.dead){p.frags++;p.cash+=25;}
+        } else if(target instanceof World.Device device){
+            damageDevice(id,world.devices.indexOf(device),amount,System.currentTimeMillis());
         } else if(target instanceof World.Npc npc){
             npc.hp-=amount;
             if(npc.hp<=0){p.frags++;p.cash+=25;}
@@ -286,10 +325,23 @@ public final class ArenaSystems {
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;
+        device.ownerKey=p.accountKey;
         world.devices.add(device);
         return new BuildOutcome(true,review,world.devices.size()-1);
     }
     public synchronized boolean build(int id,int kind){return buildOutcome(id,kind).built();}
+    /** All base PvP damage passes through this gate, including future explosives. */
+    public synchronized boolean damageDevice(int attackerId,int deviceIndex,int amount,long utcMillis){
+        Player attacker=players.get(attackerId);
+        if(attacker==null||attacker.dead||deviceIndex<0||deviceIndex>=world.devices.size()||
+           amount<=0||amount>250)return false;
+        World.Device device=world.devices.get(deviceIndex);
+        if(device.hp<=0||attacker.accountKey.equals(device.ownerKey))return false;
+        if(device.ownerKey!=null&&device.ownerKey.startsWith("acct_")&&
+           raidProtection.protectedOffline(device.ownerKey,utcMillis))return false;
+        device.hp=Math.max(0,device.hp-amount);
+        return true;
+    }
     /** Scores current threats for each selectable spawn without secretly denying chosen risk. */
     public record SpawnRisk(int index,int score,String label){}
     public synchronized List<SpawnRisk> spawnRisks(int id){
@@ -386,7 +438,8 @@ public final class ArenaSystems {
             if(d.kind==TURRET&&d.cooldown<=0){
                 Player opponent=null;double nearest=6;
                 for(Player p:players.values()){
-                    if(p.dead||p.id==d.ownerId||Math.hypot(p.x-d.x,p.y-d.y)>=nearest||!clear(d.x,d.y,p.x,p.y))continue;
+                    if(p.dead||p.id==d.ownerId||p.accountKey.equals(d.ownerKey)||
+                        Math.hypot(p.x-d.x,p.y-d.y)>=nearest||!clear(d.x,d.y,p.x,p.y))continue;
                     // Prototype turret is a public hazard; future build owner/team should be recorded.
                     opponent=p;nearest=Math.hypot(p.x-d.x,p.y-d.y);
                 }

@@ -485,6 +485,11 @@ public final class ArenaSystems {
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
         clock+=ms;
         vehicles.advance(ms);
+        // Server-owned Lost spawning: fixed ruin ownership, local caps,
+        // lifetime/death tracking and no appearance within player sight.
+        List<double[]> observers=new ArrayList<>();
+        for(Player p:players.values())if(!p.dead)observers.add(new double[]{p.x,p.y});
+        world.lostSites.advance(clock,observers);
         for(Player p:players.values()){
             int carId=vehicles.carDrivenBy(p.id);
             if(carId>=0){

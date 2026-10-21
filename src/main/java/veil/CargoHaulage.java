@@ -60,6 +60,18 @@ public final class CargoHaulage {
         // Both resource types must be obtainable; do not let seed bias erase one.
         yards.get(0).resource="METAL_STOCK";
         yards.get(1).resource="MACHINE_PARTS";
+        // Ground markers use *real* licensed pallet meshes and match actual
+        // server loading coordinates, not unrelated randomly scattered props.
+        for(Yard yard:yards){
+            String model=groundMesh(yard.resource);
+            boolean exists=false;
+            for(World.UrbanProp p:world.urbanProps)
+                if(p.model().equals(model)&&
+                   Math.abs(p.x()-yard.x-.5)<.001&&
+                   Math.abs(p.y()-yard.y-.5)<.001){exists=true;break;}
+            if(!exists)world.urbanProps.add(new World.UrbanProp(
+                model,yard.x+.5,yard.y+.5,0,1.0,0));
+        }
     }
     private static String groundMesh(String type){
         return "METAL_STOCK".equals(type)?"pallet":"pallet-small";

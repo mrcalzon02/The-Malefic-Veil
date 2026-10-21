@@ -280,6 +280,8 @@ public final class NetLink implements AutoCloseable {
     public void inviteCrew(int targetPlayerId){send("CREW_INVITE|"+targetPlayerId);}
     public void acceptCrew(){send("CREW_ACCEPT");}
     public void leaveCrew(){send("CREW_LEAVE");}
+    public void promoteCrew(int memberId){send("CREW_PROMOTE|"+memberId);}
+    public void kickCrew(int memberId){send("CREW_KICK|"+memberId);}
     public void transferCrew(int successorId){send("CREW_TRANSFER|"+successorId);}
     public void disbandCrew(){send("CREW_DISBAND");}
     public int drivenCar(){

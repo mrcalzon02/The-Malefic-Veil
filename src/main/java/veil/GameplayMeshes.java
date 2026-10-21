@@ -1,7 +1,6 @@
 package veil;
 
 import java.util.*;
-import java.awt.*;
 import java.awt.geom.*;
 
 /**

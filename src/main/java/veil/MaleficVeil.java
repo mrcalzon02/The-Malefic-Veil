@@ -140,8 +140,17 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private void slide(double dx,double dy){
         if(wildernessView){
             double nx=px+dx,ny=py+dy;
-            if(walkingWilderness(nx,py))px=nx;
-            if(walkingWilderness(px,ny))py=ny;
+            if(net!=null){
+                if(walkingWilderness(nx,py))px=nx;
+                if(walkingWilderness(px,ny))py=ny;
+            }else{
+                double x=walkingWilderness(nx,py)?nx:px;
+                double y=walkingWilderness(x,ny)?ny:py;
+                if(localWilderness.move(1,localHost.player(1),x,y,angle,
+                    (down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0))){
+                    px=x;py=y;
+                }
+            }
             return;
         }
         if(world.canWalk(px+dx,py))px+=dx;
@@ -287,7 +296,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     (Math.sin(angle)*forward+Math.cos(angle)*sideways)*speed*step);
             }
             }
-            if(net==null&&!wildernessView)simulateNpc(step);
+            if(net==null&&!wildernessView){
+            simulateNpc(step);
             for(World.Device d:world.devices) {
                 if(d.hp<=0)continue;
                 d.cooldown=Math.max(0,d.cooldown-step);
@@ -532,7 +542,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         var t=focusTarget();
         if(t==null){toast("NO OBJECT IN SIGHT");return;}
         if(wildernessView){
-            if(net!=null)net.harvestWilderness(t.id());
+            if(net!=null){net.moveWilderness(px,py,angle,0);net.harvestWilderness(t.id());}
             else{
                 var harvested=localWilderness.harvest(1,localHost.player(1),t.id());
                 toast(harvested.accepted()?"+1 "+harvested.item().name():harvested.reason());
@@ -541,7 +551,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
         switch(t.kind()){
             case PICKUP -> {
-                if(net!=null)net.pickup(t.id());
+                if(net!=null){net.state(px,py,angle,0);net.pickup(t.id());}
                 else{
                     World.Pickup item=world.pickups.get(t.id());
                     if(item.taken)return;

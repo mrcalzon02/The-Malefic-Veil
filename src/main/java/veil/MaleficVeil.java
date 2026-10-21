@@ -889,7 +889,16 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
         int row=y+49;
         if(net==null){
-            g.drawString("Solo inventory active",x+13,row);
+            if(inventoryVisible){
+                var items=localHost.player(1).survival.inventory();
+                if(items.isEmpty())g.drawString("EMPTY — GATHER WITH E",x+13,row);
+                for(var entry:items.entrySet()){
+                    if(row>=y+h-32)break;
+                    g.drawString(entry.getKey().name().replace('_',' ')+" x"+
+                        entry.getValue(),x+13,row);
+                    row+=21;
+                }
+            }else g.drawString("Solo character active",x+13,row);
         }else if(inventoryVisible){
             var items=new java.util.TreeMap<>(net.survivalInventory);
             if(items.isEmpty())g.drawString("EMPTY — LOST ON DEATH",x+13,row);

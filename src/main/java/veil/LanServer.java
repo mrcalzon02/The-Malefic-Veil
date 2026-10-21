@@ -340,6 +340,17 @@ public final class LanServer implements AutoCloseable {
                             changed=match.reload(peer.id,Integer.parseInt(s[1]));
                         }
                         case "ABILITY" -> changed=match.ability(peer.id);
+                        case "CRAFT_HAND" -> {
+                            if(s.length!=2||s[1].length()>48)continue;
+                            boolean crafted=match.craftHand(peer.id,s[1]);
+                            peer.send("CRAFT_RESULT|"+s[1]+"|"+(crafted?"OK":"DENIED"));
+                            changed=crafted;
+                            if(crafted){
+                                ArenaSystems.Player maker=match.player(peer.id);
+                                peer.send(inventoryPacket(maker));
+                                peer.send(progressionPacket(maker));
+                            }
+                        }
                         case "BUILD" -> {
                             if(s.length!=2)continue;
                             int kind=Integer.parseInt(s[1]);

@@ -16,3 +16,24 @@ This is a **reference-only** register; the game does not yet render any Drive GL
 Each selected asset must register: original Drive ID, original archive path, original license and attribution, file SHA-256, conversion tool/settings, output hash, repository/runtime path, visual proof and regression result. GLB file names are not enough to infer mesh or animation quality. The Java 17 Swing renderer cannot ingest arbitrary GLB without an explicit mesh/texture loading or conversion pipeline. Private paid archives stay in Drive.
 
 Source archive rights vary. Beckenburg's PSX Mega Pack license note applies to that pack only, not to every file in the archive library. No automatic assumption that an asset's appearance in Drive means public redistribution is authorized.
+
+## Expanded model/texture snapshot — October 20, 2026
+
+Direct Drive folder-listing readback added **600 individually identified source files** to `manifest.csv`, beyond the initial 33 archive and converted-item entries. These files are only cataloged; **none are imported or runtime-rendered by Malefic Veil**.
+
+The connected folder read returns at most 100 direct children. Entries for folders reaching this cap are necessarily **partial**; do not interpret counts as the full archive. The inherited pack-wide purchased commercial-use license applies to the PSX Mega Pack categories only. The Beckenburg root has a mix of source terms; its other content is not automatically licensed.
+
+| Folder | Observed entries | New cataloged | Potentially capped |
+|---|---:|---:|---|
+| PSX GLB / Electronics & Misc | 43 | 43 | No cap encountered |
+| PSX GLB / Furniture | 100 | 100 | YES — more may exist |
+| PSX GLB / Lighting | 44 | 44 | No cap encountered |
+| PSX GLB / Items & Weapons | 100 | 100 | YES — more may exist |
+| PSX GLB / Small Props | 60 | 60 | No cap encountered |
+| PSX GLB / Large Props | 36 | 36 | No cap encountered |
+| PSX GLB / Modular Structures | 100 | 100 | YES — more may exist |
+| PSX GLB / Decals | 4 | 4 | No cap encountered |
+| PSX Mega Pack Textures | 100 | 100 | YES — more may exist |
+| Beckenburg root archives | 29 | 13 | No cap encountered |
+
+Next intake pass should paginate exact source folders by Google Drive API or download archive manifests to enumerate missing contents before asserting archive-complete coverage. No arbitrary web images or unrelated assets should substitute for user-archived content.

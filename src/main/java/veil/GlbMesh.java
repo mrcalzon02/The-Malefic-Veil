@@ -187,6 +187,11 @@ public final class GlbMesh {
                         }
                         Object factor=params.get("baseColorFactor");
                         if(factor!=null){
+                            // A baseColorFactor without a texture is an actual
+                            // sRGB material color, not a tint of the old neutral
+                            // 0x7f8084 placeholder. This also preserves licensed
+                            // Kenney texture palette tinting when one IS present.
+                            if(faceTexture==null)rgb=0xffffff;
                             List<Object> color=list(factor);
                             if(color.size()>=3){
                                 for(int channel=0;channel<3;channel++)

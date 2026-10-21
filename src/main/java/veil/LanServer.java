@@ -144,6 +144,10 @@ public final class LanServer implements AutoCloseable {
                                 peer.authenticated=true;
                                 peer.send("AUTH_OK|"+account);
                                 audit("login id="+peer.id+" account="+account);
+                            }else if(moderation==null){
+                                // Local multi-client smoke tests can share a machine's stored key.
+                                // The second session stays an unowned guest; never duplicate an account.
+                                peer.send("AUTH_GUEST|DUPLICATE");
                             }else{peer.send("AUTH_DENIED|DUPLICATE");return;}
                         }
                         case "STATE" -> {

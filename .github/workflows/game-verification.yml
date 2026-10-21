@@ -77,6 +77,9 @@ jobs:
       - name: Seven-era industrial tech DAG and faction endgame recipe validation
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.CraftingEraRegistryTest
+      - name: Industrial work-order cost, 24-7 restart, idempotency and incursion budget
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.IndustrialWorkstationTest
       - name: Kenney foliage and derelict vehicle collision verification
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanDressingTest

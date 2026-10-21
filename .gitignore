@@ -1,0 +1,12 @@
+out/
+build/
+*.class
+*.jar
+*.zip
+*.7z
+*.rar
+.DS_Store
+.idea/
+.vscode/
+assets/private/
+assets/runtime/

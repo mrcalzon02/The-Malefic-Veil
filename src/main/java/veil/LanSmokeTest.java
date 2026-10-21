@@ -58,6 +58,9 @@ public final class LanSmokeTest {
             NetLink attacker=new NetLink("127.0.0.1",host.port());
             NetLink victim=new NetLink("127.0.0.1",host.port())){
             host.match.world.npcs.clear(); // isolate network PvP scenario from hostile random spawns
+            // Real network logins receive ten seconds of protected scene loading.
+            // Advance authoritative test time before deliberately commencing PvP.
+            for(int step=0;step<11;step++)host.match.advance(1000);
             check(attacker.seed==887766L&&victim.seed==887766L,"host seed");
             check(attacker.id!=victim.id,"unique IDs");
             attacker.ping();

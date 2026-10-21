@@ -1,0 +1,1095 @@
+{
+  "schema": 3,
+  "count": 150,
+  "tile_width": 128,
+  "tile_height": 128,
+  "packs": {
+    "shared_core": {
+      "sprites": "assets/game/crafting/packs/shared_core_sprites_only.zip",
+      "sprites_sha256": "347a1e19bfe3eb61cef011fbb17574557d91bda40f04c29b6ad5046d8b09924f",
+      "reference": "assets/game/crafting/packs/shared_core_source.webp",
+      "reference_sha256": "eaf92555b76339eca5fe6829d03a666ff38ad240164dab076e9cde6b1c7e5183",
+      "count": 30
+    },
+    "shared_equipment": {
+      "sprites": "assets/game/crafting/packs/shared_equipment_sprites_only.zip",
+      "sprites_sha256": "0ac091326f0e420f4acb52caf9b9ee9c88dbeaf1bc5aa2ef3ed2c90d05917665",
+      "reference": "assets/game/crafting/packs/shared_equipment_source.webp",
+      "reference_sha256": "e1c3fd9fea37297460cf3e9a4ecc86c3847c82f9e6a1868df564e80facb6d609",
+      "count": 30
+    },
+    "unraveled_industry": {
+      "sprites": "assets/game/crafting/packs/unraveled_industry_sprites_only.zip",
+      "sprites_sha256": "1296436d59881eef93cee678215cf955a39bfc3c1f8b59797e0e47a7d993d644",
+      "reference": "assets/game/crafting/packs/unraveled_industry_source.webp",
+      "reference_sha256": "60ea5abe78e36e7b1afb5b559484191b4e9b5f99fb82f50bb931d3916dbeece6",
+      "count": 30
+    },
+    "penitent_ritual": {
+      "sprites": "assets/game/crafting/packs/penitent_ritual_sprites_only.zip",
+      "sprites_sha256": "8d82d1497c9b5c6a109aded4042bafe86977aa872291e7b59525826c5568bd72",
+      "reference": "assets/game/crafting/packs/penitent_ritual_source.webp",
+      "reference_sha256": "2d5ce405d922955f254cefab2ad3433504f715b10d3181dea57e60c0600536ee",
+      "count": 30
+    },
+    "begotten_biology": {
+      "sprites": "assets/game/crafting/packs/begotten_biology_sprites_only.zip",
+      "sprites_sha256": "2c552b8cea8d47bfa53e4aecf891b2fef7d078c6cc7c74bcefcae6b5c8d96d1d",
+      "reference": "assets/game/crafting/packs/begotten_biology_source.webp",
+      "reference_sha256": "ff5e0fa1589e63eee68315d0fa2433ab5ecd70e3f04f41e1a1d4bf33dde4628e",
+      "count": 30
+    }
+  },
+  "items": [
+    {
+      "id": "TIMBER",
+      "label": "Timber",
+      "pack": "shared_core",
+      "entry": "icons/TIMBER_small.png",
+      "sha256": "8b49a91a2708d860d6504d14811170c1bb718af11b5b2e143611b357c5ebc2eb"
+    },
+    {
+      "id": "FIELD_STONE",
+      "label": "Field Stone",
+      "pack": "shared_core",
+      "entry": "icons/FIELD_STONE_small.png",
+      "sha256": "c886a2ece16c0dd4d5ac093c13896488406de6484737d6958e78a63b0bd66b87"
+    },
+    {
+      "id": "FIBER",
+      "label": "Fiber",
+      "pack": "shared_core",
+      "entry": "icons/FIBER_small.png",
+      "sha256": "d83b5d99adb645f6cd2cd7c81dedb2c3882cd744ac36fbb09283c04e183b1d33"
+    },
+    {
+      "id": "EDIBLES",
+      "label": "Edibles",
+      "pack": "shared_core",
+      "entry": "icons/EDIBLES_small.png",
+      "sha256": "8d8d21c9bf53126d74e86567b98313672a094259b476f734b4465b52b4e88261"
+    },
+    {
+      "id": "MEDICINAL_HERBS",
+      "label": "Medicinal Herbs",
+      "pack": "shared_core",
+      "entry": "icons/MEDICINAL_HERBS_small.png",
+      "sha256": "6e3ea7ded72c3a116e9057f6df3da84fb9503f3204ba0f57422be28f22152aaa"
+    },
+    {
+      "id": "RAW_ORE",
+      "label": "Raw Ore",
+      "pack": "shared_core",
+      "entry": "icons/RAW_ORE_small.png",
+      "sha256": "177e9561435e38c282c2fcbc9ae7cf1d97ea13e84f45e2089203c6dc005e23b7"
+    },
+    {
+      "id": "DIRTY_WATER",
+      "label": "Dirty Water",
+      "pack": "shared_core",
+      "entry": "icons/DIRTY_WATER_small.png",
+      "sha256": "77f96a6a1e92658a7f23351e5c716b599fa7c1c248693b2b64d090de3bc2cb3d"
+    },
+    {
+      "id": "CLEAN_WATER",
+      "label": "Clean Water",
+      "pack": "shared_core",
+      "entry": "icons/CLEAN_WATER_small.png",
+      "sha256": "8320964edda37f2cdb6b1a16f4e9ba0166c1cc332e8c886e4cc2b941bd50d418"
+    },
+    {
+      "id": "FIREWOOD",
+      "label": "Firewood",
+      "pack": "shared_core",
+      "entry": "icons/FIREWOOD_small.png",
+      "sha256": "fd0191f347dc857c7ccd4cbbd0e251a117e8047325353f7653224c15bf374563"
+    },
+    {
+      "id": "CHARCOAL",
+      "label": "Charcoal",
+      "pack": "shared_core",
+      "entry": "icons/CHARCOAL_small.png",
+      "sha256": "7944b24e1248508fe7af5726c907e1606f2996a37f3e610a8cde43306452597c"
+    },
+    {
+      "id": "FIRED_BRICKS",
+      "label": "Fired Bricks",
+      "pack": "shared_core",
+      "entry": "icons/FIRED_BRICKS_small.png",
+      "sha256": "1349f420b087ee45541ec7ec3ea9df338ed213d05a5acd20896f9e1917f3c8e7"
+    },
+    {
+      "id": "IRON_BLOOM",
+      "label": "Iron Bloom",
+      "pack": "shared_core",
+      "entry": "icons/IRON_BLOOM_small.png",
+      "sha256": "d71b3ae9fc27a9d21c6c26e303e701109bf74a787c3352b6dd693da98f2c3872"
+    },
+    {
+      "id": "METAL_BILLET",
+      "label": "Metal Billet",
+      "pack": "shared_core",
+      "entry": "icons/METAL_BILLET_small.png",
+      "sha256": "fb68ff254a0535ea3a7b5c5a9042376e06a7d82b8a1cffc7186897cbb2b3baf3"
+    },
+    {
+      "id": "FASTENERS",
+      "label": "Fasteners",
+      "pack": "shared_core",
+      "entry": "icons/FASTENERS_small.png",
+      "sha256": "4e796add41c0e039a3345a9148db102f9673954de91289bc21f7518104099735"
+    },
+    {
+      "id": "DRIVE_SHAFT",
+      "label": "Drive Shaft",
+      "pack": "shared_core",
+      "entry": "icons/DRIVE_SHAFT_small.png",
+      "sha256": "d4ab9e996405d4ace6beef29b694ef8f5283e2b088f7e5634feb5cc08a49b79b"
+    },
+    {
+      "id": "GEAR_ASSEMBLY",
+      "label": "Gear Assembly",
+      "pack": "shared_core",
+      "entry": "icons/GEAR_ASSEMBLY_small.png",
+      "sha256": "8a88c0a9ce2ac3691aaa29c0763a44a88178ace714ba5b4a0dd3c9290febc42b"
+    },
+    {
+      "id": "PUMP_HEAD",
+      "label": "Pump Head",
+      "pack": "shared_core",
+      "entry": "icons/PUMP_HEAD_small.png",
+      "sha256": "4ebcb75ef6b79180f0f204a06ca8ba9f1715cd959363b4d25cec03a4185c20f7"
+    },
+    {
+      "id": "CONDUCTOR_WIRE",
+      "label": "Conductor Wire",
+      "pack": "shared_core",
+      "entry": "icons/CONDUCTOR_WIRE_small.png",
+      "sha256": "95aa4429eaaa2696c4923a1e33722bddd5bf54dd7d8c7693074d0092fb695f16"
+    },
+    {
+      "id": "CONTROL_BOARD",
+      "label": "Control Board",
+      "pack": "shared_core",
+      "entry": "icons/CONTROL_BOARD_small.png",
+      "sha256": "c3dfcaf1655da834442703110b3a81406f69148efb872bb7b395069488026ed6"
+    },
+    {
+      "id": "PRECISION_MODULE",
+      "label": "Precision Module",
+      "pack": "shared_core",
+      "entry": "icons/PRECISION_MODULE_small.png",
+      "sha256": "10482c27e9e7c2e225b63259389a87e8ce277764f43767057d3489861436d145"
+    },
+    {
+      "id": "ASSEMBLY_CONTROLLER",
+      "label": "Assembly Controller",
+      "pack": "shared_core",
+      "entry": "icons/ASSEMBLY_CONTROLLER_small.png",
+      "sha256": "7ce7e21efee0152b86253c1448eb90f5022ebed2ce824dd1610801f7e6f9febf"
+    },
+    {
+      "id": "COMPOST",
+      "label": "Compost",
+      "pack": "shared_core",
+      "entry": "icons/COMPOST_small.png",
+      "sha256": "5d75077dd019f79b444b76022b383f8c336e57d3a93101af16fde76d8baebbfb"
+    },
+    {
+      "id": "FIELD_CROPS",
+      "label": "Field Crops",
+      "pack": "shared_core",
+      "entry": "icons/FIELD_CROPS_small.png",
+      "sha256": "418783023144176ca9e2c964c09c9d463b516d6205369d713721b1aaca8b580d"
+    },
+    {
+      "id": "HERBAL_BUNDLE",
+      "label": "Herbal Bundle",
+      "pack": "shared_core",
+      "entry": "icons/HERBAL_BUNDLE_small.png",
+      "sha256": "1abc5c851ef9888be008856f6b68e57148c1a9a7f439b53a192d89dab21b680a"
+    },
+    {
+      "id": "CLOTH_ROLL",
+      "label": "Cloth Roll",
+      "pack": "shared_core",
+      "entry": "icons/CLOTH_ROLL_small.png",
+      "sha256": "52ce932555082a6d962e58c0a37fed482adca30bb65be20bd9cf4596801635df"
+    },
+    {
+      "id": "SMOKED_RATIONS",
+      "label": "Smoked Rations",
+      "pack": "shared_core",
+      "entry": "icons/SMOKED_RATIONS_small.png",
+      "sha256": "56e673f8b3ddaa0ef596985e7171e7907be9c9b0139931f959c22be34579e31e"
+    },
+    {
+      "id": "CELLARED_CROPS",
+      "label": "Cellared Crops",
+      "pack": "shared_core",
+      "entry": "icons/CELLARED_CROPS_small.png",
+      "sha256": "9f5a9a4168a04b3432d30a16af9b65d5552164d175026e90992c3d34e1776b7f"
+    },
+    {
+      "id": "MEAL_SACK",
+      "label": "Meal Sack",
+      "pack": "shared_core",
+      "entry": "icons/MEAL_SACK_small.png",
+      "sha256": "f318d826d10ab6ec989368562b2d5d7b55ab00d9f4d8acbdfbbc154a31bfbfe2"
+    },
+    {
+      "id": "RATIONS",
+      "label": "Rations",
+      "pack": "shared_core",
+      "entry": "icons/RATIONS_small.png",
+      "sha256": "ad358f330d9ddaf790764cd7ab695e483b59664c1fd9341525e555b1107cf3ce"
+    },
+    {
+      "id": "NUTRIENT_STOCK",
+      "label": "Nutrient Stock",
+      "pack": "shared_core",
+      "entry": "icons/NUTRIENT_STOCK_small.png",
+      "sha256": "7c7a22eec7d86a820bc8ff8b5a5ab61e9aa5f9103fd67db6ad1d5d22766e4988"
+    },
+    {
+      "id": "METAL_STOCK",
+      "label": "Metal Stock",
+      "pack": "shared_equipment",
+      "entry": "icons/METAL_STOCK_small.png",
+      "sha256": "1e59d071212df8184dda01c8ed750296f7ed1b8874b0eb95027749404fb1a64b"
+    },
+    {
+      "id": "MACHINE_PARTS",
+      "label": "Machine Parts",
+      "pack": "shared_equipment",
+      "entry": "icons/MACHINE_PARTS_small.png",
+      "sha256": "ee9fb763dbc34c20a54632ce1e0eda4202954ded65c8458cd32d2a035d6e18be"
+    },
+    {
+      "id": "SHELTER_KIT",
+      "label": "Shelter Kit",
+      "pack": "shared_equipment",
+      "entry": "icons/SHELTER_KIT_small.png",
+      "sha256": "2ede0e02c3f939ca412b2be58c4028d841cb3e30d708dd93da8c46618d77169a"
+    },
+    {
+      "id": "VEHICLE_REPAIR_KIT",
+      "label": "Vehicle Repair Kit",
+      "pack": "shared_equipment",
+      "entry": "icons/VEHICLE_REPAIR_KIT_small.png",
+      "sha256": "7cffe7e6d7aa6cb949c9ad46708b857075a65e2b24e0178c2008720ce2a3e40e"
+    },
+    {
+      "id": "TENT_KIT",
+      "label": "Tent Kit",
+      "pack": "shared_equipment",
+      "entry": "icons/TENT_KIT_small.png",
+      "sha256": "1c0b52749ceb65e1606888029c16956630173fdf38c232946ceab8116e4581a2"
+    },
+    {
+      "id": "CRATE_KIT",
+      "label": "Crate Kit",
+      "pack": "shared_equipment",
+      "entry": "icons/CRATE_KIT_small.png",
+      "sha256": "8fc8190eb8657fa64468096ff75976452cda21c42430e185ab53ee7c75b80c7c"
+    },
+    {
+      "id": "FENCE_SECTION",
+      "label": "Fence Section",
+      "pack": "shared_equipment",
+      "entry": "icons/FENCE_SECTION_small.png",
+      "sha256": "8533a06d5ab08230ed87a9d90eb9e3b7534ebd699b50f65b1c42fcab374c0d11"
+    },
+    {
+      "id": "STAKE_TRAP",
+      "label": "Stake Trap",
+      "pack": "shared_equipment",
+      "entry": "icons/STAKE_TRAP_small.png",
+      "sha256": "e8077c469c8d3b966aef277058249f772de6f6fca1cddbcd042539fa2a7aa2d1"
+    },
+    {
+      "id": "NOISE_ALARM",
+      "label": "Noise Alarm",
+      "pack": "shared_equipment",
+      "entry": "icons/NOISE_ALARM_small.png",
+      "sha256": "476bece575b13152fb84f90bf00f6d1153c06352301954b81bfbff47841a224b"
+    },
+    {
+      "id": "CAMPFIRE",
+      "label": "Campfire",
+      "pack": "shared_equipment",
+      "entry": "icons/CAMPFIRE_small.png",
+      "sha256": "7b18f0148242ba10fe8a0c181b2e4bd78e1ce55e9f00bdbf2e251ac3ed9bcb30"
+    },
+    {
+      "id": "FILTER",
+      "label": "Filter",
+      "pack": "shared_equipment",
+      "entry": "icons/FILTER_small.png",
+      "sha256": "95c0a12c6fcb18eda2d630409f05d954315e5678ab7d655fa11b1b7358f3bc69"
+    },
+    {
+      "id": "DREAD_IMPRINT",
+      "label": "Dread Imprint",
+      "pack": "shared_equipment",
+      "entry": "icons/DREAD_IMPRINT_small.png",
+      "sha256": "f414bee62f32aba6022ce1b055a11fff2a16a401a2c035e441746c31ea29b168"
+    },
+    {
+      "id": "RESILIENCE_CORE",
+      "label": "Resilience Core",
+      "pack": "shared_equipment",
+      "entry": "icons/RESILIENCE_CORE_small.png",
+      "sha256": "96ccc52b3c846c9fde3a3fe607c62603254d5e5651d71489becde0348e499a36"
+    },
+    {
+      "id": "DREAD_WARD",
+      "label": "Dread Ward",
+      "pack": "shared_equipment",
+      "entry": "icons/DREAD_WARD_small.png",
+      "sha256": "4240aba433cc314df50ca810b856b2d4275888189ccfa34eab91dcffc78744a2"
+    },
+    {
+      "id": "BREACH_SEED",
+      "label": "Breach Seed",
+      "pack": "shared_equipment",
+      "entry": "icons/BREACH_SEED_small.png",
+      "sha256": "4a1dc2be4848fe9c896984ea9126726ec52ade5c0eaa741634920682e0b5cbf4"
+    },
+    {
+      "id": "SORTED_ORE",
+      "label": "Sorted Ore",
+      "pack": "shared_equipment",
+      "entry": "icons/SORTED_ORE_small.png",
+      "sha256": "9c03aea17548aabfaf1a835dfcd12bf7594ccb200762dbd25a7dfa67bd46a789"
+    },
+    {
+      "id": "HARDENED_ALLOY",
+      "label": "Hardened Alloy",
+      "pack": "shared_equipment",
+      "entry": "icons/HARDENED_ALLOY_small.png",
+      "sha256": "1f24d19d75bb91eb874130a00b3a2bd2dfa3685e476bb7bd7d71ef3a298332a5"
+    },
+    {
+      "id": "TRACKING_CIRCUIT",
+      "label": "Tracking Circuit",
+      "pack": "shared_equipment",
+      "entry": "icons/TRACKING_CIRCUIT_small.png",
+      "sha256": "726d51b3a89fa6496c1f17cd1ee5c9b69372290145612e976d7f3c48ada342d6"
+    },
+    {
+      "id": "PRECISION_FEEDLINE",
+      "label": "Precision Feedline",
+      "pack": "shared_equipment",
+      "entry": "icons/PRECISION_FEEDLINE_small.png",
+      "sha256": "030d21b32a2bf2480fb0b91453c32a6b2a0961e628ed9311fdc7d5ff67edbb2e"
+    },
+    {
+      "id": "BALLISTIC_SUPPLY",
+      "label": "Ballistic Supply",
+      "pack": "shared_equipment",
+      "entry": "icons/BALLISTIC_SUPPLY_small.png",
+      "sha256": "2e08cd878e25b1fa6c0fcb63ed7ca376478f6bbd516c7aead03a4d0e6c994b4b"
+    },
+    {
+      "id": "VOTIVE_INCENSE",
+      "label": "Votive Incense",
+      "pack": "shared_equipment",
+      "entry": "icons/VOTIVE_INCENSE_small.png",
+      "sha256": "5eb1ccfc183416a031434f15d8caf16d5c0fb39efa7a68fa6891d2dd9baa4b5a"
+    },
+    {
+      "id": "WITNESS_SEAL",
+      "label": "Witness Seal",
+      "pack": "shared_equipment",
+      "entry": "icons/WITNESS_SEAL_small.png",
+      "sha256": "9f0ddf4ad911fd572ce3324b329307a80ab5694fc5da13174b6080912bf2081c"
+    },
+    {
+      "id": "CHORUS_RESONANCE",
+      "label": "Chorus Resonance",
+      "pack": "shared_equipment",
+      "entry": "icons/CHORUS_RESONANCE_small.png",
+      "sha256": "8710dc714efcc50ea0f845c2548762e41d76c2e2bcc842f7e6f377eae35a2122"
+    },
+    {
+      "id": "BOUND_LITURGY",
+      "label": "Bound Liturgy",
+      "pack": "shared_equipment",
+      "entry": "icons/BOUND_LITURGY_small.png",
+      "sha256": "f08f5a64dab4da4ba4bab9ef2352629ae029035fb3f4f4c0cf258ce27cebf014"
+    },
+    {
+      "id": "SACRED_SUPPLY",
+      "label": "Sacred Supply",
+      "pack": "shared_equipment",
+      "entry": "icons/SACRED_SUPPLY_small.png",
+      "sha256": "ea2db4418b9e1f83a36a846627e290414544dcdb02eade0563e9fc6d8c712547"
+    },
+    {
+      "id": "GROWTH_FEED",
+      "label": "Growth Feed",
+      "pack": "shared_equipment",
+      "entry": "icons/GROWTH_FEED_small.png",
+      "sha256": "e4b34c6fe4d5bcf77274214e9574af2654893c4aa20a9d90ec14ae61c10ac912"
+    },
+    {
+      "id": "VIABLE_SPORES",
+      "label": "Viable Spores",
+      "pack": "shared_equipment",
+      "entry": "icons/VIABLE_SPORES_small.png",
+      "sha256": "7b97355f253a55fe517d89a888e7b73b0c9432161db8ea08eb864e9709b28bfb"
+    },
+    {
+      "id": "GROWN_CHITIN",
+      "label": "Grown Chitin",
+      "pack": "shared_equipment",
+      "entry": "icons/GROWN_CHITIN_small.png",
+      "sha256": "ae29a3ab5f90e87d1d382bb636a3fe1f5c3d0762f32414217c20cc40d8be730c"
+    },
+    {
+      "id": "BINDING_RESIN",
+      "label": "Binding Resin",
+      "pack": "shared_equipment",
+      "entry": "icons/BINDING_RESIN_small.png",
+      "sha256": "5461333cf5b277969b9836016b5f193378c5750425af0ebb9043849b1d3ab234"
+    },
+    {
+      "id": "SPINE_SUPPLY",
+      "label": "Spine Supply",
+      "pack": "shared_equipment",
+      "entry": "icons/SPINE_SUPPLY_small.png",
+      "sha256": "b2240a0aaf674fbf3159beee7024062acec02c254b62466c027a44cca7d0f490"
+    },
+    {
+      "id": "SCRAP_METAL",
+      "label": "Scrap Metal",
+      "pack": "unraveled_industry",
+      "entry": "icons/SCRAP_METAL_small.png",
+      "sha256": "70a09ea1b3498153aee1a0a6698d8e9587aa6b42a1c738abec0dd5b201d95f37"
+    },
+    {
+      "id": "SALVAGED_WIRE",
+      "label": "Salvaged Wire",
+      "pack": "unraveled_industry",
+      "entry": "icons/SALVAGED_WIRE_small.png",
+      "sha256": "c8867c2338f33de5dd67847fe6ada6731c613cf27d00d620b13bf8918d3894c4"
+    },
+    {
+      "id": "BEARING_SET",
+      "label": "Bearing Set",
+      "pack": "unraveled_industry",
+      "entry": "icons/BEARING_SET_small.png",
+      "sha256": "6e2b1037ec1f969f8de88ff9cf3f675927fed3f1ece53eaf7bc14914ce987ea9"
+    },
+    {
+      "id": "VALVE_BODY",
+      "label": "Valve Body",
+      "pack": "unraveled_industry",
+      "entry": "icons/VALVE_BODY_small.png",
+      "sha256": "afdcc5534e6f9a5c8c9c6e71f8711d6b39690a9a6b60505919242fd2693eea0b"
+    },
+    {
+      "id": "PISTON_HEAD",
+      "label": "Piston Head",
+      "pack": "unraveled_industry",
+      "entry": "icons/PISTON_HEAD_small.png",
+      "sha256": "a1dbab5d4fd512ef11472be4cb80cbc211cc1ebd62006284ed26e2007da3b486"
+    },
+    {
+      "id": "RUBBER_SEALS",
+      "label": "Rubber Seals",
+      "pack": "unraveled_industry",
+      "entry": "icons/RUBBER_SEALS_small.png",
+      "sha256": "ab19f58159ad93e71894a2390ff5bd667522af69e745bdad2bbfe65e476fa453"
+    },
+    {
+      "id": "FUEL_CAN",
+      "label": "Fuel Can",
+      "pack": "unraveled_industry",
+      "entry": "icons/FUEL_CAN_small.png",
+      "sha256": "ea03bab71ec97440f09235f5af7c638e8995404e2c7104eb0eeea8b5269fb8ba"
+    },
+    {
+      "id": "LUBRICANT",
+      "label": "Lubricant",
+      "pack": "unraveled_industry",
+      "entry": "icons/LUBRICANT_small.png",
+      "sha256": "a75b6c96f4434f0640ae5326b5e762eb454017c3e3edb24c2b1cce47de889a12"
+    },
+    {
+      "id": "PRESSURE_TANK",
+      "label": "Pressure Tank",
+      "pack": "unraveled_industry",
+      "entry": "icons/PRESSURE_TANK_small.png",
+      "sha256": "ed913eb2ce9dce0aa21b08560f5c8c90fa19cf3082f30b888b7e8cb6bb319b17"
+    },
+    {
+      "id": "SHEET_METAL",
+      "label": "Sheet Metal",
+      "pack": "unraveled_industry",
+      "entry": "icons/SHEET_METAL_small.png",
+      "sha256": "e27bf84055964b22eaacd8a82f9b7903f944d3d5dc17f7174ed9e1ca7fa684ef"
+    },
+    {
+      "id": "WELDED_FRAME",
+      "label": "Welded Frame",
+      "pack": "unraveled_industry",
+      "entry": "icons/WELDED_FRAME_small.png",
+      "sha256": "bab9560d0ef86109cfa4f4e3a3239deeda0b04e51bc2b8a416a3bf85c996fa60"
+    },
+    {
+      "id": "COIL_SPRING",
+      "label": "Coil Spring",
+      "pack": "unraveled_industry",
+      "entry": "icons/COIL_SPRING_small.png",
+      "sha256": "318142ba1b0e3878c3ff3e2d0b4f49489e6df4c409c60c08a94e96797ab84ad4"
+    },
+    {
+      "id": "PULLEY_SET",
+      "label": "Pulley Set",
+      "pack": "unraveled_industry",
+      "entry": "icons/PULLEY_SET_small.png",
+      "sha256": "92cb1512731fe719e728890361290a6165c50262deb511830066414179c81938"
+    },
+    {
+      "id": "TOOL_ROLL",
+      "label": "Tool Roll",
+      "pack": "unraveled_industry",
+      "entry": "icons/TOOL_ROLL_small.png",
+      "sha256": "cc17f25856fc06e7ba0c94fbce4b2950cb93a588642d7d37484f55a4bc570d05"
+    },
+    {
+      "id": "POWER_CELL",
+      "label": "Power Cell",
+      "pack": "unraveled_industry",
+      "entry": "icons/POWER_CELL_small.png",
+      "sha256": "8b9f4c6975b0674683c346e822f4a3a7b3af970ac9547c015d39368cdab447fa"
+    },
+    {
+      "id": "SENSOR_HEAD",
+      "label": "Sensor Head",
+      "pack": "unraveled_industry",
+      "entry": "icons/SENSOR_HEAD_small.png",
+      "sha256": "a5b3597ff046d4202fbe0fd4226b102d6b98499fdce66758c29100a8e1040616"
+    },
+    {
+      "id": "RELAY_BOX",
+      "label": "Relay Box",
+      "pack": "unraveled_industry",
+      "entry": "icons/RELAY_BOX_small.png",
+      "sha256": "a5bd6d787b315db435cae7878a820a445222b9dae04d64e0aa0db8d5d3d94d13"
+    },
+    {
+      "id": "ACTUATOR",
+      "label": "Actuator",
+      "pack": "unraveled_industry",
+      "entry": "icons/ACTUATOR_small.png",
+      "sha256": "351c98e80efca171492421f8b639de1771ea8f3bbc0ab70d41d7cdb500dfa32c"
+    },
+    {
+      "id": "FILTER_MEDIA",
+      "label": "Filter Media",
+      "pack": "unraveled_industry",
+      "entry": "icons/FILTER_MEDIA_small.png",
+      "sha256": "51b397f6a96ddc79fc2d9eb5d44cfb08695baca78a08a3e26675cabf1c1277c9"
+    },
+    {
+      "id": "COOLANT_JUG",
+      "label": "Coolant Jug",
+      "pack": "unraveled_industry",
+      "entry": "icons/COOLANT_JUG_small.png",
+      "sha256": "dc3041d479d025613d7623365a742dcaa802d97aefc968961761b486858a1094"
+    },
+    {
+      "id": "DRIVE_CHAIN",
+      "label": "Drive Chain",
+      "pack": "unraveled_industry",
+      "entry": "icons/DRIVE_CHAIN_small.png",
+      "sha256": "44a99f394fad8ec852d0a95eade7703fd39df87c0ecdb937bd0e7a1add609ad6"
+    },
+    {
+      "id": "CIRCUIT_HOUSING",
+      "label": "Circuit Housing",
+      "pack": "unraveled_industry",
+      "entry": "icons/CIRCUIT_HOUSING_small.png",
+      "sha256": "fe2e8de9f969cbecba87c7baa5080ab7a6e3f95aa732095b64681ec6e8cc066b"
+    },
+    {
+      "id": "COMPOSITE_PANEL",
+      "label": "Composite Panel",
+      "pack": "unraveled_industry",
+      "entry": "icons/COMPOSITE_PANEL_small.png",
+      "sha256": "f634cac64a53d0ddbe5aaceba0cc02f41a751beec463b81b5677d6be4ab4873b"
+    },
+    {
+      "id": "CARGO_NET",
+      "label": "Cargo Net",
+      "pack": "unraveled_industry",
+      "entry": "icons/CARGO_NET_small.png",
+      "sha256": "9b4e00fd7f719467285beb8a90cbe9c1e06b885f42b8c6d9768d58e3440a1952"
+    },
+    {
+      "id": "FASTENER_BOX",
+      "label": "Fastener Box",
+      "pack": "unraveled_industry",
+      "entry": "icons/FASTENER_BOX_small.png",
+      "sha256": "bc90a38183cade48dd6431ff49dafca79ee97c52316e19535053257c84d559a5"
+    },
+    {
+      "id": "PROCESSED_FUEL",
+      "label": "Processed Fuel",
+      "pack": "unraveled_industry",
+      "entry": "icons/PROCESSED_FUEL_small.png",
+      "sha256": "22c72d9d6ed4a3d2166a8759a5a10a8d768831ea8d04614b248c57987043695e"
+    },
+    {
+      "id": "REPAIR_COMPOUND",
+      "label": "Repair Compound",
+      "pack": "unraveled_industry",
+      "entry": "icons/REPAIR_COMPOUND_small.png",
+      "sha256": "d82f67c3d338120db6526d2df1fbcbfb6c2fb55171c56477494daa74f7e6967b"
+    },
+    {
+      "id": "PRECISION_LENS",
+      "label": "Precision Lens",
+      "pack": "unraveled_industry",
+      "entry": "icons/PRECISION_LENS_small.png",
+      "sha256": "7f8e76bfd6df449c4ab3ac2c53509147d4f75ca95231adabf074772bba4ca2d5"
+    },
+    {
+      "id": "CALIBRATION_KIT",
+      "label": "Calibration Kit",
+      "pack": "unraveled_industry",
+      "entry": "icons/CALIBRATION_KIT_small.png",
+      "sha256": "216093a6918898659351a9485efec31e285756326c3cfae341ab00cdf61cc912"
+    },
+    {
+      "id": "INDUSTRIAL_SOLVENT",
+      "label": "Industrial Solvent",
+      "pack": "unraveled_industry",
+      "entry": "icons/INDUSTRIAL_SOLVENT_small.png",
+      "sha256": "871555317a0b2f8beb27f328e71c17e5e7185885983273dcfe262f12bfca56ab"
+    },
+    {
+      "id": "RITUAL_CLOTH",
+      "label": "Ritual Cloth",
+      "pack": "penitent_ritual",
+      "entry": "icons/RITUAL_CLOTH_small.png",
+      "sha256": "5115c79a41fbea7aa2ce2eb49addf8961437a99efa5bacdd6cee17426a479db2"
+    },
+    {
+      "id": "WAX_CANDLES",
+      "label": "Wax Candles",
+      "pack": "penitent_ritual",
+      "entry": "icons/WAX_CANDLES_small.png",
+      "sha256": "b47b838764aa2fa51896344cabd0d3db9356590866852fd8802985e612adbc27"
+    },
+    {
+      "id": "ASH_SALT",
+      "label": "Ash Salt",
+      "pack": "penitent_ritual",
+      "entry": "icons/ASH_SALT_small.png",
+      "sha256": "0b45615b42e250409d74d533b4b2558a552305def7529c616847d6b2f34a33c4"
+    },
+    {
+      "id": "SACRED_OIL",
+      "label": "Sacred Oil",
+      "pack": "penitent_ritual",
+      "entry": "icons/SACRED_OIL_small.png",
+      "sha256": "e4f8ed8cbcd368c973872bc69d23d08283828bfdc027300a2ddea242bc20181a"
+    },
+    {
+      "id": "OFFERING_BOWL",
+      "label": "Offering Bowl",
+      "pack": "penitent_ritual",
+      "entry": "icons/OFFERING_BOWL_small.png",
+      "sha256": "7488b103b8e2fa4d32fefdf11539f978e0f3fabc692c10811ccda2ba96b6db03"
+    },
+    {
+      "id": "PRAYER_BEADS",
+      "label": "Prayer Beads",
+      "pack": "penitent_ritual",
+      "entry": "icons/PRAYER_BEADS_small.png",
+      "sha256": "3014028432e42858b2250fb12267573dad6467bdecca6cbb78baaa1ea968bdc2"
+    },
+    {
+      "id": "CEREMONIAL_INK",
+      "label": "Ceremonial Ink",
+      "pack": "penitent_ritual",
+      "entry": "icons/CEREMONIAL_INK_small.png",
+      "sha256": "a30f4ccb0bb34ebfd625c4ab35cd68b0d15d56d42e6b3e237348f5b40368f259"
+    },
+    {
+      "id": "BONE_TOKENS",
+      "label": "Bone Tokens",
+      "pack": "penitent_ritual",
+      "entry": "icons/BONE_TOKENS_small.png",
+      "sha256": "3a940401c83f86369ec389ec6b48544aeecb3af80cec397e2f50eff33045747f"
+    },
+    {
+      "id": "BLESSED_THREAD",
+      "label": "Blessed Thread",
+      "pack": "penitent_ritual",
+      "entry": "icons/BLESSED_THREAD_small.png",
+      "sha256": "e590ff650f13132270c50175a16ecf5fa487325f23d17765729b6c2ee372c3ca"
+    },
+    {
+      "id": "SEAL_WAX",
+      "label": "Seal Wax",
+      "pack": "penitent_ritual",
+      "entry": "icons/SEAL_WAX_small.png",
+      "sha256": "be3899bbcddf257a2e61b88f65233f8ccf6f547650c6da672897fa1c46cbae4b"
+    },
+    {
+      "id": "BRONZE_CENSER",
+      "label": "Bronze Censer",
+      "pack": "penitent_ritual",
+      "entry": "icons/BRONZE_CENSER_small.png",
+      "sha256": "fa21979028f88177cc99a42c1c05d24f5b93a9efc503e87e3958151c5b0c3c9d"
+    },
+    {
+      "id": "RITUAL_ASH",
+      "label": "Ritual Ash",
+      "pack": "penitent_ritual",
+      "entry": "icons/RITUAL_ASH_small.png",
+      "sha256": "7f05d9b12e719315cc8dcdc1b60d0a9d3c9fba22beb71e0b0a4cde66d1803908"
+    },
+    {
+      "id": "VOTIVE_POWDER",
+      "label": "Votive Powder",
+      "pack": "penitent_ritual",
+      "entry": "icons/VOTIVE_POWDER_small.png",
+      "sha256": "26510690658b886aff52d423f66ad1aabbd1819fda9041bd63eb008ad738b36e"
+    },
+    {
+      "id": "SANCTIFIED_WATER",
+      "label": "Sanctified Water",
+      "pack": "penitent_ritual",
+      "entry": "icons/SANCTIFIED_WATER_small.png",
+      "sha256": "fdb37e3cbd20f18d68536ba539de33390077da2a3e95019b972a322da9f8ff67"
+    },
+    {
+      "id": "RELIQUARY_PLATE",
+      "label": "Reliquary Plate",
+      "pack": "penitent_ritual",
+      "entry": "icons/RELIQUARY_PLATE_small.png",
+      "sha256": "cfec25d775037e8818490b0b7400744227706cc7b4237222c7ed5c0f10df5370"
+    },
+    {
+      "id": "SCRIPTURE_LEAF",
+      "label": "Scripture Leaf",
+      "pack": "penitent_ritual",
+      "entry": "icons/SCRIPTURE_LEAF_small.png",
+      "sha256": "4f0288bbdea4556547e4d3654fd19ce380d3ff19ab2f0546a60277c69c27ea51"
+    },
+    {
+      "id": "COPPER_CHIMES",
+      "label": "Copper Chimes",
+      "pack": "penitent_ritual",
+      "entry": "icons/COPPER_CHIMES_small.png",
+      "sha256": "559a351017d4406bfd139f17452e82931c69a202ec9a9f96c83692afaf066589"
+    },
+    {
+      "id": "CHORUS_MASK",
+      "label": "Chorus Mask",
+      "pack": "penitent_ritual",
+      "entry": "icons/CHORUS_MASK_small.png",
+      "sha256": "3842764eb5bc7b9e1f16bf7f0adc18fa0b9a42e5aa049ef56e43d677eb7b3b88"
+    },
+    {
+      "id": "OATH_RIBBON",
+      "label": "Oath Ribbon",
+      "pack": "penitent_ritual",
+      "entry": "icons/OATH_RIBBON_small.png",
+      "sha256": "f9de4f32ef8bae300945180b9e3fd82dd3fca2c5fad3af30b12c7a8b11327b33"
+    },
+    {
+      "id": "CONSECRATED_RESIN",
+      "label": "Consecrated Resin",
+      "pack": "penitent_ritual",
+      "entry": "icons/CONSECRATED_RESIN_small.png",
+      "sha256": "b2cfecf2fbd84e893adc7d2e7be314afb07cb5331819b1a5ea7a01d92228a5e8"
+    },
+    {
+      "id": "EMBER_CHARMS",
+      "label": "Ember Charms",
+      "pack": "penitent_ritual",
+      "entry": "icons/EMBER_CHARMS_small.png",
+      "sha256": "c25f09eaaa7826f5d1b3d17b2d1d2387ffe55b2e38438eb672b950d48e7fcf6b"
+    },
+    {
+      "id": "WARD_NAILS",
+      "label": "Ward Nails",
+      "pack": "penitent_ritual",
+      "entry": "icons/WARD_NAILS_small.png",
+      "sha256": "503936599b2203c39a96f1f4321b99eec0485449eccb98311553773c6cf6f0ee"
+    },
+    {
+      "id": "PROCESSIONAL_CHAIN",
+      "label": "Processional Chain",
+      "pack": "penitent_ritual",
+      "entry": "icons/PROCESSIONAL_CHAIN_small.png",
+      "sha256": "7eee52149a2a1e7df5b8169d3cae009812e851585464cfa4612ef7d66b3db989"
+    },
+    {
+      "id": "HALLOWED_SAND",
+      "label": "Hallowed Sand",
+      "pack": "penitent_ritual",
+      "entry": "icons/HALLOWED_SAND_small.png",
+      "sha256": "71234b42bea8cdd854d44852a439d7a62a11d5fd5e23be4ba132d386f1939be2"
+    },
+    {
+      "id": "CHOIR_SCORE",
+      "label": "Choir Score",
+      "pack": "penitent_ritual",
+      "entry": "icons/CHOIR_SCORE_small.png",
+      "sha256": "f1ea28e967d933d5270dfe15d0bbdc93c40e40641069764bb3fd287180813e68"
+    },
+    {
+      "id": "SHRINE_STONE",
+      "label": "Shrine Stone",
+      "pack": "penitent_ritual",
+      "entry": "icons/SHRINE_STONE_small.png",
+      "sha256": "54eff7a4ed25f492e9127b5c67cc4d2cfa997e22fbf9c5c6d9fc39104d183e9e"
+    },
+    {
+      "id": "PILGRIM_PACK",
+      "label": "Pilgrim Pack",
+      "pack": "penitent_ritual",
+      "entry": "icons/PILGRIM_PACK_small.png",
+      "sha256": "1c8c689deaf94412c0c64334cac3ba7b9a6f6bb8a4df90cffc4d1c2ceee95c7a"
+    },
+    {
+      "id": "PURITY_SALVE",
+      "label": "Purity Salve",
+      "pack": "penitent_ritual",
+      "entry": "icons/PURITY_SALVE_small.png",
+      "sha256": "e33b1a8b87c98e959a2610f83af40eee7dfa2001930476ad094c8ce22b79f1f9"
+    },
+    {
+      "id": "BINDING_CORD",
+      "label": "Binding Cord",
+      "pack": "penitent_ritual",
+      "entry": "icons/BINDING_CORD_small.png",
+      "sha256": "7e7040b78668d4941e3285c3717cad5ca7c7d5bd09ae23414fe5aa9947fa6782"
+    },
+    {
+      "id": "CONSECRATED_SHELL",
+      "label": "Consecrated Shell",
+      "pack": "penitent_ritual",
+      "entry": "icons/CONSECRATED_SHELL_small.png",
+      "sha256": "1e45cca7e942c22484d9bcf6c7586e4d9561df4e84344869c852d53d1f7bc656"
+    },
+    {
+      "id": "NUTRIENT_SLURRY",
+      "label": "Nutrient Slurry",
+      "pack": "begotten_biology",
+      "entry": "icons/NUTRIENT_SLURRY_small.png",
+      "sha256": "08c974c36c2e47cb58f1853789b673e036593542b6ffef566b98f2123e9b2231"
+    },
+    {
+      "id": "SPORE_POD",
+      "label": "Spore Pod",
+      "pack": "begotten_biology",
+      "entry": "icons/SPORE_POD_small.png",
+      "sha256": "b772ab521feaeb27f25f1262e43186686dbc2586193d2bfaf75df3e5f54730c5"
+    },
+    {
+      "id": "CHITIN_SHARDS",
+      "label": "Chitin Shards",
+      "pack": "begotten_biology",
+      "entry": "icons/CHITIN_SHARDS_small.png",
+      "sha256": "eaf0191e2ce9df0ed464d3336f8777b002ef163e0c553efbb4002b5a393118a6"
+    },
+    {
+      "id": "TENDON_FIBER",
+      "label": "Tendon Fiber",
+      "pack": "begotten_biology",
+      "entry": "icons/TENDON_FIBER_small.png",
+      "sha256": "c1b6cdd2b8ccc3cd05b5cfca2a47ad4823a6d08d281f4c27eaefdd40d8b34a1e"
+    },
+    {
+      "id": "RESIN_GLOB",
+      "label": "Resin Glob",
+      "pack": "begotten_biology",
+      "entry": "icons/RESIN_GLOB_small.png",
+      "sha256": "6684ca08bab5c25eb43128dd81190cbb94e5f7c8236b0cb3b5476d30077ee65e"
+    },
+    {
+      "id": "BONE_MEAL",
+      "label": "Bone Meal",
+      "pack": "begotten_biology",
+      "entry": "icons/BONE_MEAL_small.png",
+      "sha256": "238f80a03875f983760187b8c47bb945b2c61c115dfdd4a956f420392db61602"
+    },
+    {
+      "id": "GROWTH_MEDIUM",
+      "label": "Growth Medium",
+      "pack": "begotten_biology",
+      "entry": "icons/GROWTH_MEDIUM_small.png",
+      "sha256": "581a282377640debe491735f339f2780d717561f285cf9f23d0eb99a0cf908a4"
+    },
+    {
+      "id": "BROOD_GEL",
+      "label": "Brood Gel",
+      "pack": "begotten_biology",
+      "entry": "icons/BROOD_GEL_small.png",
+      "sha256": "98301a40fba0cf74524c4646aa5649ea58d650aab080b96f39f3e71d7e2c0e87"
+    },
+    {
+      "id": "CARAPACE_PLATE",
+      "label": "Carapace Plate",
+      "pack": "begotten_biology",
+      "entry": "icons/CARAPACE_PLATE_small.png",
+      "sha256": "460f07ef94f999b78b2dfb646a5dd085a890ba639b8b14934dced3de8bc35cf5"
+    },
+    {
+      "id": "MAW_SEEDS",
+      "label": "Maw Seeds",
+      "pack": "begotten_biology",
+      "entry": "icons/MAW_SEEDS_small.png",
+      "sha256": "e2c357dc9e550fc17dc5f9cb4b269da73ddbcb7032ff2ef695313a94e08a1b02"
+    },
+    {
+      "id": "PALE_MARROW",
+      "label": "Pale Marrow",
+      "pack": "begotten_biology",
+      "entry": "icons/PALE_MARROW_small.png",
+      "sha256": "ec98934d7cbebde12a707e14f5e6ee3dffd6b8a6e2a4efb9cd01d8e6d3f65654"
+    },
+    {
+      "id": "MUTAGEN_SAP",
+      "label": "Mutagen Sap",
+      "pack": "begotten_biology",
+      "entry": "icons/MUTAGEN_SAP_small.png",
+      "sha256": "28193004b7acedcf24439cf80276edc961560507855914e3caea8a75f73ea2c6"
+    },
+    {
+      "id": "SPINE_CLUSTER",
+      "label": "Spine Cluster",
+      "pack": "begotten_biology",
+      "entry": "icons/SPINE_CLUSTER_small.png",
+      "sha256": "565f67808155a045ac22e667aa5ca1f2396c8c41cc12e766f2d1e1ce979a50c9"
+    },
+    {
+      "id": "INCUBATOR_SLIME",
+      "label": "Incubator Slime",
+      "pack": "begotten_biology",
+      "entry": "icons/INCUBATOR_SLIME_small.png",
+      "sha256": "be4a80ea9d95ecef8967a9bb3544c9909dc503db3c0d7dcc4ac6e85a467416f6"
+    },
+    {
+      "id": "FUNGAL_MAT",
+      "label": "Fungal Mat",
+      "pack": "begotten_biology",
+      "entry": "icons/FUNGAL_MAT_small.png",
+      "sha256": "120a9c80ec0e4ade252054bdbabab1987eef02089e258a98be522e0ea696b3b3"
+    },
+    {
+      "id": "LIVING_MEMBRANE",
+      "label": "Living Membrane",
+      "pack": "begotten_biology",
+      "entry": "icons/LIVING_MEMBRANE_small.png",
+      "sha256": "48becbd3961f78e7dd3a93b215b15c5dfd91d945a95d57a828b383da18e62e9e"
+    },
+    {
+      "id": "ROOT_BULB",
+      "label": "Root Bulb",
+      "pack": "begotten_biology",
+      "entry": "icons/ROOT_BULB_small.png",
+      "sha256": "807aa646f40e651bdfa7009b5348adb7ad33b214d08b9dd2b44e1ca58733fbf1"
+    },
+    {
+      "id": "VEIN_TUBING",
+      "label": "Vein Tubing",
+      "pack": "begotten_biology",
+      "entry": "icons/VEIN_TUBING_small.png",
+      "sha256": "3c1c928ea3fd42a939242d04714b8c5f162911295d82069b99e8a1896dacee9d"
+    },
+    {
+      "id": "SCENT_GLAND",
+      "label": "Scent Gland",
+      "pack": "begotten_biology",
+      "entry": "icons/SCENT_GLAND_small.png",
+      "sha256": "379b3c6f6206e0cd27a61f357a386f4bc082a9622159983990a8ddd4132130c9"
+    },
+    {
+      "id": "LARVAL_FEED",
+      "label": "Larval Feed",
+      "pack": "begotten_biology",
+      "entry": "icons/LARVAL_FEED_small.png",
+      "sha256": "d67a3ebc2c59f007c490af57b562c096863e4cd8838d9727138518b9ff620853"
+    },
+    {
+      "id": "HUSK_FRAGMENTS",
+      "label": "Husk Fragments",
+      "pack": "begotten_biology",
+      "entry": "icons/HUSK_FRAGMENTS_small.png",
+      "sha256": "e45e52186e67140e592f31a1faad645c42b19fc4d238785cd43a4d8f0bd38157"
+    },
+    {
+      "id": "MYCELIAL_MASS",
+      "label": "Mycelial Mass",
+      "pack": "begotten_biology",
+      "entry": "icons/MYCELIAL_MASS_small.png",
+      "sha256": "069e6a28ce1a59c362032102586fa3d36b655b3766803c4cf418671b8551ab2a"
+    },
+    {
+      "id": "BIOLUME_FLUID",
+      "label": "Biolume Fluid",
+      "pack": "begotten_biology",
+      "entry": "icons/BIOLUME_FLUID_small.png",
+      "sha256": "9a0bf8d5b13f5550a214d3666559d4d2544fde31f9c07bcfef0aed9a60873a02"
+    },
+    {
+      "id": "ORGAN_CORE",
+      "label": "Organ Core",
+      "pack": "begotten_biology",
+      "entry": "icons/ORGAN_CORE_small.png",
+      "sha256": "f36ad4bb9ecacf439e18b448413317aee614fed9645f23bc4811b8054363ec11"
+    },
+    {
+      "id": "TANGLE_VINE",
+      "label": "Tangle Vine",
+      "pack": "begotten_biology",
+      "entry": "icons/TANGLE_VINE_small.png",
+      "sha256": "402d0d127b5235bd8a5ddef8445dbd332bfadef5f6730f652096303314fbe1c4"
+    },
+    {
+      "id": "BILE_SAC",
+      "label": "Bile Sac",
+      "pack": "begotten_biology",
+      "entry": "icons/BILE_SAC_small.png",
+      "sha256": "125a16b4754f5fd96c355170de2498506f8ece0cb23218654ab7a6555aec6160"
+    },
+    {
+      "id": "CALCIFIED_NODULES",
+      "label": "Calcified Nodules",
+      "pack": "begotten_biology",
+      "entry": "icons/CALCIFIED_NODULES_small.png",
+      "sha256": "a43ec7eb71b01bd2292f6b01f7e33e5bca33dc46ece9ac75f7c1d5ba138b1075"
+    },
+    {
+      "id": "STEM_BUNDLE",
+      "label": "Stem Bundle",
+      "pack": "begotten_biology",
+      "entry": "icons/STEM_BUNDLE_small.png",
+      "sha256": "d965a83687f9803a71c86bfc15e364125303696e264016d4bd4bae52f49a83b0"
+    },
+    {
+      "id": "THORN_BUNDLE",
+      "label": "Thorn Bundle",
+      "pack": "begotten_biology",
+      "entry": "icons/THORN_BUNDLE_small.png",
+      "sha256": "41b44ff911fcff576593351c0634fb5d06af730e6d9443177e6689ed3f94dc8b"
+    },
+    {
+      "id": "PULSE_ORGAN",
+      "label": "Pulse Organ",
+      "pack": "begotten_biology",
+      "entry": "icons/PULSE_ORGAN_small.png",
+      "sha256": "263f249f1835ebe6a423c81c81f301708e05805025fc71024171cc80f3a54481"
+    }
+  ]
+}

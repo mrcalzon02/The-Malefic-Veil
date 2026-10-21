@@ -44,9 +44,13 @@ Next gates: verified Java 17/21 topology and host-build regressions, macro-to-fi
 
 **Release gate R3:** Each playable class has inspected source mesh and valid rig/animation path, visual screenshots, movement/ability tests, synchronized remote hitboxes, authoritative damage and no placeholder labels passed off as finished characters. Target `v0.3.0-alpha`.
 
-## Phase P4 — Multiplayer correctness / internet hardening [PLANNED]
+## Phase P4 — Multiplayer correctness / internet hardening [DEDICATED-HOST AND VEHICLE FOUNDATION IMPLEMENTED; RELEASE GATE OPEN]
 
 **Deliver:** Socket lifetime management, reconnect, join-in-progress, server-owned state and object IDs, snapshots, reconciliation/interpolation, anti-teleport and interaction validation, spawn selection, friendly/hostile turret team logic, inventory transactions, packet budgeting, authenticated identities and disconnect cleanup. Dedicated server configuration, game modes, admin and lobby.
+
+**Implemented incremental slices:** Authoritative enter/drive/exit server commands, deterministic road-front car spawn and mesh rendering, vehicle state replication and network test; separate headless dedicated mode with stable LAN account keys, administrative status/kick/ban/allowlisting and audit, 60s autosave to CRC-checked world snapshots and recovery backup, reconnect-safe structure ownership IDs, player-built device PvP damage and configurable offline raid grace. Host shutdown saves, restores vehicles/NPC state/pickups/devices, and fails closed for incompatible or corrupt worlds. Generated continental NPC/player spawn sites and macro construction masks exist, but **do not yet instantiate actual continental game sectors**. See [Dedicated host runbook](DEDICATED_HOSTING.md).
+
+**Unfinished blockers:** internet authentication/TLS, connection flood defense, authoritative full-continent movement and chunk streaming, per-character inventory/economic persistence, true multiplayer teams/base claims, collision/height-aware multibuilding validation, client raid timer indicators, staged disaster recovery testing, long-duration real dedicated server soak, balancing and operator signoff.
 
 **Release gate R4:** Deterministic + adversarial multiplayer tests including duplicate pickup/build commands, disconnect mid-revive, 4–16 clients, 150ms latency/packet loss, 2h soak, resource and security bounds. Localhost protocol tests **do not** satisfy this gate. Target `v0.4.0-alpha`.
 

@@ -7,6 +7,7 @@ import java.util.Random;
 /** Reproducible tile/collision authority shared by the renderer and LAN shot tests. */
 public final class World {
     public static final int SIZE = 132;
+    public static final int PARCEL_METERS = CityLayout.CELL; // One actual world, one metre-scale coordinate system.
     public final long seed;
     private final byte[][] walls = new byte[SIZE][SIZE];
     public final CityLayout city;
@@ -84,7 +85,43 @@ public final class World {
         a=(a^(a>>>27))*0x94d049bb133111ebL;
         return a^(a>>>31);
     }
-    /** Seed-identical continental plan, generated lazily until chunk streaming is implemented. */
+    /**
+     * The existing 132 m authored arena is the detailed City A district of
+     * the SAME procedural continent. No teleport, dimension, or second player
+     * coordinate space. The macro continent uses six world metres per parcel.
+     * Global (0,0) remains the legacy arena origin for save compatibility.
+     */
+    public int worldOffsetX(){
+        return SIZE/2-continent().cities().get(0).x()*PARCEL_METERS;
+    }
+    public int worldOffsetY(){
+        return SIZE/2-continent().cities().get(0).y()*PARCEL_METERS;
+    }
+    public int parcelX(double worldX){
+        return (int)Math.floor((worldX-worldOffsetX())/PARCEL_METERS);
+    }
+    public int parcelY(double worldY){
+        return (int)Math.floor((worldY-worldOffsetY())/PARCEL_METERS);
+    }
+    public double worldX(double parcelX){return worldOffsetX()+parcelX*PARCEL_METERS;}
+    public double worldY(double parcelY){return worldOffsetY()+parcelY*PARCEL_METERS;}
+    public boolean detailedCity(double x,double y){
+        return x>=0&&y>=0&&x<SIZE&&y<SIZE;
+    }
+    private boolean openCityGate(int x,int y){
+        // The northwest street/spawn is already walkable; open its two edge
+        // crossings so walkers can leave City A on foot with no transition.
+        return x>=0&&y>=0&&((x==0&&y>=1&&y<=2)||
+            (y==0&&x>=1&&x<=2));
+    }
+    public boolean continentalWalkable(double x,double y){
+        int px=parcelX(x),py=parcelY(y);
+        ContinentLayout map=continent();
+        return map.inBounds(px,py)&&map.land(px,py)&&
+            (!map.worldStructureAt(px,py)||map.road(px,py)||
+             map.cityProtected(px,py)&&!map.road(px,py));
+    }
+    /** Seed-identical continental plan, part of the actual shared world. */
     public ContinentLayout continent() {
         ContinentLayout map=continent;
         if(map==null)synchronized(this){if(continent==null)continent=ContinentLayout.generate(seed);map=continent;}
@@ -93,9 +130,14 @@ public final class World {
     /** Generated structures are not overwriteable by player-built devices or buildings. */
     public boolean worldStructureAt(double x,double y,double radius) {
         if(!Double.isFinite(x)||!Double.isFinite(y)||radius<0)return true;
-        if(city.worldStructureAt(x,y,radius))return true;
-        for(UrbanProp p:physicalProps)if(Math.hypot(x-p.x,y-p.y)<radius+p.radius)return true;
-        return false;
+        if(detailedCity(x,y)){
+            if(city.worldStructureAt(x,y,radius))return true;
+            for(UrbanProp p:physicalProps)
+                if(Math.hypot(x-p.x,y-p.y)<radius+p.radius)return true;
+            return false;
+        }
+        int cx=parcelX(x),cy=parcelY(y);
+        return continent().worldStructureAt(cx,cy);
     }
     private double[] randomOpen(Random r,CityLayout.Category preferred) {
         for(int i=0;i<10000;i++) {
@@ -107,14 +149,15 @@ public final class World {
         throw new IllegalStateException("No traversable city tiles");
     }
     public int tile(int x,int y) {
-        if(x<0||y<0||x>=SIZE||y>=SIZE) return 1;
-        return walls[x][y];
+        if(x>=0&&y>=0&&x<SIZE&&y<SIZE)
+            return openCityGate(x,y)?0:walls[x][y];
+        return continentalWalkable(x+.5,y+.5)?0:1;
     }
     public boolean solid(double x,double y){return tile((int)Math.floor(x),(int)Math.floor(y))!=0;}
     public boolean canWalk(double x,double y) {
         double r=.19;
         if(solid(x-r,y-r)||solid(x+r,y-r)||solid(x-r,y+r)||solid(x+r,y+r))return false;
-        for(UrbanProp p:physicalProps)
+        if(detailedCity(x,y))for(UrbanProp p:physicalProps)
             if(Math.hypot(x-p.x,y-p.y)<p.radius+r)return false;
         return true;
     }

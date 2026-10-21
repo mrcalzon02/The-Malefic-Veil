@@ -131,6 +131,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         attackFlash=Math.max(0,attackFlash-step);
         if(noticeTicks>0)noticeTicks--;
         if(net!=null) {
+            String cargoMessage;
+            while((cargoMessage=net.cargoResults.poll())!=null)
+                toast(cargoMessage.endsWith("|OK")?
+                    "TRUCK "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" COMPLETE":
+                    "CARGO "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" REJECTED");
             if(respawnPending&&(!net.connected()||
                 System.nanoTime()-respawnRequestAt>5_000_000_000L)){
                 respawnPending=false;

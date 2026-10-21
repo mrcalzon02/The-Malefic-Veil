@@ -57,10 +57,13 @@ public final class UrbanScene {
         List<ModelInstance> result=new ArrayList<>();
         for(int by=lowY;by<=highY;by++)for(int bx=lowX;bx<=highX;bx++){
             List<ModelInstance> bucket=spatial.get(bucketId(bx,by));
-            if(bucket!=null)result.addAll(bucket);
+            if(bucket!=null)for(ModelInstance item:bucket){
+                double dx=item.x()-x,dy=item.y()-y;
+                if(dx*dx+dy*dy<=distance*distance)result.add(item);
+            }
         }
         result.sort(Comparator.comparingDouble(item->
-            Math.pow(item.x()-x,2)+Math.pow(item.y()-y,2)));
+            (item.x()-x)*(item.x()-x)+(item.y()-y)*(item.y()-y)));
         return result;
     }
 }

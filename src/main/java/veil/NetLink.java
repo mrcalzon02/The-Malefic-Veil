@@ -20,11 +20,14 @@ public final class NetLink implements AutoCloseable {
     public record NpcEvent(int index,double x,double y,int hp){}
     public record ShotEvent(long sequence,boolean fired,String outcome,int targetId,int damage,int ammo){}
     public record BuildEvent(int kind,String reason,int cashCost,int suppliesCost){}
+    public record Car(int id,double x,double y,double heading,double speed,double fuel,int hp,int driverId){}
     private final Socket socket;
     private final PrintWriter writer;
     public final long seed;
     public final int id;
     public final ConcurrentHashMap<Integer,Remote> others=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,Car> cars=new ConcurrentHashMap<>();
+    public final ConcurrentLinkedQueue<String> rideResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<Integer> pickedUp=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<DeviceEvent> structures=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<NpcEvent> npcs=new ConcurrentLinkedQueue<>();
@@ -81,6 +84,19 @@ public final class NetLink implements AutoCloseable {
                             case "BUILD_RESULT" -> {
                                 if(s.length==5)buildResults.add(new BuildEvent(Integer.parseInt(s[1]),
                                     s[2],Integer.parseInt(s[3]),Integer.parseInt(s[4])));
+                            }
+                            case "CAR" -> {
+                                if(s.length==9){
+                                    Car car=new Car(Integer.parseInt(s[1]),Double.parseDouble(s[2]),
+                                        Double.parseDouble(s[3]),Double.parseDouble(s[4]),Double.parseDouble(s[5]),
+                                        Double.parseDouble(s[6]),Integer.parseInt(s[7]),Integer.parseInt(s[8]));
+                                    if(Double.isFinite(car.x())&&Double.isFinite(car.y())&&
+                                       Double.isFinite(car.heading())&&Double.isFinite(car.speed())&&
+                                       Double.isFinite(car.fuel()))cars.put(car.id(),car);
+                                }
+                            }
+                            case "RIDE_RESULT" -> {
+                                if(s.length==2)rideResults.add(s[1]);
                             }
                             case "PONG" -> {
                                 if(s.length==2){
@@ -144,5 +160,12 @@ public final class NetLink implements AutoCloseable {
     public void ability(){send("ABILITY");}
     public void build(int kind){send("BUILD|"+kind);}
     public void respawn(int index){send("RESPAWN|"+index);}
+    public int drivenCar(){
+        for(Car car:cars.values())if(car.driverId()==id)return car.id();
+        return -1;
+    }
+    public void ride(int index){send("RIDE|"+index);}
+    public void exitCar(){send("EXIT");}
+    public void drive(double throttle,double steering){send("DRIVE|"+throttle+"|"+steering);}
     @Override public void close()throws IOException{connected=false;socket.close();}
 }

@@ -12,19 +12,27 @@ import java.util.*;
  */
 public final class PropRenderer {
     private static final double FOV=1.18, TAN=Math.tan(FOV/2);
-    private record Face(int[] px,int[] py,int color,double depth){}
+    private record Face(int[] px,int[] py,int color,double depth,double opacity){}
     public int draw(Graphics2D g,UrbanScene scene,double playerX,double playerY,
                     double heading,double[] wallDepth,int width,int height){
+        return draw(g,scene.models(),scene.instances(),playerX,playerY,heading,wallDepth,width,height);
+    }
+    /** Shared projection for licensed environment geometry and authored gameplay meshes. */
+    public int draw(Graphics2D g,Map<String,GlbMesh> models,
+                    java.util.List<UrbanScene.ModelInstance> instances,
+                    double playerX,double playerY,double heading,double[] wallDepth,
+                    int width,int height){
         java.util.List<Face> faces=new ArrayList<>();
         int meshCount=0;
-        for(UrbanScene.ModelInstance placement:scene.instances()){
+        for(UrbanScene.ModelInstance placement:instances){
+            if(placement.opacity()<=0)continue;
             double dx=placement.x()-playerX,dy=placement.y()-playerY;
             double dist=Math.hypot(dx,dy);
             if(dist>19||dist<.12)continue;
             double right=-Math.sin(heading)*dx+Math.cos(heading)*dy;
             double forward=Math.cos(heading)*dx+Math.sin(heading)*dy;
             if(forward<.06||Math.abs(right)>forward*(TAN+0.5)+2)continue;
-            GlbMesh mesh=scene.models().get(placement.model());
+            GlbMesh mesh=models.get(placement.model());
             if(mesh==null)continue;
             meshCount++;
             double yaw=placement.heading(),cy=Math.cos(yaw),sy=Math.sin(yaw);
@@ -63,11 +71,12 @@ public final class PropRenderer {
                 double shade=Math.max(.31,1-dist/27);
                 int r=(int)(((source>>16)&255)*shade),green=(int)(((source>>8)&255)*shade);
                 int blue=(int)((source&255)*shade);
-                faces.add(new Face(sx,screenY,(r<<16)|(green<<8)|blue,meanDepth/3));
+                faces.add(new Face(sx,screenY,(r<<16)|(green<<8)|blue,meanDepth/3,placement.opacity()));
             }
         }
         faces.sort((a,b)->Double.compare(b.depth(),a.depth()));
         Shape old=g.getClip();
+        Composite previous=g.getComposite();
         for(Face face:faces){
             // Painter's order for static props; background wall always stays authoritative.
             Polygon triangle=new Polygon(face.px(),face.py(),3);
@@ -81,10 +90,13 @@ public final class PropRenderer {
             }
             if(vis.isEmpty())continue;
             g.setClip(vis);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                (float)Math.max(0,Math.min(1,face.opacity()))));
             g.setColor(new Color(face.color()));
             g.fillPolygon(triangle);
         }
         g.setClip(old);
+        g.setComposite(previous);
         return meshCount;
     }
 }

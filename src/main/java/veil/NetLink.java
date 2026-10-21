@@ -41,6 +41,8 @@ public final class NetLink implements AutoCloseable {
     private final AtomicLong pingIds=new AtomicLong();
     private volatile long waitingPing=-1,pingSentNanos=0;
     private volatile int[] spawnScores={0,0,0};
+    private volatile long respawnRemainingMs=0;
+    public long respawnRemainingMs(){return respawnRemainingMs;}
     public final ConcurrentLinkedQueue<String> respawnResults=new ConcurrentLinkedQueue<>();
     public NetLink(String host,int port)throws IOException {
         socket=new Socket();
@@ -118,6 +120,9 @@ public final class NetLink implements AutoCloseable {
                             case "SPAWNS" -> {
                                 if(s.length==4)spawnScores=new int[]{
                                     Integer.parseInt(s[1]),Integer.parseInt(s[2]),Integer.parseInt(s[3])};
+                            }
+                            case "RESPAWN_TIMER" -> {
+                                if(s.length==2)respawnRemainingMs=Math.max(0,Long.parseLong(s[1]));
                             }
                             case "RESPAWN_RESULT" -> {
                                 if(s.length==3)respawnResults.add(s[2]);

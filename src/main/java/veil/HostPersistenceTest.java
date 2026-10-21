@@ -46,14 +46,8 @@ public final class HostPersistenceTest {
                 "empty lot is also fixed city land");
             check(!game.build(1,ArenaSystems.BARRICADE),"persistent host must reject city building");
             check(game.world.devices.isEmpty(),"rejected city build not saved");
-            // Import a legacy structure fixture to verify existing saves remain
-            // recoverable. This fixture is not constructible via player actions.
-            World.Device historic=new World.Device(game.player(1).x+1.1,
-                game.player(1).y,ArenaSystems.BARRICADE);
-            historic.ownerId=1;historic.ownerKey=owner;
-            game.world.devices.add(historic);
-            check(owner.equals(game.world.devices.get(0).ownerKey),
-                "legacy structure ownership not tied only to transient peer ID");
+            check(game.world.devices.isEmpty(),
+                "new durable snapshots must contain no forbidden city structures");
             game.world.pickups.get(0).taken=true;
             game.world.npcs.get(0).hp=44;
             game.leave(1);
@@ -62,19 +56,18 @@ public final class HostPersistenceTest {
             check(Files.exists(DurableRealm.file(dir))&&Files.exists(dir.resolve("realm.bak")),"primary and recovery backup");
             ArenaSystems restored=new ArenaSystems(99913);
             check(DurableRealm.load(restored,dir),"load saved world");
-            check(restored.world.devices.size()==1&&owner.equals(restored.world.devices.get(0).ownerKey),
-                "persisted legacy player-owned structure");
+            check(restored.world.devices.isEmpty(),
+                "city remains immutable across saved game restart");
             check(restored.world.pickups.get(0).taken&&restored.world.npcs.get(0).hp==44,
                 "pickups and NPC mutation persist");
             restored.join(2);
             check(restored.assignAccount(2,"acct_"+"2".repeat(64)),"attacker identity");
             check(!restored.damageDevice(2,0,25,System.currentTimeMillis()+31*60000L),
-                "offline protection blocks direct base damage");
-            check(restored.world.devices.get(0).hp==100,"denied raid leaves base untouched");
+                "no protected-city structure available for direct damage");
             Files.writeString(DurableRealm.file(dir),"corrupted data");
             ArenaSystems recovered=new ArenaSystems(99913);
             check(DurableRealm.load(recovered,dir),"verified last-good backup restored after corruption");
-            check(recovered.world.devices.size()==1,"backup retains imported legacy structure");
+            check(recovered.world.devices.isEmpty(),"backup cannot restore structures into protected city");
             boolean mismatch=false;
             try{DurableRealm.load(new ArenaSystems(99914),dir);}
             catch(java.io.IOException expected){mismatch=true;}

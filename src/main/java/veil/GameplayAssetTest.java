@@ -49,18 +49,22 @@ public final class GameplayAssetTest {
         }
         check(changed>40,"mesh geometry never rasterized");
         check(lessVisible>20,"25%-opaque character did not alpha blend into the scene");
-        BufferedImage sheet=new BufferedImage(960,600,BufferedImage.TYPE_INT_RGB);
+        BufferedImage sheet=new BufferedImage(960,1200,BufferedImage.TYPE_INT_RGB);
         Graphics2D g=sheet.createGraphics();
-        for(int row=0;row<3;row++)for(int col=0;col<3;col++){
+        String[] gallery=new String[18];
+        System.arraycopy(GameplayMeshes.HERO,0,gallery,0,4);
+        gallery[4]="enemy-walker";
+        System.arraycopy(GameplayMeshes.WEAPON,0,gallery,5,2);
+        System.arraycopy(GameplayMeshes.PICKUP,0,gallery,7,7);
+        System.arraycopy(GameplayMeshes.DEVICE,0,gallery,14,4);
+        for(int row=0;row<6;row++)for(int col=0;col<3;col++){
             int index=row*3+col;
-            String id=index<4?GameplayMeshes.HERO[index]:
-                index<6?GameplayMeshes.WEAPON[index-4]:
-                GameplayMeshes.DEVICE[index-6];
+            String id=gallery[index];
             BufferedImage panel=new BufferedImage(320,200,BufferedImage.TYPE_INT_RGB);
             Graphics2D pg=panel.createGraphics();
             pg.setColor(new Color(19,20,28));pg.fillRect(0,0,320,200);
             double[] depth=new double[320];Arrays.fill(depth,40);
-            if(index<4||index>=6)new PropRenderer().draw(pg,lib.meshes(),
+            if(index!=5&&index!=6)new PropRenderer().draw(pg,lib.meshes(),
                 java.util.List.of(new UrbanScene.ModelInstance(id,3.5,1.5,-Math.PI/2,1,1)),
                 1.5,1.5,0,depth,320,200);
             else new WeaponViewRenderer().draw(pg,lib.meshes().get(id),320,200,0);

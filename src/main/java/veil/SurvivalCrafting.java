@@ -11,7 +11,8 @@ public final class SurvivalCrafting {
     public enum Item {
         TIMBER, FIELD_STONE, FIBER, EDIBLES, MEDICINAL_HERBS, RAW_ORE,
         DIRTY_WATER, CLEAN_WATER, BANDAGE, CAMPFIRE, FILTER, WORKBENCH,
-        METAL_STOCK, MACHINE_PARTS, SHELTER_KIT, VEHICLE_REPAIR_KIT
+        METAL_STOCK, MACHINE_PARTS, SHELTER_KIT, VEHICLE_REPAIR_KIT,
+        TENT_KIT, CRATE_KIT, FENCE_SECTION, STAKE_TRAP, NOISE_ALARM
     }
     public enum Station { HAND, FIRE, WORKBENCH }
     public record Recipe(String id,Station station,Map<Item,Integer> requires,
@@ -25,10 +26,22 @@ public final class SurvivalCrafting {
             Item.FIELD_STONE,2),Item.CAMPFIRE,1);
         register(r,"water-filter",Station.HAND,Map.of(Item.FIBER,3,
             Item.FIELD_STONE,2),Item.FILTER,1);
+        // Accessible no-claim wilderness start: these recipes cannot need
+        // truck cargo or an already completed settlement.
+        register(r,"tent",Station.HAND,Map.of(Item.FIBER,4,
+            Item.TIMBER,2),Item.TENT_KIT,1);
+        register(r,"crate",Station.HAND,Map.of(Item.TIMBER,5,
+            Item.FIBER,2),Item.CRATE_KIT,1);
+        register(r,"fence",Station.HAND,Map.of(Item.TIMBER,3,
+            Item.FIBER,1),Item.FENCE_SECTION,2);
+        register(r,"stake-trap",Station.HAND,Map.of(Item.TIMBER,2,
+            Item.FIBER,1),Item.STAKE_TRAP,1);
+        register(r,"noise-alarm",Station.HAND,Map.of(Item.TIMBER,1,
+            Item.FIBER,2),Item.NOISE_ALARM,1);
         register(r,"boil-water",Station.FIRE,Map.of(Item.DIRTY_WATER,1),
             Item.CLEAN_WATER,1);
         register(r,"workbench",Station.HAND,Map.of(Item.TIMBER,6,
-            Item.METAL_STOCK,1),Item.WORKBENCH,1);
+            Item.FIELD_STONE,4,Item.FIBER,2),Item.WORKBENCH,1);
         register(r,"shelter-kit",Station.WORKBENCH,Map.of(Item.TIMBER,8,
             Item.FIBER,5,Item.METAL_STOCK,1),Item.SHELTER_KIT,1);
         register(r,"vehicle-repair",Station.WORKBENCH,Map.of(Item.METAL_STOCK,1,
@@ -50,7 +63,9 @@ public final class SurvivalCrafting {
     public synchronized int count(Item kind){return items.getOrDefault(kind,0);}
     private static int weight(Item item){return switch(item){
         case METAL_STOCK,MACHINE_PARTS,WORKBENCH,SHELTER_KIT -> 25;
-        case FIELD_STONE,RAW_ORE,CAMPFIRE -> 4;
+        case FIELD_STONE,RAW_ORE,CAMPFIRE,CRATE_KIT -> 4;
+        case TENT_KIT -> 3;
+        case FENCE_SECTION,STAKE_TRAP -> 2;
         default -> 1;
     };}
     public synchronized int mass(){

@@ -231,13 +231,14 @@ public final class ArenaSystems {
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
         if(world.devices.size()>=100)return new BuildReview(false,"BUILD_LIMIT",price,supplies,x,y);
         if(p.cash<price||p.scrap<supplies)return new BuildReview(false,"RESOURCES",price,supplies,x,y);
+        // Dedicated spawn-clearance feedback takes priority over overlapping world roads.
+        for(double[] spawn:world.spawns)
+            if(Math.hypot(x-spawn[0],y-spawn[1])<2.0)
+                return new BuildReview(false,"SPAWN_CLEARANCE",price,supplies,x,y);
         if(world.worldStructureAt(x,y,.55))
             return new BuildReview(false,"WORLD_STRUCTURE",price,supplies,x,y);
         if(!free(x,y)||!clear(p.x,p.y,x,y))
             return new BuildReview(false,"OBSTRUCTED",price,supplies,x,y);
-        for(double[] spawn:world.spawns)
-            if(Math.hypot(x-spawn[0],y-spawn[1])<2.0)
-                return new BuildReview(false,"SPAWN_CLEARANCE",price,supplies,x,y);
         for(World.Device d:world.devices)
             if(d.hp>0&&Math.hypot(d.x-x,d.y-y)<1.2)
                 return new BuildReview(false,"DEVICE_CLEARANCE",price,supplies,x,y);

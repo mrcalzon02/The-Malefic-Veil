@@ -117,6 +117,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 pistolClip=s.pistolClip();shellClip=s.shellClip();frags=s.frags();
                 if(Math.hypot(px-s.x(),py-s.y())>1.0){px=s.x();py=s.y();}
             }
+            String respawnReply;
+            while((respawnReply=net.respawnResults.poll())!=null)
+                if(!respawnReply.equals("OK"))toast("RESPAWN REJECTED");
             NetLink.ShotEvent result;
             while((result=net.shots.poll())!=null){
                 if(!result.fired())toast("SHOT REJECTED: "+result.outcome());
@@ -413,6 +416,16 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString("YOU HAVE FALLEN",w/2-150,h/2-30);
             g.setFont(new Font(Font.MONOSPACED,Font.BOLD,17));g.setColor(Color.WHITE);
             g.drawString("SELECT RESPAWN:  [1] NORTH  [2] CENTER  [3] SOUTH",w/2-285,h/2+10);
+            if(net!=null){
+                int[] risk=net.spawnScores();
+                String[] marks=new String[3];
+                for(int i=0;i<3;i++)marks[i]=risk[i]>=1000?"BLOCKED":
+                    risk[i]>=55?"DANGER":risk[i]>=20?"CAUTION":"SAFE";
+                g.setColor(new Color(237,210,129));
+                g.setFont(new Font(Font.MONOSPACED,Font.BOLD,15));
+                g.drawString("[1] "+marks[0]+"    [2] "+marks[1]+"    [3] "+marks[2],
+                    w/2-245,h/2+36);
+            }
         }
         g.dispose();
     }

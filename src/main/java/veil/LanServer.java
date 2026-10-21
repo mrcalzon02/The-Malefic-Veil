@@ -31,7 +31,13 @@ public final class LanServer implements AutoCloseable {
                 match.advance(100);
                 for(Peer p:connections.values()){
                     ArenaSystems.Player self=match.player(p.id);
-                    if(self!=null)p.send(selfPacket(self));
+                    if(self!=null){
+                        p.send(selfPacket(self));
+                        if(self.dead){
+                            List<ArenaSystems.SpawnRisk> risks=match.spawnRisks(p.id);
+                            p.send("SPAWNS|"+risks.get(0).score()+"|"+risks.get(1).score()+"|"+risks.get(2).score());
+                        }
+                    }
                 }
                 for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
                 for(int i=0;i<match.world.npcs.size();i++){
@@ -129,7 +135,9 @@ public final class LanServer implements AutoCloseable {
                         }
                         case "RESPAWN" -> {
                             if(s.length!=2)continue;
-                            changed=match.respawn(peer.id,Integer.parseInt(s[1]));
+                            int index=Integer.parseInt(s[1]);
+                            changed=match.respawn(peer.id,index);
+                            peer.send("RESPAWN_RESULT|"+index+"|"+(changed?"OK":"REJECTED"));
                         }
                         default -> { }
                     }

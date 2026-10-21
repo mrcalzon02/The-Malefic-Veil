@@ -20,6 +20,10 @@ public final class ArenaSystems {
         public int classId,frags,flags;
         public long lastHurt=-100000,shotAt=-100000,shadeUntil,abilityAt=-100000,respawnAt=-100000,moveAt;
         public boolean dead;
+        public long protectedUntil,lastSpawnAt=-100000;
+        public int lastSpawnIndex=-1;
+        public final int[] earlySpawnDeaths=new int[3];
+        public double spawnX,spawnY;
         Player(int id,double x,double y,long now){
             this.id=id;this.x=x;this.y=y;moveAt=now;
         }
@@ -68,6 +72,7 @@ public final class ArenaSystems {
         double permitted=.33+Math.min(elapsed,500)*max/1000;
         if(Math.hypot(x-p.x,y-p.y)>permitted)return false;
         p.x=x;p.y=y;p.angle=angle;p.flags=flags&3;p.moveAt=clock;
+        if(clock<p.protectedUntil&&Math.hypot(x-p.spawnX,y-p.spawnY)>.85)p.protectedUntil=0;
         refreshVisibility(p);return true;
     }
     public synchronized void refreshVisibility(Player p){
@@ -80,11 +85,15 @@ public final class ArenaSystems {
         p.visibility=opacity(v);
     }
     public synchronized void damage(Player p,int hp,int sanity) {
-        if(p==null||p.dead)return;
+        if(p==null||p.dead||clock<p.protectedUntil)return;
         p.hp=Math.max(0,p.hp-Math.max(0,hp));
         p.sanity=Math.max(0,p.sanity-Math.max(0,sanity));
         p.lastHurt=clock;
-        if(p.hp==0){p.dead=true;p.respawnAt=clock;}
+        if(p.hp==0){
+            p.dead=true;p.respawnAt=clock;p.protectedUntil=0;
+            if(p.lastSpawnIndex>=0&&clock-p.lastSpawnAt<5000)
+                p.earlySpawnDeaths[p.lastSpawnIndex]=Math.min(10,p.earlySpawnDeaths[p.lastSpawnIndex]+1);
+        }
     }
     public synchronized boolean pickup(int id,int itemIndex){
         Player p=player(id);
@@ -180,6 +189,7 @@ public final class ArenaSystems {
         if(clock-p.shotAt<cooldown)return false;
         if(weapon==0&&p.pistolClip<=0||weapon==1&&p.shellClip<=0)return false;
         if(weapon==0)p.pistolClip--;else p.shellClip--;
+        p.protectedUntil=0; // offensive action immediately ends spawn invulnerability.
         p.shotAt=clock;refreshVisibility(p);
         double max=weapon==0?12:4.5;
         Object target=null;
@@ -269,10 +279,44 @@ public final class ArenaSystems {
         world.devices.add(device);
         return true;
     }
+    /** Scores current threats for each selectable spawn without secretly denying chosen risk. */
+    public record SpawnRisk(int index,int score,String label){}
+    public synchronized List<SpawnRisk> spawnRisks(int id){
+        Player player=player(id);
+        List<SpawnRisk> ranks=new ArrayList<>();
+        for(int i=0;i<world.spawns.length;i++){
+            double[] point=world.spawns[i];
+            int risk=player==null?0:player.earlySpawnDeaths[i]*14;
+            if(!free(point[0],point[1]))risk=1000;
+            for(Player enemy:players.values()){
+                if(enemy.id==id||enemy.dead)continue;
+                double distance=Math.hypot(enemy.x-point[0],enemy.y-point[1]);
+                if(distance<10)risk+=Math.max(0,(int)(65-distance*5));
+                if(distance<15&&clear(enemy.x,enemy.y,point[0],point[1]))risk+=30;
+            }
+            for(World.Device device:world.devices){
+                if(device.hp<=0||device.kind!=TURRET||device.ownerId==id)continue;
+                double distance=Math.hypot(device.x-point[0],device.y-point[1]);
+                if(distance<7&&clear(device.x,device.y,point[0],point[1]))
+                    risk+=Math.max(0,95-(int)(distance*8));
+            }
+            for(World.Npc npc:world.npcs){
+                if(npc.hp<=0)continue;
+                double distance=Math.hypot(npc.x-point[0],npc.y-point[1]);
+                if(distance<4)risk+=Math.max(0,35-(int)(distance*7));
+            }
+            String label=risk>=1000?"BLOCKED":risk>=55?"DANGER":risk>=20?"CAUTION":"SAFE";
+            ranks.add(new SpawnRisk(i,risk,label));
+        }
+        return List.copyOf(ranks);
+    }
     public synchronized boolean respawn(int id,int spawn){
         Player p=player(id);
         if(p==null||!p.dead||spawn<0||spawn>=world.spawns.length||clock-p.respawnAt<1200)return false;
+        if(!free(world.spawns[spawn][0],world.spawns[spawn][1]))return false;
         p.x=world.spawns[spawn][0];p.y=world.spawns[spawn][1];
+        p.lastSpawnIndex=spawn;p.lastSpawnAt=clock;
+        p.spawnX=p.x;p.spawnY=p.y;p.protectedUntil=clock+1200;
         p.hp=100;p.sanity=75;p.dead=false;p.moveAt=clock;
         p.pistolClip=12;p.shellClip=6;
         p.pistolReserve=Math.max(24,p.pistolReserve);p.shellReserve=Math.max(12,p.shellReserve);

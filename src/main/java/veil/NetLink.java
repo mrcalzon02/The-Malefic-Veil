@@ -32,6 +32,8 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<BuildEvent> buildResults=new ConcurrentLinkedQueue<>();
     private final AtomicLong shotIds=new AtomicLong();
     private volatile Self self;
+    private volatile int[] spawnScores={0,0,0};
+    public final ConcurrentLinkedQueue<String> respawnResults=new ConcurrentLinkedQueue<>();
     public NetLink(String host,int port)throws IOException {
         socket=new Socket();
         socket.connect(new InetSocketAddress(host,port),4000);
@@ -76,6 +78,13 @@ public final class NetLink implements AutoCloseable {
                                 if(s.length==5)buildResults.add(new BuildEvent(Integer.parseInt(s[1]),
                                     s[2],Integer.parseInt(s[3]),Integer.parseInt(s[4])));
                             }
+                            case "SPAWNS" -> {
+                                if(s.length==4)spawnScores=new int[]{
+                                    Integer.parseInt(s[1]),Integer.parseInt(s[2]),Integer.parseInt(s[3])};
+                            }
+                            case "RESPAWN_RESULT" -> {
+                                if(s.length==3)respawnResults.add(s[2]);
+                            }
                             case "SELF" -> {
                                 if(s.length==16)self=new Self(Integer.parseInt(s[1]),Integer.parseInt(s[2]),
                                     Integer.parseInt(s[3]),Integer.parseInt(s[4]),Integer.parseInt(s[5]),
@@ -93,6 +102,7 @@ public final class NetLink implements AutoCloseable {
         t.setDaemon(true);t.start();
     }
     public Self self(){return self;}
+    public int[] spawnScores(){return spawnScores.clone();}
     private synchronized void send(String s){writer.println(s);}
     public void choose(int id){send("CHOOSE|"+id);}
     public void state(double x,double y,double angle,int stanceFlags){send("STATE|"+x+"|"+y+"|"+angle+"|"+stanceFlags);}

@@ -41,6 +41,9 @@ jobs:
       - name: QoL gate for confirmed hits and obstacle-aware construction
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.QualityGateTest
+      - name: Spawn safety scoring and nonoffensive respawn protection
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.SpawnSafetyTest
       - name: Real localhost server and multiplayer replication
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.LanSmokeTest

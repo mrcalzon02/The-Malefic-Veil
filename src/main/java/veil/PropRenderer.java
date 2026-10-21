@@ -12,6 +12,12 @@ import java.util.*;
  */
 public final class PropRenderer {
     private static final double FOV=1.18, TAN=Math.tan(FOV/2);
+    private int drawDistance=19, highDetailDistance=9, meshBudget=80;
+    public void setBudgets(PerformanceSettings settings){
+        drawDistance=settings.propDistance;
+        highDetailDistance=settings.highDetailDistance;
+        meshBudget=settings.meshBudget;
+    }
     private record Face(int[] px,int[] py,int color,double depth,double opacity){}
     public int draw(Graphics2D g,UrbanScene scene,double playerX,double playerY,
                     double heading,double[] wallDepth,int width,int height){
@@ -28,15 +34,19 @@ public final class PropRenderer {
             if(placement.opacity()<=0)continue;
             double dx=placement.x()-playerX,dy=placement.y()-playerY;
             double dist=Math.hypot(dx,dy);
-            if(dist>19||dist<.12)continue;
+            if(dist>drawDistance||dist<.12)continue;
             double right=-Math.sin(heading)*dx+Math.cos(heading)*dy;
             double forward=Math.cos(heading)*dx+Math.sin(heading)*dy;
             if(forward<.06||Math.abs(right)>forward*(TAN+0.5)+2)continue;
             GlbMesh mesh=models.get(placement.model());
             if(mesh==null)continue;
+            if(meshCount>=meshBudget)break;
             meshCount++;
             double yaw=placement.heading(),cy=Math.cos(yaw),sy=Math.sin(yaw);
+            int faceStep=dist>highDetailDistance?4:1;
+            int faceIndex=0;
             for(GlbMesh.Triangle f:mesh.triangles()){
+                if(faceIndex++%faceStep!=0)continue;
                 float[][] vert={
                     {f.ax(),f.ay(),f.az()},{f.bx(),f.by(),f.bz()},{f.cx(),f.cy(),f.cz()}
                 };

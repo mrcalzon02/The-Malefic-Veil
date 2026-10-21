@@ -144,6 +144,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             String factionMessage;
             while((factionMessage=net.factionResults.poll())!=null)
                 toast(factionMessage.replace('|',' ').replace('_',' '));
+            String craftMessage;
+            while((craftMessage=net.craftResults.poll())!=null)
+                toast(craftMessage.endsWith("|OK")?
+                    "CRAFTED "+craftMessage.substring(0,craftMessage.indexOf('|')):
+                    "CRAFT DENIED: MISSING RESOURCES OR WORK TIME");
             if(respawnPending&&(!net.connected()||
                 System.nanoTime()-respawnRequestAt>5_000_000_000L)){
                 respawnPending=false;
@@ -608,7 +613,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("L LOAD CARGO  G RECOVER  Q TRUCK  E MEDKIT",23,127);
-            g.drawString("I inventory  K skills  O crews  M city  N continent",23,147);}
+            g.drawString("I inventory  K skills  J craft  O crews  M map",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
@@ -730,6 +735,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_I -> {inventoryVisible=!inventoryVisible;skillsVisible=false;}
             case KeyEvent.VK_K -> {skillsVisible=!skillsVisible;inventoryVisible=false;}
             case KeyEvent.VK_O -> crewDialog();
+            case KeyEvent.VK_J -> handCraftDialog();
             case KeyEvent.VK_F10 -> performanceDialog();
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
         }
@@ -770,6 +776,31 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     x+13,y+h-15);
             }
         }
+    }
+    /** Lists only presently affordable hand recipes; the host still validates every debit. */
+    private void handCraftDialog(){
+        if(net==null){toast("CRAFTING REQUIRES HOST INVENTORY");return;}
+        java.util.Map<String,Integer> possessed=net.survivalInventory;
+        java.util.List<String> recipes=new java.util.ArrayList<>();
+        for(var recipe:SurvivalCrafting.recipes().values()){
+            if(recipe.station()!=SurvivalCrafting.Station.HAND)continue;
+            boolean affordable=true;
+            for(var part:recipe.requires().entrySet())
+                if(possessed.getOrDefault(part.getKey().name(),0)<part.getValue())
+                    affordable=false;
+            if(affordable)recipes.add(recipe.id());
+        }
+        java.util.Collections.sort(recipes);
+        if(recipes.isEmpty()){
+            toast("NO AFFORDABLE HAND RECIPES — GATHER WILDERNESS MATERIALS");
+            return;
+        }
+        String chosen=(String)JOptionPane.showInputDialog(window,
+            "Choose a hand recipe (server consumes all ingredients)",
+            "Field Crafting",JOptionPane.PLAIN_MESSAGE,null,
+            recipes.toArray(String[]::new),recipes.get(0));
+        if(chosen!=null)net.craftHand(chosen);
+        requestFocusInWindow();
     }
     /** One compact real host management prompt, not a screen of inert controls. */
     private void crewDialog(){

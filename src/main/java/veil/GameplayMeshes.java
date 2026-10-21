@@ -222,6 +222,15 @@ public final class GameplayMeshes {
         water.box(.08,.091,.04,.49,.011,.45,0x557F86);
         water.diamond(-.17,.12,.02,.09,.06,0x7A9C9B);
         meshes.put("resource-water",water.done());
+
+        // Nine real, authored static GLBs are immediately available to the
+        // common shaded-triangle renderer under stable airframe IDs. There are
+        // deliberately no invented flight actors or aircraft-spawn shortcuts.
+        try {
+            meshes.putAll(AirPowerMeshes.load(java.nio.file.Path.of(".")));
+        }catch(java.io.IOException error){
+            throw new IllegalStateException("Required PSX faction aircraft invalid or missing",error);
+        }
     }
     public Map<String,GlbMesh> meshes(){return Collections.unmodifiableMap(meshes);}
 }

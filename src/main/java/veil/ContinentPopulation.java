@@ -59,7 +59,7 @@ public final class ContinentPopulation {
             if(!world.buildableGround(x,y)||world.cityAt(x,y)!=0)continue;
             if(world.biome(x,y)!=ContinentLayout.Biome.PLAINS&&
                world.biome(x,y)!=ContinentLayout.Biome.FOREST)continue;
-            if(Math.floorMod(roll(x,y,2),200)!=0)continue;
+            if(Math.floorMod(roll(x,y,2),30)!=0)continue;
             int minRoad=99;
             for(int dx=-6;dx<=6;dx++)for(int dy=-6;dy<=6;dy++)
                 if(world.road(x+dx,y+dy))minRoad=Math.min(minRoad,Math.abs(dx)+Math.abs(dy));

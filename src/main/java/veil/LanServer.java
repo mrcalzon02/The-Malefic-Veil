@@ -66,6 +66,14 @@ public final class LanServer implements AutoCloseable {
                 }
                 for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
                 for(Vehicles.State car:match.vehicles.states())broadcast(carPacket(car),-1);
+                if(match.time()%500==0){
+                    for(Vehicles.State car:match.vehicles.states())
+                        broadcast(cargoTruckPacket(car),-1);
+                    for(CargoHaulage.Site yard:match.cargo.sites())
+                        broadcast(cargoYardPacket(yard),-1);
+                    for(CargoHaulage.Drop drop:match.cargo.drops())
+                        broadcast(cargoDropPacket(drop),-1);
+                }
                 if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++){
                     World.Device d=match.world.devices.get(i);
                     broadcast("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
@@ -97,6 +105,18 @@ public final class LanServer implements AutoCloseable {
         return "CAR|"+car.id()+"|"+car.x()+"|"+car.y()+"|"+car.heading()+"|"+
             car.speed()+"|"+car.fuel()+"|"+car.hp()+"|"+car.driverId();
     }
+    private String cargoTruckPacket(Vehicles.State car){
+        Vehicles.Load load=match.vehicles.cargo(car.id());
+        return "TRUCK_CARGO|"+car.id()+"|"+
+            (load==null||load.resourceType()==null?"NONE":load.resourceType());
+    }
+    private static String cargoYardPacket(CargoHaulage.Site yard){
+        return "CARGO_YARD|"+yard.id()+"|"+yard.x()+"|"+yard.y()+"|"+
+            yard.resource()+"|"+yard.stock();
+    }
+    private static String cargoDropPacket(CargoHaulage.Drop drop){
+        return "CARGO_DROP|"+drop.id()+"|"+drop.x()+"|"+drop.y()+"|"+drop.resource();
+    }
     private static String selfPacket(ArenaSystems.Player p){
         return "SELF|"+p.hp+"|"+p.sanity+"|"+p.cash+"|"+p.scrap+"|"+p.medkits+
             "|"+p.pistolReserve+"|"+p.shellReserve+"|"+p.pistolClip+"|"+p.shellClip+
@@ -106,7 +126,11 @@ public final class LanServer implements AutoCloseable {
         for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
         for(int i=0;i<match.world.pickups.size();i++)
             if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
-        for(Vehicles.State car:match.vehicles.states())peer.send(carPacket(car));
+        for(Vehicles.State car:match.vehicles.states()){
+            peer.send(carPacket(car));peer.send(cargoTruckPacket(car));
+        }
+        for(CargoHaulage.Site yard:match.cargo.sites())peer.send(cargoYardPacket(yard));
+        for(CargoHaulage.Drop drop:match.cargo.drops())peer.send(cargoDropPacket(drop));
         for(int i=0;i<match.world.devices.size();i++){
             World.Device d=match.world.devices.get(i);
             peer.send("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp);
@@ -200,6 +224,23 @@ public final class LanServer implements AutoCloseable {
                                 World.Device d=match.world.devices.get(idx);
                                 broadcast("DEVICE|"+idx+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
                             }
+                        }
+                        case "CARGO_LOAD" -> {
+                            if(s.length!=3)continue;
+                            int car=Integer.parseInt(s[1]),yard=Integer.parseInt(s[2]);
+                            changed=match.loadTruck(peer.id,car,yard);
+                            peer.send("CARGO_RESULT|LOAD|"+(changed?"OK":"REJECTED"));
+                            if(changed){
+                                broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
+                                broadcast(cargoYardPacket(match.cargo.sites().get(yard)),-1);
+                            }
+                        }
+                        case "CARGO_RECOVER" -> {
+                            if(s.length!=3)continue;
+                            int car=Integer.parseInt(s[1]),drop=Integer.parseInt(s[2]);
+                            changed=match.recoverTruckLoad(peer.id,car,drop);
+                            peer.send("CARGO_RESULT|RECOVER|"+(changed?"OK":"REJECTED"));
+                            if(changed)broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
                         }
                         case "RIDE" -> {
                             if(s.length!=2)continue;

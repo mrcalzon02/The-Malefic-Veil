@@ -97,6 +97,14 @@ public final class LanServer implements AutoCloseable {
                 try{
                     boolean changed=false;
                     switch(s[0]){
+                        case "AUTH" -> {
+                            if(s.length!=2)continue;
+                            String account;
+                            try{account=PlayerIdentity.account(s[1]);}
+                            catch(IllegalArgumentException invalid){peer.send("AUTH_DENIED|INVALID");break;}
+                            if(match.assignAccount(peer.id,account))peer.send("AUTH_OK|"+account);
+                            else peer.send("AUTH_DENIED|DUPLICATE");
+                        }
                         case "STATE" -> {
                             if(s.length!=5)continue;
                             changed=match.move(peer.id,Double.parseDouble(s[1]),

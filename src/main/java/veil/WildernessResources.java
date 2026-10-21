@@ -2,9 +2,10 @@ package veil;
 
 import java.util.*;
 
-/** Seeded, irregular wilderness-only gathering nodes in continental macro cells.
- * The authoritative host can activate/harvest them when gameplay sectors stream.
- * Dense cities and existing highways are NEVER eligible wilderness resource sites.
+/** Seeded wilderness gathering nodes indexed by continental macro parcels.
+ * WorldHarvesting maps these nodes into the SAME world-metre coordinates used
+ * by city actors, vehicles, combat and settlements; no second gameplay region.
+ * Dense cities and existing highways never contain wilderness resource nodes.
  */
 public final class WildernessResources {
     public enum Type { TIMBER, FIELD_STONE, FIBER, EDIBLES, MEDICINAL_HERBS, RAW_ORE, DIRTY_WATER }

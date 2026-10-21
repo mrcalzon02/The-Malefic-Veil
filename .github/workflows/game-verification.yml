@@ -44,6 +44,9 @@ jobs:
       - name: Import all 124 CC0 GLBs and render seeded district models
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
+      - name: Rig-independent PSX character, weapon, item and power-up render verification
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.GameplayAssetTest
       - name: QoL gate for confirmed hits and obstacle-aware construction
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.QualityGateTest
@@ -75,4 +78,5 @@ jobs:
           path: |
             build/MaleficVeil.jar
             build/test-visuals/arena-screenshot.png
+            build/test-visuals/gameplay-models.png
           if-no-files-found: warn

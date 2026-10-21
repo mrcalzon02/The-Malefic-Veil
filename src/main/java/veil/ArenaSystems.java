@@ -94,7 +94,8 @@ public final class ArenaSystems {
         public final CharacterProgression progression=new CharacterProgression();
         public final SurvivalCrafting survival=new SurvivalCrafting();
         public boolean ready;
-        public long joinedAt,loadingDeadline,reloadAt=-100000;
+        public long joinedAt,loadingDeadline,reloadAt=-100000,craftReadyAt;
+        public double distanceTowardAthletics;
         public double x,y,angle,visibility;
         public int hp=100,sanity=100,cash=150,scrap=4,medkits=2;
         public int pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
@@ -171,7 +172,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead||p.ready||clock>=p.loadingDeadline)return false;
         p.ready=true;
-        p.protectedUntil=Math.min(p.loadingDeadline,Math.max(p.protectedUntil,clock+6000));
+        p.protectedUntil=Math.min(p.loadingDeadline,clock+6000);
         return true;
     }
     public synchronized CharacterProgression.View progression(int id){
@@ -229,7 +230,13 @@ public final class ArenaSystems {
         double max=((flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85)*p.progression.movementMultiplier();
         double permitted=.33+Math.min(elapsed,500)*max/1000;
         if(Math.hypot(x-p.x,y-p.y)>permitted)return false;
+        double travelled=Math.hypot(x-p.x,y-p.y);
         p.x=x;p.y=y;p.angle=angle;p.flags=flags&3;p.moveAt=clock;
+        // Athletics XP needs actual distance walked, not idle movement packet spam.
+        p.distanceTowardAthletics=Math.min(30,p.distanceTowardAthletics+travelled);
+        if(p.distanceTowardAthletics>=25&&
+           p.progression.reward(CharacterProgression.Skill.ATHLETICS,6,clock,20_000)>0)
+            p.distanceTowardAthletics-=25;
         // Spawn/login grace permits a brief non-offensive escape to cover.
         refreshVisibility(p);return true;
     }
@@ -626,6 +633,19 @@ public final class ArenaSystems {
         if(hit)cargo.advance(0);
         return hit;
     }
+    /** HAND recipes only: server verifies item costs, cooldown and authenticated player inventory. */
+    public synchronized boolean craftHand(int id,String recipe){
+        Player p=players.get(id);
+        if(p==null||p.dead||recipe==null||clock<p.craftReadyAt||
+           vehicles.carDrivenBy(id)>=0)return false;
+        SurvivalCrafting.Recipe record=SurvivalCrafting.recipes().get(recipe);
+        if(record==null||record.station()!=SurvivalCrafting.Station.HAND||
+           !p.survival.craft(recipe,SurvivalCrafting.Station.HAND))return false;
+        p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
+        breakGrace(p);
+        p.progression.reward(CharacterProgression.Skill.ENGINEERING,9,clock,3500);
+        return true;
+    }
     /** Drives health regeneration, devices and host-owned hostile AI. */
     public synchronized void advance(long ms){
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
@@ -646,6 +666,10 @@ public final class ArenaSystems {
             }
             if(p.dead)continue;
             p.progression.aliveTick(ms);
+            // Genuine alive-time survival XP, not client-claimed AFK "challenges".
+            if(p.progression.view().aliveMs()%300_000L<ms)
+                p.progression.reward(CharacterProgression.Skill.SURVIVAL,
+                    20,clock,300_000);
             p.survival.advance(ms);
             if(clock-p.lastHurt>=5000&&clock%1000<ms)
                 p.hp=Math.min(100,p.hp+2);

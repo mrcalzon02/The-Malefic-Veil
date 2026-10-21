@@ -135,7 +135,7 @@ public final class SettlementAuthority {
     }
     private Result review(Mutable b,String actor,String blueprint,long expectedRevision){
         if(b.revision!=expectedRevision)return result(b,false,"STALE_REVISION");
-        Kind kind=BLUEPRINTS.get(blueprint);
+        Kind kind=blueprint==null?null:BLUEPRINTS.get(blueprint);
         if(kind==null)return result(b,false,"UNKNOWN_BLUEPRINT");
         Identity founder=verified(b.founder),who=verified(actor);
         if(founder==null||!founder.accountKey().equals(b.account)||
@@ -177,10 +177,10 @@ public final class SettlementAuthority {
             Identity who=verified(actor);
             if(who==null||who.faction()!=b.faction||
                 (!actor.equals(b.founder)&&
-                 !b.grants.getOrDefault(actor,Set.of()).contains(blueprint)))
+                 (blueprint==null||!b.grants.getOrDefault(actor,Set.of()).contains(blueprint))))
                 return result(b,false,"BUILD_NOT_AUTHORIZED");
-            return result(b,prior.equals(blueprint),
-                prior.equals(blueprint)?"ALREADY_RECORDED":"STRUCTURE_CONFLICT");
+            boolean replay=prior.equals(blueprint);
+            return result(b,replay,replay?"ALREADY_RECORDED":"STRUCTURE_CONFLICT");
         }
         Result checked=review(b,actor,blueprint,expectedRevision);
         if(!checked.accepted())return checked;
@@ -248,7 +248,8 @@ public final class SettlementAuthority {
                 m.grants.put(grant.getKey(),Set.copyOf(grant.getValue()));
             }
             for(var item:source.structures().entrySet()){
-                if(!id(item.getKey())||!BLUEPRINTS.containsKey(item.getValue()))
+                if(!id(item.getKey())||item.getValue()==null||
+                   !BLUEPRINTS.containsKey(item.getValue()))
                     throw new IllegalArgumentException("Invalid structure allocation");
                 m.structures.put(item.getKey(),item.getValue());
             }

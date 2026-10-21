@@ -115,6 +115,7 @@ public final class QualityGateTest {
         SettlementAuthorityTest.main(new String[0]);
         AntiAirBalanceTest.main(new String[0]);
         CityMiasmaTest.main(new String[0]);
+        CraftingEraRegistryTest.main(new String[0]);
         CrudeStructureIndexTest.main(new String[0]);
         EquipmentUpgradesTest.main(new String[0]);
         SettlementSupplyBalanceTest.main(new String[0]);

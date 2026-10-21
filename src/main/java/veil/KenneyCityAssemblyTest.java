@@ -19,14 +19,14 @@ public final class KenneyCityAssemblyTest {
         for(World.UrbanProp p:city.urbanProps){
             check(source.modelNames().contains(p.model()+".glb"),"Non-source geometry: "+p.model());
             if(p.radius()>0)colliders++;
-            if(p.model().startsWith("road-asphalt-")&&p.scale()==3)roads++;
+            if(p.model().startsWith("road-asphalt-")&&p.scale()==1.0)roads++;
             if(p.model().startsWith("wall-")&&p.scale()==1.0){
                 if(p.heightOffset()==1.0)upper++;
                 if(p.heightOffset()==0.0)walls++;
                 if(p.model().endsWith("-open"))doors++;
             }
             if((p.model().startsWith("roof-")||p.model().contains("-roof"))&&p.heightOffset()>1.5)roofs++;
-            if(p.scale()==CityLayout.CELL && p.heightOffset()==0 &&
+            if(p.scale()==1.0 && p.heightOffset()==0 &&
                 (p.model().equals("grass")||p.model().startsWith("road-"))){
                 int gx=(int)(p.x()/CityLayout.CELL),gy=(int)(p.y()/CityLayout.CELL);
                 macroGround.merge(key(gx,gy),1,Integer::sum);
@@ -35,9 +35,9 @@ public final class KenneyCityAssemblyTest {
         for(CityLayout.Plot plot:city.city.plots())
             for(int x=plot.x();x<plot.right();x++)
                 for(int y=plot.y();y<plot.bottom();y++)
-                    check(macroGround.getOrDefault(key(x,y),0)==1,
-                        "Missing/duplicate modular plot ground at "+x+","+y);
-        check(roads>20,"Road network does not use real modular road pieces");
+                    check(macroGround.getOrDefault(key(x,y),0)==CityLayout.CELL*CityLayout.CELL,
+                        "Plot must contain exactly one source ground tile per world cell at "+x+","+y);
+        check(roads>200,"Road network does not use real one-unit modular road pieces");
         check(walls>200&&upper>200,"Building shell not assembled from wall tiles");
         check(roofs>80,"Building roofs not represented by modular roofs");
         check(doors>5,"Entrances not represented by open wall modules");

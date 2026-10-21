@@ -219,6 +219,14 @@ public final class LanServer implements AutoCloseable {
                     if(moderation!=null&&!peer.authenticated&&!"AUTH".equals(s[0])){
                         peer.send("AUTH_DENIED|REQUIRED");return;
                     }
+                    // A persistent player may not evade hard faction alliances by
+                    // omitting selection and fighting as an "unaligned" account.
+                    if(moderation!=null&&peer.authenticated&&
+                       match.factions.faction(match.player(peer.id).accountKey)==null&&
+                       Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
+                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND").contains(s[0])){
+                        peer.send("FACTION_RESULT|REQUIRED");continue;
+                    }
                     switch(s[0]){
                         case "AUTH" -> {
                             if(s.length!=2)continue;

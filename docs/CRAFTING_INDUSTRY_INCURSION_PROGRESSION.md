@@ -1,5 +1,5 @@
 # FROM CAMPFIRE TO INCURSION — PUNISHING CRAFTING AND INDUSTRY
-**The Malefic Veil • canonical economy blueprint v1.0 • 21 October 2026**
+**The Malefic Veil • canonical economy blueprint v1.1 • 21 October 2026**
 
 **DESIGN AND DATA CONTRACT.** The runnable city sector does not yet support walkable, server-owned wilderness bases, working production grids, automated industrial plants, or reality-incursion construction. The Java model and recipe gates implemented alongside this specification are only foundations. Never market planned assets, effects, automated crafting, or abandoned concept pictures as actual in-game systems.
 

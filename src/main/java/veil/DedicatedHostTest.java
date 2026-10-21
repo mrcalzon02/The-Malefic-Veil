@@ -36,6 +36,9 @@ public final class DedicatedHostTest {
             try(LanServer server=new LanServer(0,92233L,temp);
                 NetLink client=new NetLink("127.0.0.1",server.port())){
                 until(()->client.accountKey()!=null,"dedicated account authentication");
+                client.selectFaction(CharacterRoster.Faction.THE_UNRAVELED);
+                until(()->client.faction().equals("THE_UNRAVELED"),
+                    "dedicated host requires bound playable faction before actions");
                 account=client.accountKey();
                 check(account.matches("acct_[a-f0-9]{64}"),"server account is hashed");
                 check(server.status().contains("persistent=true"),"server in persistent mode");

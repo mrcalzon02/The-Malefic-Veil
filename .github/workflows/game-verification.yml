@@ -83,6 +83,9 @@ jobs:
       - name: RPG death/reset, 5-8 second grace, slow skills and protected hand crafting
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.CharacterProgressionTest
+      - name: Real dedicated hardcore socket, forced faction choice and permadeath restart
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.HardcoreHostingLanTest
       - name: Absolute faction alliance and permanent hardcore-death RPG reset
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.FactionGroupHardcoreTest

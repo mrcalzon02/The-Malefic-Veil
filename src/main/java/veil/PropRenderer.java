@@ -53,7 +53,7 @@ public final class PropRenderer {
                     minDepth=Math.min(z,minDepth);meanDepth+=z;
                     sx[i]=(int)Math.round(width*.5+side/z*width/(2*TAN));
                     screenY[i]=(int)Math.round(height*.5-
-                        (vert[i][1]*placement.scale()-1.55)/z*width/(2*TAN));
+                        (vert[i][1]*placement.scale()+placement.heightOffset()-1.55)/z*width/(2*TAN));
                 }
                 if(near)continue;
                 if(sx[0]==sx[1]&&sx[1]==sx[2])continue;

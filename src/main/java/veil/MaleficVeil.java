@@ -328,7 +328,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         urbanRenderer.draw(g,urban,px,py,angle,depth,RW,RH);
         java.util.List<UrbanScene.ModelInstance> gameplay=new java.util.ArrayList<>();
         for(World.Pickup p:world.pickups)if(!p.taken&&p.kind>=0&&p.kind<GameplayMeshes.PICKUP.length)
-            gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,0,1.1));
+            gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,
+                ticks*.018+p.kind,1.15,1.0,.86+.10*Math.sin(ticks*.11+p.kind)));
         for(World.Device d:world.devices)if(d.hp>0&&d.kind>=0&&d.kind<GameplayMeshes.DEVICE.length)
             gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[d.kind],d.x,d.y,0,1.0));
         for(World.Npc n:world.npcs)if(n.hp>0)

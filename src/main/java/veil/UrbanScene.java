@@ -5,9 +5,13 @@ import java.util.*;
 
 /** License-selected Kenney source models; uses the host's exact tile/prop positions. */
 public final class UrbanScene {
-    public record ModelInstance(String model,double x,double y,double heading,double scale,double opacity){
+    public record ModelInstance(String model,double x,double y,double heading,double scale,
+                                double opacity,double heightOffset){
         public ModelInstance(String model,double x,double y,double heading,double scale){
-            this(model,x,y,heading,scale,1);
+            this(model,x,y,heading,scale,1,0);
+        }
+        public ModelInstance(String model,double x,double y,double heading,double scale,double opacity){
+            this(model,x,y,heading,scale,opacity,0);
         }
     }
     private static final String[] IDS={

@@ -17,7 +17,7 @@ public final class GameplayAssetTest {
         double[] depth=new double[320];Arrays.fill(depth,40);
         java.util.List<UrbanScene.ModelInstance> models=java.util.List.of(
             new UrbanScene.ModelInstance(GameplayMeshes.HERO[0],3.5,1.5,-Math.PI/2,1,alpha),
-            new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[0],4.5,2.2,0,1),
+            new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[0],4.5,2.2,0,1,1,.95),
             new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[0],5.3,.3,0,1));
         int visible=new PropRenderer().draw(g,pack.meshes(),models,1.5,1.5,0,
             depth,320,200);
@@ -64,10 +64,21 @@ public final class GameplayAssetTest {
             Graphics2D pg=panel.createGraphics();
             pg.setColor(new Color(19,20,28));pg.fillRect(0,0,320,200);
             double[] depth=new double[320];Arrays.fill(depth,40);
-            if(index!=5&&index!=6)new PropRenderer().draw(pg,lib.meshes(),
-                java.util.List.of(new UrbanScene.ModelInstance(id,3.5,1.5,-Math.PI/2,1,1)),
-                1.5,1.5,0,depth,320,200);
+            if(index!=5&&index!=6){
+                boolean pickup=index>=7&&index<14;
+                double distance=pickup?3.0:index>=14?3.2:2.0;
+                double rise=pickup?.96:0;
+                new PropRenderer().draw(pg,lib.meshes(),
+                    java.util.List.of(new UrbanScene.ModelInstance(id,1.5+distance,1.5,
+                        -Math.PI/2,pickup?1.5:1,1,rise)),
+                    1.5,1.5,0,depth,320,200);
+            }
             else new WeaponViewRenderer().draw(pg,lib.meshes().get(id),320,200,0);
+            int visiblePixels=0;
+            int bg=new Color(19,20,28).getRGB();
+            for(int yy=34;yy<200;yy++)for(int xx=5;xx<315;xx++)
+                if(panel.getRGB(xx,yy)!=bg)visiblePixels++;
+            check(visiblePixels>=8,id+" is visually absent or clipped below camera");
             pg.setFont(new Font(Font.MONOSPACED,Font.BOLD,13));
             pg.setColor(Color.WHITE);pg.drawString(id,10,22);
             pg.dispose();g.drawImage(panel,col*320,row*200,null);

@@ -29,7 +29,7 @@ public final class CargoRealmPersistenceTest {
             ArenaSystems game=new ArenaSystems(42L);
             var yard=park(game);
             check(game.loadTruck(10,0,yard.id()),"Cargo loaded");
-            game.cargo.advance(10_000);
+            for(int tick=0;tick<10;tick++)game.cargo.advance(1_000);
             check(game.cargo.sites().get(yard.id()).stock()==0,"Depo emptied");
             DurableRealm.save(game,root);
             byte[] stored=Files.readAllBytes(DurableRealm.file(root));

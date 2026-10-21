@@ -8,6 +8,7 @@ import java.util.*;
  */
 public final class ArenaSystems {
     public final World world;
+    public final Vehicles vehicles;
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
@@ -28,13 +29,14 @@ public final class ArenaSystems {
             this.id=id;this.x=x;this.y=y;moveAt=now;
         }
     }
-    public ArenaSystems(long seed){world=new World(seed);}
+    public ArenaSystems(long seed){world=new World(seed);vehicles=new Vehicles(world);}
     public synchronized Player join(int id){
         if(players.containsKey(id))throw new IllegalArgumentException("duplicate peer");
         Player p=new Player(id,world.spawns[0][0],world.spawns[0][1],clock);
         players.put(id,p);refreshVisibility(p);return p;
     }
     public synchronized void leave(int id){
+        vehicles.disconnect(id);
         players.remove(id);
         lastShotSequence.remove(id);
     }
@@ -49,6 +51,8 @@ public final class ArenaSystems {
     public static double transparencyPercent(double visibility){return (1-opacity(visibility))*100.0;}
     private boolean free(double x,double y){
         if(!world.canWalk(x,y))return false;
+        for(Vehicles.State car:vehicles.states())
+            if(car.hp()>0&&Math.hypot(car.x()-x,car.y()-y)<.90)return false;
         for(World.Device d:world.devices)
             if(d.hp>0&&d.kind==BARRICADE&&Math.hypot(d.x-x,d.y-y)<.52)return false;
         return true;
@@ -66,7 +70,7 @@ public final class ArenaSystems {
     /** Crouch/sprint are intents; host caps actual movement to reject teleport attempts. */
     public synchronized boolean move(int id,double x,double y,double angle,int flags){
         Player p=player(id);
-        if(p==null||p.dead||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
+        if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
         long elapsed=Math.max(0,clock-p.moveAt);
         double max=(flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85;
         double permitted=.33+Math.min(elapsed,500)*max/1000;
@@ -184,7 +188,7 @@ public final class ArenaSystems {
     }
     public synchronized boolean fire(int id,int weapon){
         Player p=player(id);
-        if(p==null||p.dead||weapon<0||weapon>1)return false;
+        if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||weapon<0||weapon>1)return false;
         long cooldown=weapon==0?210:850;
         if(clock-p.shotAt<cooldown)return false;
         if(weapon==0&&p.pistolClip<=0||weapon==1&&p.shellClip<=0)return false;
@@ -225,6 +229,7 @@ public final class ArenaSystems {
     public synchronized BuildReview reviewBuild(int id,int kind){
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
+        if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
         if(kind<0||kind>3)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
         int price=kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind==0?3:kind==1?1:kind==2?2:1;
@@ -328,11 +333,38 @@ public final class ArenaSystems {
         p.pistolReserve=Math.max(24,p.pistolReserve);p.shellReserve=Math.max(12,p.shellReserve);
         refreshVisibility(p);return true;
     }
+    /** Seat changes are authoritative and never accept client coordinates. */
+    public synchronized boolean enterVehicle(int id,int carIndex){
+        Player p=players.get(id);
+        if(p==null||p.dead||!vehicles.enter(id,p.x,p.y,carIndex))return false;
+        Vehicles.State car=vehicles.state(carIndex);
+        p.x=car.x();p.y=car.y();p.angle=car.heading();
+        p.moveAt=clock;p.protectedUntil=0;return true;
+    }
+    public synchronized boolean exitVehicle(int id){
+        Player p=players.get(id);
+        if(p==null)return false;
+        double[] at=vehicles.exit(id);
+        if(at==null)return false;
+        p.x=at[0];p.y=at[1];p.moveAt=clock;refreshVisibility(p);
+        return true;
+    }
+    public synchronized boolean driveVehicle(int id,double throttle,double steering){
+        Player p=players.get(id);
+        return p!=null&&!p.dead&&vehicles.input(id,throttle,steering);
+    }
     /** Drives health regeneration, devices and host-owned hostile AI. */
     public synchronized void advance(long ms){
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
         clock+=ms;
+        vehicles.advance(ms);
         for(Player p:players.values()){
+            int carId=vehicles.carDrivenBy(p.id);
+            if(carId>=0){
+                Vehicles.State car=vehicles.state(carId);
+                p.x=car.x();p.y=car.y();p.angle=car.heading();p.moveAt=clock;
+                if(p.dead||car.hp()<=0)vehicles.disconnect(p.id);
+            }
             if(p.dead)continue;
             if(clock-p.lastHurt>=5000&&clock%1000<ms)
                 p.hp=Math.min(100,p.hp+2);

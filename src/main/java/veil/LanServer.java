@@ -254,10 +254,10 @@ public final class LanServer implements AutoCloseable {
                         }
                         case "CREW_CREATE" -> {
                             if(s.length!=2||!peer.authenticated)continue;
-                            ArenaSystems.Player actor=match.player(peer.id);
-                            FactionGroups.Crew made=match.factions.create(actor.accountKey,s[1]);
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            FactionGroups.Crew made=match.factions.create(requester.accountKey,s[1]);
                             peer.send("CREW_RESULT|CREATE|"+(made==null?"REJECTED":made.id()));
-                            factionStateTo(actor,peer);
+                            factionStateTo(requester,peer);
                             if(made!=null&&dataDirectory!=null)saveAll();
                         }
                         case "CREW_INVITE" -> {
@@ -274,36 +274,36 @@ public final class LanServer implements AutoCloseable {
                         }
                         case "CREW_ACCEPT" -> {
                             if(s.length!=1||!peer.authenticated)continue;
-                            ArenaSystems.Player actor=match.player(peer.id);
-                            boolean ok=match.factions.accept(actor.accountKey,System.currentTimeMillis());
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            boolean ok=match.factions.accept(requester.accountKey,System.currentTimeMillis());
                             peer.send("CREW_RESULT|ACCEPT|"+(ok?"OK":"REJECTED"));
-                            factionStateTo(actor,peer);
+                            factionStateTo(requester,peer);
                             if(ok&&dataDirectory!=null)saveAll();
                         }
                         case "CREW_LEAVE" -> {
                             if(s.length!=1||!peer.authenticated)continue;
-                            ArenaSystems.Player actor=match.player(peer.id);
-                            boolean ok=match.factions.remove(actor.accountKey,actor.accountKey);
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            boolean ok=match.factions.remove(requester.accountKey,requester.accountKey);
                             peer.send("CREW_RESULT|LEAVE|"+(ok?"OK":"REJECTED"));
-                            factionStateTo(actor,peer);
+                            factionStateTo(requester,peer);
                             if(ok&&dataDirectory!=null)saveAll();
                         }
                         case "CREW_TRANSFER" -> {
                             if(s.length!=2||!peer.authenticated)continue;
-                            ArenaSystems.Player actor=match.player(peer.id);
+                            ArenaSystems.Player requester=match.player(peer.id);
                             ArenaSystems.Player recipient=match.player(Integer.parseInt(s[1]));
                             boolean ok=recipient!=null&&match.factions.transfer(
-                                actor.accountKey,recipient.accountKey);
+                                requester.accountKey,recipient.accountKey);
                             peer.send("CREW_RESULT|TRANSFER|"+(ok?"OK":"REJECTED"));
-                            factionStateTo(actor,peer);
+                            factionStateTo(requester,peer);
                             if(ok&&dataDirectory!=null)saveAll();
                         }
                         case "CREW_DISBAND" -> {
                             if(s.length!=1||!peer.authenticated)continue;
-                            ArenaSystems.Player actor=match.player(peer.id);
-                            boolean ok=match.factions.disband(actor.accountKey);
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            boolean ok=match.factions.disband(requester.accountKey);
                             peer.send("CREW_RESULT|DISBAND|"+(ok?"OK":"REJECTED"));
-                            factionStateTo(actor,peer);
+                            factionStateTo(requester,peer);
                             if(ok&&dataDirectory!=null)saveAll();
                         }
                         case "SCENE_READY" -> {

@@ -76,7 +76,7 @@ public final class QualityGateTest {
             ArenaSystems.BuildOutcome one=first.get(),two=second.get();
             check(one.built()!=two.built(),"exactly one simultaneous build accepted");
             check(contested.world.devices.size()==1,"one footprint, one actual device");
-            check(alpha.cash+beta.cash==500,"only one 100-credit debit");
+            check(alpha.cash+beta.cash==540,"one Warden-discount 60-credit debit");
             check(alpha.scrap+beta.scrap==17,"only one 3-supply debit");
             check((one.built()?two:one).review().reason().equals("DEVICE_CLEARANCE"),
                 "loser receives a real concurrency rejection reason");

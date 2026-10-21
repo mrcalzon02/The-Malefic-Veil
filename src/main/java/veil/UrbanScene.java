@@ -20,6 +20,7 @@ public final class UrbanScene {
     };
     private final Map<String,GlbMesh> models=new LinkedHashMap<>();
     private final List<ModelInstance> positions;
+    private final UrbanInstanceBatches instanceBatches;
     private static final int BUCKET=12;
     private final Map<Long,List<ModelInstance>> spatial=new HashMap<>();
     private static long bucketId(int x,int y){return ((long)x<<32)|(y&0xffffffffL);}
@@ -37,6 +38,7 @@ public final class UrbanScene {
         for(World.UrbanProp p:city.urbanProps)
             items.add(new ModelInstance(p.model(),p.x(),p.y(),p.heading(),p.scale(),1,p.heightOffset()));
         positions=List.copyOf(items);
+        instanceBatches=new UrbanInstanceBatches(models,positions);
         for(ModelInstance item:positions){
             int bx=(int)Math.floor(item.x()/BUCKET),by=(int)Math.floor(item.y()/BUCKET);
             spatial.computeIfAbsent(bucketId(bx,by),k->new ArrayList<>()).add(item);
@@ -44,6 +46,8 @@ public final class UrbanScene {
     }
     public Map<String,GlbMesh> models(){return Collections.unmodifiableMap(models);}
     public List<ModelInstance> instances(){return positions;}
+    /** Reused source geometry plus compact per-mesh instance transforms for GPU backends. */
+    public UrbanInstanceBatches batches(){return instanceBatches;}
     /** Spatially bounded candidates; distant city meshes are never visited each render tick. */
     public List<ModelInstance> nearby(double x,double y,double distance){
         if(!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(distance)||

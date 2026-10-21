@@ -33,20 +33,27 @@ public final class LanServer implements AutoCloseable {
         long commandWindow=System.nanoTime();
         synchronized void send(String message){out.println(message);}
     }
-    public LanServer(int port,long seed)throws IOException {this(port,seed,null);}
-    /** Persistent dedicated mode binds loopback by default; explicit veil.bind exposes it. */
+    public LanServer(int port,long seed)throws IOException {this(port,seed,null,false);}
     public LanServer(int port,long seed,Path saveDir)throws IOException {
+        this(port,seed,saveDir,Boolean.getBoolean("veil.hardcore"));
+    }
+    /** Persisted world rule: hardmode cannot change across restarts without migration. */
+    public LanServer(int port,long seed,Path saveDir,boolean hardcore)throws IOException {
         dataDirectory=saveDir;
+        boolean active=HostRules.bind(saveDir,hardcore);
         moderation=saveDir==null?null:new HostModeration(saveDir);
-        match=new ArenaSystems(seed);
+        match=new ArenaSystems(seed,active);
         ContinentLayout continent=match.world.continent();
         continentSectors=new ContinentSectors(continent,new ContinentPopulation(continent));
-        if(saveDir!=null)DurableRealm.load(match,saveDir);
+        if(saveDir!=null){
+            DurableRealm.load(match,saveDir);
+            AccountDirectory.load(match,saveDir);
+        }
         listener=saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
         if(saveDir!=null){
             saves.scheduleWithFixedDelay(()->{
-                try{DurableRealm.save(match,dataDirectory);}
+                try{saveAll();}
                 catch(Exception e){System.err.println("AUTOSAVE FAILED: "+e);audit("autosave_failure "+e.getClass().getSimpleName());}
             },60,60,TimeUnit.SECONDS);
         }
@@ -147,6 +154,16 @@ public final class LanServer implements AutoCloseable {
             content.add(item.getKey().name()+"="+item.getValue());
         return "INVENTORY|"+(content.length()==0?"-":content.toString());
     }
+    private String factionPacket(String account){
+        CharacterRoster.Faction faction=match.factions.faction(account);
+        FactionGroups.Crew crew=match.factions.crewFor(account);
+        FactionGroups.Role role=crew==null?null:crew.members().get(account);
+        return "FACTION_STATE|"+(faction==null?"NONE":faction.name())+
+            "|"+(crew==null?"NONE":crew.id())+"|"+(role==null?"NONE":role.name());
+    }
+    private void factionStateTo(ArenaSystems.Player actor,Peer peer){
+        peer.send(factionPacket(actor.accountKey));
+    }
     private static String selfPacket(ArenaSystems.Player p){
         return "SELF|"+p.hp+"|"+p.sanity+"|"+p.cash+"|"+p.scrap+"|"+p.medkits+
             "|"+p.pistolReserve+"|"+p.shellReserve+"|"+p.pistolClip+"|"+p.shellClip+
@@ -181,9 +198,11 @@ public final class LanServer implements AutoCloseable {
             peer.out=out;
             ArenaSystems.Player actor=match.join(peer.id);
             peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|3");
+            peer.send("SERVER_MODE|"+(match.hardcore?"HARDCORE":"NORMAL"));
             connections.put(peer.id,peer);
             sendWorld(peer);peer.send(selfPacket(actor));
             peer.send(progressionPacket(actor));peer.send(inventoryPacket(actor));
+            factionStateTo(actor,peer);
             broadcast(peerPacket(actor),peer.id);
             String line;
             while((line=in.readLine())!=null){
@@ -212,12 +231,79 @@ public final class LanServer implements AutoCloseable {
                             if(match.assignAccount(peer.id,account)){
                                 peer.authenticated=true;
                                 peer.send("AUTH_OK|"+account);
+                                factionStateTo(match.player(peer.id),peer);
                                 audit("login id="+peer.id+" account="+account);
                             }else if(moderation==null){
                                 // Local multi-client smoke tests can share a machine's stored key.
                                 // The second session stays an unowned guest; never duplicate an account.
                                 peer.send("AUTH_GUEST|DUPLICATE");
                             }else{peer.send("AUTH_DENIED|DUPLICATE");return;}
+                        }
+                        case "FACTION_JOIN" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            CharacterRoster.Faction selected;
+                            try{selected=CharacterRoster.Faction.valueOf(s[1]);}
+                            catch(IllegalArgumentException invalid){
+                                peer.send("FACTION_RESULT|INVALID");continue;
+                            }
+                            boolean ok=match.enrollFaction(peer.id,selected);
+                            peer.send("FACTION_RESULT|"+(ok?"OK":"LOCKED"));
+                            factionStateTo(match.player(peer.id),peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_CREATE" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player actor=match.player(peer.id);
+                            FactionGroups.Crew made=match.factions.create(actor.accountKey,s[1]);
+                            peer.send("CREW_RESULT|CREATE|"+(made==null?"REJECTED":made.id()));
+                            factionStateTo(actor,peer);
+                            if(made!=null&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_INVITE" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            int recipientId=Integer.parseInt(s[1]);
+                            ArenaSystems.Player issuer=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(recipientId);
+                            boolean ok=recipient!=null&&match.factions.invite(
+                                issuer.accountKey,recipient.accountKey,System.currentTimeMillis());
+                            peer.send("CREW_RESULT|INVITE|"+(ok?"OK":"REJECTED"));
+                            Peer invited=connections.get(recipientId);
+                            if(ok&&invited!=null)
+                                invited.send("CREW_INVITE|"+match.factions.crewId(issuer.accountKey));
+                        }
+                        case "CREW_ACCEPT" -> {
+                            if(s.length!=1||!peer.authenticated)continue;
+                            ArenaSystems.Player actor=match.player(peer.id);
+                            boolean ok=match.factions.accept(actor.accountKey,System.currentTimeMillis());
+                            peer.send("CREW_RESULT|ACCEPT|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(actor,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_LEAVE" -> {
+                            if(s.length!=1||!peer.authenticated)continue;
+                            ArenaSystems.Player actor=match.player(peer.id);
+                            boolean ok=match.factions.remove(actor.accountKey,actor.accountKey);
+                            peer.send("CREW_RESULT|LEAVE|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(actor,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_TRANSFER" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player actor=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(Integer.parseInt(s[1]));
+                            boolean ok=recipient!=null&&match.factions.transfer(
+                                actor.accountKey,recipient.accountKey);
+                            peer.send("CREW_RESULT|TRANSFER|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(actor,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_DISBAND" -> {
+                            if(s.length!=1||!peer.authenticated)continue;
+                            ArenaSystems.Player actor=match.player(peer.id);
+                            boolean ok=match.factions.disband(actor.accountKey);
+                            peer.send("CREW_RESULT|DISBAND|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(actor,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
                         }
                         case "SCENE_READY" -> {
                             if(s.length!=1)continue;
@@ -362,7 +448,8 @@ public final class LanServer implements AutoCloseable {
     }
     public int port(){return listener.getLocalPort();}
     public String status(){
-        return "uptime="+((System.currentTimeMillis()-startup)/1000)+"s"+
+        return "mode="+(match.hardcore?"HARDCORE":"NORMAL")+
+            " uptime="+((System.currentTimeMillis()-startup)/1000)+"s"+
             " peers="+connections.size()+" structures="+match.world.devices.size()+
             " cars="+match.vehicles.states().size()+" npcs="+match.world.npcs.size()+
             " persistent="+(dataDirectory!=null);
@@ -400,9 +487,13 @@ public final class LanServer implements AutoCloseable {
         if(result)audit("unban account="+account);
         return result;
     }
-    public void saveNow()throws IOException{
+    private synchronized void saveAll()throws IOException{
         if(dataDirectory==null)throw new IOException("In-memory LAN match has no save directory");
-        DurableRealm.save(match,dataDirectory);audit("manual_save");
+        DurableRealm.save(match,dataDirectory);
+        AccountDirectory.save(match,dataDirectory);
+    }
+    public void saveNow()throws IOException{
+        saveAll();audit("manual_save");
     }
     @Override public synchronized void close()throws IOException{
         if(!running)return;
@@ -416,11 +507,14 @@ public final class LanServer implements AutoCloseable {
         int port=args.length>0?Integer.parseInt(args[0]):7777;
         long seed=args.length>1?Long.parseLong(args[1]):20261020L;
         Path root=args.length>2?Path.of(args[2]):Path.of("server-data");
-        LanServer host=new LanServer(port,seed,root);
+        boolean hardcore=Boolean.getBoolean("veil.hardcore");
+        for(String input:args)if("--hardcore".equals(input))hardcore=true;
+        LanServer host=new LanServer(port,seed,root,hardcore);
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             try{host.close();}catch(IOException e){System.err.println("Shutdown save failed: "+e);}
         },"Veil-server-shutdown"));
         System.out.println("Malefic Veil dedicated host "+host.port()+" seed "+seed+
+            " mode="+(hardcore?"HARDCORE":"NORMAL")+
             " bind="+host.listener.getInetAddress().getHostAddress()+" storage="+root);
         System.out.println("Commands: status, players, save, kick ID, ban ACCOUNT, unban ACCOUNT,"+
             " allow ACCOUNT, deny ACCOUNT, allowlist on/off, shutdown");

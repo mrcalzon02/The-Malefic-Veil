@@ -23,6 +23,7 @@ public final class LanServer implements AutoCloseable {
     public final ArenaSystems match;
     public final ContinentSectors continentSectors;
     public final WorldHarvesting harvesting;
+    private final VeilWeather weather;
     private volatile boolean running=true;
     private int nextId;
     private static final class Peer {
@@ -48,6 +49,9 @@ public final class LanServer implements AutoCloseable {
         ContinentLayout continent=match.world.continent();
         continentSectors=new ContinentSectors(continent,new ContinentPopulation(continent));
         harvesting=new WorldHarvesting(match.world);
+        // One atmospheric simulation per connected world, NOT per player or
+        // separate city/wilderness scene. Dedicated hosts do not load GLBs/audio.
+        weather=new VeilWeather(seed,Path.of("."),false);
         if(saveDir!=null){
             DurableRealm.load(match,saveDir);
             AccountDirectory.load(match,saveDir);
@@ -65,6 +69,11 @@ public final class LanServer implements AutoCloseable {
             try {
                 match.advance(100);
                 harvesting.advance(100);
+                synchronized(weather){
+                    weather.tick(.1,match.world.spawns[0][0],
+                        match.world.spawns[0][1],0,1);
+                }
+                if(match.time()%2000==0)broadcast(weatherPacket(),-1);
                 for(Peer p:connections.values()){
                     ArenaSystems.Player self=match.player(p.id);
                     if(self!=null){
@@ -123,6 +132,31 @@ public final class LanServer implements AutoCloseable {
                 node.remaining()+"|"+node.capacity());
         }
         peer.lastResourceX=actor.x;peer.lastResourceY=actor.y;
+    }
+    private String weatherPacket(){
+        synchronized(weather){
+            return "WEATHER|"+weather.current()+"|"+weather.timeOfDay();
+        }
+    }
+    /** Dedicated-host console authority; clients cannot forge weather packets. */
+    public String weatherStatus(){
+        synchronized(weather){
+            return weather.current()+" at daylight="+String.format(Locale.ROOT,"%.4f",weather.timeOfDay());
+        }
+    }
+    public String setWeatherPreset(String name){
+        synchronized(weather){
+            weather.autoWeather(false,240,.55,65);
+            weather.setPreset(name,8);
+        }
+        broadcast(weatherPacket(),-1);
+        audit("weather_preset "+name);
+        return weatherStatus();
+    }
+    public String resumeAutoWeather(){
+        synchronized(weather){weather.autoWeather(true,240,.55,65);}
+        audit("weather_auto");
+        return "Automatic weather enabled; "+weatherStatus();
     }
     private static String peerPacket(ArenaSystems.Player p){
         return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility+"|"+p.classId;
@@ -214,6 +248,7 @@ public final class LanServer implements AutoCloseable {
             match.beginLoading(peer.id);
             peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|3");
             peer.send("SERVER_MODE|"+(match.hardcore?"HARDCORE":"NORMAL"));
+            peer.send(weatherPacket());
             connections.put(peer.id,peer);
             sendWorld(peer);peer.send(selfPacket(actor));syncResources(peer,actor);
             peer.send(progressionPacket(actor));peer.send(inventoryPacket(actor));
@@ -582,6 +617,7 @@ public final class LanServer implements AutoCloseable {
         listener.close();
         for(Peer p:connections.values())try{p.socket.close();}catch(IOException ignored){}
         ticks.shutdownNow();saves.shutdownNow();workers.shutdownNow();
+        synchronized(weather){weather.close();}
         if(dataDirectory!=null)saveNow();
     }
     public static void main(String[] args)throws Exception{
@@ -603,8 +639,8 @@ public final class LanServer implements AutoCloseable {
         System.out.println("Malefic Veil dedicated host "+host.port()+" seed "+seed+
             " mode="+(hardcore?"HARDCORE":"NORMAL")+
             " bind="+host.listener.getInetAddress().getHostAddress()+" storage="+root);
-        System.out.println("Commands: status, players, save, kick ID, ban ACCOUNT, unban ACCOUNT,"+
-            " allow ACCOUNT, deny ACCOUNT, allowlist on/off, shutdown");
+        System.out.println("Commands: status, players, weather [PRESET|auto], save, kick ID,"+
+            " ban ACCOUNT, unban ACCOUNT, allow ACCOUNT, deny ACCOUNT, allowlist on/off, shutdown");
         BufferedReader console=new BufferedReader(new InputStreamReader(System.in));
         String line;
         while((line=console.readLine())!=null){
@@ -614,6 +650,12 @@ public final class LanServer implements AutoCloseable {
                 String result=switch(input[0].toLowerCase(Locale.ROOT)){
                     case "status" -> host.status();
                     case "players" -> String.join("\\n",host.connectedPlayers());
+                    case "weather" -> {
+                        if(input.length==1)yield host.weatherStatus();
+                        if(input.length!=2)yield "Use weather [CLEAR|RAIN|SNOW|...|auto]";
+                        if(input[1].equalsIgnoreCase("auto"))yield host.resumeAutoWeather();
+                        yield host.setWeatherPreset(input[1].toUpperCase(Locale.ROOT));
+                    }
                     case "save" -> {host.saveNow();yield "Saved and verified";}
                     case "kick" -> input.length==2&&host.kick(Integer.parseInt(input[1]))?"Kicked":"Unknown player";
                     case "ban" -> input.length==2&&host.ban(input[1])?"Banned":"Invalid/duplicate account";

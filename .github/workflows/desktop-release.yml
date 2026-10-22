@@ -99,6 +99,8 @@ jobs:
           echo "Published prerelease and all downloaded assets verified"
       - name: Install newest published development update from live GitHub
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p build/update-smoke/worlds/keep-this-world

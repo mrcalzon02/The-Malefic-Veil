@@ -260,8 +260,10 @@ jobs:
           $exe = Join-Path $image 'The Malefic Veil.exe'
           if (-not (Test-Path $exe)) { throw 'Game EXE missing' }
           if (-not (Test-Path (Join-Path $image 'runtime/bin/javaw.exe'))) { throw 'Embedded Java missing' }
-          & $exe --check
-          if ($LASTEXITCODE -ne 0) { throw 'Native game update check failed' }
+          # Windows GUI launchers can return control to PowerShell before JVM
+          # startup finishes. Wait for the actual process to exit.
+          $run = Start-Process -FilePath $exe -ArgumentList '--check' -WorkingDirectory $image -Wait -PassThru
+          if ($run.ExitCode -ne 0) { throw "Native game update check failed: $($run.ExitCode)" }
           $log = Join-Path $image 'app/logs/launcher.log'
           if (-not (Test-Path $log)) { throw 'Native launcher logs missing' }
           if ((Get-Content $log -Raw) -notmatch 'UPDATER_EXIT code=0') { throw 'Updater did not complete through native launcher' }

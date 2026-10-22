@@ -7,10 +7,10 @@
     {
       "id": "unraveled_needlewing",
       "faction": "unraveled",
-      "triangles": 732,
-      "vertices": 2196,
-      "size_bytes": 95640,
-      "sha256": "70c22be7ee0720befb15c683a393ee373250e014b93557fb915afcd79950058e",
+      "triangles": 1184,
+      "vertices": 3552,
+      "size_bytes": 128204,
+      "sha256": "1f2cbbe3c5d5f235b85e9e875303490d0c20731dfeefb888ca43123c9da20bab",
       "bounds_min": [
         -5.173,
         -0.465,
@@ -27,10 +27,10 @@
     {
       "id": "unraveled_harrier",
       "faction": "unraveled",
-      "triangles": 796,
-      "vertices": 2388,
-      "size_bytes": 100232,
-      "sha256": "8545e14b3b8ad342af1c61492223a86baf24bb939c7011adb8ee1bc1cf4b499d",
+      "triangles": 1344,
+      "vertices": 4032,
+      "size_bytes": 139712,
+      "sha256": "147512788b4910d89fb188ba8062c997fc15cde0baacf30b816df77861a65a3d",
       "bounds_min": [
         -7.06,
         -0.559,
@@ -47,10 +47,10 @@
     {
       "id": "unraveled_leviathan",
       "faction": "unraveled",
-      "triangles": 1104,
-      "vertices": 3312,
-      "size_bytes": 122440,
-      "sha256": "86850fede5fa017e5f6b5d346ed6f97b5e5e57893677ef275d186bf6957ffee3",
+      "triangles": 1816,
+      "vertices": 5448,
+      "size_bytes": 173720,
+      "sha256": "c778fee1bb65e2b94233571deeeb7037cf8da08f408ee9d809631785fb42e25b",
       "bounds_min": [
         -10.297,
         -0.975,
@@ -67,10 +67,10 @@
     {
       "id": "penitent_shrike",
       "faction": "penitent",
-      "triangles": 1056,
-      "vertices": 3168,
-      "size_bytes": 119580,
-      "sha256": "be808313d38184670d841074b9088978b06ff41117fa8cc3e9a3f6672e51d00c",
+      "triangles": 1314,
+      "vertices": 3942,
+      "size_bytes": 138156,
+      "sha256": "bd686a17cb919a98972a5f987c3f5854f5e427cfef7536424f9711735ff80200",
       "bounds_min": [
         -4.7,
         -1.375,
@@ -87,10 +87,10 @@
     {
       "id": "penitent_censer",
       "faction": "penitent",
-      "triangles": 1114,
-      "vertices": 3342,
-      "size_bytes": 123708,
-      "sha256": "13f85c07ee19b6d17fedc5cd11129d498a1fab9f44d7a6fab9b9f407035085e7",
+      "triangles": 1396,
+      "vertices": 4188,
+      "size_bytes": 144044,
+      "sha256": "6efcd34f5c8e18df75156a0d458c4b8ccd66816573b6ae1fbbeb03056d643f90",
       "bounds_min": [
         -6.6,
         -1.481,
@@ -107,10 +107,10 @@
     {
       "id": "penitent_cathedral",
       "faction": "penitent",
-      "triangles": 2312,
-      "vertices": 6936,
-      "size_bytes": 210032,
-      "sha256": "bfce9a55081b76ecf6e86b5a45042a7f45e5be26c374743874170344da529f3a",
+      "triangles": 2690,
+      "vertices": 8070,
+      "size_bytes": 237260,
+      "sha256": "8292e71535e73c26a650cf234b661246fb7d1129326b7051f723f11cc5b12835",
       "bounds_min": [
         -10.7,
         -2.415,
@@ -127,10 +127,10 @@
     {
       "id": "begotten_gnat",
       "faction": "begotten",
-      "triangles": 1626,
-      "vertices": 4878,
-      "size_bytes": 160628,
-      "sha256": "3c3e36db4a9f4c0904b605d29d299f2399a4ed8ea6193ea5556ff48009f53c95",
+      "triangles": 1758,
+      "vertices": 5274,
+      "size_bytes": 170140,
+      "sha256": "9399db743030f9bf18e082f19b9d6680b26a72174f5da1ba8608a3a3ad89994d",
       "bounds_min": [
         -5.71,
         -1.076,
@@ -138,7 +138,7 @@
       ],
       "bounds_max": [
         5.71,
-        1.822,
+        1.86,
         1.85
       ],
       "parts": "static mesh; per-face RGB materials; authored airframe visual reference only",
@@ -147,10 +147,10 @@
     {
       "id": "begotten_mantis",
       "faction": "begotten",
-      "triangles": 1524,
-      "vertices": 4572,
-      "size_bytes": 151468,
-      "sha256": "d02162101f2f62884e00a6c65b7133a5ef57c0c46a3919e01ff635965a42b8b6",
+      "triangles": 1620,
+      "vertices": 4860,
+      "size_bytes": 158380,
+      "sha256": "dbc3ef259c29f13be40fbcedf8a9dca7494f51d0e2130951613a89c5fac955ef",
       "bounds_min": [
         -7.02,
         -2.07,
@@ -167,10 +167,10 @@
     {
       "id": "begotten_behemoth",
       "faction": "begotten",
-      "triangles": 3544,
-      "vertices": 10632,
-      "size_bytes": 297488,
-      "sha256": "ecfc45c2c9bf5e7ca3a68eb709ebeb77ddc8ef625ddb543a4ff0718de8f0babf",
+      "triangles": 3804,
+      "vertices": 11412,
+      "size_bytes": 316208,
+      "sha256": "0d43f38ed32256d23206ef4c6dc38a1d2b51327730881f7dcfc8bf92bcb12112",
       "bounds_min": [
         -13.2,
         -3.028,

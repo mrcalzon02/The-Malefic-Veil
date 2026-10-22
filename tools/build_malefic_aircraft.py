@@ -5,7 +5,7 @@ from collections import defaultdict
 from PIL import Image,ImageDraw,ImageFont
 import numpy as np
 import trimesh
-OUT='/mnt/data/malefic_aircraft_models'
+OUT=os.environ.get('VEIL_AIRCRAFT_OUT',os.path.abspath(os.path.join(os.path.dirname(__file__),'..','build','aircraft_v2')))
 os.makedirs(OUT,exist_ok=True)
 PALETTES={
  'unraveled': {'metal':'#665f56','pale':'#b3a38b','dark':'#292a2a','rust':'#854837','red':'#813c32','yellow':'#bba059','glass':'#283e49','edge':'#9f8170','steel':'#4b5053','exhaust':'#df6936','rubber':'#242729','bone':'#d0b6a0'},
@@ -340,6 +340,72 @@ def make_begotten(name):
    m.box((s*1.82,.38,-5.98),(.18,.11,.23),'yellow')
  return m
 
+
+def refine_model_v2(m,palette,name):
+ """Second authored geometry pass: material faction identity and readable silhouette.
+ No model-plane texture fakery. All accents are real independent triangles.
+ """
+ if palette=='unraveled':
+  d={'needlewing':0,'harrier':1,'leviathan':2}[name]; L=[4.2,6.0,9.4][d];W=[5.2,7.1,10.3][d]
+  # Asymmetrical salvaged skin plates, A-10-style military nose attachment and bolts.
+  for s in (-1,1):
+   for idx in range(4+d):
+    z=-L*.37+idx*.42
+    m.box((s*(.42+d*.10),.52+d*.03,z),(.14,.03,.24),'rust' if idx%2 else 'steel')
+    m.bolts((s*(.41+d*.11),.56+d*.03,z),.045,2,'yellow')
+   # Production-repair seams on mismatched wing pieces.
+   for idx in range(3+d):
+    a=s*(1.15+idx*.54)
+    m.box((a,.45,-.43),(.20,.035,.40),'pale' if idx%2 else 'rust')
+   # Dual pusher prop support spars, not a decorative flying-wing blade.
+   m.tapered((s*W*.44,.32,L*.20),(s*W*.44,.38,L*.46),.06,.044,'steel',6)
+  m.box((0,.12,-L*.52),(.90,.22,.15),'yellow')
+  for j in range(3):m.box((-.30+j*.30,-.01,-L*.63),(.07,.20,.10),'dark')
+  if d==2:
+   for s in (-1,1):
+    m.box((s*1.58,1.35,L*.13),(.36,.18,1.24),'dark')
+    m.tapered((s*1.58,1.35,-.12),(s*1.58,1.42,-1.14),.12,.06,'steel',6)
+ if palette=='penitent':
+  d={'shrike':0,'censer':1,'cathedral':2}[name];L=[4.4,6.5,9.8][d];scl=[.75,1.,1.45][d]
+  # Cab bars and exposed drive hydraulics on the visible top; definitely no chapel ornament.
+  for side in (-1,1):
+   s=side
+   m.tapered((s*.60*scl,.75,-L*.35),(s*.62*scl,1.95*scl,-L*.39),.060,.053,'steel',5)
+   m.tapered((s*.52*scl,1.95*scl,-L*.39),(s*.52*scl,1.95*scl,L*.12),.07,.056,'dark',5)
+   for i in range(2+d):
+    z=-L*.31+i*.43
+    m.box((s*(1.06+.11*d),.36,z),(.27,.16,.22),'yellow' if i%2 else 'rust')
+   m.line([(s*.62*scl,.35,L*.28),(s*.93*scl,.94,L*.27),(s*1.03*scl,.5,-L*.30)],.055,'rubber')
+  # 3 serrated splitter bars in front of intake, angled sheet-metal shredder jaw.
+  for s in (-1,0,1):
+   m.tapered((s*.33*scl,.38,-L*.47),(s*.42*scl,.15,-L*.65),.11,.018,'steel',5)
+  m.box((0,2.12*scl,L*.25),(.72,.08,.48),'yellow')
+  if d==2:
+   for s in (-1,1):
+    m.line([(s*2.05,2.19,L*.36),(s*2.25,2.38,0),(s*1.51,.46,-L*.42)],.092,'dark')
+ if palette=='begotten':
+  d={'gnat':0,'mantis':1,'behemoth':2}[name]
+  if d==0:
+   # Physical straps and leather tabs frame the weapon-leg sockets, scar seams.
+   for s in (-1,1):
+    m.line([(s*.78,1.20,1.06),(s*1.03,1.60,-.09),(s*.52,.93,-1.37)],.115,'steel')
+    for k in range(3):
+     m.spike((s*.56,.62,-1.6+k*.36),(s*(.71+k*.03),.89,-1.64+k*.37),.095,'bone')
+   m.box((0,1.79,.30),(.80,.14,.18),'rust')
+  elif d==1:
+   # Claw articulation and ragged mane masses stay anatomically four-legged.
+   for s in (-1,1):
+    for z in (-1.19,1.32):
+     m.box((s*1.18,-1.27,z+.31),(.31,.19,.20),'bone')
+   for i in range(6):
+    x=(-.58+i*.23);m.spike((x,.98,-1.37),(x,1.36,-1.9),.08,'dark')
+  else:
+   # Exposed muscle ligaments and scar plates on raw skinned whale, no extra wing pairs.
+   for s in (-1,1):
+    for i,z in enumerate((-5.3,-3.1,-.9,1.4,3.6)):
+     m.tapered((s*2.18,1.14,z),(s*2.48,1.68,z+.76),.075,.028,'bone',5)
+     m.spike((s*2.62,1.30,z+.43),(s*2.79,1.59,z+.73),.07,'dark')
+
 ROSTER=[('unraveled','needlewing','Light / scrap A-10 nose, pusher prop'),
  ('unraveled','harrier','Medium / improvised salvage attack aircraft'),
  ('unraveled','leviathan','Heavy / bolted salvage freight gunship'),
@@ -405,7 +471,7 @@ def glb_export(model,name,palette):
                'baseColorTexture':{'index':0},
                'baseColorFactor':[*(v/255 for v in rgb(model.palette[n])),1],
                'metallicFactor':0,'roughnessFactor':1},'doubleSided':True} for n in mats]
- j={'asset':{'version':'2.0','generator':'The Malefic Veil procedural PSX aircraft v1'},
+ j={'asset':{'version':'2.0','generator':'The Malefic Veil procedural PSX aircraft v2'},
     'scene':0,'scenes':[{'nodes':[0]}],'nodes':[{'mesh':0,'name':name}],
     'meshes':[{'name':name,'primitives':primitives}],
     'images':[{'bufferView':img_view,'mimeType':'image/png'}],
@@ -474,13 +540,14 @@ def create():
  metadata=[];preview={}
  for palette,name,desc in ROSTER:
   m={'unraveled':make_unraveled,'penitent':make_penitent,'begotten':make_begotten}[palette](name)
+  refine_model_v2(m,palette,name)
   ident=f'{palette}_{name}'
   meta=glb_export(m,ident,palette)
   meta['description']=desc
   metadata.append(meta)
   preview[ident]=preview_render(m)
   print(ident,'tris',meta['triangles'],'bounds',meta['bounds_min'],meta['bounds_max'])
- with open(os.path.join(OUT,'aircraft_manifest.json'),'w') as f:json.dump({'schema':1,'generator':'build_malefic_aircraft.py',
+ with open(os.path.join(OUT,'aircraft_manifest.json'),'w') as f:json.dump({'schema':1,'generator':'build_malefic_aircraft.py v2',
   'game':'The Malefic Veil','status':'static geometry; no flight mechanics or animation',
   'models':metadata},f,indent=2)
  contact=Image.new('RGB',(1500,1170),(29,31,35));pen=ImageDraw.Draw(contact)

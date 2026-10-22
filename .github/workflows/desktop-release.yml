@@ -37,7 +37,7 @@ jobs:
         run: |
           set -e
           python3 tools/validate_economy_csv.py
-          for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest DesktopUpdaterTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
+          for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
             java -Djava.awt.headless=true -cp build/classes "veil.$test"
           done
       - name: Package game and independent updater bootstrap
@@ -48,20 +48,20 @@ jobs:
           jar uf build/package/MaleficVeil.jar -C assets/game kenney
           jar uf build/package/MaleficVeil.jar -C assets/game ggbot
           mkdir -p build/bootstrap/veil
-          cp build/classes/veil/DesktopUpdater.class build/bootstrap/veil/
+          cp build/classes/veil/DesktopUpdater*.class build/bootstrap/veil/
+          cp build/classes/veil/ReleaseCatalog*.class build/bootstrap/veil/
           jar cf build/package/updater.jar -C build/bootstrap .
           mkdir -p build/package/assets
           cp -R assets/game build/package/assets/
+          cp -R lib build/package/
           cp play-release.bat play-release.sh build/package/
           chmod +x build/package/play-release.sh
           printf '%s\n' "$GITHUB_SHA" > build/package/version.txt
           cd build/package
-          zip -qr ../payload.zip MaleficVeil.jar assets version.txt
-          cp ../payload.zip "../MaleficVeil-${GITHUB_SHA:0:12}.zip"
-          sha256sum "../MaleficVeil-${GITHUB_SHA:0:12}.zip"
-          cp "../MaleficVeil-${GITHUB_SHA:0:12}.zip" .
-          zip -q "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar play-release.bat play-release.sh version.txt
-          zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" assets
+          zip -qr "MaleficVeil-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt
+          zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt play-release.bat play-release.sh
+          unzip -tq "MaleficVeil-${GITHUB_SHA:0:12}.zip"
+          unzip -tq "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip"
           sha256sum "MaleficVeil-${GITHUB_SHA:0:12}.zip" | awk '{print $1}' > checksum.txt
           printf 'version=%s\narchive=MaleficVeil-%s.zip\nsha256=%s\n' "$GITHUB_SHA" "${GITHUB_SHA:0:12}" "$(cat checksum.txt)" > update.properties
       - name: Publish immutable release
@@ -79,8 +79,24 @@ jobs:
             build/package/play-release.sh \
             --target "$GITHUB_SHA" \
             --title "The Malefic Veil ${GITHUB_SHA:0:12}" \
-            --notes "Automated Java 17 desktop development release for commit $GITHUB_SHA. Tests and checksums gate publication." \
-            --latest
+            --notes "Pre-1.0 development build $GITHUB_SHA. Updater includes published prereleases; save compatibility is not guaranteed." \
+            --prerelease
+      - name: Verify published release and downloadable assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="dev-${GITHUB_SHA:0:12}"
+          gh release view "$TAG" --json tagName,isDraft,isPrerelease --jq '.tagName == "'$TAG'" and .isDraft == false and .isPrerelease == true' | grep -qx true
+          mkdir -p build/release-readback
+          gh release download "$TAG" -D build/release-readback
+          for file in "MaleficVeil-${GITHUB_SHA:0:12}.zip" \
+                      "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" \
+                      updater.jar update.properties play-release.bat play-release.sh; do
+            cmp "build/package/$file" "build/release-readback/$file"
+          done
+          unzip -tq "build/release-readback/MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip"
+          echo "Published prerelease and all downloaded assets verified"
       - name: Preserve packaged installer even if Release API denies publication
         if: always()
         uses: actions/upload-artifact@v4

@@ -33,6 +33,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private int gun=0,spawn=0,frags=0,previousMouse=-1;
     private boolean mapVisible=false,continentVisible=false,help=true,dead=false;
     private boolean inventoryVisible=false,skillsVisible=false;
+    private boolean aircraftShowroom=false;
+    private int aircraftShowroomIndex=0;
+    private double aircraftShowroomYaw=-Math.PI/2+.25;
     private boolean respawnPending=false;
     private long respawnRequestAt=0;
     private long ticks=0;
@@ -725,7 +728,18 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         super.paintComponent(raw);
         Graphics2D g=(Graphics2D)raw.create();
         Graphics2D low=buffer.createGraphics();
-        renderScene(low);low.dispose();
+        if(aircraftShowroom)
+            AircraftShowroom.render(low,actorModels.meshes(),
+                aircraftShowroomIndex,aircraftShowroomYaw);
+        else renderScene(low);
+        low.dispose();
+        if(aircraftShowroom){
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            g.drawImage(buffer,0,0,getWidth(),getHeight(),null);
+            g.dispose();
+            return;
+        }
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         g.drawImage(buffer,0,0,getWidth(),getHeight(),null);
         int h=getHeight(),w=getWidth();
@@ -780,7 +794,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("E INTERACT / HARVEST  X MEDKIT  Q VEHICLE",23,127);
-            g.drawString("I inventory  K skills  J craft  O crews  M map",23,147);}
+            g.drawString("I inventory  K skills  J craft  F8 airframe inspect",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
@@ -875,6 +889,31 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         int k=e.getKeyCode();
         boolean fresh=held.add(k);
         if(!fresh)return;
+        // Offline visual inspection is not an aircraft unlock, spawn,
+        // teleport, or exemption from host gameplay. No player input packet
+        // or actor position change is sent while inspecting GLB geometry.
+        if(k==KeyEvent.VK_F8){
+            aircraftShowroom=!aircraftShowroom;
+            held.remove(k);
+            repaint();
+            return;
+        }
+        if(aircraftShowroom){
+            switch(k){
+                case KeyEvent.VK_RIGHT -> aircraftShowroomIndex=
+                    (aircraftShowroomIndex+1)%AircraftShowroom.count();
+                case KeyEvent.VK_LEFT -> aircraftShowroomIndex=
+                    (aircraftShowroomIndex+AircraftShowroom.count()-1)%
+                    AircraftShowroom.count();
+                case KeyEvent.VK_A -> aircraftShowroomYaw-=.19;
+                case KeyEvent.VK_D -> aircraftShowroomYaw+=.19;
+                case KeyEvent.VK_ESCAPE -> aircraftShowroom=false;
+                default -> { }
+            }
+            held.remove(k);
+            repaint();
+            return;
+        }
         if(dead){
             if(k>=KeyEvent.VK_1&&k<=KeyEvent.VK_3)spawn=k-KeyEvent.VK_1;
             if(k==KeyEvent.VK_ENTER)respawnAt(spawn);

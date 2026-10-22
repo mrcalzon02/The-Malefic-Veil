@@ -68,6 +68,13 @@ public final class UrbanPerformanceTest {
         Graphics2D g=frame.createGraphics();
         double[] depth=new double[320];Arrays.fill(depth,40.0);
         PropRenderer renderer=new PropRenderer();
+        // Explicitly benchmark the 80-instance budget even though interactive
+        // defaults are deliberately higher than this legacy low-end profile.
+        PerformanceSettings lowEnd=new PerformanceSettings();
+        lowEnd.propDistance=19;
+        lowEnd.highDetailDistance=9;
+        lowEnd.meshBudget=80;
+        renderer.setBudgets(lowEnd);
         java.util.List<Long> renderTimes=new ArrayList<>();
         for(int n=0;n<9;n++){
             g.setClip(null);

@@ -106,7 +106,14 @@ public final class ContinentVista {
             double approach=westGate?-x:-y;
             double ramp=Math.max(0,1-approach/9);
             ramp=ramp*ramp*(3-2*ramp);
-            height+=Math.max(0,-height)*ramp;
+            // Preserve a real downhill approach even when the macro City A
+            // plate itself is also at sea-level zero. Beyond 12 metres the
+            // ramp blends back into the ordinary generated surroundings.
+            double descent=1-ramp;
+            double recovery=Math.max(0,Math.min(1,(32-approach)/20));
+            recovery=recovery*recovery*(3-2*recovery);
+            height=Math.min(height+Math.max(0,-height)*ramp,
+                -FOUNDATION_DEPTH*descent*recovery);
         }
         return new Sample(height,biome,road);
     }

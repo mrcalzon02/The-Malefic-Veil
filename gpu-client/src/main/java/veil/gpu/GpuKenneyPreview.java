@@ -240,7 +240,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     texture=materialTextures.get(group.getKey());
                     if(texture==null){
                         try{
-                            byte[] data=KenneyAssetPack.load().texture(group.getKey());
+                            // Original UV atlas for GGBot; Kenney remains a separate source kit.
+                            byte[] data=source.textureBytes(group.getKey());
+                            if(data==null)data=KenneyAssetPack.load().texture(group.getKey());
                             Pixmap image=new Pixmap(data,0,data.length);
                             texture=new Texture(image);
                             image.dispose();
@@ -248,7 +250,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                             texture.setWrap(Texture.TextureWrap.Repeat,Texture.TextureWrap.Repeat);
                             materialTextures.put(group.getKey(),texture);
                         }catch(Exception ex){
-                            throw new IllegalStateException("Missing source Kenney texture "+
+                            throw new IllegalStateException("Missing licensed source texture "+
                                 group.getKey()+" for "+batch.modelId(),ex);
                         }
                     }

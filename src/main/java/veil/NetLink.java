@@ -2,6 +2,7 @@ package veil;
 
 import java.io.*;
 import java.net.*;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 /** Thin async LAN wire client; never modifies Swing components on socket reader. */
@@ -17,7 +18,8 @@ public final class NetLink implements AutoCloseable {
                       int marksmanship,int athletics,int engineering,int scavenging,int survival,
                       long protectionMs,int hunger,int hydration){}
     public record NpcRank(int level,String archetype){}
-    public record AiActor(String faction,int level,String group,String activity,int buildings){}
+    public record AiActor(String faction,int level,String group,String activity,
+                          int buildings,String duty){}
     public record Self(int health,int sanity,int cash,int supplies,int medkits,
         int pistolReserve,int shellReserve,int pistolClip,int shellClip,boolean dead,int frags,
         double x,double y,double angle,double visibility){}
@@ -118,10 +120,19 @@ public final class NetLink implements AutoCloseable {
                                 }
                             }
                             case "AI_ACTOR" -> {
-                                if(s.length==7){
+                                // AI_ACTOR|id|faction|level|group|activity|buildings|duty
+                                // Keep network payload shape exactly aligned
+                                // with LanServer.aiPacket, not a stale 7-field
+                                // event that silently discards every AI actor.
+                                if(s.length==8){
                                     int actor=Integer.parseInt(s[1]);
-                                    aiActors.put(actor,new AiActor(s[2],Integer.parseInt(s[3]),
-                                        s[4],s[5],Integer.parseInt(s[6])));
+                                    int level=Integer.parseInt(s[3]);
+                                    int bases=Integer.parseInt(s[6]);
+                                    if(actor>=0||level<1||level>50||bases<0||
+                                       !Set.of("BUILDER","PROVISIONER","SENTINEL")
+                                           .contains(s[7]))continue;
+                                    aiActors.put(actor,new AiActor(s[2],level,
+                                        s[4],s[5],bases,s[7]));
                                 }
                             }
                             case "PICKUP" -> {if(s.length==2)pickedUp.add(Integer.parseInt(s[1]));}

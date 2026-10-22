@@ -95,7 +95,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             JOptionPane.PLAIN_MESSAGE)!=JOptionPane.OK_OPTION)return null;
         try{
             var mode=(HostAiSettings.Distribution)distribution.getSelectedItem();
-            List<String> options=new java.util.ArrayList<>();
+            java.util.List<String> options=new java.util.ArrayList<>();
             options.add("--ai-count="+count.getText().trim());
             options.add("--ai-level="+level.getText().trim());
             options.add("--ai-mode="+mode);

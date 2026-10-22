@@ -13,7 +13,13 @@ import java.util.*;
  */
 public final class PropRenderer {
     private static final double FOV=1.18, TAN=Math.tan(FOV/2);
-    private int drawDistance=19, highDetailDistance=9, meshBudget=80;
+    private int drawDistance=76, highDetailDistance=32, meshBudget=300;
+    private double eyeHeight=1.65, pitch=0;
+    public void setCamera(double height,double angle){
+        if(!Double.isFinite(height)||!Double.isFinite(angle)||Math.abs(angle)>1.52)
+            throw new IllegalArgumentException("Invalid view pose");
+        eyeHeight=height;pitch=angle;
+    }
     public void setBudgets(PerformanceSettings settings){
         drawDistance=settings.propDistance;
         highDetailDistance=settings.highDetailDistance;
@@ -49,7 +55,7 @@ public final class PropRenderer {
                     double playerX,double playerY,double heading,double[] wallDepth,
                     int width,int height){
         return draw(g,models,instances,playerX,playerY,heading,wallDepth,
-            width,height,1.55,0);
+            width,height,eyeHeight,pitch);
     }
     /**
      * Real in-engine elevated inspection camera. Default world camera still
@@ -61,7 +67,7 @@ public final class PropRenderer {
                     double playerX,double playerY,double heading,double[] wallDepth,
                     int width,int height,double eyeHeight,double pitch){
         if(!Double.isFinite(eyeHeight)||!Double.isFinite(pitch)||
-           Math.abs(pitch)>1.20)throw new IllegalArgumentException("Invalid camera pitch");
+           Math.abs(pitch)>1.52)throw new IllegalArgumentException("Invalid camera pitch");
         final double cp=Math.cos(pitch),sp=Math.sin(pitch);
         java.util.List<Face> faces=new ArrayList<>();
         // One depth threshold per column per frame, not one expensive trig call
@@ -88,7 +94,8 @@ public final class PropRenderer {
             if(meshCount>=meshBudget)break;
             meshCount++;
             double yaw=placement.heading(),cy=Math.cos(yaw),sy=Math.sin(yaw);
-            int faceStep=dist>highDetailDistance?4:1;
+            // Preserve every triangle of licensed source meshes, even at a distance.
+            int faceStep=1;
             int faceIndex=0;
             for(GlbMesh.Surface surface:mesh.surfaces()){
                 GlbMesh.Triangle f=surface.triangle();

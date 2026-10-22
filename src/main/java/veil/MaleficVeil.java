@@ -10,13 +10,14 @@ import java.util.Set;
 
 /** PSX-resolution Java2D raycast arena. No external jars, assets or native libraries. */
 public final class MaleficVeil extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
-    private static final int RW=320,RH=200;
+    private static final int RW=480,RH=300;
     private static final double FOV=1.18;
     private final BufferedImage buffer=new BufferedImage(RW,RH,BufferedImage.TYPE_INT_RGB);
     private final double[] depth=new double[RW];
     private final Set<Integer> held=new HashSet<>();
     private final World world;
     private final UrbanScene urban;
+    private final ContinentVista vista;
     private final PropRenderer urbanRenderer=new PropRenderer();
     private final PerformanceSettings performance=new PerformanceSettings();
     private final GameplayMeshes actorModels=new GameplayMeshes();
@@ -32,7 +33,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final javax.swing.Timer timer;
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
     private int health=100,sanity=100,cash=150,scrap=4,medkits=2,pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
-    private int gun=0,spawn=0,frags=0,previousMouse=-1;
+    private int gun=0,spawn=0,frags=0,previousMouse=-1,previousMouseY=-1;
+    private double cameraPitch=0;
     private boolean mapVisible=false,continentVisible=false,help=true,dead=false;
     private boolean inventoryVisible=false,skillsVisible=false;
     private boolean aircraftShowroom=false;
@@ -49,6 +51,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {
         this.window=window;this.net=net;this.archetype=archetype;
         world=new World(seed);
+        vista=new ContinentVista(world);
         localVehicles=new Vehicles(world);
         localCargo=new CargoHaulage(world,localVehicles);
         localHost=net==null?new ArenaSystems(seed):null;
@@ -57,7 +60,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         try{weather=new VeilWeather(seed,java.nio.file.Path.of("."));}
         catch(java.io.IOException ex){throw new IllegalStateException("Pinned shared weather library missing",ex);}
         if(net!=null)weather.followHost();
-        try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
+        try{urban=new UrbanScene(world,vista.foundations());}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
             world.npcs.add(new World.Npc(7.5,1.5));
@@ -589,14 +592,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         return InteractionFocus.pick(px,py,angle,objects,
             (x,y,a,b)->world.lineClear(x,y,a,b));
     }
+    /** Camera can freely look above/below eye level without changing world collision. */
+    private int horizon(){
+        double focal=RW/(2*Math.tan(FOV/2));
+        return (int)Math.max(-RH*4,Math.min(RH*5,
+            Math.round(RH/2.0+Math.tan(cameraPitch)*focal)));
+    }
     /** Walkable streamed continent scene, using imported GLB trees and real 3D node meshes. */
     private void renderContinentalGround(Graphics2D g){
-        g.setColor(new Color(38,37,62));g.fillRect(0,0,RW,RH/2);
+        int horizon=horizon();
+        g.setColor(new Color(38,37,62));g.fillRect(0,0,RW,Math.max(0,Math.min(RH,horizon)));
         weather.paintSky(g,RW,RH);
+        urbanRenderer.setCamera(1.65,cameraPitch);
         ContinentLayout terrain=world.continent();
         double tangent=Math.tan(FOV/2);
-        for(int row=RH/2;row<RH;row++){
-            double distance=Math.min(65,88.0/(row-RH/2+2));
+        for(int row=Math.max(0,horizon);row<RH;row++){
+            double distance=Math.min(150,1.65*RW/(2*Math.tan(FOV/2)) /
+                Math.max(1,row-horizon));
             for(int col=0;col<RW;col++){
                 double ray=angle+Math.atan(((col+.5)/RW-.5)*2*tangent);
                 int x=(int)Math.floor(px+Math.cos(ray)*distance);
@@ -717,23 +729,26 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void renderScene(Graphics2D g){
         if(!world.detailedCity(px,py)){renderContinentalGround(g);return;}
-        g.setColor(new Color(14,14,27));g.fillRect(0,0,RW,RH/2);
+        int horizon=horizon();
+        g.setColor(new Color(14,14,27));
+        g.fillRect(0,0,RW,Math.max(0,Math.min(RH,horizon)));
         weather.paintSky(g,RW,RH);
         g.setColor(new Color(weather.tint(px,py,0x1d1c1d)));
-        g.fillRect(0,RH/2,RW,RH/2);
+        g.fillRect(0,Math.max(0,horizon),RW,Math.max(0,RH-Math.max(0,horizon)));
+        urbanRenderer.setCamera(1.65,cameraPitch);
         for(int i=0;i<RW;i++){
             double offset=Math.atan(((i+.5)/RW-.5)*2*Math.tan(FOV/2));
             double ray=angle+offset,rx=Math.cos(ray),ry=Math.sin(ray);
             double distance=.04,hitX=px,hitY=py;
-            while(distance<35){
+            while(distance<110){
                 hitX=px+rx*distance;hitY=py+ry*distance;
                 if(world.solid(hitX,hitY))break;
-                distance+=.055;
+                distance+=distance<13?.055:distance<42?.14:.30;
             }
             depth[i]=distance;
             double corrected=Math.max(.14,distance*Math.cos(offset));
-            int h=(int)Math.min(1000,140/corrected);
-            int top=RH/2-h/2;
+            int h=(int)Math.min(1500,RH*.7/corrected);
+            int top=horizon-h/2;
             int tx=(int)Math.floor(hitX),ty=(int)Math.floor(hitY);
             int shade=Math.max(13,165-(int)(corrected*6));
             boolean concrete=(tx/12+ty/12)%3==0;
@@ -976,7 +991,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
         if(help&&!dead){g.setColor(new Color(9,10,17,220));g.fillRect(12,64,440,100);
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
-            g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
+            g.drawString("WASD move / Mouse look (360 + vertical) / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("E INTERACT / HARVEST  X MEDKIT  Q VEHICLE",23,127);
             g.drawString("I inventory K skills J craft F8 aircraft F9 weather",23,147);}
@@ -1268,9 +1283,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     /** Compact graphics panel; local display preferences do not modify network simulation. */
     private void performanceDialog(){
-        JSlider distance=new JSlider(4,64,performance.propDistance);
-        JSlider detail=new JSlider(2,32,performance.highDetailDistance);
-        JSlider models=new JSlider(8,500,performance.meshBudget);
+        JSlider distance=new JSlider(8,180,performance.propDistance);
+        JSlider detail=new JSlider(4,90,performance.highDetailDistance);
+        JSlider models=new JSlider(24,700,performance.meshBudget);
         JSlider cap=new JSlider(15,30,performance.frameCap);
         JPanel panel=new JPanel(new GridLayout(4,2,8,3));
         panel.add(new JLabel("View distance"));panel.add(distance);
@@ -1539,11 +1554,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     @Override public void mouseReleased(MouseEvent e){}
     @Override public void mouseClicked(MouseEvent e){}
-    @Override public void mouseEntered(MouseEvent e){previousMouse=-1;}
-    @Override public void mouseExited(MouseEvent e){previousMouse=-1;}
+    @Override public void mouseEntered(MouseEvent e){previousMouse=-1;previousMouseY=-1;}
+    @Override public void mouseExited(MouseEvent e){previousMouse=-1;previousMouseY=-1;}
     @Override public void mouseDragged(MouseEvent e){mouseMoved(e);}
     @Override public void mouseMoved(MouseEvent e){
-        if(previousMouse>=0&&!dead)angle+=Math.max(-60,Math.min(60,e.getX()-previousMouse))*.004;
-        previousMouse=e.getX();
+        if(previousMouse>=0&&previousMouseY>=0&&!dead){
+            angle+=Math.max(-60,Math.min(60,e.getX()-previousMouse))*.004;
+            cameraPitch=Math.max(-1.52,Math.min(1.52,
+                cameraPitch-Math.max(-60,Math.min(60,e.getY()-previousMouseY))*.004));
+        }
+        previousMouse=e.getX();previousMouseY=e.getY();
     }
 }

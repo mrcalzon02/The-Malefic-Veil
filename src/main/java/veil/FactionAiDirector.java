@@ -16,9 +16,10 @@ import java.util.zip.CRC32;
 public final class FactionAiDirector {
     public enum Activity { EXPLORING, SEEKING_RESOURCES, HARVESTING, CRAFTING,
                            BUILDING, DEFENDING, RECOVERING }
+    public enum Duty { BUILDER, PROVISIONER, SENTINEL }
     public record View(int id,CharacterRoster.Faction faction,int level,
                        String group,Activity activity,double x,double y,
-                       int carried,int buildings) {}
+                       int carried,int buildings,Duty duty) {}
     private static final int BOT_ID_BASE=-10000;
     private static final class Agent {
         int id;
@@ -28,6 +29,8 @@ public final class FactionAiDirector {
         long nextDecision;
         Activity activity=Activity.EXPLORING;
         String crew;
+        Duty duty=Duty.BUILDER;
+        boolean returningHome;
         int stuck;
     }
     private final ArenaSystems arena;
@@ -59,6 +62,9 @@ public final class FactionAiDirector {
             Agent agent=new Agent();
             agent.id=BOT_ID_BASE-i;
             agent.faction=rules.teamFor(i);
+            int sameFaction=0;
+            for(Agent previous:agents)if(previous.faction==agent.faction)sameFaction++;
+            agent.duty=Duty.values()[sameFaction%Duty.values().length];
             var player=arena.join(agent.id);
             String account=accountKey(seed,agent.id);
             if(!arena.assignAccount(agent.id,account)||
@@ -229,7 +235,7 @@ public final class FactionAiDirector {
             ArenaSystems.Player p=arena.player(agent.id);
             if(p!=null)out.add(new View(agent.id,agent.faction,
                 p.progression.overallLevel(),agent.crew,agent.activity,
-                p.x,p.y,p.survival.mass(),agent.buildings));
+                p.x,p.y,p.survival.mass(),agent.buildings,agent.duty));
         }
         return List.copyOf(out);
     }
@@ -338,7 +344,24 @@ public final class FactionAiDirector {
                 case DIRTY_WATER -> p.survival.count(item)<2?-5:3;
                 default -> 3;
             };
-            double next=dist+need;
+            // Distinct, deterministic supply priorities per three-member
+            // crew. Actual material availability and capacity still gate each
+            // harvest; this never fabricates faction resources.
+            double purpose=switch(a.duty){
+                case BUILDER -> switch(item){
+                    case TIMBER,FIBER,FIELD_STONE -> -7;
+                    default -> 1;
+                };
+                case PROVISIONER -> switch(item){
+                    case EDIBLES,MEDICINAL_HERBS,DIRTY_WATER -> -10;
+                    default -> 1;
+                };
+                case SENTINEL -> switch(item){
+                    case RAW_ORE,FIELD_STONE,FIBER -> -7;
+                    default -> 2;
+                };
+            };
+            double next=dist+need+purpose;
             if(next<score){score=next;best=n;}
         }
         return best;
@@ -346,10 +369,19 @@ public final class FactionAiDirector {
     private void decision(Agent agent,ArenaSystems.Player p,long ms){
         if(p.dead){
             agent.activity=Activity.RECOVERING;
-            if(arena.respawnRemainingMs(agent.id)==0)arena.respawn(agent.id,0);
+            if(arena.respawnRemainingMs(agent.id)==0&&arena.respawn(agent.id,0))
+                agent.returningHome=true;
             return;
         }
         recountBuildings(agent,p);
+        if(agent.returningHome){
+            agent.activity=Activity.RECOVERING;
+            if(Math.hypot(p.x-agent.homeX,p.y-agent.homeY)>3.0){
+                walk(agent,p,agent.homeX,agent.homeY,ms);
+                return;
+            }
+            agent.returningHome=false;
+        }
         if(combat(agent,p,ms))return;
         if(p.survival.status().hunger()<75&&p.survival.count(SurvivalCrafting.Item.EDIBLES)>0)
             p.survival.consume(SurvivalCrafting.Item.EDIBLES);

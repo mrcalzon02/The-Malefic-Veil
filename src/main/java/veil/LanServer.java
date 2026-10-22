@@ -133,7 +133,10 @@ public final class LanServer implements AutoCloseable {
                     World.Npc n=match.world.npcs.get(i);
                     broadcast("NPC|"+i+"|"+n.x+"|"+n.y+"|"+n.hp,-1);
                 }
-            }catch(RuntimeException e){System.err.println("Arena tick failed: "+e);}
+            }catch(RuntimeException e){
+                System.err.println("Arena tick failed: "+e);
+                DesktopDiagnostics.note("HOST_TICK_FAILURE "+e);
+            }
         },100,100,TimeUnit.MILLISECONDS);
         workers.execute(()->{
             while(running)try{
@@ -722,6 +725,8 @@ public final class LanServer implements AutoCloseable {
         if(dataDirectory!=null)saveNow();
     }
     public static void main(String[] args)throws Exception{
+        DesktopDiagnostics.install("dedicated-host");
+        DesktopDiagnostics.note("HOST_CONFIGURING");
         boolean hardcore=Boolean.getBoolean("veil.hardcore");
         List<String> positional=new ArrayList<>(),aiOptions=new ArrayList<>();
         for(String arg:args){
@@ -737,6 +742,7 @@ public final class LanServer implements AutoCloseable {
         HostAiSettings.Rules hostAI=aiOptions.isEmpty()?
             HostAiSettings.fromProperties():HostAiSettings.fromOptions(aiOptions);
         LanServer host=new LanServer(port,seed,root,hardcore,hostAI);
+        DesktopDiagnostics.note("HOST_LISTENING port="+host.port());
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             try{host.close();}catch(IOException e){System.err.println("Shutdown save failed: "+e);}
         },"Veil-server-shutdown"));

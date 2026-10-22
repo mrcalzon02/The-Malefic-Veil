@@ -72,6 +72,7 @@ jobs:
           test -s build/test-visuals/gpu-psx-menu.png
           test -s build/test-visuals/gpu-continental-edge.png
           test -s build/test-visuals/gpu-kenney-vehicles.png
+          test -s build/test-visuals/gpu-ggbot-city-cars.png
           test -s build/test-visuals/gpu-kenney-foliage.png
           file build/test-visuals/gpu-kenney-city.png
       - name: Three seeded real GPU worlds, six in-game camera angles each
@@ -102,6 +103,7 @@ jobs:
             build/test-visuals/gpu-psx-menu.png
             build/test-visuals/gpu-continental-edge.png
             build/test-visuals/gpu-kenney-vehicles.png
+            build/test-visuals/gpu-ggbot-city-cars.png
             build/test-visuals/gpu-kenney-foliage.png
             build/test-visuals/gallery-seed-*.png
             build/test-visuals/gallery-seed-*.log

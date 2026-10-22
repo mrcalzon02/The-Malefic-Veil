@@ -424,7 +424,9 @@ public final class ArenaSystems {
             if(Math.abs(diff)<=Math.atan2(.4,range)){nearest=range;target=other;}
         }
         for(World.Npc n:world.npcs){
-            if(n.hp<=0)continue;
+            // World monsters and Begotten are permanently allied.
+            if(n.hp<=0||factions.faction(p.accountKey)==
+                CharacterRoster.Faction.THE_BEGOTTEN)continue;
             double range=Math.hypot(n.x-p.x,n.y-p.y);
             if(range>=nearest||range<.01||!clear(p.x,p.y,n.x,n.y))continue;
             double diff=Math.atan2(Math.sin(Math.atan2(n.y-p.y,n.x-p.x)-p.angle),
@@ -730,10 +732,13 @@ public final class ArenaSystems {
                     opponent=p;nearest=Math.hypot(p.x-d.x,p.y-d.y);
                 }
                 World.Npc npc=null;
-                for(World.Npc n:world.npcs){
-                    double range=Math.hypot(n.x-d.x,n.y-d.y);
-                    if(n.hp>0&&range<nearest&&clear(d.x,d.y,n.x,n.y)){npc=n;nearest=range;opponent=null;}
-                }
+                if(factions.faction(d.ownerKey)!=CharacterRoster.Faction.THE_BEGOTTEN)
+                    for(World.Npc n:world.npcs){
+                        double range=Math.hypot(n.x-d.x,n.y-d.y);
+                        if(n.hp>0&&range<nearest&&clear(d.x,d.y,n.x,n.y)){
+                            npc=n;nearest=range;opponent=null;
+                        }
+                    }
                 if(npc!=null){npc.hp-=18;d.cooldown=.45;}
                 else if(opponent!=null){damage(opponent,12,2);d.cooldown=.45;}
             }

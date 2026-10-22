@@ -24,6 +24,13 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
+      - name: Acquire verified GGBot CC0 car atlas source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/game/ggbot
+          curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
+          echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
       - name: Compile all Java 17 sources
         shell: bash
         run: |
@@ -44,6 +51,9 @@ jobs:
       - name: Import all 124 CC0 GLBs and render seeded district models
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
+      - name: Verify all original GGBot UVs, PNGs, vehicle placements and renderer
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.GGBotCarPackTest
       - name: Dense Kenney city performance and source instancing benchmarks
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanPerformanceTest
@@ -130,12 +140,14 @@ jobs:
           echo 'Main-Class: veil.MaleficVeil' > build/manifest.mf
           jar cfm build/MaleficVeil.jar build/manifest.mf -C build/classes .
           jar uf build/MaleficVeil.jar -C assets/game kenney
+          jar uf build/MaleficVeil.jar -C assets/game ggbot
           jar tf build/MaleficVeil.jar | grep 'kenney/retro-urban-kit-2.0.zip'
       - name: Validate self-contained runnable JAR model resources
         shell: bash
         run: |
           cd build
           java -Djava.awt.headless=true -cp MaleficVeil.jar veil.UrbanAssetTest
+          java -Djava.awt.headless=true -cp MaleficVeil.jar veil.GGBotCarPackTest
       - uses: actions/upload-artifact@v4
         if: always()
         with:

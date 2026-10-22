@@ -10,7 +10,8 @@ def read(name, key):
         rows = list(csv.DictReader(file))
     ids = [row[key] for row in rows]
     assert len(ids) == len(set(ids)) if name not in {
-        "industrial_recipe_inputs.csv", "facility_costs.csv", "hand_recipe_inputs.csv"
+        "industrial_recipe_inputs.csv", "facility_costs.csv", "hand_recipe_inputs.csv",
+        "skill_modifiers.csv"
     } else True, f"Duplicate {key} in {name}"
     return rows
 
@@ -23,6 +24,8 @@ hand_inputs = read("hand_recipe_inputs.csv", "recipe_id")
 facility_costs = read("facility_costs.csv", "facility_id")
 storage = read("storage_containers.csv", "container_id")
 skills = read("skill_modifiers.csv", "skill")
+pairs = [(row["skill"], row["effect"]) for row in skills]
+assert len(pairs) == len(set(pairs)), "Duplicate skill/effect pair in skill_modifiers.csv"
 item_ids = {x["item_id"] for x in items}
 facility_ids = {x["facility_id"] for x in facilities}
 industrial_ids = {x["recipe_id"] for x in industrial}

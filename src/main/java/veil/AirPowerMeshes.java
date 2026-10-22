@@ -18,23 +18,23 @@ public final class AirPowerMeshes {
                        int triangles,String sha256) {}
     private static final List<Spec> REGISTRY=List.of(
         new Spec("unraveled_needlewing",CharacterRoster.Faction.THE_UNRAVELED,
-            Role.LIGHT,732,"70c22be7ee0720befb15c683a393ee373250e014b93557fb915afcd79950058e"),
+            Role.LIGHT,1184,"1f2cbbe3c5d5f235b85e9e875303490d0c20731dfeefb888ca43123c9da20bab"),
         new Spec("unraveled_harrier",CharacterRoster.Faction.THE_UNRAVELED,
-            Role.MEDIUM,796,"8545e14b3b8ad342af1c61492223a86baf24bb939c7011adb8ee1bc1cf4b499d"),
+            Role.MEDIUM,1344,"147512788b4910d89fb188ba8062c997fc15cde0baacf30b816df77861a65a3d"),
         new Spec("unraveled_leviathan",CharacterRoster.Faction.THE_UNRAVELED,
-            Role.HEAVY,1104,"86850fede5fa017e5f6b5d346ed6f97b5e5e57893677ef275d186bf6957ffee3"),
+            Role.HEAVY,1816,"c778fee1bb65e2b94233571deeeb7037cf8da08f408ee9d809631785fb42e25b"),
         new Spec("penitent_shrike",CharacterRoster.Faction.THE_PENITENT,
-            Role.LIGHT,1056,"be808313d38184670d841074b9088978b06ff41117fa8cc3e9a3f6672e51d00c"),
+            Role.LIGHT,1314,"bd686a17cb919a98972a5f987c3f5854f5e427cfef7536424f9711735ff80200"),
         new Spec("penitent_censer",CharacterRoster.Faction.THE_PENITENT,
-            Role.MEDIUM,1114,"13f85c07ee19b6d17fedc5cd11129d498a1fab9f44d7a6fab9b9f407035085e7"),
+            Role.MEDIUM,1396,"6efcd34f5c8e18df75156a0d458c4b8ccd66816573b6ae1fbbeb03056d643f90"),
         new Spec("penitent_cathedral",CharacterRoster.Faction.THE_PENITENT,
-            Role.HEAVY,2312,"bfce9a55081b76ecf6e86b5a45042a7f45e5be26c374743874170344da529f3a"),
+            Role.HEAVY,2690,"8292e71535e73c26a650cf234b661246fb7d1129326b7051f723f11cc5b12835"),
         new Spec("begotten_gnat",CharacterRoster.Faction.THE_BEGOTTEN,
-            Role.LIGHT,1626,"3c3e36db4a9f4c0904b605d29d299f2399a4ed8ea6193ea5556ff48009f53c95"),
+            Role.LIGHT,1758,"9399db743030f9bf18e082f19b9d6680b26a72174f5da1ba8608a3a3ad89994d"),
         new Spec("begotten_mantis",CharacterRoster.Faction.THE_BEGOTTEN,
-            Role.MEDIUM,1524,"d02162101f2f62884e00a6c65b7133a5ef57c0c46a3919e01ff635965a42b8b6"),
+            Role.MEDIUM,1620,"dbc3ef259c29f13be40fbcedf8a9dca7494f51d0e2130951613a89c5fac955ef"),
         new Spec("begotten_behemoth",CharacterRoster.Faction.THE_BEGOTTEN,
-            Role.HEAVY,3544,"ecfc45c2c9bf5e7ca3a68eb709ebeb77ddc8ef625ddb543a4ff0718de8f0babf")
+            Role.HEAVY,3804,"0d43f38ed32256d23206ef4c6dc38a1d2b51327730881f7dcfc8bf92bcb12112")
     );
     private AirPowerMeshes(){}
     public static List<Spec> specs(){return REGISTRY;}

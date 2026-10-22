@@ -101,6 +101,24 @@ public final class SurvivalCrafting {
         items.merge(recipe.result(),recipe.quantity(),Integer::sum);
         return true;
     }
+    /** Host-authorized structural material debit. Never applies food effects. */
+    public synchronized boolean debit(Item item,int quantity){
+        if(item==null||quantity<1||quantity>1000||count(item)<quantity)return false;
+        items.put(item,count(item)-quantity);
+        return true;
+    }
+    /** Physical group handoff: weight and available stock checked atomically. */
+    public synchronized boolean transferTo(SurvivalCrafting recipient,Item item,int quantity){
+        if(recipient==null||recipient==this||item==null||quantity<1||quantity>1000||
+           count(item)<quantity)return false;
+        synchronized(recipient){
+            if(!recipient.canAcquire(item,quantity,true))return false;
+            items.put(item,count(item)-quantity);
+            if(!recipient.acquire(item,quantity,true))
+                throw new IllegalStateException("Resource transfer changed after preflight");
+        }
+        return true;
+    }
     public synchronized boolean consume(Item item){
         if(count(item)==0)return false;
         if(item==Item.EDIBLES){hunger=Math.min(100,hunger+30);}

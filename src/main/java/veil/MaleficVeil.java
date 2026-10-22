@@ -71,6 +71,44 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         addKeyListener(this);addMouseListener(this);addMouseMotionListener(this);
         timer=new javax.swing.Timer(33,this);timer.start();
     }
+    /** Compact host-only setup; network clients cannot change population rules. */
+    private static HostAiSettings.Rules hostAiDialog(){
+        HostAiSettings.Rules initial=HostAiSettings.fromProperties();
+        JTextField count=new JTextField(Integer.toString(initial.count()),5);
+        JTextField level=new JTextField(Integer.toString(initial.level()),5);
+        JTextField split=new JTextField(initial.unraveled()+","+
+            initial.penitent()+","+initial.begotten(),9);
+        JComboBox<HostAiSettings.Distribution> distribution=new JComboBox<>(
+            HostAiSettings.Distribution.values());
+        distribution.setSelectedItem(initial.distribution());
+        JComboBox<String> faction=new JComboBox<>(
+            new String[]{"1 — UNRAVELED","2 — PENITENT","3 — BEGOTTEN"});
+        faction.setSelectedIndex(initial.faction()-1);
+        JPanel choices=new JPanel(new GridLayout(5,2,8,3));
+        choices.add(new JLabel("AI characters (0–24)"));choices.add(count);
+        choices.add(new JLabel("Distribution"));choices.add(distribution);
+        choices.add(new JLabel("All on faction"));choices.add(faction);
+        choices.add(new JLabel("Starting level (1–50)"));choices.add(level);
+        choices.add(new JLabel("Custom 1,2,3 counts"));choices.add(split);
+        if(JOptionPane.showConfirmDialog(null,choices,
+            "Host AI Factions — max 3 per crew",JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE)!=JOptionPane.OK_OPTION)return null;
+        try{
+            var mode=(HostAiSettings.Distribution)distribution.getSelectedItem();
+            List<String> options=new java.util.ArrayList<>();
+            options.add("--ai-count="+count.getText().trim());
+            options.add("--ai-level="+level.getText().trim());
+            options.add("--ai-mode="+mode);
+            options.add("--ai-team="+(faction.getSelectedIndex()+1));
+            if(mode==HostAiSettings.Distribution.CUSTOM)
+                options.add("--ai-split="+split.getText().trim());
+            return HostAiSettings.fromOptions(options);
+        }catch(IllegalArgumentException exception){
+            JOptionPane.showMessageDialog(null,exception.getMessage(),
+                "Invalid AI Host Settings",JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(()->{
             String[] modes={"SOLO","HOST LAN","JOIN LAN"};
@@ -100,7 +138,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             NetLink link=null;
             try {
                 if(mode==1){
-                    new LanServer(7777,seed);
+                    HostAiSettings.Rules bots=hostAiDialog();
+                    if(bots==null)return;
+                    new LanServer(7777,seed,null,Boolean.getBoolean("veil.hardcore"),bots);
                     link=new NetLink("127.0.0.1",7777);
                 } else if(mode==2){
                     String host=JOptionPane.showInputDialog(null,"Host IP / hostname","127.0.0.1");

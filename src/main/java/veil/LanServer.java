@@ -23,6 +23,7 @@ public final class LanServer implements AutoCloseable {
     public final ArenaSystems match;
     public final ContinentSectors continentSectors;
     public final WorldHarvesting harvesting;
+    public final FactionAiDirector ai;
     private final VeilWeather weather;
     private volatile boolean running=true;
     private int nextId;
@@ -42,6 +43,11 @@ public final class LanServer implements AutoCloseable {
     }
     /** Persisted world rule: hardmode cannot change across restarts without migration. */
     public LanServer(int port,long seed,Path saveDir,boolean hardcore)throws IOException {
+        this(port,seed,saveDir,hardcore,HostAiSettings.fromProperties());
+    }
+    /** Explicit host AI settings, validated before binding the listening socket. */
+    public LanServer(int port,long seed,Path saveDir,boolean hardcore,
+                     HostAiSettings.Rules aiSettings)throws IOException {
         dataDirectory=saveDir;
         boolean active=HostRules.bind(saveDir,hardcore);
         moderation=saveDir==null?null:new HostModeration(saveDir);
@@ -57,6 +63,8 @@ public final class LanServer implements AutoCloseable {
             AccountDirectory.load(match,saveDir);
             harvesting.load(saveDir);
         }
+        ai=new FactionAiDirector(match,harvesting,Objects.requireNonNull(aiSettings));
+        if(saveDir!=null)HostAiSettings.save(saveDir,aiSettings);
         listener=saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
         if(saveDir!=null){
@@ -69,6 +77,7 @@ public final class LanServer implements AutoCloseable {
             try {
                 match.advance(100);
                 harvesting.advance(100);
+                ai.advance(100);
                 synchronized(weather){
                     weather.tick(.1,match.world.spawns[0][0],
                         match.world.spawns[0][1],0,1);
@@ -89,6 +98,8 @@ public final class LanServer implements AutoCloseable {
                     }
                 }
                 for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
+                if(match.time()%2000==0)
+                    for(var bot:ai.views())broadcast(aiPacket(bot),-1);
                 for(Vehicles.State car:match.vehicles.states())broadcast(carPacket(car),-1);
                 if(match.time()%500==0){
                     for(Vehicles.State car:match.vehicles.states())
@@ -160,6 +171,16 @@ public final class LanServer implements AutoCloseable {
         audit("weather_auto");
         return "Automatic weather enabled; "+weatherStatus();
     }
+    private static String aiPacket(FactionAiDirector.View bot){
+        return "AI_ACTOR|"+bot.id()+"|"+bot.faction()+"|"+bot.level()+
+            "|"+bot.group()+"|"+bot.activity()+"|"+bot.buildings();
+    }
+    public String aiStatus(){
+        StringJoiner j=new StringJoiner("; ",ai.settings().description()+" ", "");
+        for(var bot:ai.views())j.add(bot.id()+":"+bot.faction().name().replace("THE_","")+
+            ":"+bot.activity()+":lv"+bot.level()+":base"+bot.buildings());
+        return j.toString();
+    }
     private static String peerPacket(ArenaSystems.Player p){
         return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility+"|"+p.classId;
     }
@@ -221,6 +242,7 @@ public final class LanServer implements AutoCloseable {
     }
     private void sendWorld(Peer peer){
         for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
+        for(var bot:ai.views())peer.send(aiPacket(bot));
         for(int i=0;i<match.world.pickups.size();i++)
             if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
         for(int i=0;i<match.world.npcs.size();i++){
@@ -624,9 +646,10 @@ public final class LanServer implements AutoCloseable {
     }
     public static void main(String[] args)throws Exception{
         boolean hardcore=Boolean.getBoolean("veil.hardcore");
-        List<String> positional=new ArrayList<>();
+        List<String> positional=new ArrayList<>(),aiOptions=new ArrayList<>();
         for(String arg:args){
             if("--hardcore".equals(arg))hardcore=true;
+            else if(arg.startsWith("--ai-"))aiOptions.add(arg);
             else if(arg.startsWith("--"))throw new IllegalArgumentException("Unknown host option "+arg);
             else positional.add(arg);
         }
@@ -634,14 +657,19 @@ public final class LanServer implements AutoCloseable {
         long seed=positional.size()>1?Long.parseLong(positional.get(1)):20261020L;
         Path root=positional.size()>2?Path.of(positional.get(2)):Path.of("server-data");
         if(positional.size()>3)throw new IllegalArgumentException("Expected port seed save-path [--hardcore]");
-        LanServer host=new LanServer(port,seed,root,hardcore);
+        HostAiSettings.Rules hostAI=aiOptions.isEmpty()?
+            HostAiSettings.fromProperties():HostAiSettings.fromOptions(aiOptions);
+        LanServer host=new LanServer(port,seed,root,hardcore,hostAI);
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             try{host.close();}catch(IOException e){System.err.println("Shutdown save failed: "+e);}
         },"Veil-server-shutdown"));
         System.out.println("Malefic Veil dedicated host "+host.port()+" seed "+seed+
             " mode="+(hardcore?"HARDCORE":"NORMAL")+
-            " bind="+host.listener.getInetAddress().getHostAddress()+" storage="+root);
-        System.out.println("Commands: status, players, weather [PRESET|auto], save, kick ID,"+
+            " bind="+host.listener.getInetAddress().getHostAddress()+" storage="+root+
+            " "+host.ai.settings().description());
+        System.out.println("Host AI: --ai-count=6 --ai-mode=SINGLE_FACTION --ai-team=3 --ai-level=5");
+        System.out.println("Or --ai-count=5 --ai-mode=BALANCED; group size is always 3.");
+        System.out.println("Commands: status, players, ai, weather [PRESET|auto], save, kick ID,"+
             " ban ACCOUNT, unban ACCOUNT, allow ACCOUNT, deny ACCOUNT, allowlist on/off, shutdown");
         BufferedReader console=new BufferedReader(new InputStreamReader(System.in));
         String line;
@@ -652,6 +680,7 @@ public final class LanServer implements AutoCloseable {
                 String result=switch(input[0].toLowerCase(Locale.ROOT)){
                     case "status" -> host.status();
                     case "players" -> String.join("\\n",host.connectedPlayers());
+                    case "ai" -> host.aiStatus();
                     case "weather" -> {
                         if(input.length==1)yield host.weatherStatus();
                         if(input.length!=2)yield "Use weather [CLEAR|RAIN|SNOW|...|auto]";

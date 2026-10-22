@@ -30,6 +30,9 @@ public final class SettlementSustenanceTest {
                 "Max scavenging soul bonus");
             check(service.lostKill("base-monsters",50)==4,"Soul collection failed");
             check(service.account("base-monsters").stored()==8,"Soul credit missing");
+            check(SettlementSustenance.reserveCapacity(50)==1008&&
+                SettlementSustenance.reserveCapacity(42)==840,
+                "Seven-day reserve capacity");
             check(SettlementSustenance.hourlyCost(9)==0&&
                 SettlementSustenance.hourlyCost(10)==1&&
                 SettlementSustenance.hourlyCost(50)==6,"Level brackets");

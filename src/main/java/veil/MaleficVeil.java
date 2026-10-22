@@ -173,11 +173,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
     }
     public static void main(String[] args) {
+        DesktopDiagnostics.install("desktop");
+        DesktopDiagnostics.note("MENU_OPEN");
         SwingUtilities.invokeLater(()->{
             String[] modes={"SINGLE PLAYER","HOST MULTIPLAYER","JOIN MULTIPLAYER"};
             int mode=JOptionPane.showOptionDialog(null,"THE MALEFIC VEIL — PROTOTYPE\nSelect play mode",
                 "The Malefic Veil",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,modes,modes[0]);
             if(mode<0)return;
+            DesktopDiagnostics.note("PLAY_MODE_SELECTED mode="+mode);
             WorldCreationConfig config=mode==2?null:worldSelection(mode==1);
             if(mode!=2&&config==null)return;
             CharacterRoster.Faction faction=(CharacterRoster.Faction)JOptionPane.showInputDialog(
@@ -202,6 +205,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             long seed=config==null?20261020L:config.seed();
             NetLink link=null;
             try {
+                DesktopDiagnostics.note("SESSION_CONNECT_BEGIN");
                 if(mode!=2){
                     HostAiSettings.Rules bots=new HostAiSettings.Rules(
                         config.aiPopulation(),HostAiSettings.Distribution.BALANCED,1,
@@ -225,20 +229,25 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     link=new NetLink(address,port);
                 }
             } catch(IOException|IllegalArgumentException ex) {
+                DesktopDiagnostics.note("SESSION_CONNECT_FAILURE "+
+                    ex.getClass().getSimpleName()+": "+ex.getMessage());
                 JOptionPane.showMessageDialog(null,"LAN connection failed: "+ex.getMessage(),"Network error",JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if(link!=null)seed=link.seed;
             JFrame frame=new JFrame("THE MALEFIC VEIL — "+(link==null?"SOLO":"LAN"));
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            DesktopDiagnostics.note("WORLD_SCENE_CONSTRUCTION_BEGIN");
             MaleficVeil game=new MaleficVeil(frame,seed,character,link);
             frame.setContentPane(game);frame.setJMenuBar(game.managementMenu());
             frame.pack();frame.setLocationRelativeTo(null);frame.setVisible(true);
             game.requestFocusInWindow();
+            DesktopDiagnostics.note("WORLD_SCENE_VISIBLE");
             if(link!=null){
                 link.selectFaction(faction);
                 link.sceneReady(); // scene and source model assets are now constructed
             }
+            DesktopDiagnostics.note("PLAY_SESSION_READY");
         });
     }
     private boolean down(int key){return held.contains(key);}

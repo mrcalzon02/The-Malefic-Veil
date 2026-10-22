@@ -90,6 +90,34 @@ public final class FactionAiDirectorTest {
             "Actual harvesting must occur: no pretend resources");
         check(arena.factions.allCrews().stream().allMatch(c->c.members().size()<=3),
             "The crew cap must remain true after autonomous simulation");
+        Path stockSave=Files.createTempDirectory("veil-ai-stock-");
+        try{
+            director.save(stockSave);
+            ArenaSystems afterBoot=new ArenaSystems(20261021L);
+            afterBoot.world.npcs.clear();
+            var restoredHarvest=new WorldHarvesting(afterBoot.world);
+            var restoredDirector=new FactionAiDirector(afterBoot,restoredHarvest,monsters);
+            restoredDirector.load(stockSave);
+            for(var view:director.views()){
+                check(arena.player(view.id()).survival.status().equals(
+                    afterBoot.player(view.id()).survival.status()),
+                    "Real AI carried materials and hunger must survive a host reboot");
+            }
+            byte[] damaged=Files.readAllBytes(stockSave.resolve("ai-carry.dat"));
+            damaged[damaged.length-1]^=0x5f;
+            Files.write(stockSave.resolve("ai-carry.dat"),damaged);
+            try{
+                restoredDirector.load(stockSave);
+                throw new AssertionError("Tampered AI resource journal accepted");
+            }catch(java.io.IOException expected){}
+        }finally{
+            try(var entries=Files.walk(stockSave)){
+                entries.sorted(Comparator.reverseOrder()).forEach(p->{
+                    try{Files.deleteIfExists(p);}
+                    catch(Exception error){throw new IllegalStateException(error);}
+                });
+            }
+        }
         // A physical camp cannot appear without a genuinely crafted kit.
         var builder=arena.player(-10000);
         int previouslyBuilt=arena.world.devices.size();

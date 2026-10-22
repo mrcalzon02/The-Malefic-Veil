@@ -20,6 +20,14 @@ public final class FactionAiDirectorTest {
         check(monsters.teamFor(0)==CharacterRoster.Faction.THE_BEGOTTEN&&
               monsters.teamFor(5)==CharacterRoster.Faction.THE_BEGOTTEN,
             "Forced Begotten team for every AI");
+        var ranged=HostAiSettings.fromOptions(List.of("--ai-count=6",
+            "--ai-mode=BALANCED","--ai-level=5-12"));
+        check(ranged.level()==5&&ranged.ceiling()==12,"Both AI level endpoints");
+        for(int i=0;i<ranged.count();i++)
+            check(ranged.levelFor(i,20261021L)>=5&&
+                  ranged.levelFor(i,20261021L)<=12&&
+                  ranged.levelFor(i,20261021L)==ranged.levelFor(i,20261021L),
+                "Level range remains stable and bounded for every AI identity");
         var custom=HostAiSettings.fromOptions(List.of("--ai-count=6",
             "--ai-mode=CUSTOM","--ai-split=1,2,3"));
         check(Arrays.equals(custom.counts(),new int[]{1,2,3}),
@@ -28,6 +36,8 @@ public final class FactionAiDirectorTest {
             List.of("--ai-count=25"),
             List.of("--ai-count=6","--ai-mode=CUSTOM","--ai-split=2,2,1"),
             List.of("--ai-count=3","--ai-level=51"),
+            List.of("--ai-count=3","--ai-level=12-6"),
+            List.of("--ai-count=3","--ai-level=5-51"),
             List.of("--ai-count=6","--ai-mode=SINGLE_FACTION","--ai-team=4"))){
             try{HostAiSettings.fromOptions(invalid);throw new AssertionError("Accepted bad AI rule "+invalid);}
             catch(IllegalArgumentException ok){}
@@ -61,6 +71,14 @@ public final class FactionAiDirectorTest {
                 });
             }
         }
+        ArenaSystems rangedArena=new ArenaSystems(20261021L);
+        rangedArena.world.npcs.clear();
+        var rangedDirector=new FactionAiDirector(rangedArena,
+            new WorldHarvesting(rangedArena.world),ranged);
+        int slot=0;
+        for(var view:rangedDirector.views())
+            check(view.level()==ranged.levelFor(slot++,rangedArena.world.seed),
+                "Real AI progress starts inside deterministic configured range");
         ArenaSystems arena=new ArenaSystems(20261021L);
         arena.world.npcs.clear();
         var gathering=new WorldHarvesting(arena.world);

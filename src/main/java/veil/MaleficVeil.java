@@ -75,7 +75,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private static HostAiSettings.Rules hostAiDialog(){
         HostAiSettings.Rules initial=HostAiSettings.fromProperties();
         JTextField count=new JTextField(Integer.toString(initial.count()),5);
-        JTextField level=new JTextField(Integer.toString(initial.level()),5);
+        JTextField level=new JTextField(initial.level()==initial.ceiling()?
+            Integer.toString(initial.level()):initial.level()+"-"+initial.ceiling(),7);
         JTextField split=new JTextField(initial.unraveled()+","+
             initial.penitent()+","+initial.begotten(),9);
         JComboBox<HostAiSettings.Distribution> distribution=new JComboBox<>(
@@ -88,7 +89,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         choices.add(new JLabel("AI characters (0–24)"));choices.add(count);
         choices.add(new JLabel("Distribution"));choices.add(distribution);
         choices.add(new JLabel("All on faction"));choices.add(faction);
-        choices.add(new JLabel("Starting level (1–50)"));choices.add(level);
+        choices.add(new JLabel("Starting level (5 or 5-12)"));choices.add(level);
         choices.add(new JLabel("Custom 1,2,3 counts"));choices.add(split);
         if(JOptionPane.showConfirmDialog(null,choices,
             "Host AI Factions — max 3 per crew",JOptionPane.OK_CANCEL_OPTION,

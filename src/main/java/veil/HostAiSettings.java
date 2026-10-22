@@ -9,10 +9,15 @@ public final class HostAiSettings {
     public enum Distribution { BALANCED, SINGLE_FACTION, CUSTOM }
     public static final int MAX_BOTS=24;
     public record Rules(int count, Distribution distribution, int faction, int level,
-                        int unraveled, int penitent, int begotten) {
+                        int unraveled, int penitent, int begotten, int ceiling) {
+        public Rules(int count, Distribution distribution, int faction, int level,
+                     int unraveled, int penitent, int begotten){
+            this(count,distribution,faction,level,unraveled,penitent,begotten,level);
+        }
         public Rules {
             if(count<0||count>MAX_BOTS||distribution==null||level<1||level>50||
-               faction<1||faction>3||unraveled<0||penitent<0||begotten<0||
+               faction<1||faction>3||ceiling<level||ceiling>50||
+               unraveled<0||penitent<0||begotten<0||
                unraveled>MAX_BOTS||penitent>MAX_BOTS||begotten>MAX_BOTS)
                 throw new IllegalArgumentException("Invalid host AI setup");
             if(distribution==Distribution.CUSTOM&&unraveled+penitent+begotten!=count)
@@ -36,9 +41,16 @@ public final class HostAiSettings {
             }
             throw new IllegalStateException("Invalid AI roster");
         }
+        /** Seeded, deterministic starting rank for each permanent bot account. */
+        public int levelFor(int slot,long worldSeed){
+            if(slot<0||slot>=count)throw new IllegalArgumentException("AI index");
+            if(ceiling==level)return level;
+            long mixed=World.mix(worldSeed+0x9e3779b97f4a7c15L*(slot+1L));
+            return level+(int)Math.floorMod(mixed,(long)ceiling-level+1);
+        }
         public String description(){
             return "AI="+count+" mode="+distribution+" factions="+
-                Arrays.toString(counts())+" level="+level+" group-cap=3";
+                Arrays.toString(counts())+" level="+(level==ceiling?Integer.toString(level):level+"-"+ceiling)+" group-cap=3";
         }
     }
     private HostAiSettings(){}
@@ -56,7 +68,11 @@ public final class HostAiSettings {
                 throw new IllegalArgumentException("Invalid or duplicate AI option "+flag);
         }
         int count=parse(values.getOrDefault("count","0"),0,MAX_BOTS);
-        int level=parse(values.getOrDefault("level","1"),1,50);
+        String[] levelRange=values.getOrDefault("level","1").split("-", -1);
+        if(levelRange.length<1||levelRange.length>2)
+            throw new IllegalArgumentException("AI level must be 1..50 or min-max");
+        int level=parse(levelRange[0],1,50);
+        int ceiling=levelRange.length==1?level:parse(levelRange[1],level,50);
         int team=parse(values.getOrDefault("team","1"),1,3);
         Distribution mode;
         try{mode=Distribution.valueOf(values.getOrDefault("mode","BALANCED").toUpperCase(Locale.ROOT));}
@@ -69,7 +85,7 @@ public final class HostAiSettings {
             for(int i=0;i<3;i++)split[i]=parse(s[i],0,MAX_BOTS);
             if(mode!=Distribution.CUSTOM)throw new IllegalArgumentException("AI split requires CUSTOM mode");
         }else if(mode==Distribution.CUSTOM)throw new IllegalArgumentException("CUSTOM mode requires --ai-split");
-        return new Rules(count,mode,team,level,split[0],split[1],split[2]);
+        return new Rules(count,mode,team,level,split[0],split[1],split[2],ceiling);
     }
     public static Rules fromProperties(){
         List<String> args=new ArrayList<>();
@@ -138,7 +154,7 @@ public final class HostAiSettings {
         Files.createDirectories(root);
         Path path=root.resolve("ai-host-settings.properties");
         String text="schema=1\ncount="+r.count()+"\nmode="+r.distribution()+
-            "\nteam="+r.faction()+"\nlevel="+r.level()+"\nsplit="+
+            "\nteam="+r.faction()+"\nlevel="+(r.level()==r.ceiling()?r.level():r.level()+"-"+r.ceiling())+"\nsplit="+
             r.unraveled()+","+r.penitent()+","+r.begotten()+"\n";
         Path temp=Files.createTempFile(root,".ai-host-", ".tmp");
         try{

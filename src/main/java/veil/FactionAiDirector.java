@@ -72,10 +72,11 @@ public final class FactionAiDirector {
                 throw new IllegalStateException("AI faction account unavailable");
             // Explicit host-selected starting rank; never override a higher
             // rank restored from this same character's prior game sessions.
-            if(player.progression.overallLevel()<rules.level()){
+            int initialLevel=rules.levelFor(i,seed);
+            if(player.progression.overallLevel()<initialLevel){
                 EnumMap<CharacterProgression.Skill,Long> ranks=
                     new EnumMap<>(CharacterProgression.Skill.class);
-                long threshold=CharacterProgression.levelThreshold(rules.level());
+                long threshold=CharacterProgression.levelThreshold(initialLevel);
                 for(var skill:CharacterProgression.Skill.values())ranks.put(skill,threshold);
                 player.progression.restore(new CharacterProgression.Snapshot(
                     Map.copyOf(ranks),0));

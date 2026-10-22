@@ -83,10 +83,11 @@ public final class UrbanDressing {
             boolean wreckLot=category==CityLayout.Category.HAZARD&&(n&3)==1;
             boolean carsAvailable=GGBotCarPack.available();
             if(depot||carPark||wreckLot&&carsAvailable){
-                List<String> civilians=List.of(),wrecks=List.of();
+                List<String> civilians=List.of(),services=List.of(),wrecks=List.of();
                 if(carsAvailable){
                     try{
                         civilians=GGBotCarPack.required().civilianModels();
+                        services=GGBotCarPack.required().serviceModels();
                         wrecks=GGBotCarPack.required().wreckModels();
                     }catch(java.io.IOException e){
                         throw new IllegalStateException("Car asset changed during city generation",e);
@@ -103,7 +104,8 @@ public final class UrbanDressing {
                        !clear(city,x,y,radius,spawns,out))continue;
                     String model;
                     if(ggbot){
-                        List<String> palette=wreckLot?wrecks:civilians;
+                        List<String> palette=wreckLot?wrecks:
+                            ((pick>>>9)&15)==0?services:civilians;
                         if(palette.isEmpty())continue;
                         model=palette.get((int)Math.floorMod(pick,palette.size()));
                     }else{

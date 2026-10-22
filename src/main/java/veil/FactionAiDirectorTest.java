@@ -90,6 +90,36 @@ public final class FactionAiDirectorTest {
             "Actual harvesting must occur: no pretend resources");
         check(arena.factions.allCrews().stream().allMatch(c->c.members().size()<=3),
             "The crew cap must remain true after autonomous simulation");
+        // A physical camp cannot appear without a genuinely crafted kit.
+        var builder=arena.player(-10000);
+        int previouslyBuilt=arena.world.devices.size();
+        builder.cash=150;builder.scrap=4;
+        for(int angle=0;angle<8;angle++){
+            builder.angle=angle*Math.PI/4;
+            if(arena.reviewBuild(builder.id,ArenaSystems.CAMP_STAKE).reason()
+                .equals("REQUIRES_CRAFTED_TENT"))break;
+        }
+        boolean placedWithoutKit=arena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built();
+        check(!placedWithoutKit,"Host cannot magically build field camp without crafted tent");
+        check(arena.world.devices.size()==previouslyBuilt,
+            "Failed camp build must never create phantom structure");
+        check(builder.survival.acquire(SurvivalCrafting.Item.TENT_KIT,1,false),
+            "Simulate actually carried tent kit for cost/debit regression");
+        boolean physicallyBuilt=false;
+        for(int direction=0;direction<8;direction++){
+            builder.angle=direction*Math.PI/4;
+            if(arena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built()){
+                physicallyBuilt=true;break;
+            }
+        }
+        check(physicallyBuilt,"An owned field camp must be placeable on legitimate wilderness");
+        check(builder.survival.count(SurvivalCrafting.Item.TENT_KIT)==0,
+            "Physical camp must debit real player-carried crafted material");
+        var device=arena.world.devices.get(arena.world.devices.size()-1);
+        check(device.kind==ArenaSystems.CAMP_STAKE&&
+              builder.accountKey.equals(device.ownerKey),"Camp is physical and character-owned");
+        check(!arena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built(),
+            "A character cannot found an unlimited number of camps");
         System.out.println("PASS FactionAiDirectorTest: count/team/level host rules, real NPC actors, "+
             "squads of three, world movement, honest harvesting and durable settings");
     }

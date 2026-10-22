@@ -63,7 +63,7 @@ jobs:
                 --gallery --seed="$seed" | tee "build/test-visuals/gpu-city-$seed.log"
             test "$(grep -c 'GALLERY_CAPTURE seed=' "build/test-visuals/gpu-city-$seed.log")" -eq 10
             for view in 01-city-street 02-central-streets 03-urban-rooftops 04-city-overhead 05-city-woodland-edge 06-urban-night 07-outside-toward-city 08-outside-woodland 09-southern-foundation 10-east-embankment; do
-              test -s "build/test-visuals/gallery-seed-$seed-$view.png"
+              test -s "build/test-visuals/gallery-seed-$seed-city-A-$view.png"
             done
           done
           echo 'VISUAL GATE: 8 shipped-client screenshots + 20 live GPU screenshots'

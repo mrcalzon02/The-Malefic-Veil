@@ -23,6 +23,19 @@ public final class ContinentVistaTest {
                 check(Math.abs(land.sample(x,y).elevation()-land.sample(px,py).elevation())<.70,
                     "Ripped terrain transition at side "+side+" step "+step);
             }
+            // Every cardinal transition must meet the next world surface
+            // smoothly at the 24m blend boundary, not jump to City A's plateau.
+            for(int side=0;side<4;side++)for(int along=4;along<World.SIZE-4;along+=12){
+                double a=ContinentVista.EMBANKMENT_WIDTH-.001;
+                double b=ContinentVista.EMBANKMENT_WIDTH+.001;
+                double ax=side==0?-a:side==1?World.SIZE+a:along;
+                double az=side==2?-a:side==3?World.SIZE+a:along;
+                double bx=side==0?-b:side==1?World.SIZE+b:along;
+                double bz=side==2?-b:side==3?World.SIZE+b:along;
+                check(Math.abs(land.sample(ax,az).elevation()-
+                    land.sample(bx,bz).elevation())<.05,
+                    "Abrupt city plate / world terrain handoff side="+side+" along="+along);
+            }
             var foundation=land.foundations();
             check(foundation.size()==World.SIZE*8-8,
                 "Foundation must surround city but leave both existing gates open");

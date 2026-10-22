@@ -94,7 +94,9 @@ public final class ContinentVista {
         if(border<=EMBANKMENT_WIDTH){
             double smooth=Math.max(0,Math.min(1,border/EMBANKMENT_WIDTH));
             smooth=smooth*smooth*(3-2*smooth);
-            height=-FOUNDATION_DEPTH+(target+FOUNDATION_DEPTH)*smooth;
+            // Match the next generated city/wilderness surface at the outer
+            // edge of the local district's embankment (no 24m step).
+            height=-FOUNDATION_DEPTH+(height+FOUNDATION_DEPTH)*smooth;
         }
         // Northwest original city gates are openings, not retaining walls.
         // A short seed-consistent earth approach reaches the street grade.

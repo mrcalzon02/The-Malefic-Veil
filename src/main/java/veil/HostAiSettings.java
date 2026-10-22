@@ -110,32 +110,20 @@ public final class HostAiSettings {
             throw new IOException("Unknown or corrupt saved AI host settings");
         Rules recorded;
         try{
-            recorded=fromOptions(List.of(
+            var controls=new ArrayList<String>(List.of(
                 "--ai-count="+properties.getProperty("count"),
                 "--ai-mode="+properties.getProperty("mode"),
                 "--ai-team="+properties.getProperty("team"),
-                "--ai-level="+properties.getProperty("level"),
-                "--ai-split="+properties.getProperty("split"))
-            );
+                "--ai-level="+properties.getProperty("level")));
+            if("CUSTOM".equals(properties.getProperty("mode")))
+                controls.add("--ai-split="+properties.getProperty("split"));
+            recorded=fromOptions(controls);
+            String canonicalSplit=recorded.unraveled()+","+
+                recorded.penitent()+","+recorded.begotten();
+            if(!canonicalSplit.equals(properties.getProperty("split")))
+                throw new IOException("Corrupt saved AI faction distribution");
         }catch(IllegalArgumentException invalid){
-            // BALANCED and SINGLE_FACTION persist their zero count split, but
-            // that split is not a CLI control for those two modes.
-            try{
-                var controls=new ArrayList<String>(List.of(
-                    "--ai-count="+properties.getProperty("count"),
-                    "--ai-mode="+properties.getProperty("mode"),
-                    "--ai-team="+properties.getProperty("team"),
-                    "--ai-level="+properties.getProperty("level")));
-                if("CUSTOM".equals(properties.getProperty("mode")))
-                    controls.add("--ai-split="+properties.getProperty("split"));
-                recorded=fromOptions(controls);
-                String expected=recorded.unraveled()+","+
-                    recorded.penitent()+","+recorded.begotten();
-                if(!expected.equals(properties.getProperty("split")))
-                    throw new IOException("Corrupt saved AI faction distribution");
-            }catch(IllegalArgumentException ex){
-                throw new IOException("Corrupt saved AI host settings",ex);
-            }
+            throw new IOException("Corrupt saved AI host settings",invalid);
         }
         if(!recorded.equals(requested))
             throw new IOException("AI population/settings changed for existing realm: saved "+

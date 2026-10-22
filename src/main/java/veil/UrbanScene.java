@@ -62,7 +62,7 @@ public final class UrbanScene {
     /** Spatially bounded candidates; distant city meshes are never visited each render tick. */
     public List<ModelInstance> nearby(double x,double y,double distance){
         if(!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(distance)||
-           distance<0||distance>100)throw new IllegalArgumentException("Invalid visual radius");
+           distance<0||distance>260)throw new IllegalArgumentException("Invalid visual radius");
         int lowX=(int)Math.floor((x-distance)/BUCKET),highX=(int)Math.floor((x+distance)/BUCKET);
         int lowY=(int)Math.floor((y-distance)/BUCKET),highY=(int)Math.floor((y+distance)/BUCKET);
         List<ModelInstance> result=new ArrayList<>();

@@ -9,10 +9,27 @@ public final class ContinentVistaTest {
         for(long seed:new long[]{20261020L,75L}){
             World world=new World(seed);
             ContinentVista land=new ContinentVista(world);
-            check(Math.abs(land.sample(0,77).elevation())<.000001,
-                "City edge must be flush with the streets");
-            check(Math.abs(land.sample(World.SIZE,77).elevation())<.000001,
-                "Far city edge terrain must align");
+            check(Math.abs(land.sample(0,77).elevation()+ContinentVista.FOUNDATION_DEPTH)<.000001,
+                "West terrain must meet lower foundation");
+            check(Math.abs(land.sample(World.SIZE,77).elevation()+ContinentVista.FOUNDATION_DEPTH)<.000001,
+                "East terrain must meet lower foundation");
+            check(land.sample(66,66).elevation()==0,"City street grade changed");
+            for(int side=0;side<4;side++)for(int step=1;step<=96;step++){
+                double d=step*.25,prev=d-.25;
+                double x=side==0?-d:side==1?World.SIZE+d:66;
+                double y=side==2?-d:side==3?World.SIZE+d:66;
+                double px=side==0?-prev:side==1?World.SIZE+prev:66;
+                double py=side==2?-prev:side==3?World.SIZE+prev:66;
+                check(Math.abs(land.sample(x,y).elevation()-land.sample(px,py).elevation())<.70,
+                    "Ripped terrain transition at side "+side+" step "+step);
+            }
+            var foundation=land.foundations();
+            check(foundation.size()==World.SIZE*8,"Foundation does not surround entire city");
+            for(var block:foundation){
+                check(block.heightOffset()==-1||block.heightOffset()==-2,"Foundation above street level");
+                check(KenneyAssetPack.load().modelNames().contains(block.model()+".glb"),"Unlicensed foundation mesh");
+                check(!block.solid(),"Render-only foundation changed host collision");
+            }
             var patches=land.patches();
             check(patches.size()>=40&&patches.size()<=120,"Terrain sector count outside bounded cache");
             int triangles=0;
@@ -40,8 +57,8 @@ public final class ContinentVistaTest {
                 sourceTrees++;
             }
             check(sourceTrees>=5,"No continental woodland generated");
-            UrbanScene gpuScene=new UrbanScene(world,foliage);
-            check(gpuScene.instances().size()==world.urbanProps.size()+foliage.size(),
+            UrbanScene gpuScene=new UrbanScene(world,land.scenery());
+            check(gpuScene.instances().size()==world.urbanProps.size()+foliage.size()+foundation.size(),
                 "Lost GPU wilderness models");
             System.out.println("PASS ContinentVistaTest seed="+seed+" patches="+patches.size()+
                 " triangles="+triangles+" wildernessTrees="+sourceTrees);

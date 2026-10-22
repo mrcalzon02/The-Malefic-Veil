@@ -11,6 +11,8 @@ import java.util.*;
  */
 public final class ContinentVista {
     public static final int EXTENT=96;
+    public static final double FOUNDATION_DEPTH=2.0;
+    public static final double EMBANKMENT_WIDTH=24.0;
     public static final int STEP=2;
     public static final int CHUNK=32;
     public static final int STRIDE=7; // xyz, rgba
@@ -79,9 +81,11 @@ public final class ContinentVista {
                     biome==ContinentLayout.Biome.MOUNTAINS?1.65:1.0)));
         // City street elevations remain exactly zero at the handoff.
         double border=cityDistance(x,y);
-        double smooth=Math.max(0,Math.min(1,border/13.0));
+        if(x>0&&x<World.SIZE&&y>0&&y<World.SIZE)
+            return new Sample(0,biome,road);
+        double smooth=Math.max(0,Math.min(1,border/EMBANKMENT_WIDTH));
         smooth=smooth*smooth*(3-2*smooth);
-        return new Sample(target*smooth,biome,road);
+        return new Sample(-FOUNDATION_DEPTH+(target+FOUNDATION_DEPTH)*smooth,biome,road);
     }
     private static boolean outside(int x,int y){
         return x<0||y<0||x>=World.SIZE||y>=World.SIZE;
@@ -140,6 +144,26 @@ public final class ContinentVista {
                     Arrays.copyOf(verts,index)));
             }
         return List.copyOf(chunks);
+    }
+    /** Authoring-kit foundation blocks, below city grade, with zero host collision. */
+    public List<World.UrbanProp> foundations(){
+        List<World.UrbanProp> blocks=new ArrayList<>(World.SIZE*8);
+        for(int tile=0;tile<World.SIZE;tile++){
+            for(int layer=1;layer<=2;layer++){
+                String model=((tile/5+layer)&1)==0?"wall-a":"wall-b";
+                double depth=-layer;
+                blocks.add(new World.UrbanProp(model,tile+.5,-.5,0,1,0,depth));
+                blocks.add(new World.UrbanProp(model,tile+.5,World.SIZE+.5,0,1,0,depth));
+                blocks.add(new World.UrbanProp(model,-.5,tile+.5,Math.PI/2,1,0,depth));
+                blocks.add(new World.UrbanProp(model,World.SIZE+.5,tile+.5,Math.PI/2,1,0,depth));
+            }
+        }
+        return List.copyOf(blocks);
+    }
+    public List<World.UrbanProp> scenery(){
+        List<World.UrbanProp> all=new ArrayList<>(foundations());
+        all.addAll(foliage());
+        return List.copyOf(all);
     }
     /**
      * Seeded jittered-forest samples: no visible 7-by-7 planting lattice.

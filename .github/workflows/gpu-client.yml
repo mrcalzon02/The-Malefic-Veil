@@ -75,7 +75,7 @@ jobs:
           test -s build/test-visuals/gpu-ggbot-city-cars.png
           test -s build/test-visuals/gpu-kenney-foliage.png
           file build/test-visuals/gpu-kenney-city.png
-      - name: Three seeded real GPU worlds, six in-game camera angles each
+      - name: Three seeded GPU worlds, ten city and exterior camera poses each
         if: runner.os == 'Linux'
         shell: bash
         env:
@@ -87,10 +87,10 @@ jobs:
               timeout 150s java -Djava.awt.headless=false \
               -jar gpu-client/target/MaleficVeil-GPU.jar --gallery --seed="$seed" \
               | tee "build/test-visuals/gallery-seed-$seed.log"
-            test "$(grep -c 'GALLERY_CAPTURE seed=' "build/test-visuals/gallery-seed-$seed.log")" -eq 6
-            test "$(find build/test-visuals -maxdepth 1 -name "gallery-seed-$seed-*.png" | wc -l)" -eq 6
+            test "$(grep -c 'GALLERY_CAPTURE seed=' "build/test-visuals/gallery-seed-$seed.log")" -eq 10
+            test "$(find build/test-visuals -maxdepth 1 -name "gallery-seed-$seed-*.png" | wc -l)" -eq 10
           done
-          printf 'Real OpenGL world gallery: 3 seeds x 6 camera poses = 18 PNGs\n'
+          printf 'Real OpenGL world gallery: 3 seeds x 10 camera poses = 30 PNGs\n'
           file build/test-visuals/gallery-seed-*.png
       - uses: actions/upload-artifact@v4
         if: always()

@@ -24,7 +24,7 @@ import java.util.*;
  * networked gameplay client until character/HUD input and replication are ported.
  */
 public final class GpuKenneyPreview extends ApplicationAdapter {
-    static final int WIDTH=320, HEIGHT=200;
+    static final int WIDTH=640, HEIGHT=400;
     static final int MAX_VISIBLE_MODELS=10000;
     static final String VERTEX_SHADER="""
         #version 330 core
@@ -134,7 +134,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final Map<String,Texture> materialTextures=new HashMap<>();
     private final Map<String,FloatList> visible=new LinkedHashMap<>();
     private double x=1.5,y=1.5,heading=0.2;
-    private float visualDistance=30f;
+    private float visualDistance=145f;
     private int frames,visibleInstances,drawCalls;
     private int activeLights,maxLights=8,timeSpeed=1;
     private long worldTimeMs=WorldDayNight.DAY_MS/2;
@@ -142,7 +142,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private WorldDayNight.Conditions environment=WorldDayNight.atHour(12);
     private boolean shownFailure;
 
-    private double cameraHeight=1.55, cameraPitch=-.04;
+    private double cameraHeight=1.65, cameraPitch=-.04;
+    private ContinentVista vista;
     public GpuKenneyPreview(long seed,boolean smoke){this(seed,smoke,false);}
     public GpuKenneyPreview(long seed,boolean smoke,boolean gallery){
         this.seed=seed;this.smoke=smoke;this.gallery=gallery;
@@ -158,10 +159,17 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         // vanishes into fog even though its geometry is correctly loaded.
         new GalleryView("04-city-overhead",66,66,115,0.30,-1.42f,230,12),
         new GalleryView("05-city-woodland-edge",125,66,38,0.12,-.64f,100,10),
-        new GalleryView("06-urban-night",61.5,61.5,40,0.42,-.80f,90,0)
+        new GalleryView("06-urban-night",61.5,61.5,40,0.42,-.80f,145,0),
+        new GalleryView("07-outside-toward-city",-22,66,2.1,0,-.10f,165,12),
+        new GalleryView("08-outside-woodland",-22,66,2.1,Math.PI,-.08f,165,12),
+        new GalleryView("09-southern-foundation",66,-12,2.6,Math.PI/2,-.36f,150,10),
+        new GalleryView("10-east-embankment",World.SIZE+14,66,4.0,Math.PI,-.48f,150,16)
     };
     private void setGalleryView(GalleryView view){
         x=view.x();y=view.z();cameraHeight=view.elevation();heading=view.heading();
+        if(view.name().contains("outside")||view.name().contains("foundation")||
+           view.name().contains("embankment"))
+            cameraHeight+=vista.sample(x,y).elevation();
         if(view.name().equals("02-central-streets")){
             for(CityLayout.Road road:world.city.roadTiles()){
                 if(Integer.bitCount(road.connections())<3)continue;
@@ -186,7 +194,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         // Same seed and continent city anchors as the authoritative world
         // blueprint. Outside-city surfaces are visible, not yet walkable.
         ContinentVista continental=new ContinentVista(world);
-        try{scene=new UrbanScene(world,continental.foliage());}
+        vista=continental;
+        try{scene=new UrbanScene(world,continental.scenery());}
         catch(Exception ex){throw new IllegalStateException("Kenney source pack unavailable",ex);}
         terrain=new GpuContinentTerrain(continental);
         lighting=new UrbanLighting(world);
@@ -260,11 +269,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             models.put(batch.modelId(),List.copyOf(geometry));
         }
         camera=new PerspectiveCamera(72,WIDTH,HEIGHT);
-        camera.near=0.08f;camera.far=140f;
+        camera.near=0.08f;camera.far=300f;
         framebuffer=new FrameBuffer(Pixmap.Format.RGBA8888,WIDTH,HEIGHT,true);
         sprites=new SpriteBatch();
         font=new BitmapFont();
-        font.getData().setScale(0.62f);
+        font.getData().setScale(1.16f);
         skybox=new GpuSkybox();
         menu=new PsxHorrorMenu(smoke||gallery);
         font.dispose();
@@ -278,7 +287,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private void control() {
         PsxHorrorMenu.Settings actions=new PsxHorrorMenu.Settings(){
             public void changeView(int delta){
-                visualDistance=Math.max(8,Math.min(80,visualDistance+delta));
+                visualDistance=Math.max(45,Math.min(240,visualDistance+delta*3));
             }
             public void changeLights(int delta){
                 maxLights=Math.max(0,Math.min(8,maxLights+delta));
@@ -290,10 +299,23 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 timeSpeed=speeds[Math.max(0,Math.min(speeds.length-1,index+direction))];
             }
         };
-        if(!menu.input(actions))return;
+        if(!menu.input(actions)){
+            Gdx.input.setCursorCatched(false);
+            return;
+        }
+        if(!Gdx.input.isCursorCatched()){
+            Gdx.input.setCursorCatched(true);
+            Gdx.input.getDeltaX();Gdx.input.getDeltaY();
+        }else{
+            heading+=Math.max(-120,Math.min(120,Gdx.input.getDeltaX()))*.0036;
+            cameraPitch=Math.max(-1.52,Math.min(1.52,
+                cameraPitch-Math.max(-120,Math.min(120,Gdx.input.getDeltaY()))*.0036));
+        }
         float dt=Math.min(.04f,Math.max(0,Gdx.graphics.getDeltaTime()));
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))heading-=dt*1.8;
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))heading+=dt*1.8;
+        if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP))cameraPitch=Math.min(1.52,cameraPitch+dt*1.3);
+        if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN))cameraPitch=Math.max(-1.52,cameraPitch-dt*1.3);
         double forward=0,strafe=0;
         if(Gdx.input.isKeyPressed(Input.Keys.W)||Gdx.input.isKeyPressed(Input.Keys.UP))forward+=1;
         if(Gdx.input.isKeyPressed(Input.Keys.S)||Gdx.input.isKeyPressed(Input.Keys.DOWN))forward-=1;
@@ -343,7 +365,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
 
         visible.clear();
         visibleInstances=0;drawCalls=0;
-        for(UrbanScene.ModelInstance placement:scene.nearby(x,y,Math.min(100.0,visualDistance))){
+        for(UrbanScene.ModelInstance placement:scene.nearby(x,y,visualDistance)){
             double dx=placement.x()-x,dy=placement.y()-y;
             double distance2=dx*dx+dy*dy;
             if(distance2>9 && dx*Math.cos(heading)+dy*Math.sin(heading)<-2)continue;
@@ -392,10 +414,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
         sprites.begin();
         if(menu.running()){
-            font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),5,195);
+            font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),9,391);
             font.draw(sprites,"TILES "+visibleInstances+"  LAND "+visibleTerrain+"  DRAWS "+drawCalls+
-                "  LAMPS "+activeLights+"  VIEW "+(int)visualDistance,5,183);
-            font.draw(sprites,"WASD MOVE   [ ] TIME   F10 GRAPHICS   ESC MENU",5,10);
+                "  LAMPS "+activeLights+"  VIEW "+(int)visualDistance,9,367);
+            font.draw(sprites,"WASD MOVE  MOUSE LOOK  PGUP/DN PITCH  [ ] TIME  F10 GRAPHICS  ESC MENU",9,20);
         }else{
             menu.draw(sprites,font,visualDistance,maxLights,timeSpeed);
         }
@@ -440,7 +462,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         for(int yy=24;yy<170;yy+=4)for(int xx=8;xx<WIDTH-8;xx+=4)
             colors.add(flipped.getPixel(xx,yy));
         pixels.dispose();flipped.dispose();
-        if(colors.size()<10||visibleInstances<5||drawCalls<3)
+        if(colors.size()<18||visibleInstances<5||drawCalls<3||visibleTerrainPatches<1)
             throw new IllegalStateException("GPU smoke frame lacks actual Kenney geometry: colors="+
                 colors.size()+" instances="+visibleInstances+" calls="+drawCalls);
         System.out.println("PASS GPU_KENNEY_SMOKE screenshot="+destination.path()+
@@ -463,7 +485,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     " time="+WorldDayNight.clock(environment.hour())+
                     " tiles="+visibleInstances+" drawCalls="+drawCalls+
                     " terrainPatches="+visibleTerrainPatches+
-                    " terrainTriangles="+visibleTerrainTriangles;
+                    " terrainTriangles="+visibleTerrainTriangles+
+                    " groundElevation="+vista.sample(x,y).elevation();
                 System.out.println(log);
                 galleryIndex++;
                 if(galleryIndex==GALLERY.length){
@@ -526,6 +549,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(menu!=null)menu.close();
         else if(font!=null)font.dispose();
         if(skybox!=null)skybox.close();
+        if(Gdx.input!=null)Gdx.input.setCursorCatched(false);
         if(terrain!=null)terrain.close();
     }
 }

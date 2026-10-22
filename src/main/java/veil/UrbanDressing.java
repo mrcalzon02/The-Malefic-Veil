@@ -59,6 +59,22 @@ public final class UrbanDressing {
                         scale,radius,0));
                 }
             }
+            // City scavenging props are physical source-kit containers. Never
+            // place loot containers in SAFE plots (including spawn buildings).
+            // The loot ledger derives immutable IDs from these seeded positions.
+            if(category!=CityLayout.Category.SAFE){
+                int count=category==CityLayout.Category.RESOURCE?3:
+                    category==CityLayout.Category.HAZARD?2:1;
+                for(int i=0;i<count;i++){
+                    long pick=hash(seed,plot.x()+i,plot.y(),2219+i);
+                    if(category==CityLayout.Category.OPEN&&(pick&3)==0)continue;
+                    double x=x0+1.5+Math.floorMod(pick,Math.max(1,width-3));
+                    double y=y0+1.5+Math.floorMod(pick>>>24,Math.max(1,height-3));
+                    if(!clear(city,x,y,.48,spawns,out))continue;
+                    out.add(new World.UrbanProp("detail-dumpster-closed",x,y,
+                        ((pick>>>9)&3)*Math.PI/2,1.0,.48,0));
+                }
+            }
             // Actual kit contains green/grey TRUCK models, not a car model.
             // Place those honestly as derelict vehicles; server-owned playable
             // cars are handled independently by Vehicles and its network state.

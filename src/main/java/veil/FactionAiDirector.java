@@ -253,6 +253,73 @@ public final class FactionAiDirector {
         }
         agent.stuck++;return false;
     }
+    /**
+     * Host-owned tactical awareness. No client-supplied positions, targets or
+     * ammo; shots go through ArenaSystems.fireReport and consume real rounds.
+     * Same-faction squads NEVER fire at each other; Lost monsters remain
+     * allied with the Begotten in both the director and the combat engine.
+     */
+    private boolean combat(Agent agent,ArenaSystems.Player actor,long ms){
+        // Emergency consumables are finite inventory, not free AI regeneration.
+        if(actor.hp<=54&&actor.medkits>0)arena.useMedkit(agent.id);
+        double vision=agent.faction==CharacterRoster.Faction.THE_UNRAVELED?7.5:11;
+        double closest=vision;
+        double tx=0,ty=0;
+        boolean danger=false;
+        for(ArenaSystems.Player other:arena.roster()){
+            if(other.id==actor.id||other.dead||arena.allied(actor.id,other.id))continue;
+            double distance=Math.hypot(other.x-actor.x,other.y-actor.y);
+            if(distance>=closest||distance<.35||
+               !arena.world.lineClear(actor.x,actor.y,other.x,other.y))continue;
+            // Civilian AI defend their proximity/settlement rather than
+            // pathfinding across the continent to murder arbitrary players.
+            if(agent.faction==CharacterRoster.Faction.THE_UNRAVELED&&
+               distance>5.5&&Math.hypot(other.x-agent.homeX,
+                                        other.y-agent.homeY)>7.5)continue;
+            closest=distance;tx=other.x;ty=other.y;danger=true;
+        }
+        if(agent.faction!=CharacterRoster.Faction.THE_BEGOTTEN)
+            for(World.Npc npc:arena.world.npcs){
+                if(npc.hp<=0)continue;
+                double distance=Math.hypot(npc.x-actor.x,npc.y-actor.y);
+                if(distance>=closest||distance<.35||
+                    !arena.world.lineClear(actor.x,actor.y,npc.x,npc.y))continue;
+                closest=distance;tx=npc.x;ty=npc.y;danger=true;
+            }
+        if(!danger)return false;
+        agent.activity=Activity.DEFENDING;
+        double dx=tx-actor.x,dy=ty-actor.y;
+        double bearing=Math.atan2(dy,dx);
+        // Retreat is actual swept movement, subject to the same host speed
+        // and obstacle checks. No invulnerability, instant teleport or ammo.
+        if(actor.hp<30&&closest<3.7)
+            walk(agent,actor,actor.x-dx,actor.y-dy,ms);
+        actor.angle=bearing;
+        // A hostile farther down the ray must never make the AI shoot through
+        // an allied player standing between it and the weapon muzzle.
+        for(ArenaSystems.Player ally:arena.roster()){
+            if(ally.id==actor.id||ally.dead||!arena.allied(actor.id,ally.id))continue;
+            double ax=ally.x-actor.x,ay=ally.y-actor.y;
+            double projected=ax*Math.cos(bearing)+ay*Math.sin(bearing);
+            double offset=Math.abs(ax*Math.sin(bearing)-ay*Math.cos(bearing));
+            if(projected>.05&&projected<closest&&offset<.48)return true;
+        }
+        int weapon=closest<3.2&&actor.shellClip>0?1:0;
+        if((weapon==0&&actor.pistolClip==0)||(weapon==1&&actor.shellClip==0)){
+            arena.reload(agent.id,weapon);
+            return true;
+        }
+        if(closest<=12)
+            arena.fireReport(agent.id,weapon,Math.max(1,arena.time()+Math.abs(agent.id)));
+        return true;
+    }
+    /** Reconcile from surviving physical structures, never an AI-only counter. */
+    private void recountBuildings(Agent agent,ArenaSystems.Player player){
+        int total=0;
+        for(World.Device device:arena.world.devices)
+            if(device.hp>0&&player.accountKey.equals(device.ownerKey))total++;
+        agent.buildings=total;
+    }
     private WildernessResources.Node select(Agent a,ArenaSystems.Player p){
         WildernessResources.Node best=null;
         double score=Double.POSITIVE_INFINITY;
@@ -282,6 +349,8 @@ public final class FactionAiDirector {
             if(arena.respawnRemainingMs(agent.id)==0)arena.respawn(agent.id,0);
             return;
         }
+        recountBuildings(agent,p);
+        if(combat(agent,p,ms))return;
         if(p.survival.status().hunger()<75&&p.survival.count(SurvivalCrafting.Item.EDIBLES)>0)
             p.survival.consume(SurvivalCrafting.Item.EDIBLES);
         // Real host crafting consumes gathered inventory, never grants stock.

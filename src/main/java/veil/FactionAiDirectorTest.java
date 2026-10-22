@@ -147,35 +147,48 @@ public final class FactionAiDirectorTest {
                 });
             }
         }
-        // A physical camp cannot appear without a genuinely crafted kit.
-        var builder=arena.player(-10000);
-        int previouslyBuilt=arena.world.devices.size();
+        // Autonomous builders may have founded a real camp during the
+        // preceding simulation. Test first that any such structure has real
+        // faction ownership; then use a fresh field actor for a clean debit.
+        int autonomousCamps=0;
+        for(var device:arena.world.devices)if(device.kind==ArenaSystems.CAMP_STAKE){
+            autonomousCamps++;
+            check(device.ownerKey!=null&&device.ownerKey.startsWith("acct_"),
+                "AI camp must belong to a durable character account");
+        }
+        ArenaSystems buildArena=new ArenaSystems(20261022L);
+        buildArena.world.npcs.clear();
+        new FactionAiDirector(buildArena,new WorldHarvesting(buildArena.world),
+            HostAiSettings.fromOptions(List.of("--ai-count=1",
+                "--ai-mode=SINGLE_FACTION","--ai-team=3","--ai-level=4")));
+        var builder=buildArena.player(-10000);
+        int previouslyBuilt=buildArena.world.devices.size();
         builder.cash=150;builder.scrap=4;
         for(int angle=0;angle<8;angle++){
             builder.angle=angle*Math.PI/4;
-            if(arena.reviewBuild(builder.id,ArenaSystems.CAMP_STAKE).reason()
+            if(buildArena.reviewBuild(builder.id,ArenaSystems.CAMP_STAKE).reason()
                 .equals("REQUIRES_CRAFTED_TENT"))break;
         }
-        boolean placedWithoutKit=arena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built();
+        boolean placedWithoutKit=buildArena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built();
         check(!placedWithoutKit,"Host cannot magically build field camp without crafted tent");
-        check(arena.world.devices.size()==previouslyBuilt,
+        check(buildArena.world.devices.size()==previouslyBuilt,
             "Failed camp build must never create phantom structure");
         check(builder.survival.acquire(SurvivalCrafting.Item.TENT_KIT,1,false),
             "Simulate actually carried tent kit for cost/debit regression");
         boolean physicallyBuilt=false;
         for(int direction=0;direction<8;direction++){
             builder.angle=direction*Math.PI/4;
-            if(arena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built()){
+            if(buildArena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built()){
                 physicallyBuilt=true;break;
             }
         }
         check(physicallyBuilt,"An owned field camp must be placeable on legitimate wilderness");
         check(builder.survival.count(SurvivalCrafting.Item.TENT_KIT)==0,
             "Physical camp must debit real player-carried crafted material");
-        var device=arena.world.devices.get(arena.world.devices.size()-1);
+        var device=buildArena.world.devices.get(buildArena.world.devices.size()-1);
         check(device.kind==ArenaSystems.CAMP_STAKE&&
               builder.accountKey.equals(device.ownerKey),"Camp is physical and character-owned");
-        check(!arena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built(),
+        check(!buildArena.buildOutcome(builder.id,ArenaSystems.CAMP_STAKE).built(),
             "A character cannot found an unlimited number of camps");
         System.out.println("PASS FactionAiDirectorTest: count/team/level host rules, real NPC actors, "+
             "squads of three, world movement, honest harvesting and durable settings");

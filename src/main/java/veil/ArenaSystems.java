@@ -88,7 +88,7 @@ public final class ArenaSystems {
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     private final Map<Integer,Integer> shieldedShot=new HashMap<>();
-    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3;
+    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -481,8 +481,8 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>3)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
-        int price=kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
+        if(kind<0||kind>CAMP_STAKE)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        int price=kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind==0?3:kind==1?1:kind==2?2:1;
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
         // The current 132x132 arena is an ENTIRE fixed city sector. Player
@@ -492,6 +492,14 @@ public final class ArenaSystems {
             return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
         if(world.devices.size()>=100)return new BuildReview(false,"BUILD_LIMIT",price,supplies,x,y);
         if(p.cash<price||p.scrap<supplies)return new BuildReview(false,"RESOURCES",price,supplies,x,y);
+        if(kind==CAMP_STAKE){
+            if(p.survival.count(SurvivalCrafting.Item.TENT_KIT)<1)
+                return new BuildReview(false,"REQUIRES_CRAFTED_TENT",price,supplies,x,y);
+            for(World.Device existing:world.devices)
+                if(existing.kind==CAMP_STAKE&&existing.hp>0&&
+                   p.accountKey.equals(existing.ownerKey))
+                    return new BuildReview(false,"ALREADY_OWNS_CAMP",price,supplies,x,y);
+        }
         // Dedicated spawn-clearance feedback takes priority over overlapping world roads.
         for(double[] spawn:world.spawns)
             if(Math.hypot(x-spawn[0],y-spawn[1])<2.0)
@@ -539,6 +547,8 @@ public final class ArenaSystems {
         BuildReview review=reviewBuild(id,kind);
         if(!review.allowed())return new BuildOutcome(false,review,-1);
         Player p=player(id);
+        if(kind==CAMP_STAKE&&!p.survival.debit(SurvivalCrafting.Item.TENT_KIT,1))
+            throw new IllegalStateException("Camp inventory changed after authoritative preflight");
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;

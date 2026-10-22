@@ -491,8 +491,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 viewPlacedModel("truck-");
             }else if(frames==60){
                 saveFrame("gpu-kenney-vehicles.png");
-                viewPlacedModel("tree-");
+                viewPlacedModel("ggbot-");
             }else if(frames==72){
+                // Actual in-world GGBot car, not a disconnected showroom proxy.
+                saveFrame("gpu-ggbot-city-cars.png");
+                viewPlacedModel("tree-");
+            }else if(frames==84){
                 saveFrame("gpu-kenney-foliage.png");
                 framebuffer.end();
                 Gdx.app.exit();

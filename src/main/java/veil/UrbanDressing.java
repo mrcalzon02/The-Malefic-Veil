@@ -75,25 +75,45 @@ public final class UrbanDressing {
                         ((pick>>>9)&3)*Math.PI/2,1.0,.48,0));
                 }
             }
-            // Actual kit contains green/grey TRUCK models, not a car model.
-            // Place those honestly as derelict vehicles; server-owned playable
-            // cars are handled independently by Vehicles and its network state.
+            // Keep Kenney trucks in depots and cargo yards. Parked civilian cars
+            // instead use GGBot's UV-authored OBJ+PNG variants (when packaged).
             boolean depot=category==CityLayout.Category.RESOURCE&&
                 (variant==0||variant==3||variant==4||variant==6||variant==7);
             boolean carPark=category==CityLayout.Category.OPEN&&variant==1;
-            if(depot||carPark){
-                int count=carPark?Math.min(5,1+width/4):2;
+            boolean wreckLot=category==CityLayout.Category.HAZARD&&(n&3)==1;
+            boolean carsAvailable=GGBotCarPack.available();
+            if(depot||carPark||wreckLot&&carsAvailable){
+                List<String> civilians=List.of(),wrecks=List.of();
+                if(carsAvailable){
+                    try{
+                        civilians=GGBotCarPack.required().civilianModels();
+                        wrecks=GGBotCarPack.required().wreckModels();
+                    }catch(java.io.IOException e){
+                        throw new IllegalStateException("Car asset changed during city generation",e);
+                    }
+                }
+                int count=depot?2:carPark?Math.min(4,1+width/5):1;
                 for(int i=0;i<count;i++){
                     long pick=hash(seed,plot.x(),plot.y()+i,1199+i);
-                    double x=x0+2.5+(i%3)*2.2;
-                    double y=y0+2.5+(i/3)*3.0;
-                    if(x>=x1-1||y>=y1-1||!clear(city,x,y,.82,spawns,out))continue;
-                    String truck=switch((int)(pick&3)){
-                        case 0 -> "truck-grey";case 1 -> "truck-green";
-                        case 2 -> "truck-grey-cargo";default -> "truck-green-cargo";
-                    };
-                    out.add(new World.UrbanProp(truck,x,y,(pick&4)==0?0:Math.PI/2,
-                        1.05,.82,0));
+                    double x=x0+2.5+(i%2)*3.2;
+                    double y=y0+2.5+(i/2)*3.4;
+                    boolean ggbot=carsAvailable&&!depot;
+                    double radius=ggbot?1.1:.82;
+                    if(x>=x1-1.6||y>=y1-1.6||
+                       !clear(city,x,y,radius,spawns,out))continue;
+                    String model;
+                    if(ggbot){
+                        List<String> palette=wreckLot?wrecks:civilians;
+                        if(palette.isEmpty())continue;
+                        model=palette.get((int)Math.floorMod(pick,palette.size()));
+                    }else{
+                        model=switch((int)(pick&3)){
+                            case 0 -> "truck-grey";case 1 -> "truck-green";
+                            case 2 -> "truck-grey-cargo";default -> "truck-green-cargo";
+                        };
+                    }
+                    out.add(new World.UrbanProp(model,x,y,(pick&4)==0?0:Math.PI/2,
+                        ggbot?.52:1.05,radius,0));
                 }
             }
         }

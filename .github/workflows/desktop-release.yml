@@ -37,7 +37,7 @@ jobs:
         run: |
           set -e
           python3 tools/validate_economy_csv.py
-          for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
+          for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest DesktopDiagnosticsTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
             java -Djava.awt.headless=true -cp build/classes "veil.$test"
           done
       - name: Package game and independent updater bootstrap

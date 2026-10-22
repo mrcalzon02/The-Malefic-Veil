@@ -95,7 +95,17 @@ public final class FactionAiDirector {
                 }
                 if(!located)throw new IllegalStateException("No world-valid AI start");
             }
+            // A valid saved physical camp is authoritative after restart:
+            // don't teleport or reset construction progress for returning AI.
             agent.homeX=player.x;agent.homeY=player.y;
+            for(World.Device device:arena.world.devices){
+                if(device.hp>0&&account.equals(device.ownerKey)){
+                    agent.buildings++;
+                    if(device.kind==ArenaSystems.CAMP_STAKE){
+                        agent.homeX=device.x-1.1;agent.homeY=device.y;
+                    }
+                }
+            }
             player.moveAt=arena.time();
             agents.add(agent);
         }
@@ -195,6 +205,64 @@ public final class FactionAiDirector {
             else if(p.survival.count(SurvivalCrafting.Item.CRATE_KIT)==0&&
                     arena.craftHand(agent.id,"crate"))agent.activity=Activity.CRAFTING;
         }
+        // Carry the actually crafted kit back across the same continuous
+        // terrain before authorizing a physical, character-owned field camp.
+        if(agent.buildings==0&&p.survival.count(SurvivalCrafting.Item.TENT_KIT)>0){
+            if(Math.hypot(p.x-agent.homeX,p.y-agent.homeY)>1.6){
+                agent.activity=Activity.BUILDING;
+                walk(agent,p,agent.homeX,agent.homeY,ms);
+            } else if(p.cash>=35&&p.scrap>=1){
+                for(int step=0;step<8;step++){
+                    p.angle=(step*Math.PI/4);
+                    var result=arena.buildOutcome(agent.id,ArenaSystems.CAMP_STAKE);
+                    if(result.built()){
+                        agent.buildings=1;
+                        agent.activity=Activity.BUILDING;
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+        // Three-character crews trade real inventory at arm's reach.
+        // These are material handoffs, NOT free remote production.
+        if(agent.buildings>=1&&p.survival.mass()>=25){
+            var crew=arena.factions.crewFor(p.accountKey);
+            if(crew!=null&&!crew.founder().equals(p.accountKey)){
+                ArenaSystems.Player leader=null;
+                for(Agent member:agents){
+                    var candidate=arena.player(member.id);
+                    if(candidate!=null&&candidate.accountKey.equals(crew.founder()))
+                        leader=candidate;
+                }
+                if(leader!=null&&!leader.dead){
+                    double range=Math.hypot(p.x-leader.x,p.y-leader.y);
+                    if(range>1.7){
+                        agent.activity=Activity.SEEKING_RESOURCES;
+                        walk(agent,p,leader.x,leader.y,ms);
+                        return;
+                    }
+                    for(var item:SurvivalCrafting.Item.values()){
+                        if(item==SurvivalCrafting.Item.TENT_KIT)continue;
+                        int spare=p.survival.count(item)-2;
+                        if(spare>0)p.survival.transferTo(leader.survival,item,
+                            Math.min(8,spare));
+                    }
+                }
+            }
+        }
+        if(agent.buildings==1&&p.cash>=60&&p.scrap>=3){
+            if(Math.hypot(p.x-agent.homeX,p.y-agent.homeY)>2.5){
+                walk(agent,p,agent.homeX,agent.homeY,ms);
+            }else{
+                for(int step=0;step<8;step++){
+                    p.angle=(step*Math.PI/4);
+                    if(arena.buildOutcome(agent.id,ArenaSystems.TURRET).built()){
+                        agent.buildings++;agent.activity=Activity.BUILDING;break;
+                    }
+                }
+            }
+        }
         if(agent.target<0||harvesting.resources.node(agent.target)==null||
            harvesting.resources.node(agent.target).remaining()<1||
            agent.stuck>45||arena.time()>=agent.nextDecision){
@@ -224,15 +292,6 @@ public final class FactionAiDirector {
             double radius=5+Math.floorMod(agent.id,7);
             walk(agent,p,agent.homeX+Math.cos(angle)*radius,
                 agent.homeY+Math.sin(angle)*radius,ms);
-        }
-        // Build only after physically crafting a camp kit from harvested
-        // materials; use the regular cost/placement/collision transaction.
-        // These early field structures are not yet permanent settlement claims.
-        if(agent.buildings<2&&p.survival.count(SurvivalCrafting.Item.TENT_KIT)>0&&
-           p.cash>=45&&p.scrap>=1&&Math.hypot(p.x-agent.homeX,p.y-agent.homeY)<8){
-            int kind=agent.buildings==0?ArenaSystems.BARRICADE:ArenaSystems.HEALTH_STATION;
-            var built=arena.buildOutcome(agent.id,kind);
-            if(built.built()){agent.buildings++;agent.activity=Activity.BUILDING;}
         }
     }
     /** Called after the ordinary ArenaSystems advance, never on clients. */

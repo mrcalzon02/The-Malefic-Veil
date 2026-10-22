@@ -51,7 +51,9 @@ jobs:
           zip -qr ../payload.zip MaleficVeil.jar assets version.txt
           cp ../payload.zip "../MaleficVeil-${GITHUB_SHA:0:12}.zip"
           sha256sum "../MaleficVeil-${GITHUB_SHA:0:12}.zip"
-          cp "../MaleficVeil-${GITHUB_SHA:0:12}.zip" .\n          zip -q "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar play-release.bat play-release.sh version.txt\n          zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" assets
+          cp "../MaleficVeil-${GITHUB_SHA:0:12}.zip" .
+          zip -q "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar play-release.bat play-release.sh version.txt
+          zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" assets
           sha256sum "MaleficVeil-${GITHUB_SHA:0:12}.zip" | awk '{print $1}' > checksum.txt
           printf 'version=%s\narchive=MaleficVeil-%s.zip\nsha256=%s\n' "$GITHUB_SHA" "${GITHUB_SHA:0:12}" "$(cat checksum.txt)" > update.properties
       - name: Publish immutable release
@@ -62,6 +64,7 @@ jobs:
           TAG="dev-${GITHUB_SHA:0:12}"
           gh release create "$TAG" \
             "build/package/MaleficVeil-${GITHUB_SHA:0:12}.zip" \
+            "build/package/MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" \
             build/package/update.properties \
             build/package/updater.jar \
             build/package/play-release.bat \

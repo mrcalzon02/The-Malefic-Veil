@@ -30,6 +30,13 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: maven
           cache-dependency-path: gpu-client/pom.xml
+      - name: Acquire verified GGBot CC0 car atlas source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/game/ggbot
+          curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
+          echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
       - name: Verify deterministic sky cycle and asset-sourced streetlight bounds
         shell: bash
         run: |
@@ -44,6 +51,7 @@ jobs:
           test -s gpu-client/target/MaleficVeil-GPU.jar
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'kenney/retro-urban-kit-2.0.zip'
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'ggbot/psx-style-cars.zip'
       - name: Prepare Mesa OpenGL and virtual display
         if: runner.os == 'Linux'
         shell: bash

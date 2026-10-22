@@ -72,6 +72,29 @@ public final class CityPlateTerrainTest {
                 // masks and perimeter lengths derive from the seeded blueprint.
             }
             check(measured>300,"Too few 3D city perimeter seams verified");
+            // Inspect actual GPU vertex data, not only the sampled height
+            // function. The top and vertical wall must both be present.
+            for(char id:new char[]{'B','C','D','E','F','G'}){
+                ContinentVista site=new ContinentVista(world,id);
+                double expected=plate.plateHeight(id);
+                double cx=site.cityCenterX(id),cz=site.cityCenterZ(id);
+                double maxRadius=World.PARCEL_METERS*
+                    (Math.max(layout.cities().get(id-'A').radiusX(),
+                              layout.cities().get(id-'A').radiusY())+3);
+                boolean sawTop=false,sawFoot=false;
+                for(ContinentVista.Patch patch:site.patches()){
+                    float[] verts=patch.vertexData();
+                    for(int pos=0;pos<verts.length;pos+=ContinentVista.STRIDE){
+                        double x=verts[pos],y=verts[pos+1],z=verts[pos+2];
+                        if(Math.hypot(x-cx,z-cz)>maxRadius)continue;
+                        if(Math.abs(y-expected)<.0001)sawTop=true;
+                        if(Math.abs(y-(expected-CityPlateTerrain.FOUNDATION_DEPTH))<.0001)
+                            sawFoot=true;
+                    }
+                }
+                check(sawTop,"No actual 3D surface vertices on generated city "+id);
+                check(sawFoot,"No 3D foundation-foot vertices on generated city "+id);
+            }
             System.out.println("PASS CityPlateTerrainTest seed="+seed+
                 " cities="+counts.size()+" provenEdges="+measured+
                 " cityCShape="+layout.cities().get(2).shape());

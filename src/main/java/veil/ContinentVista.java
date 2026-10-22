@@ -150,6 +150,13 @@ public final class ContinentVista {
     /** Authoritative world-space city centers for external inspection. */
     public double cityCenterX(char city){return cities.worldX(layout.cities().get(city-'A').x()+.5);}
     public double cityCenterZ(char city){return cities.worldZ(layout.cities().get(city-'A').y()+.5);}
+    /** Macro plates follow generated city cells, not their bounding boxes.
+     * City A's detailed source-mesh sector and 24m embankment take priority. */
+    private boolean macroPlateVisible(char id,double x,double z){
+        if(id=='\0')return false;
+        return id!='A'||(outside((int)Math.floor(x),(int)Math.floor(z))&&
+            cityDistance(x,z)>EMBANKMENT_WIDTH+World.PARCEL_METERS);
+    }
     public List<Patch> patches(){
         List<Patch> chunks=new ArrayList<>();
         ContinentLayout.City city=layout.cities().get(focus-'A');
@@ -167,6 +174,8 @@ public final class ContinentVista {
                     for(int x=x0;x<Math.min(x0+CHUNK,endX);x+=STEP){
                         // Don't redraw playable city underneath its real Kenney tiles.
                         if(!outside(x,z)&&!outside(x+STEP-1,z+STEP-1))continue;
+                        char mask=cities.cityAt(x+STEP*.5,z+STEP*.5);
+                        if(macroPlateVisible(mask,x+STEP*.5,z+STEP*.5))continue;
                         Sample a=sample(x,z),b=sample(x+STEP,z),
                             c=sample(x+STEP,z+STEP),d=sample(x,z+STEP);
                         long hash=World.mix(seed^((long)x*734287L)^((long)z*2794703L));
@@ -186,11 +195,48 @@ public final class ContinentVista {
         // perimeter retaining skirts constructed from the exact city footprint.
         // Each city is a single GPU mesh, not a draw call per parcel boundary.
         for(ContinentLayout.City site:layout.cities()){
+            // A city plateau is not an ordinary terrain height-field quad:
+            // its crest and the adjacent slope need different heights at the
+            // SAME x/z coordinate. Draw city-top quads separately from ground.
+            List<int[]> cells=new ArrayList<>();
+            for(int cz=Math.max(0,site.y()-site.radiusY()-2);
+                    cz<Math.min(ContinentLayout.SIZE,site.y()+site.radiusY()+3);cz++)
+                for(int cx=Math.max(0,site.x()-site.radiusX()-2);
+                        cx<Math.min(ContinentLayout.SIZE,site.x()+site.radiusX()+3);cx++){
+                    if(layout.cityAt(cx,cz)!=site.id())continue;
+                    double wx=cities.worldX(cx),wz=cities.worldZ(cz);
+                    if(wx>endX||wz>endZ||wx+World.PARCEL_METERS<startX||
+                        wz+World.PARCEL_METERS<startZ)continue;
+                    if(!macroPlateVisible(site.id(),wx+3,wz+3))continue;
+                    cells.add(new int[]{cx,cz});
+                }
+            int left=(int)Math.floor(cities.worldX(site.x()-site.radiusX()-2));
+            int top=(int)Math.floor(cities.worldZ(site.y()-site.radiusY()-2));
+            int width=(site.radiusX()+2)*2*World.PARCEL_METERS;
+            int depth=(site.radiusY()+2)*2*World.PARCEL_METERS;
+            if(!cells.isEmpty()){
+                float[] surface=new float[cells.size()*6*STRIDE];
+                int offset=0;
+                double grade=cities.plateHeight(site.id());
+                for(int[] cell:cells){
+                    int px=cell[0],pz=cell[1];
+                    double x=cities.worldX(px),z=cities.worldZ(pz);
+                    int color=layout.road(px,pz)?0x64635f:0x505149;
+                    offset=emit(surface,offset,x,grade,z,color);
+                    offset=emit(surface,offset,x+6,grade,z,color);
+                    offset=emit(surface,offset,x+6,grade,z+6,color);
+                    offset=emit(surface,offset,x,grade,z,color);
+                    offset=emit(surface,offset,x+6,grade,z+6,color);
+                    offset=emit(surface,offset,x,grade,z+6,color);
+                }
+                chunks.add(new Patch(left,top,width,depth,cells.size()*2,surface));
+            }
             List<CityPlateTerrain.Edge> edges=new ArrayList<>();
             for(CityPlateTerrain.Edge edge:cities.edges()){
                 if(edge.city()!=site.id())continue;
                 double mx=(edge.ax()+edge.bx())*.5,mz=(edge.az()+edge.bz())*.5;
-                if(mx>=startX-STEP&&mx<=endX+STEP&&mz>=startZ-STEP&&mz<=endZ+STEP)
+                if(mx>=startX-STEP&&mx<=endX+STEP&&mz>=startZ-STEP&&mz<=endZ+STEP&&
+                    macroPlateVisible(site.id(),mx,mz))
                     edges.add(edge);
             }
             if(edges.isEmpty())continue;
@@ -205,10 +251,6 @@ public final class ContinentVista {
                 cursor=emit(wall,cursor,edge.bx(),edge.bottom(),edge.bz(),material);
                 cursor=emit(wall,cursor,edge.bx(),edge.top(),edge.bz(),material);
             }
-            int left=(int)Math.floor(cities.worldX(site.x()-site.radiusX()-2));
-            int top=(int)Math.floor(cities.worldZ(site.y()-site.radiusY()-2));
-            int width=(site.radiusX()+2)*2*World.PARCEL_METERS;
-            int depth=(site.radiusY()+2)*2*World.PARCEL_METERS;
             chunks.add(new Patch(left,top,width,depth,edges.size()*2,wall));
         }
         return List.copyOf(chunks);

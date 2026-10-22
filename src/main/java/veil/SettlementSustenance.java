@@ -25,6 +25,11 @@ public final class SettlementSustenance {
     private final Set<Integer> harvested=new HashSet<>();
     private final Map<String,Balance> settlements=new TreeMap<>();
     public static final long HOUR=3_600_000L;
+    public static final int RESERVE_HOURS=168;
+    public static int reserveCapacity(int level){
+        int rate=hourlyCost(level);
+        return rate==0?1008:rate*RESERVE_HOURS;
+    }
     public SettlementSustenance(World world){
         this.world=Objects.requireNonNull(world);
         int id=0;
@@ -90,7 +95,7 @@ public final class SettlementSustenance {
     public synchronized boolean deposit(String id,Material item,int units){
         Balance b=settlements.get(id);
         if(b==null||item!=material(b.faction)||units<1||units>10000||
-            b.stored>10000-units)return false;
+            b.stored>reserveCapacity(b.level)-units)return false;
         b.stored+=units;
         if(b.stored>=hourlyCost(b.level))b.active=true;
         return true;

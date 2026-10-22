@@ -28,7 +28,7 @@ public final class FactionAiTacticsTest {
         check(bot!=null&&bot.pistolClip>0,"Host civilian has ordinary limited ammunition");
         World.Npc intruder=approaching(civilian,bot);
         civilian.world.npcs.add(intruder);
-        int originalAmmo=bot.pistolClip,startingHp=intruder.hp;
+        int originalAmmo=bot.pistolClip+bot.shellClip,startingHp=intruder.hp;
         for(int frame=0;frame<15;frame++){
             civilian.advance(200);
             nodes.advance(200);
@@ -37,7 +37,7 @@ public final class FactionAiTacticsTest {
         }
         check(intruder.hp<startingHp,
             "Unraveled AI must defend against a real hostile target using server fire");
-        check(bot.pistolClip<originalAmmo,
+        check(bot.pistolClip+bot.shellClip<originalAmmo,
             "AI defense must spend physically carried ammunition");
         check(director.views().get(0).activity()==FactionAiDirector.Activity.DEFENDING,
             "AI host display must expose active defensive behavior");

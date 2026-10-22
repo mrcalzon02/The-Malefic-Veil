@@ -509,7 +509,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 var remote=entry.getValue();
                 if(remote.hp>0&&Math.hypot(remote.x-px,remote.y-py)<21)
                     displays.add(new UrbanScene.ModelInstance(
-                        GameplayMeshes.HERO[Math.max(0,Math.min(3,remote.classId))],
+                        actorMesh(entry.getKey(),remote.classId),
                         remote.x,remote.y,remote.angle-Math.PI/2,1.0,remote.opacity));
             }
         }
@@ -525,6 +525,20 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         InteractionFocus.draw(g,RW,RH,focusTarget());
         g.setColor(new Color(229,214,178));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,8));
         g.drawString("CONTINENT  "+(int)px+","+(int)py+"   E INTERACT",5,10);
+    }
+    /** Temporary roster-consistent silhouettes until dedicated faction NPC art lands. */
+    private String actorMesh(int actorId,int classId){
+        if(net!=null){
+            var ai=net.aiActors.get(actorId);
+            if(ai!=null){
+                return switch(ai.faction()){
+                    case "THE_BEGOTTEN" -> "enemy-walker";
+                    case "THE_PENITENT" -> GameplayMeshes.HERO[2];
+                    default -> GameplayMeshes.HERO[0];
+                };
+            }
+        }
+        return GameplayMeshes.HERO[Math.max(0,Math.min(3,classId))];
     }
     private void interactTarget(){
         var t=focusTarget();
@@ -647,7 +661,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             NetLink.Remote p=entry.getValue();
             if(p.hp>0&&net.cars.values().stream().noneMatch(car->car.driverId()==entry.getKey()))
                 gameplay.add(new UrbanScene.ModelInstance(
-                    GameplayMeshes.HERO[Math.max(0,Math.min(3,p.classId))],
+                    actorMesh(entry.getKey(),p.classId),
                     p.x,p.y,p.angle-Math.PI/2,1.0,p.opacity));
         }
         // Material nodes outside City A remain visible through the ordinary

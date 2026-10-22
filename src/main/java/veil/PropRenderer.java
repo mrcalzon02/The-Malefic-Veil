@@ -27,6 +27,21 @@ public final class PropRenderer {
                     java.util.List<UrbanScene.ModelInstance> instances,
                     double playerX,double playerY,double heading,double[] wallDepth,
                     int width,int height){
+        return draw(g,models,instances,playerX,playerY,heading,wallDepth,
+            width,height,1.55,0);
+    }
+    /**
+     * Real in-engine elevated inspection camera. Default world camera still
+     * uses eye height 1.55 and pitch 0 through the existing overload, so
+     * gameplay wall-depth and weapon behavior remain bit-for-bit unchanged.
+     */
+    public int draw(Graphics2D g,Map<String,GlbMesh> models,
+                    java.util.List<UrbanScene.ModelInstance> instances,
+                    double playerX,double playerY,double heading,double[] wallDepth,
+                    int width,int height,double eyeHeight,double pitch){
+        if(!Double.isFinite(eyeHeight)||!Double.isFinite(pitch)||
+           Math.abs(pitch)>1.20)throw new IllegalArgumentException("Invalid camera pitch");
+        final double cp=Math.cos(pitch),sp=Math.sin(pitch);
         java.util.List<Face> faces=new ArrayList<>();
         // One depth threshold per column per frame, not one expensive trig call
         // for every column of every Kenney source triangle.
@@ -68,12 +83,14 @@ public final class PropRenderer {
                     double oy=(vx*sy+vz*cy)*placement.scale();
                     double a=dx+ox,b=dy+oy;
                     double side=-Math.sin(heading)*a+Math.cos(heading)*b;
-                    double z=Math.cos(heading)*a+Math.sin(heading)*b;
+                    double horizontal=Math.cos(heading)*a+Math.sin(heading)*b;
+                    double vertical=vy*placement.scale()+placement.heightOffset()-eyeHeight;
+                    double z=horizontal*cp-vertical*sp;
+                    double elevation=vertical*cp+horizontal*sp;
                     if(z<.07){near=true;break;}
                     minDepth=Math.min(z,minDepth);meanDepth+=z;
                     sx[i]=(int)Math.round(width*.5+side/z*focal);
-                    screenY[i]=(int)Math.round(height*.5-
-                        (vy*placement.scale()+placement.heightOffset()-1.55)/z*focal);
+                    screenY[i]=(int)Math.round(height*.5-elevation/z*focal);
                 }
                 if(near)continue;
                 if(sx[0]==sx[1]&&sx[1]==sx[2])continue;

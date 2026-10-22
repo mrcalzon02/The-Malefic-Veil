@@ -3,6 +3,9 @@ package veil;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.*;
+import java.nio.file.*;
+import java.io.*;
+import java.util.zip.CRC32;
 
 /**
  * Dedicated-host NPC settlers are ordinary ArenaSystems.Player actors:
@@ -133,6 +136,91 @@ public final class FactionAiDirector {
                 }
             }
         }
+    }
+    /** Crash-safe, checksum-verified carried stock. Player XP and position stay
+     * in AccountDirectory's existing canonical character snapshot. */
+    public synchronized void save(Path root)throws IOException{
+        if(root==null)return;
+        Files.createDirectories(root);
+        var buffer=new ByteArrayOutputStream();
+        try(var out=new DataOutputStream(buffer)){
+            out.writeInt(0x56414931); // VAI1
+            out.writeLong(seed);
+            out.writeInt(agents.size());
+            for(var agent:agents){
+                var p=arena.player(agent.id);
+                if(p==null)throw new IOException("Missing live AI actor "+agent.id);
+                var status=p.survival.status();
+                out.writeInt(agent.id);
+                out.writeUTF(p.accountKey);
+                out.writeInt(status.hunger());
+                out.writeInt(status.hydration());
+                out.writeInt(status.inventory().size());
+                for(var item:status.inventory().entrySet()){
+                    out.writeUTF(item.getKey().name());
+                    out.writeInt(item.getValue());
+                }
+            }
+        }
+        byte[] payload=buffer.toByteArray();
+        CRC32 crc=new CRC32();crc.update(payload);
+        try(var out=new DataOutputStream(buffer)){out.writeLong(crc.getValue());}
+        Path to=root.resolve("ai-carry.dat");
+        Path temp=Files.createTempFile(root,".ai-carry-", ".tmp");
+        try{
+            Files.write(temp,buffer.toByteArray());
+            try{Files.move(temp,to,StandardCopyOption.REPLACE_EXISTING,
+                           StandardCopyOption.ATOMIC_MOVE);}
+            catch(AtomicMoveNotSupportedException e){
+                Files.move(temp,to,StandardCopyOption.REPLACE_EXISTING);
+            }
+            if(!java.util.Arrays.equals(buffer.toByteArray(),Files.readAllBytes(to)))
+                throw new IOException("AI inventory save read-back mismatch");
+        }finally{Files.deleteIfExists(temp);}
+    }
+    public synchronized void load(Path root)throws IOException{
+        if(root==null)return;
+        Path file=root.resolve("ai-carry.dat");
+        if(!Files.exists(file))return;
+        byte[] bytes=Files.readAllBytes(file);
+        if(bytes.length<24||bytes.length>64_000)
+            throw new IOException("Invalid AI carry journal length");
+        CRC32 crc=new CRC32();crc.update(bytes,0,bytes.length-8);
+        var decoded=new HashMap<Integer,SurvivalCrafting.Status>();
+        try(var in=new DataInputStream(new ByteArrayInputStream(bytes))){
+            if(in.readInt()!=0x56414931||in.readLong()!=seed)
+                throw new IOException("AI carry journal from a different world");
+            int count=in.readInt();
+            if(count<0||count>HostAiSettings.MAX_BOTS)
+                throw new IOException("Invalid AI carry actor count");
+            for(int i=0;i<count;i++){
+                int id=in.readInt();
+                String account=in.readUTF();
+                int hunger=in.readInt(),water=in.readInt();
+                int n=in.readInt();
+                if(n<0||n>SurvivalCrafting.Item.values().length||
+                   decoded.containsKey(id))throw new IOException("Corrupt AI item table");
+                var inventory=new EnumMap<SurvivalCrafting.Item,Integer>(
+                    SurvivalCrafting.Item.class);
+                for(int j=0;j<n;j++){
+                    var item=SurvivalCrafting.Item.valueOf(in.readUTF());
+                    if(inventory.putIfAbsent(item,in.readInt())!=null)
+                        throw new IOException("Duplicate bot item");
+                }
+                // Validate the entire save with throwaway inventories BEFORE
+                // changing any actor or potentially exposing a half-loaded host.
+                var status=new SurvivalCrafting.Status(hunger,water,Map.copyOf(inventory));
+                new SurvivalCrafting().restoreStatus(status);
+                var actor=arena.player(id);
+                if(actor!=null&&actor.accountKey.equals(account))decoded.put(id,status);
+            }
+            if(in.readLong()!=crc.getValue()||in.available()!=0)
+                throw new IOException("AI carry checksum failure");
+        }catch(IllegalArgumentException error){
+            throw new IOException("Corrupt AI inventory data",error);
+        }
+        for(var record:decoded.entrySet())
+            arena.player(record.getKey()).survival.restoreStatus(record.getValue());
     }
     public HostAiSettings.Rules settings(){return rules;}
     public synchronized List<View> views(){

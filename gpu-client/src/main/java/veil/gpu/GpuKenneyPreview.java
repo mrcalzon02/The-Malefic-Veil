@@ -25,7 +25,7 @@ import java.util.*;
  */
 public final class GpuKenneyPreview extends ApplicationAdapter {
     static final int WIDTH=640, HEIGHT=400;
-    static final int MAX_VISIBLE_MODELS=10000;
+    static final int MAX_VISIBLE_MODELS=45000; // No circular cutoff through the 30k+ authored city
     static final String VERTEX_SHADER="""
         #version 330 core
         in vec3 a_position;
@@ -512,6 +512,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             frames++;
             if(frames%5==0){
                 GalleryView view=galleryViews[galleryIndex];
+                if(focusCity=='A'&&view.name().equals("04-city-overhead")&&
+                   visibleInstances<world.urbanProps.size())
+                    throw new IllegalStateException("Overhead city rendered an incomplete radius: "+
+                        visibleInstances+" of "+world.urbanProps.size()+" authored tiles");
                 saveFrame("gallery-seed-"+seed+"-city-"+focusCity+"-"+view.name()+".png");
                 String log="GALLERY_CAPTURE seed="+seed+" city="+focusCity+" view="+view.name()+
                     " camera="+x+","+cameraHeight+","+y+

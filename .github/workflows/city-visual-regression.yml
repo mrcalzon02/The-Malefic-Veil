@@ -67,6 +67,10 @@ jobs:
             done
           done
           echo 'VISUAL GATE: 8 shipped-client screenshots + 20 live GPU screenshots'
+          for seed in 20261020 887766; do
+            grep -F 'view=04-city-overhead' "build/test-visuals/gpu-city-$seed.log" |
+              grep -E 'tiles=[2-9][0-9]{4}' > /dev/null
+          done
       - name: Render seeded irregular and square city plates B and C
         shell: bash
         env:

@@ -110,7 +110,7 @@ public final class ContinentVista {
             // plate itself is also at sea-level zero. Beyond 12 metres the
             // ramp blends back into the ordinary generated surroundings.
             double descent=1-ramp;
-            double recovery=Math.max(0,Math.min(1,(32-approach)/20));
+            double recovery=Math.max(0,Math.min(1,(25-approach)/13));
             recovery=recovery*recovery*(3-2*recovery);
             height=Math.min(height+Math.max(0,-height)*ramp,
                 -FOUNDATION_DEPTH*descent*recovery);

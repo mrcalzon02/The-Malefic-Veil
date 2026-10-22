@@ -32,9 +32,16 @@ public final class DesktopUpdater {
     private DesktopUpdater(){}
 
     private static byte[] fetch(URI url,int cap)throws IOException,InterruptedException{
-        HttpRequest request=HttpRequest.newBuilder(url).timeout(Duration.ofMinutes(4))
+        HttpRequest.Builder builder=HttpRequest.newBuilder(url).timeout(Duration.ofMinutes(4))
             .header("Accept","application/vnd.github+json")
-            .header("User-Agent","MaleficVeil-DevUpdater/2").GET().build();
+            .header("User-Agent","MaleficVeil-DevUpdater/2");
+        // CI runners share anonymous API rate limits. Credentials are only
+        // optional for CI; public development builds need no GitHub login.
+        String token=System.getenv("GH_TOKEN");
+        if("api.github.com".equalsIgnoreCase(url.getHost())&&
+           token!=null&&!token.isBlank())
+            builder.header("Authorization","Bearer "+token.trim());
+        HttpRequest request=builder.GET().build();
         HttpResponse<InputStream> response=HTTP.send(request,HttpResponse.BodyHandlers.ofInputStream());
         try(InputStream in=response.body()){
             if(response.statusCode()!=200)

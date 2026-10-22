@@ -217,6 +217,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             String factionMessage;
             while((factionMessage=net.factionResults.poll())!=null)
                 toast(factionMessage.replace('|',' ').replace('_',' '));
+            String transferNotice;
+            while((transferNotice=net.itemResults.poll())!=null)
+                toast(transferNotice.replace('|',' ').replace('_',' '));
+            net.looseItems.values().removeIf(item->
+                System.currentTimeMillis()>=item.expiry());
             String craftMessage;
             while((craftMessage=net.craftResults.poll())!=null)
                 toast(craftMessage.endsWith("|OK")?

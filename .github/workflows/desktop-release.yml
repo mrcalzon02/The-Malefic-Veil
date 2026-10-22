@@ -22,6 +22,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Acquire verified GGBot CC0 car atlas source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/game/ggbot
+          curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
+          echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
       - name: Compile Java 17
         run: |
           mkdir -p build/classes build/package
@@ -30,7 +37,7 @@ jobs:
         run: |
           set -e
           python3 tools/validate_economy_csv.py
-          for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest DesktopUpdaterTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
+          for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest DesktopUpdaterTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
             java -Djava.awt.headless=true -cp build/classes "veil.$test"
           done
       - name: Package game and independent updater bootstrap
@@ -39,6 +46,7 @@ jobs:
           printf 'Main-Class: veil.MaleficVeil\n' > build/manifest.mf
           jar cfm build/package/MaleficVeil.jar build/manifest.mf -C build/classes .
           jar uf build/package/MaleficVeil.jar -C assets/game kenney
+          jar uf build/package/MaleficVeil.jar -C assets/game ggbot
           mkdir -p build/bootstrap/veil
           cp build/classes/veil/DesktopUpdater.class build/bootstrap/veil/
           jar cf build/package/updater.jar -C build/bootstrap .

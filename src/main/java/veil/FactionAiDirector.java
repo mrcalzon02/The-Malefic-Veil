@@ -87,6 +87,42 @@ public final class FactionAiDirector {
                 // Bot creation is world generation, not a travel teleport.
                 // Seeded initial sites are adjacent to real wilderness nodes.
                 boolean located=false;
+                // Deploy the second/third members of a three-character crew
+                // within actual walking distance of its founder. Previously
+                // every bot received an independent continental seed, so
+                // supply handoffs could require hundreds of metres of travel.
+                // Crews remain distinct and each member can found a base.
+                if(sameFaction%3!=0){
+                    Agent founder=null;
+                    int matching=0;
+                    for(Agent prior:agents)if(prior.faction==agent.faction){
+                        if(matching==sameFaction-sameFaction%3)founder=prior;
+                        matching++;
+                    }
+                    if(founder!=null){
+                        ArenaSystems.Player lead=arena.player(founder.id);
+                        for(int attempt=0;attempt<48&&!located;attempt++){
+                            double radius=3.4+(attempt%5)*.83;
+                            double angle=(attempt*2.399963229728653+
+                                sameFaction*1.0471975512);
+                            double ax=lead.x+Math.cos(angle)*radius;
+                            double ay=lead.y+Math.sin(angle)*radius;
+                            if(arena.world.detailedCity(ax,ay)||
+                               !arena.world.canWalk(ax,ay)||
+                               !arena.world.lineClear(lead.x,lead.y,ax,ay))continue;
+                            boolean occupied=false;
+                            for(Agent near:agents){
+                                var other=arena.player(near.id);
+                                if(other!=null&&Math.hypot(ax-other.x,ay-other.y)<1.8)
+                                    occupied=true;
+                            }
+                            if(occupied)continue;
+                            player.x=ax;player.y=ay;
+                            player.angle=Math.atan2(lead.y-ay,lead.x-ax);
+                            located=true;
+                        }
+                    }
+                }
                 int offset=(int)Math.floorMod(World.mix(seed+agent.id),sources.size());
                 for(int j=0;j<sources.size()&&!located;j++){
                     var node=sources.get((offset+j)%sources.size());

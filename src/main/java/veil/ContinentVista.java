@@ -11,8 +11,8 @@ import java.util.*;
  */
 public final class ContinentVista {
     public static final int EXTENT=96;
-    public static final double FOUNDATION_DEPTH=2.0;
-    public static final double EMBANKMENT_WIDTH=24.0;
+    public static final double FOUNDATION_DEPTH=CityPlateTerrain.FOUNDATION_DEPTH;
+    public static final double EMBANKMENT_WIDTH=CityPlateTerrain.EMBANKMENT_WIDTH;
     public static final int STEP=2;
     public static final int CHUNK=32;
     public static final int STRIDE=7; // xyz, rgba
@@ -21,17 +21,23 @@ public final class ContinentVista {
     }
     public record Sample(double elevation,ContinentLayout.Biome biome,boolean road) {}
     private final ContinentLayout layout;
-    private final ContinentLayout.City anchor;
+    private final CityPlateTerrain cities;
     private final long seed;
-    public ContinentVista(World world){
+    private final char focus;
+    public ContinentVista(World world){this(world,'A');}
+    /** Focus controls terrain mesh streaming region; world coordinates never change. */
+    public ContinentVista(World world,char focusCity){
         Objects.requireNonNull(world);
         layout=world.continent();
-        anchor=layout.cities().get(0);
+        if(focusCity<'A'||focusCity>='A'+layout.cities().size())
+            throw new IllegalArgumentException("Unknown city focus "+focusCity);
+        cities=new CityPlateTerrain(world);
+        focus=focusCity;
         seed=world.seed;
     }
-    /** Projection keeps the authored city near City A without claiming live cross-zone travel. */
-    private double parcelX(double x){return anchor.x()+(x-World.SIZE/2.0)/3.0;}
-    private double parcelY(double y){return anchor.y()+(y-World.SIZE/2.0)/3.0;}
+    public CityPlateTerrain cityPlates(){return cities;}
+    private double parcelX(double x){return (x-cities.worldX(0))/World.PARCEL_METERS;}
+    private double parcelY(double y){return (y-cities.worldZ(0))/World.PARCEL_METERS;}
     private static double interp(double a,double b,double t){return a+(b-a)*t;}
     private double level(double px,double py){
         int ax=(int)Math.floor(px),ay=(int)Math.floor(py);
@@ -79,13 +85,17 @@ public final class ContinentVista {
             Math.max(.03,Math.min(12.0,raw+
                 relief*(biome==ContinentLayout.Biome.BEACH?.18:
                     biome==ContinentLayout.Biome.MOUNTAINS?1.65:1.0)));
-        // City street elevations remain exactly zero at the handoff.
-        double border=cityDistance(x,y);
+        // The detailed City A district occupies its own source-mesh street plate.
+        // It takes precedence over the broader seed-generated City A footprint.
         if(x>0&&x<World.SIZE&&y>0&&y<World.SIZE)
             return new Sample(0,biome,road);
-        double smooth=Math.max(0,Math.min(1,border/EMBANKMENT_WIDTH));
-        smooth=smooth*smooth*(3-2*smooth);
-        double height=-FOUNDATION_DEPTH+(target+FOUNDATION_DEPTH)*smooth;
+        double border=cityDistance(x,y);
+        double height=cities.height(x,y,target);
+        if(border<=EMBANKMENT_WIDTH){
+            double smooth=Math.max(0,Math.min(1,border/EMBANKMENT_WIDTH));
+            smooth=smooth*smooth*(3-2*smooth);
+            height=-FOUNDATION_DEPTH+(target+FOUNDATION_DEPTH)*smooth;
+        }
         // Northwest original city gates are openings, not retaining walls.
         // A short seed-consistent earth approach reaches the street grade.
         boolean westGate=x<=0&&y>=1&&y<=3;
@@ -128,15 +138,24 @@ public final class ContinentVista {
         target[at++]=1.0f;
         return at;
     }
+    /** Authoritative world-space city centers for external inspection. */
+    public double cityCenterX(char city){return cities.worldX(layout.cities().get(city-'A').x()+.5);}
+    public double cityCenterZ(char city){return cities.worldZ(layout.cities().get(city-'A').y()+.5);}
     public List<Patch> patches(){
         List<Patch> chunks=new ArrayList<>();
-        int start=-EXTENT,end=World.SIZE+EXTENT;
-        for(int y0=start;y0<end;y0+=CHUNK)
-            for(int x0=start;x0<end;x0+=CHUNK){
+        ContinentLayout.City city=layout.cities().get(focus-'A');
+        int minX=focus=='A'?-EXTENT:(int)Math.floor(cities.worldX(city.x()-city.radiusX()-1)-EXTENT);
+        int maxX=focus=='A'?World.SIZE+EXTENT:(int)Math.ceil(cities.worldX(city.x()+city.radiusX()+2)+EXTENT);
+        int minZ=focus=='A'?-EXTENT:(int)Math.floor(cities.worldZ(city.y()-city.radiusY()-1)-EXTENT);
+        int maxZ=focus=='A'?World.SIZE+EXTENT:(int)Math.ceil(cities.worldZ(city.y()+city.radiusY()+2)+EXTENT);
+        int startX=Math.floorDiv(minX,CHUNK)*CHUNK,endX=Math.floorDiv(maxX+CHUNK-1,CHUNK)*CHUNK;
+        int startZ=Math.floorDiv(minZ,CHUNK)*CHUNK,endZ=Math.floorDiv(maxZ+CHUNK-1,CHUNK)*CHUNK;
+        for(int y0=startZ;y0<endZ;y0+=CHUNK)
+            for(int x0=startX;x0<endX;x0+=CHUNK){
                 float[] verts=new float[CHUNK*CHUNK/(STEP*STEP)*6*STRIDE];
                 int index=0,triangles=0;
-                for(int z=y0;z<Math.min(y0+CHUNK,end);z+=STEP)
-                    for(int x=x0;x<Math.min(x0+CHUNK,end);x+=STEP){
+                for(int z=y0;z<Math.min(y0+CHUNK,endZ);z+=STEP)
+                    for(int x=x0;x<Math.min(x0+CHUNK,endX);x+=STEP){
                         // Don't redraw playable city underneath its real Kenney tiles.
                         if(!outside(x,z)&&!outside(x+STEP-1,z+STEP-1))continue;
                         Sample a=sample(x,z),b=sample(x+STEP,z),
@@ -154,6 +173,35 @@ public final class ContinentVista {
                 if(triangles>0)chunks.add(new Patch(x0,y0,CHUNK,CHUNK,triangles,
                     Arrays.copyOf(verts,index)));
             }
+        // Seed-generated B-G plates are real height-field surfaces, backed by
+        // perimeter retaining skirts constructed from the exact city footprint.
+        // Each city is a single GPU mesh, not a draw call per parcel boundary.
+        for(ContinentLayout.City site:layout.cities()){
+            List<CityPlateTerrain.Edge> edges=new ArrayList<>();
+            for(CityPlateTerrain.Edge edge:cities.edges()){
+                if(edge.city()!=site.id())continue;
+                double mx=(edge.ax()+edge.bx())*.5,mz=(edge.az()+edge.bz())*.5;
+                if(mx>=startX-STEP&&mx<=endX+STEP&&mz>=startZ-STEP&&mz<=endZ+STEP)
+                    edges.add(edge);
+            }
+            if(edges.isEmpty())continue;
+            float[] wall=new float[edges.size()*6*STRIDE];
+            int cursor=0;
+            int material=0x4e514c;
+            for(CityPlateTerrain.Edge edge:edges){
+                cursor=emit(wall,cursor,edge.ax(),edge.top(),edge.az(),material);
+                cursor=emit(wall,cursor,edge.ax(),edge.bottom(),edge.az(),material);
+                cursor=emit(wall,cursor,edge.bx(),edge.bottom(),edge.bz(),material);
+                cursor=emit(wall,cursor,edge.ax(),edge.top(),edge.az(),material);
+                cursor=emit(wall,cursor,edge.bx(),edge.bottom(),edge.bz(),material);
+                cursor=emit(wall,cursor,edge.bx(),edge.top(),edge.bz(),material);
+            }
+            int left=(int)Math.floor(cities.worldX(site.x()-site.radiusX()-2));
+            int top=(int)Math.floor(cities.worldZ(site.y()-site.radiusY()-2));
+            int width=(site.radiusX()+2)*2*World.PARCEL_METERS;
+            int depth=(site.radiusY()+2)*2*World.PARCEL_METERS;
+            chunks.add(new Patch(left,top,width,depth,edges.size()*2,wall));
+        }
         return List.copyOf(chunks);
     }
     /** Authoring-kit foundation blocks, below city grade, with zero host collision. */
@@ -192,7 +240,8 @@ public final class ContinentVista {
                     ((long)gy*281474976710L));
                 double cx=gx+5.5+((hash>>>11)&1023)/1023.0*8-4;
                 double cz=gy+5.5+((hash>>>24)&1023)/1023.0*8-4;
-                if(!outside((int)cx,(int)cz)||cityDistance(cx,cz)<7)continue;
+                if(!outside((int)cx,(int)cz)||cityDistance(cx,cz)<7||
+                    cities.closest(cx,cz).inside())continue;
                 Sample at=sample(cx,cz);
                 boolean plant=switch(at.biome()){
                     case FOREST -> (hash&7)!=0;
@@ -212,7 +261,8 @@ public final class ContinentVista {
                     double x=cx+dx,z=cz+dz;
                     if(x<-EXTENT+1||z<-EXTENT+1||
                         x>World.SIZE+EXTENT-1||z>World.SIZE+EXTENT-1||
-                        !outside((int)x,(int)z)||cityDistance(x,z)<7)continue;
+                        !outside((int)x,(int)z)||cityDistance(x,z)<7||
+                        cities.closest(x,z).inside())continue;
                     Sample location=sample(x,z);
                     if(location.biome()==ContinentLayout.Biome.WATER||location.road())continue;
                     String id=location.biome()==ContinentLayout.Biome.MARSH||

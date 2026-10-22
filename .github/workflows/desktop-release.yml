@@ -114,6 +114,38 @@ jobs:
           test "$(cat build/update-smoke/worlds/keep-this-world/save.dat)" = "previous save must remain untouched"
           java -Djava.awt.headless=true -cp build/update-smoke/MaleficVeil.jar veil.WorldSelfTest
           echo "Live GitHub prerelease discovery, download, install, and rollback-safe save preservation PASS"
+      - name: Upgrade an actual previously published desktop installation
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="dev-${GITHUB_SHA:0:12}"
+          PREVIOUS="$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" --jq             '.[] | select(.draft == false and .prerelease == true) | .tag_name' |
+            grep -v "^$CURRENT$" | head -n 1 || true)"
+          if [ -z "$PREVIOUS" ]; then
+            echo "No previous prerelease exists yet; fresh-install smoke is the bootstrap gate"
+            exit 0
+          fi
+          mkdir -p build/previous-release build/previous-install
+          gh release download "$PREVIOUS" --pattern 'MaleficVeil-desktop-*.zip' \
+            --dir build/previous-release
+          unzip -q build/previous-release/MaleficVeil-desktop-*.zip -d build/previous-install
+          test -s build/previous-install/updater.jar
+          BEFORE="$(cat build/previous-install/version.txt)"
+          mkdir -p build/previous-install/worlds/older-save
+          echo 'retain-save-file' > build/previous-install/worlds/older-save/state.txt
+          cp build/previous-install/updater.jar build/previous-updater.jar
+          java -Djava.awt.headless=true -cp build/previous-updater.jar \
+            veil.DesktopUpdater "$PWD/build/previous-install" --install
+          grep -q INSTALL_VERIFIED build/previous-install/logs/updater.log
+          AFTER="$(cat build/previous-install/version.txt)"
+          test "$AFTER" != "$BEFORE"
+          test -s build/previous-install/MaleficVeil.jar
+          test -s build/previous-install/updater.jar
+          test -s build/previous-install/lib/shared-psx-weather-java17-v1.jar
+          test "$(cat build/previous-install/worlds/older-save/state.txt)" = retain-save-file
+          echo "Existing release $PREVIOUS updated to $AFTER via installed updater: PASS"
       - name: Preserve packaged installer even if Release API denies publication
         if: always()
         uses: actions/upload-artifact@v4

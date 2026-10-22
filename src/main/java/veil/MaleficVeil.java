@@ -26,6 +26,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final CargoHaulage localCargo;
     private final ArenaSystems localHost;
     private final WorldHarvesting localHarvesting;
+    private final VeilWeather weather;
     private final int archetype;
     private final javax.swing.Timer timer;
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
@@ -52,6 +53,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         localHost=net==null?new ArenaSystems(seed):null;
         if(localHost!=null)localHost.join(1);
         localHarvesting=net==null?new WorldHarvesting(world):null;
+        try{weather=new VeilWeather(seed,java.nio.file.Path.of("."));}
+        catch(java.io.IOException ex){throw new IllegalStateException("Pinned shared weather library missing",ex);}
         try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
@@ -139,6 +142,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     @Override public void actionPerformed(ActionEvent unused){
         ticks++;
         if(localHarvesting!=null)localHarvesting.advance(33);
+        if(ticks%30==1)weather.registerAround(world,px,py);
+        weather.tick(.033,px,py,angle,VeilWeather.exposure(world,px,py));
         if(net!=null){
             String result;
             while((result=net.harvestResults.poll())!=null)
@@ -444,6 +449,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     /** Walkable streamed continent scene, using imported GLB trees and real 3D node meshes. */
     private void renderContinentalGround(Graphics2D g){
         g.setColor(new Color(38,37,62));g.fillRect(0,0,RW,RH/2);
+        weather.paintSky(g,RW,RH);
         ContinentLayout terrain=world.continent();
         double tangent=Math.tan(FOV/2);
         for(int row=RH/2;row<RH;row++){
@@ -466,7 +472,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 int rr=Math.max(0,((base>>>16)&255)+dim);
                 int gg=Math.max(0,((base>>>8)&255)+dim);
                 int bb=Math.max(0,(base&255)+dim);
-                g.setColor(new Color(Math.min(255,rr),Math.min(255,gg),Math.min(255,bb)));
+                int ground=weather.tint(x+.5,y+.5,
+                    (Math.min(255,rr)<<16)|(Math.min(255,gg)<<8)|Math.min(255,bb));
+                g.setColor(new Color(ground));
                 g.fillRect(col,row,1,1);
             }
         }
@@ -500,6 +508,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.Arrays.fill(depth,65);
         urbanRenderer.draw(g,urban,px,py,angle,depth,RW,RH);
         urbanRenderer.draw(g,actorModels.meshes(),displays,px,py,angle,depth,RW,RH);
+        renderWeatherEffects(g);
         g.setColor(new Color(204,186,157));
         g.fillRect(RW/2-4,RH/2,9,1);g.fillRect(RW/2,RH/2-4,1,9);
         InteractionFocus.draw(g,RW,RH,focusTarget());
@@ -541,10 +550,20 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
         }
     }
+    /** Actual shared-module weather: near-field 3D lightning, rain, snow and fog. */
+    private void renderWeatherEffects(Graphics2D g){
+        java.util.List<UrbanScene.ModelInstance> lightning=new java.util.ArrayList<>();
+        weather.emitLightning(lightning);
+        if(!lightning.isEmpty())
+            urbanRenderer.draw(g,actorModels.meshes(),lightning,px,py,angle,depth,RW,RH);
+        weather.paintOverlay(g,RW,RH);
+    }
     private void renderScene(Graphics2D g){
         if(!world.detailedCity(px,py)){renderContinentalGround(g);return;}
         g.setColor(new Color(14,14,27));g.fillRect(0,0,RW,RH/2);
-        g.setColor(new Color(29,28,29));g.fillRect(0,RH/2,RW,RH/2);
+        weather.paintSky(g,RW,RH);
+        g.setColor(new Color(weather.tint(px,py,0x1d1c1d)));
+        g.fillRect(0,RH/2,RW,RH/2);
         for(int i=0;i<RW;i++){
             double offset=Math.atan(((i+.5)/RW-.5)*2*Math.tan(FOV/2));
             double ray=angle+offset,rx=Math.cos(ray),ry=Math.sin(ray);
@@ -636,6 +655,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     node.type()==WildernessResources.Type.TIMBER?.39:1.05));
         }
         urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
+        renderWeatherEffects(g);
         drawMonsterThreats(g);
         g.setColor(new Color(187,176,149));
         g.fillRect(RW/2-5,RH/2,11,1);g.fillRect(RW/2,RH/2-5,1,11);
@@ -718,6 +738,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     /** A disposed/reparented Swing view must not keep an event timer running. */
     @Override public void removeNotify(){
         timer.stop();
+        weather.close();
         super.removeNotify();
     }
     @Override public void addNotify(){
@@ -794,7 +815,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString("WASD move / Mouse or arrows turn / Shift sprint / C crouch",23,87);
             g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
             g.drawString("E INTERACT / HARVEST  X MEDKIT  Q VEHICLE",23,127);
-            g.drawString("I inventory  K skills  J craft  F8 airframe inspect",23,147);}
+            g.drawString("I inventory K skills J craft F8 aircraft F9 weather",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));
@@ -943,6 +964,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_K -> {skillsVisible=!skillsVisible;inventoryVisible=false;}
             case KeyEvent.VK_O -> crewDialog();
             case KeyEvent.VK_J -> handCraftDialog();
+            case KeyEvent.VK_F9 -> toast("WEATHER: "+weather.cycle());
             case KeyEvent.VK_F10 -> performanceDialog();
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
         }

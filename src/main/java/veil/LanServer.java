@@ -64,7 +64,7 @@ public final class LanServer implements AutoCloseable {
             harvesting.load(saveDir);
         }
         ai=new FactionAiDirector(match,harvesting,Objects.requireNonNull(aiSettings));
-        if(saveDir!=null)HostAiSettings.save(saveDir,aiSettings);
+        if(saveDir!=null){ai.load(saveDir);HostAiSettings.save(saveDir,aiSettings);}
         listener=saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
         if(saveDir!=null){
@@ -631,6 +631,7 @@ public final class LanServer implements AutoCloseable {
         DurableRealm.save(match,dataDirectory);
         AccountDirectory.save(match,dataDirectory);
         harvesting.save(dataDirectory);
+        ai.save(dataDirectory);
     }
     public void saveNow()throws IOException{
         saveAll();audit("manual_save");

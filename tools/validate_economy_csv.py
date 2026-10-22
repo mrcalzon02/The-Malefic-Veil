@@ -23,7 +23,14 @@ recipe_inputs = read("industrial_recipe_inputs.csv", "recipe_id")
 hand_inputs = read("hand_recipe_inputs.csv", "recipe_id")
 facility_costs = read("facility_costs.csv", "facility_id")
 storage = read("storage_containers.csv", "container_id")
-skills = read("skill_modifiers.csv", "skill")
+# A skill can legitimately modify multiple different effects. Only a repeated
+# (skill, effect) pair is an invalid duplicate.
+with (ROOT / "skill_modifiers.csv").open(newline="", encoding="utf-8") as file:
+    skills = list(csv.DictReader(file))
+skill_effect_keys = [(row["skill"], row["effect"]) for row in skills]
+assert len(skill_effect_keys) == len(set(skill_effect_keys)), (
+    "Duplicate (skill, effect) in skill_modifiers.csv"
+)
 pairs = [(row["skill"], row["effect"]) for row in skills]
 assert len(pairs) == len(set(pairs)), "Duplicate skill/effect pair in skill_modifiers.csv"
 item_ids = {x["item_id"] for x in items}

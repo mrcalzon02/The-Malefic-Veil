@@ -17,7 +17,7 @@ public final class FactionGroups {
     public record Invite(String crewId,String account,long expiresAtMs){}
     public record Snapshot(Map<String,CharacterRoster.Faction> factions,
                            List<Crew> crews,long nextCrewId){}
-    private static final int MAX_CREWS=2048,MAX_MEMBERS=32,MAX_INVITES=256;
+    private static final int MAX_CREWS=2048,MAX_MEMBERS=3,MAX_INVITES=256;
     private final Map<String,CharacterRoster.Faction> allegiance=new TreeMap<>();
     private final Map<String,MutableCrew> crews=new LinkedHashMap<>();
     private final Map<String,String> membership=new HashMap<>();

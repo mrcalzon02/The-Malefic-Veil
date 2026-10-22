@@ -116,6 +116,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final long seed;
     private final boolean smoke;
     private final boolean gallery;
+    private final char focusCity;
+    private GalleryView[] galleryViews;
     private int galleryIndex;
     private int visibleTerrainPatches;
     private int visibleTerrainTriangles;
@@ -146,7 +148,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private ContinentVista vista;
     public GpuKenneyPreview(long seed,boolean smoke){this(seed,smoke,false);}
     public GpuKenneyPreview(long seed,boolean smoke,boolean gallery){
-        this.seed=seed;this.smoke=smoke;this.gallery=gallery;
+        this(seed,smoke,gallery,'A');
+    }
+    public GpuKenneyPreview(long seed,boolean smoke,boolean gallery,char site){
+        if(site<'A'||site>'G')throw new IllegalArgumentException("Unknown city "+site);
+        this.seed=seed;this.smoke=smoke;this.gallery=gallery;focusCity=site;
     }
     /** Deterministic photography poses: no fabricated scenery or composited backgrounds. */
     private record GalleryView(String name,double x,double z,double elevation,
@@ -165,10 +171,28 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         new GalleryView("09-southern-foundation",66,-12,2.6,Math.PI/2,-.36f,150,10),
         new GalleryView("10-east-embankment",World.SIZE+14,66,4.0,Math.PI,-.48f,150,16)
     };
+    /** Generated-city audit cameras point at the real ContinentLayout cell mask. */
+    private GalleryView[] generatedCityViews(){
+        ContinentLayout.City city=world.continent().cities().get(focusCity-'A');
+        double cx=vista.cityCenterX(focusCity),cz=vista.cityCenterZ(focusCity);
+        double west=cx-city.radiusX()*World.PARCEL_METERS-23;
+        double north=cz-city.radiusY()*World.PARCEL_METERS-23;
+        double platform=vista.cityPlates().plateHeight(focusCity);
+        return new GalleryView[]{
+            new GalleryView("01-generated-plate-overhead",cx,cz,platform+150,
+                0,-1.48f,260,12),
+            new GalleryView("02-generated-west-edge",west,cz,
+                5.0,0,-.32f,240,12),
+            new GalleryView("03-generated-north-edge",cx,north,
+                5.0,Math.PI/2,-.32f,240,16),
+            new GalleryView("04-generated-diagonal",west,north,
+                27.0,Math.PI/4,-.64f,260,10)
+        };
+    }
     private void setGalleryView(GalleryView view){
         x=view.x();y=view.z();cameraHeight=view.elevation();heading=view.heading();
-        if(view.name().contains("outside")||view.name().contains("foundation")||
-           view.name().contains("embankment"))
+        if(focusCity!='A'||view.name().contains("outside")||
+           view.name().contains("foundation")||view.name().contains("embankment"))
             cameraHeight+=vista.sample(x,y).elevation();
         if(view.name().equals("02-central-streets")){
             for(CityLayout.Road road:world.city.roadTiles()){
@@ -193,7 +217,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         world=new World(seed);
         // Same seed and continent city anchors as the authoritative world
         // blueprint. Outside-city surfaces are visible, not yet walkable.
-        ContinentVista continental=new ContinentVista(world);
+        ContinentVista continental=new ContinentVista(world,focusCity);
         vista=continental;
         try{scene=new UrbanScene(world,continental.scenery());}
         catch(Exception ex){throw new IllegalStateException("Kenney source pack unavailable",ex);}
@@ -279,7 +303,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         font.dispose();
         font=menu.font();
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
-        if(gallery)setGalleryView(GALLERY[0]);
+        galleryViews=focusCity=='A'?GALLERY:generatedCityViews();
+        if(gallery)setGalleryView(galleryViews[0]);
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
             scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
     }
@@ -465,9 +490,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         // An exterior vista may legitimately contain only water/terrain, with no
         // city model in front of the camera. Reject blank terrain and missing
         // city meshes independently; never assert that the ocean has street props.
-        boolean exterior=gallery && (GALLERY[galleryIndex].name().contains("outside") ||
-            GALLERY[galleryIndex].name().contains("embankment") ||
-            GALLERY[galleryIndex].name().contains("foundation"));
+        boolean exterior=gallery && (focusCity!='A'||
+            galleryViews[galleryIndex].name().contains("outside") ||
+            galleryViews[galleryIndex].name().contains("embankment") ||
+            galleryViews[galleryIndex].name().contains("foundation"));
         if(colors.size()<18||visibleTerrainPatches<1||
            (!exterior&&(visibleInstances<5||drawCalls<3)))
             throw new IllegalStateException("GPU frame lacks required scene geometry: colors="+
@@ -485,9 +511,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(gallery){
             frames++;
             if(frames%5==0){
-                GalleryView view=GALLERY[galleryIndex];
-                saveFrame("gallery-seed-"+seed+"-"+view.name()+".png");
-                String log="GALLERY_CAPTURE seed="+seed+" view="+view.name()+
+                GalleryView view=galleryViews[galleryIndex];
+                saveFrame("gallery-seed-"+seed+"-city-"+focusCity+"-"+view.name()+".png");
+                String log="GALLERY_CAPTURE seed="+seed+" city="+focusCity+" view="+view.name()+
                     " camera="+x+","+cameraHeight+","+y+
                     " heading="+heading+" pitch="+cameraPitch+
                     " time="+WorldDayNight.clock(environment.hour())+
@@ -497,10 +523,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     " groundElevation="+vista.sample(x,y).elevation();
                 System.out.println(log);
                 galleryIndex++;
-                if(galleryIndex==GALLERY.length){
+                if(galleryIndex==galleryViews.length){
                     framebuffer.end();Gdx.app.exit();return;
                 }
-                setGalleryView(GALLERY[galleryIndex]);
+                setGalleryView(galleryViews[galleryIndex]);
             }
         }
         if(smoke){

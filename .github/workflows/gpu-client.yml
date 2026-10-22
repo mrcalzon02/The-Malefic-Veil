@@ -88,7 +88,7 @@ jobs:
               -jar gpu-client/target/MaleficVeil-GPU.jar --gallery --seed="$seed" \
               | tee "build/test-visuals/gallery-seed-$seed.log"
             test "$(grep -c 'GALLERY_CAPTURE seed=' "build/test-visuals/gallery-seed-$seed.log")" -eq 10
-            test "$(find build/test-visuals -maxdepth 1 -name "gallery-seed-$seed-*.png" | wc -l)" -eq 10
+            test "$(find build/test-visuals -maxdepth 1 -name "gallery-seed-$seed-city-A-*.png" | wc -l)" -eq 10
           done
           printf 'Real OpenGL world gallery: 3 seeds x 10 camera poses = 30 PNGs\n'
           file build/test-visuals/gallery-seed-*.png

@@ -40,6 +40,7 @@ jobs:
           mkdir -p build/classes build/test-visuals
           javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
           java -Djava.awt.headless=true -cp build/classes veil.ContinentVistaTest
+          java -Djava.awt.headless=true -cp build/classes veil.CityPlateTerrainTest
           java -Djava.awt.headless=true -cp build/classes veil.CityVisualRegressionTest |
             tee build/test-visuals/city-java2d.log
           test "$(grep -c 'CITY_VISUAL_CAPTURE pose=' build/test-visuals/city-java2d.log)" -eq 8
@@ -66,6 +67,25 @@ jobs:
             done
           done
           echo 'VISUAL GATE: 8 shipped-client screenshots + 20 live GPU screenshots'
+      - name: Render seeded irregular and square city plates B and C
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          for seed in 20261020 887766; do
+            for city in B C; do
+              xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+                timeout 180s java -jar gpu-client/target/MaleficVeil-GPU.jar \
+                  --gallery --seed="$seed" --city="$city" |
+                tee "build/test-visuals/gpu-generated-$seed-$city.log"
+              test "$(grep -c "GALLERY_CAPTURE seed=$seed city=$city " "build/test-visuals/gpu-generated-$seed-$city.log")" -eq 4
+              for view in 01-generated-plate-overhead 02-generated-west-edge 03-generated-north-edge 04-generated-diagonal; do
+                test -s "build/test-visuals/gallery-seed-$seed-city-$city-$view.png"
+              done
+            done
+          done
+          echo 'GENERATED CITY VISUAL GATE: B and C, two independent seeds, 16 actual GPU images'
       - name: Preserve every image and diagnostics even on failure
         if: always()
         uses: actions/upload-artifact@v4

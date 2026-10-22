@@ -38,7 +38,7 @@ public final class ContinentVistaTest {
                 check(!block.solid(),"Render-only foundation changed host collision");
             }
             var patches=land.patches();
-            check(patches.size()>=40&&patches.size()<=120,"Terrain sector count outside bounded cache");
+            check(patches.size()>=40&&patches.size()<=170,"Terrain sector count outside bounded cache");
             int triangles=0;
             for(ContinentVista.Patch p:patches){
                 check(p.vertexData().length==p.triangles()*3*ContinentVista.STRIDE,

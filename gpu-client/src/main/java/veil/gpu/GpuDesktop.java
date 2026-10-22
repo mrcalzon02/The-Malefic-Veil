@@ -11,11 +11,16 @@ public final class GpuDesktop {
     private GpuDesktop() {}
     public static void main(String[] args) {
         boolean smoke=false,gallery=false;
+        char city='A';
         long seed=20261020L;
         for(String arg:args) {
             if("--smoke".equals(arg))smoke=true;
             else if("--gallery".equals(arg))gallery=true;
             else if(arg.startsWith("--seed="))seed=Long.parseLong(arg.substring(7));
+            else if(arg.startsWith("--city=")&&arg.length()==8){
+                city=Character.toUpperCase(arg.charAt(7));
+                if(city<'A'||city>'G')throw new IllegalArgumentException("Unknown city "+city);
+            }
             else throw new IllegalArgumentException("Unknown argument: "+arg);
         }
         Lwjgl3ApplicationConfiguration cfg=new Lwjgl3ApplicationConfiguration();
@@ -26,6 +31,6 @@ public final class GpuDesktop {
         cfg.setForegroundFPS(60);
         cfg.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30,3,3);
         if(smoke&&gallery)throw new IllegalArgumentException("Choose smoke or gallery");
-        new Lwjgl3Application(new GpuKenneyPreview(seed,smoke,gallery),cfg);
+        new Lwjgl3Application(new GpuKenneyPreview(seed,smoke,gallery,city),cfg);
     }
 }

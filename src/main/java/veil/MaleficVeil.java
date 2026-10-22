@@ -874,7 +874,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             else{NetLink.Car car=net.cars.get(activeCar);
                 if(car!=null){speed=car.speed();fuel=car.fuel();}}
             g.setColor(new Color(229,211,152));
-            g.drawString(String.format("CAR  SPEED %.1f  FUEL %.0f%%  Q exit",speed,fuel),15,70);
+            String load=net==null?localVehicles.cargo(activeCar).resourceType():
+                net.truckCargo.get(activeCar);
+            int hp=net==null?localVehicles.state(activeCar).hp():
+                net.cars.get(activeCar).hp();
+            g.drawString(String.format("TRUCK %d  SPEED %.1f  FUEL %.0f%%  HULL %d/200",
+                activeCar,speed,fuel,hp),15,70);
+            g.drawString("CARGO "+(load==null?"EMPTY":load)+
+                "   Q exit   Vehicles > Inspection",15,88);
         }
         if(help&&!dead){g.setColor(new Color(9,10,17,220));g.fillRect(12,64,440,100);
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));

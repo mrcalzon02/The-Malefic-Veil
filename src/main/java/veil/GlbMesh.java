@@ -20,8 +20,30 @@ public final class GlbMesh {
     private final List<Triangle> triangles;
     private final List<Surface> surfaces;
     private final float[] bounds;
+    private final Map<String,byte[]> embeddedTextures;
+    private final Map<String,java.awt.image.BufferedImage> decodedTextures=new HashMap<>();
     private GlbMesh(List<Triangle> tris,float[] b,List<Surface> materials){
+        this(tris,b,materials,Map.of());
+    }
+    private GlbMesh(List<Triangle> tris,float[] b,List<Surface> materials,
+                    Map<String,byte[]> textures){
         triangles=List.copyOf(tris);bounds=b.clone();surfaces=List.copyOf(materials);
+        embeddedTextures=Map.copyOf(textures);
+    }
+    /** PNG bytes for assets whose original atlas is embedded in the model registry. */
+    public byte[] textureBytes(String texture){
+        byte[] bytes=embeddedTextures.get(texture);
+        return bytes==null?null:bytes.clone();
+    }
+    public synchronized java.awt.image.BufferedImage textureImage(String texture)throws IOException{
+        if(!embeddedTextures.containsKey(texture))return null;
+        java.awt.image.BufferedImage image=decodedTextures.get(texture);
+        if(image!=null)return image;
+        image=javax.imageio.ImageIO.read(new ByteArrayInputStream(embeddedTextures.get(texture)));
+        if(image==null||image.getWidth()!=128||image.getHeight()!=128)
+            throw new IOException("Invalid GGBot 128x128 source atlas");
+        decodedTextures.put(texture,image);
+        return image;
     }
     public static GlbMesh authored(List<Triangle> faces){
         if(faces.isEmpty())throw new IllegalArgumentException("Empty mesh");
@@ -61,6 +83,85 @@ public final class GlbMesh {
         ASSET_CACHE.put(name,parsed);
         return parsed;
     }
+    /** Import GGBot's native Blender-compatible OBJ UV layout without generating new UVs.
+     * The exact authored 128x128 PNG becomes the per-vertex surface texture.
+     * Quad triangulation is a stable fan; every face preserves its original UV corners.
+     */
+    public static GlbMesh texturedObj(byte[] obj,byte[] png,String id)throws IOException{
+        if(obj==null||png==null||id==null||!id.matches("ggbot-[a-z0-9_-]+"))
+            throw new IOException("Invalid textured OBJ");
+        java.awt.image.BufferedImage image=javax.imageio.ImageIO.read(new ByteArrayInputStream(png));
+        if(image==null||image.getWidth()!=128||image.getHeight()!=128)
+            throw new IOException("Not an original 128x128 car atlas");
+        List<float[]> xyz=new ArrayList<>(),uv=new ArrayList<>();
+        List<Triangle> tris=new ArrayList<>();
+        List<Surface> surfaces=new ArrayList<>();
+        float[] bounds={Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,
+            Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY};
+        String input=new String(obj,StandardCharsets.UTF_8).replace("\uFEFF","");
+        for(String raw:input.split("\\R")){
+            String line=raw.trim();
+            if(line.isEmpty()||line.startsWith("#"))continue;
+            String[] words=line.split("\\s+");
+            if(words[0].equals("v")&&words.length>=4){
+                float[] v=new float[3];
+                for(int i=0;i<3;i++){
+                    try{v[i]=Float.parseFloat(words[i+1]);}
+                    catch(NumberFormatException e){throw new IOException("Invalid OBJ coordinate",e);}
+                    if(!Float.isFinite(v[i])||Math.abs(v[i])>100)
+                        throw new IOException("Out-of-range car coordinate");
+                    bounds[i]=Math.min(bounds[i],v[i]);bounds[i+3]=Math.max(bounds[i+3],v[i]);
+                }
+                xyz.add(v);
+            }else if(words[0].equals("vt")&&words.length>=3){
+                float[] t=new float[2];
+                for(int i=0;i<2;i++){
+                    try{t[i]=Float.parseFloat(words[i+1]);}
+                    catch(NumberFormatException e){throw new IOException("Invalid car UV",e);}
+                    if(!Float.isFinite(t[i])||Math.abs(t[i])>16)
+                        throw new IOException("Out-of-range car UV");
+                }
+                uv.add(t);
+            }else if(words[0].equals("f")){
+                if(words.length<4||words.length>5)
+                    throw new IOException("Unexpected GGBot polygon vertex count");
+                int[][] corners=new int[words.length-1][2];
+                for(int i=1;i<words.length;i++){
+                    String[] idx=words[i].split("/",-1);
+                    if(idx.length<2||idx[1].isEmpty())
+                        throw new IOException("Missing source UV corner");
+                    try{
+                        corners[i-1][0]=objIndex(Integer.parseInt(idx[0]),xyz.size());
+                        corners[i-1][1]=objIndex(Integer.parseInt(idx[1]),uv.size());
+                    }catch(NumberFormatException e){throw new IOException("Invalid OBJ face index",e);}
+                }
+                for(int i=1;i+1<corners.length;i++){
+                    int[][] c={corners[0],corners[i],corners[i+1]};
+                    float[] a=xyz.get(c[0][0]),b=xyz.get(c[1][0]),v=xyz.get(c[2][0]);
+                    float[] u1=uv.get(c[0][1]),u2=uv.get(c[1][1]),u3=uv.get(c[2][1]);
+                    double u=(u1[0]+u2[0]+u3[0])/3.0;
+                    double vv=(u1[1]+u2[1]+u3[1])/3.0;
+                    int px=Math.floorMod((int)Math.floor(u*128),128);
+                    int py=Math.floorMod((int)Math.floor((1-vv)*128),128);
+                    int color=image.getRGB(px,py)&0xffffff;
+                    Triangle t=new Triangle(a[0],a[1],a[2],b[0],b[1],b[2],
+                        v[0],v[1],v[2],color);
+                    tris.add(t);
+                    surfaces.add(new Surface(t,id,
+                        u1[0],u1[1],u2[0],u2[1],u3[0],u3[1],0xffffff));
+                }
+            }
+        }
+        if(tris.size()<250||tris.size()>550||uv.size()<100||xyz.size()<100)
+            throw new IOException("Unexpected source mesh topology for "+id);
+        return new GlbMesh(tris,bounds,surfaces,Map.of(id,png.clone()));
+    }
+    private static int objIndex(int oneBased,int n)throws IOException{
+        int at=oneBased>0?oneBased-1:n+oneBased;
+        if(at<0||at>=n)throw new IOException("OBJ face refers beyond source vertices");
+        return at;
+    }
+
     @SuppressWarnings("unchecked")
     private static Map<String,Object> obj(Object v)throws IOException {
         if(!(v instanceof Map<?,?> m))throw new IOException("Expected GLB JSON object");

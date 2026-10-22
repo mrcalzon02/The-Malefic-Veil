@@ -155,7 +155,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             JFrame frame=new JFrame("THE MALEFIC VEIL — "+(link==null?"SOLO":"LAN"));
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             MaleficVeil game=new MaleficVeil(frame,seed,character,link);
-            frame.setContentPane(game);frame.pack();frame.setLocationRelativeTo(null);frame.setVisible(true);
+            frame.setContentPane(game);frame.setJMenuBar(game.managementMenu());
+            frame.pack();frame.setLocationRelativeTo(null);frame.setVisible(true);
             game.requestFocusInWindow();
             if(link!=null){
                 link.selectFaction(faction);
@@ -1174,6 +1175,95 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         urbanRenderer.setBudgets(performance);
         // Simulation remains at 30 ticks/s regardless of the frame rendering cap.
         toast("GRAPHICS SETTINGS SAVED");
+    }
+    /** One compact navigation surface; unavailable transactions are not fake buttons. */
+    private JMenuBar managementMenu(){
+        JMenuBar bar=new JMenuBar();
+        JMenu player=new JMenu("Player");
+        menuAction(player,"Inventory (I)",()->{inventoryVisible=true;skillsVisible=false;repaint();});
+        menuAction(player,"Skills (K)",()->{skillsVisible=true;inventoryVisible=false;repaint();});
+        menuAction(player,"Field crafting (J)",this::handCraftDialog);
+        JMenu worldMenu=new JMenu("World");
+        menuAction(worldMenu,"City map (M)",()->{mapVisible=true;continentVisible=false;repaint();});
+        menuAction(worldMenu,"Continent (N)",()->{continentVisible=true;mapVisible=false;repaint();});
+        menuAction(worldMenu,"Crew management (O)",this::crewDialog);
+        JMenu vehicleMenu=new JMenu("Vehicles");
+        menuAction(vehicleMenu,"Enter / exit (Q)",this::toggleCar);
+        menuAction(vehicleMenu,"Vehicle inspection",this::vehicleInspection);
+        menuAction(vehicleMenu,"Load cargo (L)",this::loadNearestCargo);
+        menuAction(vehicleMenu,"Recover cargo (G)",this::recoverNearestCargo);
+        JMenu production=new JMenu("Production");
+        menuAction(production,"Industrial recipe catalog",this::productionCatalog);
+        JMenu settings=new JMenu("Settings");
+        menuAction(settings,"Graphics / performance (F10)",this::performanceDialog);
+        menuAction(settings,"Controls",()->JOptionPane.showMessageDialog(window,
+            "WASD move / drive    Q enter / exit    E interact\n"+
+            "I inventory    J craft    K skills    O crew\n"+
+            "M city map    N continent    F10 graphics\n"+
+            "L load truck    G recover cargo    Esc help",
+            "Controls",JOptionPane.INFORMATION_MESSAGE));
+        for(JMenu menu:new JMenu[]{player,worldMenu,vehicleMenu,production,settings})
+            bar.add(menu);
+        return bar;
+    }
+    private void menuAction(JMenu menu,String title,Runnable action){
+        JMenuItem item=new JMenuItem(title);
+        item.addActionListener(e->{action.run();requestFocusInWindow();});
+        menu.add(item);
+    }
+    /** Displays authoritative or local simulation state; no unimplemented repairs. */
+    private void vehicleInspection(){
+        int active=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
+        if(active<0){
+            double nearest=3.5;
+            if(net==null){
+                for(var state:localVehicles.states()){
+                    double d=Math.hypot(px-state.x(),py-state.y());
+                    if(d<nearest){active=state.id();nearest=d;}
+                }
+            }else for(var state:net.cars.values()){
+                double d=Math.hypot(px-state.x(),py-state.y());
+                if(d<nearest){active=state.id();nearest=d;}
+            }
+        }
+        if(active<0){toast("NO VEHICLE IN REACH");return;}
+        double speed,fuel;int hp,driver;String cargo;
+        if(net==null){
+            var state=localVehicles.state(active);
+            if(state==null)return;
+            speed=state.speed();fuel=state.fuel();hp=state.hp();
+            driver=state.driverId();
+            cargo=localVehicles.cargo(active).resourceType();
+        }else{
+            var state=net.cars.get(active);
+            if(state==null)return;
+            speed=state.speed();fuel=state.fuel();hp=state.hp();
+            driver=state.driverId();cargo=net.truckCargo.get(active);
+        }
+        JOptionPane.showMessageDialog(window,
+            "Vehicle #"+active+"\nHull: "+hp+" / 200"+
+            "\nFuel: "+String.format(java.util.Locale.ROOT,"%.1f",fuel)+"%"+
+            "\nSpeed: "+String.format(java.util.Locale.ROOT,"%.1f",speed)+
+            "\nDriver: "+(driver<0?"NONE":driver)+
+            "\nCargo: "+(cargo==null?"EMPTY":cargo)+
+            "\nRepair and component replacement: not yet available.",
+            "Vehicle status",JOptionPane.INFORMATION_MESSAGE);
+    }
+    private void productionCatalog(){
+        String[] choices=CraftingEraRegistry.processes().keySet().stream()
+            .sorted().toArray(String[]::new);
+        String id=(String)JOptionPane.showInputDialog(window,
+            "Industrial process definitions (work orders require built facilities)",
+            "Production catalog",JOptionPane.PLAIN_MESSAGE,null,choices,choices[0]);
+        if(id==null)return;
+        var recipe=CraftingEraRegistry.process(id);
+        JOptionPane.showMessageDialog(window,
+            "Facility: "+recipe.facility()+"    Era: "+recipe.era()+
+            "\nFaction: "+recipe.faction()+"    Utility: "+recipe.utilityDemand()+
+            "\nInputs: "+recipe.inputs()+"\nOutput: "+recipe.quantity()+" "+recipe.output()+
+            "\nDuration: "+recipe.seconds()+" seconds"+
+            "\nWorkstation controls require an installed production facility.",
+            id,JOptionPane.INFORMATION_MESSAGE);
     }
     private void toggleCar(){
         if(net!=null){

@@ -228,6 +228,7 @@ public final class GameplayMeshes {
         // deliberately no invented flight actors or aircraft-spawn shortcuts.
         try {
             meshes.putAll(AirPowerMeshes.load(java.nio.file.Path.of(".")));
+            meshes.putAll(VeilWeather.loadMeshes(java.nio.file.Path.of(".")));
         }catch(java.io.IOException error){
             throw new IllegalStateException("Required PSX faction aircraft invalid or missing",error);
         }

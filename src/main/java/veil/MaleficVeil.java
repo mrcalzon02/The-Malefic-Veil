@@ -27,6 +27,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final ArenaSystems localHost;
     private final WorldHarvesting localHarvesting;
     private final VeilWeather weather;
+    private NetLink.WeatherSnapshot appliedWeather;
     private final int archetype;
     private final javax.swing.Timer timer;
     private double px,py,angle=0.2,abilitySeconds=0,abilityCooldown=0,fireCooldown=0,attackFlash=0;
@@ -55,6 +56,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         localHarvesting=net==null?new WorldHarvesting(world):null;
         try{weather=new VeilWeather(seed,java.nio.file.Path.of("."));}
         catch(java.io.IOException ex){throw new IllegalStateException("Pinned shared weather library missing",ex);}
+        if(net!=null)weather.followHost();
         try{urban=new UrbanScene(world);}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
@@ -142,6 +144,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     @Override public void actionPerformed(ActionEvent unused){
         ticks++;
         if(localHarvesting!=null)localHarvesting.advance(33);
+        // Clients render the HOST weather clock; solo games run their own
+        // independent authoritative weather timeline. No client-side F9 cheat.
+        if(net!=null){
+            NetLink.WeatherSnapshot snapshot=net.weather();
+            if(snapshot!=null&&snapshot!=appliedWeather){
+                weather.applyHostWeather(snapshot.preset(),snapshot.dayFraction());
+                appliedWeather=snapshot;
+            }
+        }
         if(ticks%30==1)weather.registerAround(world,px,py);
         weather.tick(.033,px,py,angle,VeilWeather.exposure(world,px,py));
         if(net!=null){
@@ -964,7 +975,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_K -> {skillsVisible=!skillsVisible;inventoryVisible=false;}
             case KeyEvent.VK_O -> crewDialog();
             case KeyEvent.VK_J -> handCraftDialog();
-            case KeyEvent.VK_F9 -> toast("WEATHER: "+weather.cycle());
+            case KeyEvent.VK_F9 -> toast(net==null?"WEATHER: "+weather.cycle():"HOST WEATHER: "+weather.current());
             case KeyEvent.VK_F10 -> performanceDialog();
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
         }

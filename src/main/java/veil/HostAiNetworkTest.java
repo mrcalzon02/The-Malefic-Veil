@@ -27,6 +27,9 @@ public final class HostAiNetworkTest {
                 check(ai.getKey()<0,"AI peer IDs must never overlap authenticated socket IDs");
                 check(ai.getValue().level()==5,"Host-selected level transmitted authentically");
                 factions.add(ai.getValue().faction());
+                check(Set.of("BUILDER","PROVISIONER","SENTINEL")
+                    .contains(ai.getValue().duty()),
+                    "Real TCP roster must preserve the host AI job assignment");
             }
             check(factions.size()==3,"Balanced three AI show all three distinct factions");
             check(host.aiStatus().contains("group-cap=3"),"Dedicated host AI console status");

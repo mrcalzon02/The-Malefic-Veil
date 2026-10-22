@@ -49,6 +49,7 @@ public final class FactionAiTacticsTest {
 
         // Buildings are never AI-only counters: their actual world HP decides
         // whether the bot still owns working defensive infrastructure.
+        bot.cash=0;bot.scrap=0; // isolate structure-loss reconciliation from new purchases
         var camp=new World.Device(bot.x+3,bot.y+3,ArenaSystems.CAMP_STAKE);
         camp.ownerKey=bot.accountKey;camp.ownerId=bot.id;
         civilian.world.devices.add(camp);

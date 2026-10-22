@@ -80,7 +80,7 @@ public final class DesktopUpdater {
                 for(ZipEntry e;(e=scan.getNextEntry())!=null;){
                     String name=e.getName();
                     if(!(name.equals("MaleficVeil.jar")||name.equals("version.txt")||
-                        name.startsWith("assets/game/")))
+                        name.startsWith("assets/game/")||name.equals("assets/")))
                         throw new IOException("Unexpected update entry: "+name);
                 }
             }

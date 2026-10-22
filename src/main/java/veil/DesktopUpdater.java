@@ -92,7 +92,8 @@ public final class DesktopUpdater {
     }
     static boolean isNewer(ReleaseCatalog.Release latest,String local,
                            List<ReleaseCatalog.Release> index){
-        if(local.equals(latest.tag().substring(4)))return false;
+        if(local.matches("[0-9a-f]{40}")&&
+            local.substring(0,12).equals(latest.tag().substring(4)))return false;
         for(ReleaseCatalog.Release r:index){
             if(r.tag().equals("dev-"+local.substring(0,Math.min(12,local.length())))&&
                 r.published().isAfter(latest.published()))return false;

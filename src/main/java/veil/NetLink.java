@@ -31,6 +31,8 @@ public final class NetLink implements AutoCloseable {
     public record CargoYard(int id,int x,int y,String type,int stock){}
     public record CargoDrop(int id,double x,double y,String type){}
     public record ResourceNode(int id,double x,double y,String type,int remaining,int capacity){}
+    public record SalvageNode(int id,String source,double x,double y,boolean depleted){}
+    public record LooseItem(long id,double x,double y,String item,int quantity,long expiry){}
     public record WeatherSnapshot(String preset,double dayFraction){}
 
 
@@ -48,6 +50,9 @@ public final class NetLink implements AutoCloseable {
 
     public final ConcurrentHashMap<Integer,ResourceNode> resourceNodes=new ConcurrentHashMap<>();
     public final ConcurrentLinkedQueue<String> harvestResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentHashMap<Integer,SalvageNode> salvageNodes=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Long,LooseItem> looseItems=new ConcurrentHashMap<>();
+    public final ConcurrentLinkedQueue<String> itemResults=new ConcurrentLinkedQueue<>();
     private volatile WeatherSnapshot authoritativeWeather;
     public WeatherSnapshot weather(){return authoritativeWeather;}
     private volatile Rpg rpg;
@@ -145,6 +150,32 @@ public final class NetLink implements AutoCloseable {
                                     resourceNodes.put(node.id(),node);
                                 }
                             }
+                            case "SCAVENGE_NODE" -> {
+                                if(s.length==6){
+                                    int node=Integer.parseInt(s[1]);
+                                    salvageNodes.put(node,new SalvageNode(node,s[2],
+                                        Double.parseDouble(s[3]),Double.parseDouble(s[4]),
+                                        Boolean.parseBoolean(s[5])));
+                                }
+                            }
+                            case "SCAVENGE_TAKEN" -> {
+                                if(s.length==2)salvageNodes.computeIfPresent(
+                                    Integer.parseInt(s[1]),(id,n)->new SalvageNode(id,
+                                        n.source(),n.x(),n.y(),true));
+                            }
+                            case "GROUND_ITEM" -> {
+                                if(s.length==7){
+                                    long id=Long.parseLong(s[1]);
+                                    looseItems.put(id,new LooseItem(id,Double.parseDouble(s[2]),
+                                        Double.parseDouble(s[3]),s[4],Integer.parseInt(s[5]),
+                                        Long.parseLong(s[6])));
+                                }
+                            }
+                            case "GROUND_TAKEN" -> {
+                                if(s.length==2)looseItems.remove(Long.parseLong(s[1]));
+                            }
+                            case "SCAVENGE_RESULT", "DROP_RESULT", "GET_DROP_RESULT",
+                                 "TRADE_RESULT", "TRADE_RECEIVED" -> itemResults.add(line);
                             case "HARVEST_RESULT" -> {
                                 if(s.length==3)harvestResults.add(s[1]+"|"+s[2]);
                             }
@@ -332,6 +363,12 @@ public final class NetLink implements AutoCloseable {
     public void sceneReady(){send("SCENE_READY");}
     public void craftHand(String recipeId){send("CRAFT_HAND|"+recipeId);}
     public void harvest(int nodeId){send("HARVEST|"+nodeId);}
+    public void scavenge(int nodeId){send("SCAVENGE|"+nodeId);}
+    public void dropItem(String item,int amount){send("DROP_ITEM|"+item+"|"+amount);}
+    public void takeGround(long id){send("GET_DROP|"+id);}
+    public void tradeItem(int recipient,String item,int amount){
+        send("TRADE_ITEM|"+recipient+"|"+item+"|"+amount);
+    }
     public void selectFaction(CharacterRoster.Faction chosen){send("FACTION_JOIN|"+chosen.name());}
     public void createCrew(String name){send("CREW_CREATE|"+name);}
     public void inviteCrew(int targetPlayerId){send("CREW_INVITE|"+targetPlayerId);}

@@ -766,7 +766,7 @@ public final class ArenaSystems {
                    factions.faction(driver.accountKey)==CharacterRoster.Faction.THE_BEGOTTEN)
                     continue;
                 double distance=Math.hypot(truck.x()-n.x,truck.y()-n.y);
-                if(distance<=26&&distance<best){
+                if(distance<=26&&(nearest==null||distance<best)){
                     nearest=driver;best=distance;
                 }
             }

@@ -50,6 +50,9 @@ public final class LanServer implements AutoCloseable {
     public LanServer(int port,long seed,Path saveDir,boolean hardcore,
                      HostAiSettings.Rules aiSettings)throws IOException {
         dataDirectory=saveDir;
+        // Bot accounts/groups/claims are durable identities. Changing roster
+        // numbers or factions at restart requires an explicit migration.
+        HostAiSettings.Rules boundAI=HostAiSettings.bind(saveDir,aiSettings);
         boolean active=HostRules.bind(saveDir,hardcore);
         moderation=saveDir==null?null:new HostModeration(saveDir);
         match=new ArenaSystems(seed,active);
@@ -65,8 +68,8 @@ public final class LanServer implements AutoCloseable {
             AccountDirectory.load(match,saveDir);
             harvesting.load(saveDir);
         }
-        ai=new FactionAiDirector(match,harvesting,Objects.requireNonNull(aiSettings));
-        if(saveDir!=null){ai.load(saveDir);HostAiSettings.save(saveDir,aiSettings);}
+        ai=new FactionAiDirector(match,harvesting,boundAI);
+        if(saveDir!=null)ai.load(saveDir);
         listener=saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
         if(saveDir!=null){

@@ -85,7 +85,18 @@ public final class ContinentVista {
             return new Sample(0,biome,road);
         double smooth=Math.max(0,Math.min(1,border/EMBANKMENT_WIDTH));
         smooth=smooth*smooth*(3-2*smooth);
-        return new Sample(-FOUNDATION_DEPTH+(target+FOUNDATION_DEPTH)*smooth,biome,road);
+        double height=-FOUNDATION_DEPTH+(target+FOUNDATION_DEPTH)*smooth;
+        // Northwest original city gates are openings, not retaining walls.
+        // A short seed-consistent earth approach reaches the street grade.
+        boolean westGate=x<=0&&y>=1&&y<=3;
+        boolean northGate=y<=0&&x>=1&&x<=3;
+        if(westGate||northGate){
+            double approach=westGate?-x:-y;
+            double ramp=Math.max(0,1-approach/9);
+            ramp=ramp*ramp*(3-2*ramp);
+            height+=Math.max(0,-height)*ramp;
+        }
+        return new Sample(height,biome,road);
     }
     private static boolean outside(int x,int y){
         return x<0||y<0||x>=World.SIZE||y>=World.SIZE;
@@ -152,9 +163,11 @@ public final class ContinentVista {
             for(int layer=1;layer<=2;layer++){
                 String model=((tile/5+layer)&1)==0?"wall-a":"wall-b";
                 double depth=-layer;
-                blocks.add(new World.UrbanProp(model,tile+.5,-.5,0,1,0,depth));
+                if(tile!=1&&tile!=2)
+                    blocks.add(new World.UrbanProp(model,tile+.5,-.5,0,1,0,depth));
                 blocks.add(new World.UrbanProp(model,tile+.5,World.SIZE+.5,0,1,0,depth));
-                blocks.add(new World.UrbanProp(model,-.5,tile+.5,Math.PI/2,1,0,depth));
+                if(tile!=1&&tile!=2)
+                    blocks.add(new World.UrbanProp(model,-.5,tile+.5,Math.PI/2,1,0,depth));
                 blocks.add(new World.UrbanProp(model,World.SIZE+.5,tile+.5,Math.PI/2,1,0,depth));
             }
         }

@@ -24,7 +24,14 @@ public final class ContinentVistaTest {
                     "Ripped terrain transition at side "+side+" step "+step);
             }
             var foundation=land.foundations();
-            check(foundation.size()==World.SIZE*8,"Foundation does not surround entire city");
+            check(foundation.size()==World.SIZE*8-8,
+                "Foundation must surround city but leave both existing gates open");
+            check(Math.abs(land.sample(-.01,2).elevation())<.01,"West gate is a cliff");
+            check(Math.abs(land.sample(2,-.01).elevation())<.01,"North gate is a cliff");
+            check(land.sample(-10,2).elevation()<land.sample(-.01,2).elevation(),
+                "West gate lacks sloped approach");
+            check(land.sample(2,-10).elevation()<land.sample(2,-.01).elevation(),
+                "North gate lacks sloped approach");
             for(var block:foundation){
                 check(block.heightOffset()==-1||block.heightOffset()==-2,"Foundation above street level");
                 check(KenneyAssetPack.load().modelNames().contains(block.model()+".glb"),"Unlicensed foundation mesh");

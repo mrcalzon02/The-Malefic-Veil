@@ -176,12 +176,12 @@ public final class LanServer implements AutoCloseable {
     }
     private static String aiPacket(FactionAiDirector.View bot){
         return "AI_ACTOR|"+bot.id()+"|"+bot.faction()+"|"+bot.level()+
-            "|"+bot.group()+"|"+bot.activity()+"|"+bot.buildings();
+            "|"+bot.group()+"|"+bot.activity()+"|"+bot.buildings()+"|"+bot.duty();
     }
     public String aiStatus(){
         StringJoiner j=new StringJoiner("; ",ai.settings().description()+" ", "");
         for(var bot:ai.views())j.add(bot.id()+":"+bot.faction().name().replace("THE_","")+
-            ":"+bot.activity()+":lv"+bot.level()+":base"+bot.buildings());
+            ":"+bot.duty()+":"+bot.activity()+":lv"+bot.level()+":base"+bot.buildings());
         return j.toString();
     }
     private static String peerPacket(ArenaSystems.Player p){

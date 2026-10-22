@@ -81,3 +81,14 @@ jobs:
             --title "The Malefic Veil ${GITHUB_SHA:0:12}" \
             --notes "Automated Java 17 desktop development release for commit $GITHUB_SHA. Tests and checksums gate publication." \
             --latest
+      - name: Preserve packaged installer even if Release API denies publication
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: malefic-desktop-${{ github.sha }}
+          path: |
+            build/package/MaleficVeil-desktop-*.zip
+            build/package/MaleficVeil-*.zip
+            build/package/update.properties
+            build/package/updater.jar
+          if-no-files-found: warn

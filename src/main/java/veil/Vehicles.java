@@ -154,7 +154,11 @@ public final class Vehicles {
             double accel=car.throttle>=0?5.2:6.5;
             car.speed+=car.throttle*accel*dt;
             if(car.throttle==0)car.speed*=Math.exp(-2.0*dt);
-            car.speed=Math.max(-3,Math.min(8,car.speed));
+            // A loaded cargo truck is a slow, high-value convoy, not an
+            // ordinary getaway car. Unladen vehicles retain their old limits.
+            double forwardLimit=car.cargo==null?8.0:3.2;
+            double reverseLimit=car.cargo==null?-3.0:-1.5;
+            car.speed=Math.max(reverseLimit,Math.min(forwardLimit,car.speed));
             if(car.fuel<=0)car.speed*=Math.exp(-1.7*dt);
             if(Math.abs(car.speed)<.03)car.speed=0;
             double steer=car.steer*Math.min(1,Math.abs(car.speed)/2.0)*dt*1.05*

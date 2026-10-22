@@ -44,6 +44,10 @@ The erroneous `WILD_ENTER/WILD_EXIT/WILD_MOVE` session model was removed entirel
 
 `WorldHarvestingTest` and `InteractionFocusTest` are registered in `QualityGateTest`, **but current branch compilation and actual Windows/Linux traversal/visual tests require verification**. Gate next: continuous graphical roads/terrain blending, real physical City B–G lots/interiors, forestry node collision/animations, combat/vehicle convoys across old City A boundary and multiplayer load/carry/deplete soak. Full [contract and exact limits](ONE_CONTINUOUS_WORLD_AND_HARVESTING.md).
 
+### Runtime static airframe inspection [SCREENSHOTS VERIFIED — NO FLIGHT YET]
+
+Actual `GameplayMeshes` GLBs now render in a **F8** preview inside the real desktop Swing game using a pitched in-engine `PropRenderer` camera. Left/Right cycles the exact nine faction/weight aircraft; A/D rotates; F8 exits, with no host-side spawning, flying privileges or ability bypass. The existing virtual-desktop `DesktopInputTest` captures and verifies nine distinct real screenshots after Robot keyboard input; [the 9-up actual game screenshot](../assets/game/aircraft/aircraft_in_game_9_actual.png) and [native-pixel version](../assets/game/aircraft/aircraft_in_game_9_native.png) are committed. The headless `AircraftShowroomTest` checks distinct readable real GLB raster output, and Java 17/21 host/game tests have passed on Windows and Ubuntu. **No flying simulation is implemented** by this viewer; next: flight physics, separate moving rig parts, animation, damage/collision, air-defense counters and miasma enforcement.
+
 ## Phase P3 — Character, arsenal and animations [PLANNED]
 
 **Deliver:** Inventory and rig audit of `Characters_psx_1.2.zip`, reusable asset importer (GLB/FBX only after source conversion), character select with real approved models, idle/run/crouch/shoot/reload/death/revive animations, weapon models, animation replication and compact loadout UI.

@@ -146,8 +146,10 @@ public final class LanServer implements AutoCloseable {
     }
     public String setWeatherPreset(String name){
         synchronized(weather){
-            weather.autoWeather(false,240,.55,65);
+            // Validate before mutating auto scheduling: unknown operator input
+            // must not silently disable the active climate simulation.
             weather.setPreset(name,8);
+            weather.autoWeather(false,240,.55,65);
         }
         broadcast(weatherPacket(),-1);
         audit("weather_preset "+name);

@@ -98,7 +98,10 @@ public final class Vehicles {
     private boolean clear(double x,double y,Car self){
         if(!Double.isFinite(x)||!Double.isFinite(y))return false;
         double r=.48;
-        if(!world.canWalk(x-r,y-r)||!world.canWalk(x+r,y-r)||
+        // A small post can intersect the truck's centre while all four
+        // corner probes remain clear. Persistence validates the centre too;
+        // reject such positions at the authoritative collider itself.
+        if(!world.canWalk(x,y)||!world.canWalk(x-r,y-r)||!world.canWalk(x+r,y-r)||
            !world.canWalk(x-r,y+r)||!world.canWalk(x+r,y+r))return false;
         for(Car other:cars)if(other!=self&&other.hp>0&&Math.hypot(x-other.x,y-other.y)<1.5)return false;
         for(World.Device d:world.devices)if(d.hp>0&&Math.hypot(x-d.x,y-d.y)<1.05)return false;

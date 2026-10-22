@@ -97,6 +97,23 @@ jobs:
           done
           unzip -tq "build/release-readback/MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip"
           echo "Published prerelease and all downloaded assets verified"
+      - name: Install newest published development update from live GitHub
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/update-smoke/worlds/keep-this-world
+          printf 'previous save must remain untouched\n' > build/update-smoke/worlds/keep-this-world/save.dat
+          printf '%040d\n' 0 > build/update-smoke/version.txt
+          java -Djava.awt.headless=true -cp build/package/updater.jar \
+            veil.DesktopUpdater "$PWD/build/update-smoke" --install
+          grep -q INSTALL_VERIFIED build/update-smoke/logs/updater.log
+          test -s build/update-smoke/MaleficVeil.jar
+          test -s build/update-smoke/updater.jar
+          test -s build/update-smoke/lib/shared-psx-weather-java17-v1.jar
+          test -d build/update-smoke/assets/game
+          test "$(cat build/update-smoke/worlds/keep-this-world/save.dat)" = "previous save must remain untouched"
+          java -Djava.awt.headless=true -cp build/update-smoke/MaleficVeil.jar veil.WorldSelfTest
+          echo "Live GitHub prerelease discovery, download, install, and rollback-safe save preservation PASS"
       - name: Preserve packaged installer even if Release API denies publication
         if: always()
         uses: actions/upload-artifact@v4

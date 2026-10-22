@@ -1037,6 +1037,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_K -> {skillsVisible=!skillsVisible;inventoryVisible=false;}
             case KeyEvent.VK_O -> crewDialog();
             case KeyEvent.VK_J -> handCraftDialog();
+            case KeyEvent.VK_P -> scavengeNearby();
+            case KeyEvent.VK_U -> collectNearby();
             case KeyEvent.VK_F9 -> toast(net==null?"WEATHER: "+weather.cycle():"HOST WEATHER: "+weather.current());
             case KeyEvent.VK_F10 -> performanceDialog();
             case KeyEvent.VK_TAB,KeyEvent.VK_ESCAPE -> help=!help;
@@ -1183,6 +1185,70 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         // Simulation remains at 30 ticks/s regardless of the frame rendering cap.
         toast("GRAPHICS SETTINGS SAVED");
     }
+    private java.util.Map<String,Integer> carried(){
+        if(net!=null)return new java.util.TreeMap<>(net.survivalInventory);
+        java.util.Map<String,Integer> map=new java.util.TreeMap<>();
+        for(var e:localHost.player(1).survival.inventory().entrySet())
+            if(e.getValue()>0)map.put(e.getKey().name(),e.getValue());
+        return map;
+    }
+    private void inventoryAction(boolean trading){
+        if(net==null){toast("ITEM HANDOFF REQUIRES MULTIPLAYER HOST");return;}
+        var carried=carried();
+        if(carried.isEmpty()){toast("INVENTORY EMPTY");return;}
+        int recipient=-1;double distance=3;
+        if(trading){
+            for(var e:net.others.entrySet()){
+                var other=e.getValue();double dx=other.x()-px,dy=other.y()-py;
+                double range=Math.hypot(dx,dy);
+                if(range>.01&&range<distance&&
+                    dx*Math.cos(angle)+dy*Math.sin(angle)>=range*Math.cos(Math.PI/6)&&
+                    world.lineClear(px,py,other.x(),other.y())){
+                    recipient=e.getKey();distance=range;
+                }
+            }
+            if(recipient<0){toast("LOOK AT A PLAYER WITHIN 3 METRES");return;}
+        }
+        var keys=carried.keySet().toArray(String[]::new);
+        String item=(String)JOptionPane.showInputDialog(window,"Item",
+            trading?"Give to player "+recipient:"Drop item",
+            JOptionPane.PLAIN_MESSAGE,null,keys,keys[0]);
+        if(item==null)return;
+        String quantity=JOptionPane.showInputDialog(window,
+            "Quantity (1-"+carried.get(item)+")","1");
+        if(quantity==null)return;
+        try{
+            int n=Integer.parseInt(quantity.trim());
+            if(n<1||n>carried.get(item)){toast("INVALID QUANTITY");return;}
+            if(trading)net.tradeItem(recipient,item,n);
+            else net.dropItem(item,n);
+        }catch(NumberFormatException invalid){toast("INVALID QUANTITY");}
+    }
+    private void scavengeNearby(){
+        if(net==null){toast("SCAVENGING REQUIRES LAN HOST");return;}
+        NetLink.SalvageNode best=null;double distance=3;
+        for(var node:net.salvageNodes.values()){
+            double d=Math.hypot(px-node.x(),py-node.y());
+            if(!node.depleted()&&d<distance&&world.lineClear(px,py,node.x(),node.y())){
+                best=node;distance=d;
+            }
+        }
+        if(best==null){toast("NO CONTAINER IN REACH");return;}
+        net.scavenge(best.id());
+    }
+    private void collectNearby(){
+        if(net==null){toast("COLLECTION REQUIRES LAN HOST");return;}
+        NetLink.LooseItem best=null;double distance=2.5;
+        for(var item:net.looseItems.values()){
+            double d=Math.hypot(px-item.x(),py-item.y());
+            if(System.currentTimeMillis()<item.expiry()&&d<distance&&
+                world.lineClear(px,py,item.x(),item.y())){
+                best=item;distance=d;
+            }
+        }
+        if(best==null){toast("NO DROPPED ITEM IN REACH");return;}
+        net.takeGround(best.id());
+    }
     /** One compact navigation surface; unavailable transactions are not fake buttons. */
     private JMenuBar managementMenu(){
         JMenuBar bar=new JMenuBar();
@@ -1190,6 +1256,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         menuAction(player,"Inventory (I)",()->{inventoryVisible=true;skillsVisible=false;repaint();});
         menuAction(player,"Skills (K)",()->{skillsVisible=true;inventoryVisible=false;repaint();});
         menuAction(player,"Field crafting (J)",this::handCraftDialog);
+        menuAction(player,"Drop item",()->inventoryAction(false));
+        menuAction(player,"Give to aimed player",()->inventoryAction(true));
+        menuAction(player,"Scavenge container (P)",this::scavengeNearby);
+        menuAction(player,"Collect floor item (U)",this::collectNearby);
         JMenu worldMenu=new JMenu("World");
         menuAction(worldMenu,"City map (M)",()->{mapVisible=true;continentVisible=false;repaint();});
         menuAction(worldMenu,"Continent (N)",()->{continentVisible=true;mapVisible=false;repaint();});

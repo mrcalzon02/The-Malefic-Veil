@@ -1,0 +1,12 @@
+recipe_id,station,output_item,output_quantity,source
+"bandage","HAND","BANDAGE","1","CANONICAL_CODE"
+"campfire","HAND","CAMPFIRE","1","CANONICAL_CODE"
+"water-filter","HAND","FILTER","1","CANONICAL_CODE"
+"tent","HAND","TENT_KIT","1","CANONICAL_CODE"
+"crate","HAND","CRATE_KIT","1","CANONICAL_CODE"
+"fence","HAND","FENCE_SECTION","2","CANONICAL_CODE"
+"stake-trap","HAND","STAKE_TRAP","1","CANONICAL_CODE"
+"noise-alarm","HAND","NOISE_ALARM","1","CANONICAL_CODE"
+"boil-water","FIRE","WORKBENCH","1","CANONICAL_CODE"
+"shelter-kit","WORKBENCH","SHELTER_KIT","1","CANONICAL_CODE"
+"vehicle-repair","WORKBENCH","VEHICLE_REPAIR_KIT","1","CANONICAL_CODE"

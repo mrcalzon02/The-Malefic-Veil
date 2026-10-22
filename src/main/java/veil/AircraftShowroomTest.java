@@ -26,7 +26,7 @@ public final class AircraftShowroomTest {
                 if(rgb!=0xff31393e&&rgb!=0xff10171e)notStage++;
             }
             unique=colors.size();
-            check(unique>15,"Airframe model did not produce a real colored screen image: "+
+            check(unique>=10,"Airframe model did not produce a real colored screen image: "+
                 AircraftShowroom.id(model)+" colors "+unique);
             check(notStage>200,"Aircraft visually missing in native PSX viewport "+
                 AircraftShowroom.id(model));

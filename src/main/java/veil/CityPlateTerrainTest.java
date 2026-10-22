@@ -31,6 +31,32 @@ public final class CityPlateTerrainTest {
                         check(Math.abs(vista.sample(wx,wz).elevation()-plate.plateHeight(city))<1e-5,
                             "City "+city+" parcel "+x+","+z+" not at its registered grade");
                 }
+            // Roads across real generated city boundaries must have a
+            // continuous graded approach, never a retaining wall across them.
+            Map<Character,Integer> crossings=new HashMap<>();
+            for(CityPlateTerrain.Gate gate:plate.gates()){
+                crossings.merge(gate.city(),1,Integer::sum);
+                double x=(gate.ax()+gate.bx())*.5;
+                double z=(gate.az()+gate.bz())*.5;
+                double nx=gate.nx(),nz=gate.nz();
+                boolean duplicated=plate.edges().stream().anyMatch(edge->
+                    edge.city()==gate.city()&&edge.ax()==gate.ax()&&
+                    edge.az()==gate.az()&&edge.bx()==gate.bx()&&edge.bz()==gate.bz());
+                check(!duplicated,"Retaining wall blocks a generated intercity highway");
+                if(gate.city()!='A'&&
+                   (x<-ContinentVista.EMBANKMENT_WIDTH||
+                    x>World.SIZE+ContinentVista.EMBANKMENT_WIDTH||
+                    z<-ContinentVista.EMBANKMENT_WIDTH||
+                    z>World.SIZE+ContinentVista.EMBANKMENT_WIDTH)){
+                    check(Math.abs(vista.sample(x+nx*.001,z+nz*.001).elevation()-
+                        gate.top())<.05,"Procedural city highway has a vertical entrance cliff");
+                    check(Double.isFinite(vista.sample(x+nx*12,z+nz*12).elevation()),
+                        "Non-finite generated city ramp terrain");
+                }
+            }
+            for(var city:layout.cities())
+                check(crossings.getOrDefault(city.id(),0)>0,
+                    "Generated city lacks a terrain-compatible route exit "+city.id());
             int measured=0;
             for(CityPlateTerrain.Edge edge:plate.edges()){
                 skirtCounts.merge(edge.city(),1,Integer::sum);

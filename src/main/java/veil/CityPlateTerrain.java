@@ -11,6 +11,7 @@ import java.util.List;
 public final class CityPlateTerrain {
     public static final double FOUNDATION_DEPTH=2.0;
     public static final double EMBANKMENT_WIDTH=24.0;
+    public static final double ROAD_RAMP_LENGTH=18.0;
     public record Footprint(char city,double distance,boolean inside){}
     /** Exposed side of a generated city cell, top of plate down to terrain grade. */
     public record Edge(char city,double ax,double az,double bx,double bz,
@@ -18,7 +19,11 @@ public final class CityPlateTerrain {
     private final ContinentLayout layout;
     private final int offsetX,offsetZ;
     private final double[] level=new double[7];
+    /** Crossing where an actual generated intercity road reaches a city road. */
+    public record Gate(char city,double ax,double az,double bx,double bz,
+                       double nx,double nz,double top){}
     private final List<Edge> edges;
+    private final List<Gate> gates;
 
     public CityPlateTerrain(World world){
         layout=world.continent();
@@ -31,6 +36,7 @@ public final class CityPlateTerrain {
                 layout.elevation(city.x(),city.y())*10))*4)/4.0;
         }
         List<Edge> seams=new ArrayList<>();
+        List<Gate> crossings=new ArrayList<>();
         for(int pz=0;pz<ContinentLayout.SIZE;pz++)
             for(int px=0;px<ContinentLayout.SIZE;px++){
                 char id=layout.cityAt(px,pz);
@@ -38,18 +44,30 @@ public final class CityPlateTerrain {
                 double minX=worldX(px),minZ=worldZ(pz);
                 double top=plateHeight(id),base=top-FOUNDATION_DEPTH;
                 if(layout.cityAt(px,pz-1)!=id)
-                    seams.add(new Edge(id,minX,minZ,minX+World.PARCEL_METERS,minZ,top,base));
+                    boundary(seams,crossings,id,layout.road(px,pz)&&layout.road(px,pz-1),
+                        minX,minZ,minX+World.PARCEL_METERS,minZ,0,-1,top,base);
                 if(layout.cityAt(px+1,pz)!=id)
-                    seams.add(new Edge(id,minX+World.PARCEL_METERS,minZ,
-                        minX+World.PARCEL_METERS,minZ+World.PARCEL_METERS,top,base));
+                    boundary(seams,crossings,id,layout.road(px,pz)&&layout.road(px+1,pz),
+                        minX+World.PARCEL_METERS,minZ,
+                        minX+World.PARCEL_METERS,minZ+World.PARCEL_METERS,1,0,top,base);
                 if(layout.cityAt(px,pz+1)!=id)
-                    seams.add(new Edge(id,minX+World.PARCEL_METERS,minZ+World.PARCEL_METERS,
-                        minX,minZ+World.PARCEL_METERS,top,base));
+                    boundary(seams,crossings,id,layout.road(px,pz)&&layout.road(px,pz+1),
+                        minX+World.PARCEL_METERS,minZ+World.PARCEL_METERS,
+                        minX,minZ+World.PARCEL_METERS,0,1,top,base);
                 if(layout.cityAt(px-1,pz)!=id)
-                    seams.add(new Edge(id,minX,minZ+World.PARCEL_METERS,minX,minZ,top,base));
+                    boundary(seams,crossings,id,layout.road(px,pz)&&layout.road(px-1,pz),
+                        minX,minZ+World.PARCEL_METERS,minX,minZ,-1,0,top,base);
             }
         edges=List.copyOf(seams);
+        gates=List.copyOf(crossings);
     }
+    private static void boundary(List<Edge> walls,List<Gate> ramps,char city,
+            boolean road,double ax,double az,double bx,double bz,
+            double nx,double nz,double top,double base){
+        if(road)ramps.add(new Gate(city,ax,az,bx,bz,nx,nz,top));
+        else walls.add(new Edge(city,ax,az,bx,bz,top,base));
+    }
+    public List<Gate> gates(){return gates;}
     public ContinentLayout layout(){return layout;}
     public List<Edge> edges(){return edges;}
     public double worldX(double parcel){return offsetX+parcel*World.PARCEL_METERS;}
@@ -94,6 +112,26 @@ public final class CityPlateTerrain {
         if(near.inside())return plate;
         double t=Math.min(1,near.distance()/EMBANKMENT_WIDTH);
         t=t*t*(3-2*t);
-        return plate-FOUNDATION_DEPTH+(rawHeight-(plate-FOUNDATION_DEPTH))*t;
+        double grade=plate-FOUNDATION_DEPTH+(rawHeight-(plate-FOUNDATION_DEPTH))*t;
+        // A highway crossing is not a two-metre masonry cliff: its generated
+        // city edge must stay flush with the city road and descend gradually.
+        for(Gate gate:gates){
+            if(gate.city()!=near.city())continue;
+            double mx=(gate.ax()+gate.bx())*.5,mz=(gate.az()+gate.bz())*.5;
+            double along=(x-mx)*gate.nx()+(z-mz)*gate.nz();
+            if(along<0||along>ROAD_RAMP_LENGTH)continue;
+            double sx=gate.bx()-gate.ax(),sz=gate.bz()-gate.az();
+            double progress=((x-gate.ax())*sx+(z-gate.az())*sz)/
+                (World.PARCEL_METERS*World.PARCEL_METERS);
+            double shoulder=Math.max(0,Math.max(-progress,progress-1))*World.PARCEL_METERS;
+            if(shoulder>=1.5)continue;
+            double falloff=along/ROAD_RAMP_LENGTH;
+            falloff=falloff*falloff*(3-2*falloff);
+            double edgeFade=shoulder/1.5;
+            edgeFade=edgeFade*edgeFade*(3-2*edgeFade);
+            double weight=(1-falloff)*(1-edgeFade);
+            grade+=(plate-grade)*weight;
+        }
+        return grade;
     }
 }

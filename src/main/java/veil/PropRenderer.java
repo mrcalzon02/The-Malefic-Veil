@@ -1,6 +1,9 @@
 package veil;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -16,7 +19,25 @@ public final class PropRenderer {
         highDetailDistance=settings.highDetailDistance;
         meshBudget=settings.meshBudget;
     }
-    private record Face(int[] px,int[] py,int color,double depth,double opacity){}
+    private record Face(int[] px,int[] py,int color,double depth,double opacity,
+                        GlbMesh.Surface source,BufferedImage atlas,double shade){}
+    /** Original source texel coordinates -> projected screen-space triangle. */
+    private static AffineTransform atlasToScreen(Face face){
+        GlbMesh.Surface uv=face.source();
+        BufferedImage image=face.atlas();
+        double u0=uv.au()*image.getWidth(),v0=(1-uv.av())*image.getHeight();
+        double u1=uv.bu()*image.getWidth(),v1=(1-uv.bv())*image.getHeight();
+        double u2=uv.cu()*image.getWidth(),v2=(1-uv.cv())*image.getHeight();
+        double du1=u1-u0,dv1=v1-v0,du2=u2-u0,dv2=v2-v0;
+        double det=du1*dv2-du2*dv1;
+        if(!Double.isFinite(det)||Math.abs(det)<1e-8)return null;
+        double dx1=face.px()[1]-face.px()[0],dx2=face.px()[2]-face.px()[0];
+        double dy1=face.py()[1]-face.py()[0],dy2=face.py()[2]-face.py()[0];
+        double a=(dx1*dv2-dx2*dv1)/det,b=(dx2*du1-dx1*du2)/det;
+        double d=(dy1*dv2-dy2*dv1)/det,e=(dy2*du1-dy1*du2)/det;
+        return new AffineTransform(a,d,b,e,face.px()[0]-a*u0-b*v0,
+            face.py()[0]-d*u0-e*v0);
+    }
     public int draw(Graphics2D g,UrbanScene scene,double playerX,double playerY,
                     double heading,double[] wallDepth,int width,int height){
         return draw(g,scene.models(),scene.nearby(playerX,playerY,drawDistance+7),
@@ -69,7 +90,8 @@ public final class PropRenderer {
             double yaw=placement.heading(),cy=Math.cos(yaw),sy=Math.sin(yaw);
             int faceStep=dist>highDetailDistance?4:1;
             int faceIndex=0;
-            for(GlbMesh.Triangle f:mesh.triangles()){
+            for(GlbMesh.Surface surface:mesh.surfaces()){
+                GlbMesh.Triangle f=surface.triangle();
                 if(submittedTriangles>=triangleBudget)break;
                 if(faceIndex++%faceStep!=0)continue;
                 int[] sx=new int[3],screenY=new int[3];
@@ -107,13 +129,21 @@ public final class PropRenderer {
                 double shade=Math.max(.31,1-dist/27);
                 int r=(int)(((source>>16)&255)*shade),green=(int)(((source>>8)&255)*shade);
                 int blue=(int)((source&255)*shade);
-                faces.add(new Face(sx,screenY,(r<<16)|(green<<8)|blue,meanDepth/3,placement.opacity()));
+                BufferedImage atlas=null;
+                if(surface.texture()!=null&&surface.texture().startsWith("ggbot-")){
+                    try{atlas=mesh.textureImage(surface.texture());}
+                    catch(IOException e){throw new IllegalStateException("Broken GGBot PNG atlas",e);}
+                }
+                faces.add(new Face(sx,screenY,(r<<16)|(green<<8)|blue,
+                    meanDepth/3,placement.opacity(),surface,atlas,shade));
                 submittedTriangles++;
             }
         }
         faces.sort((a,b)->Double.compare(b.depth(),a.depth()));
         Shape old=g.getClip();
         Composite previous=g.getComposite();
+        Object interpolation=g.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         for(Face face:faces){
             // Painter's order for static props; background wall always stays authoritative.
             Polygon triangle=new Polygon(face.px(),face.py(),3);
@@ -132,13 +162,35 @@ public final class PropRenderer {
                 else if(!visible&&run>=0){
                     g.setClip(run,0,col-run,height);
                     if(old!=null)g.clip(old);
-                    g.fillPolygon(triangle);
+                    if(face.atlas()!=null){
+                        // Clip the original PNG atlas to the projected triangle.
+                        // Affine PSX UV mapping preserves the artist's per-corner UVs;
+                        // painting one sampled color over an entire face does not.
+                        g.clip(triangle);
+                        AffineTransform uv=atlasToScreen(face);
+                        if(uv==null){
+                            g.setColor(new Color(face.color()));
+                            g.fillPolygon(triangle);
+                        }else{
+                            g.drawImage(face.atlas(),uv,null);
+                            if(face.shade()<.999){
+                                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                                    (float)Math.max(0,Math.min(1,face.opacity()*(1-face.shade())))));
+                                g.setColor(Color.BLACK);
+                                g.fillPolygon(triangle);
+                                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                                    (float)Math.max(0,Math.min(1,face.opacity()))));
+                            }
+                        }
+                    }else g.fillPolygon(triangle);
                     run=-1;
                 }
             }
         }
         g.setClip(old);
         g.setComposite(previous);
+        if(interpolation==null)g.getRenderingHints().remove(RenderingHints.KEY_INTERPOLATION);
+        else g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,interpolation);
         return meshCount;
     }
 }

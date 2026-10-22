@@ -393,7 +393,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         for(UrbanScene.ModelInstance placement:scene.nearby(x,y,visualDistance)){
             double dx=placement.x()-x,dy=placement.y()-y;
             double distance2=dx*dx+dy*dy;
-            if(distance2>9 && dx*Math.cos(heading)+dy*Math.sin(heading)<-2)continue;
+            // Horizontal front/back rejection only applies to nearly level
+            // ground cameras. It discarded HALF of the city when a pitched
+            // overhead camera looked down at the streets behind its XY heading.
+            boolean levelView=Math.abs(cameraPitch)<.55 && cameraHeight<20;
+            if(levelView&&distance2>9 &&
+                dx*Math.cos(heading)+dy*Math.sin(heading)<-2)continue;
             if(visibleInstances>=MAX_VISIBLE_MODELS)break;
             if(!models.containsKey(placement.model()))continue;
             visible.computeIfAbsent(placement.model(),ignore->new FloatList()).append(placement);

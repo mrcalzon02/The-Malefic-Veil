@@ -17,6 +17,7 @@ public final class NetLink implements AutoCloseable {
                       int marksmanship,int athletics,int engineering,int scavenging,int survival,
                       long protectionMs,int hunger,int hydration){}
     public record NpcRank(int level,String archetype){}
+    public record AiActor(String faction,int level,String group,String activity,int buildings){}
     public record Self(int health,int sanity,int cash,int supplies,int medkits,
         int pistolReserve,int shellReserve,int pistolClip,int shellClip,boolean dead,int frags,
         double x,double y,double angle,double visibility){}
@@ -40,6 +41,7 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentHashMap<Integer,Remote> others=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,Car> cars=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,NpcRank> npcRanks=new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer,AiActor> aiActors=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String,Integer> survivalInventory=new ConcurrentHashMap<>();
 
     public final ConcurrentHashMap<Integer,ResourceNode> resourceNodes=new ConcurrentHashMap<>();
@@ -109,7 +111,19 @@ public final class NetLink implements AutoCloseable {
                                     Double.parseDouble(s[3]),Double.parseDouble(s[4]),Integer.parseInt(s[5]),
                                     ArenaSystems.opacity(Double.parseDouble(s[6])),Integer.parseInt(s[7])));
                             }
-                            case "LEFT" -> {if(s.length==2)others.remove(Integer.parseInt(s[1]));}
+                            case "LEFT" -> {
+                                if(s.length==2){
+                                    int who=Integer.parseInt(s[1]);
+                                    others.remove(who);aiActors.remove(who);
+                                }
+                            }
+                            case "AI_ACTOR" -> {
+                                if(s.length==7){
+                                    int actor=Integer.parseInt(s[1]);
+                                    aiActors.put(actor,new AiActor(s[2],Integer.parseInt(s[3]),
+                                        s[4],s[5],Integer.parseInt(s[6])));
+                                }
+                            }
                             case "PICKUP" -> {if(s.length==2)pickedUp.add(Integer.parseInt(s[1]));}
                             case "RESOURCE_RESET" -> resourceNodes.clear();
                             case "RESOURCE_NODE" -> {

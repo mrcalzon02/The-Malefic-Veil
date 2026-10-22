@@ -127,6 +127,7 @@ public final class QualityGateTest {
         FactionAiTacticsTest.main(new String[0]);
         FactionAiCooperationTest.main(new String[0]);
         HostAiNetworkTest.main(new String[0]);
+        HostAiRealmRestartTest.main(new String[0]);
         AirPowerMeshesTest.main(new String[0]);
         AircraftShowroomTest.main(new String[0]);
         System.out.println("PASS QualityGateTest "+assertions+

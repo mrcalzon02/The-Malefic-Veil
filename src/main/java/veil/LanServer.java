@@ -184,7 +184,9 @@ public final class LanServer implements AutoCloseable {
     public String aiStatus(){
         StringJoiner j=new StringJoiner("; ",ai.settings().description()+" ", "");
         for(var bot:ai.views())j.add(bot.id()+":"+bot.faction().name().replace("THE_","")+
-            ":"+bot.duty()+":"+bot.activity()+":lv"+bot.level()+":base"+bot.buildings());
+            ":"+bot.duty()+":"+bot.activity()+":lv"+bot.level()+
+            ":base"+bot.buildings()+":bag"+bot.carried()+
+            ":crew"+bot.group()+":at("+Math.round(bot.x())+","+Math.round(bot.y())+")");
         return j.toString();
     }
     private static String peerPacket(ArenaSystems.Player p){

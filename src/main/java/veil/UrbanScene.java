@@ -31,15 +31,17 @@ public final class UrbanScene {
     /** Append render-only *continental* scenery outside the still-authoritative city. */
     public UrbanScene(World city,List<World.UrbanProp> extraScenery)throws IOException{
         Objects.requireNonNull(extraScenery);
-        // Expand only actual licensed Kenney modules from world or continent.
         KenneyAssetPack pack=KenneyAssetPack.load();
         Set<String> used=new LinkedHashSet<>(Arrays.asList(IDS));
         for(World.UrbanProp p:city.urbanProps)used.add(p.model());
         for(World.UrbanProp p:extraScenery)used.add(p.model());
+        GGBotCarPack cars=GGBotCarPack.available()?GGBotCarPack.required():null;
         for(String id:used){
-            if(!pack.modelNames().contains(id+".glb"))
-                throw new IOException("Generated unlicensed/unavailable urban model "+id);
-            models.put(id,GlbMesh.asset(id));
+            if(pack.modelNames().contains(id+".glb"))
+                models.put(id,GlbMesh.asset(id));
+            else if(cars!=null&&cars.names().contains(id))
+                models.put(id,cars.model(id));
+            else throw new IOException("Generated unlicensed/unavailable urban model "+id);
         }
         List<ModelInstance> items=new ArrayList<>();
         for(World.UrbanProp p:city.urbanProps)

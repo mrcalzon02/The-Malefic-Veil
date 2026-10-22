@@ -754,6 +754,22 @@ public final class ArenaSystems {
                     nearest=p;best=dist;
                 }
             }
+            // Loaded, moving trucks are audible beyond visual aggro range.
+            // The host owns vehicle state, so clients cannot suppress noise.
+            // Hearing does not require line of sight; a hostile follows the
+            // truck's current position and still obeys world collision.
+            for(Vehicles.State truck:vehicles.states()){
+                if(truck.driverId()<0||Math.abs(truck.speed())<.35||
+                   vehicles.cargo(truck.id()).resourceType()==null)continue;
+                Player driver=players.get(truck.driverId());
+                if(driver==null||driver.dead||
+                   factions.faction(driver.accountKey)==CharacterRoster.Faction.THE_BEGOTTEN)
+                    continue;
+                double distance=Math.hypot(truck.x()-n.x,truck.y()-n.y);
+                if(distance<=26&&distance<best){
+                    nearest=driver;best=distance;
+                }
+            }
             if(nearest==null)continue;
             if(best>.85){
                 double nx=n.x+(nearest.x-n.x)/best*.55*ms/1000;

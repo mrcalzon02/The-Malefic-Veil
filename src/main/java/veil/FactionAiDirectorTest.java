@@ -38,6 +38,22 @@ public final class FactionAiDirectorTest {
             String saved=Files.readString(temp.resolve("ai-host-settings.properties"));
             check(saved.contains("SINGLE_FACTION")&&saved.contains("team=3"),
                 "Host AI setup must be persisted, not client-side");
+            check(HostAiSettings.bind(temp,monsters).equals(monsters),
+                "Exactly matching AI population must restart without change");
+            for(var different:List.of(
+                    HostAiSettings.fromOptions(List.of("--ai-count=5","--ai-mode=BALANCED")),
+                    HostAiSettings.fromOptions(List.of("--ai-count=6",
+                        "--ai-mode=SINGLE_FACTION","--ai-team=2","--ai-level=4")))){
+                try{
+                    HostAiSettings.bind(temp,different);
+                    throw new AssertionError("Allowed silent AI faction/count migration");
+                }catch(java.io.IOException expected){
+                    check(expected.getMessage().contains("migration"),
+                        "Mismatched host settings must explain migration requirement");
+                }
+            }
+            check(Files.readString(temp.resolve("ai-host-settings.properties")).equals(saved),
+                "Rejected host changes must never overwrite verified saved settings");
         }finally{
             try(var tree=Files.walk(temp)){
                 tree.sorted(Comparator.reverseOrder()).forEach(p->{
@@ -54,6 +70,19 @@ public final class FactionAiDirectorTest {
         var crews=arena.factions.allCrews();
         check(crews.size()==2&&crews.stream().allMatch(c->c.members().size()==3),
             "6 faction three bots form 2 squads of 3; not 6-person squads");
+        // Squad mates must physically begin near their founder to perform
+        // real later material handoffs, without cross-map travel cheats.
+        var list=director.views();
+        for(int i=0;i<list.size();i+=3){
+            var founder=list.get(i);
+            for(int j=i+1;j<Math.min(i+3,list.size());j++){
+                var mate=list.get(j);
+                check(Math.hypot(mate.x()-founder.x(),mate.y()-founder.y())<9.0,
+                    "Three-character AI squads must be located together in the same world");
+                check(arena.world.lineClear(founder.x(),founder.y(),mate.x(),mate.y()),
+                    "AI group spawn must have physical line of sight for initial cooperation");
+            }
+        }
         for(var bot:director.views()){
             var player=arena.player(bot.id());
             check(player!=null&&player.id<0&&!arena.world.detailedCity(player.x,player.y),

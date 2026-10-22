@@ -113,6 +113,21 @@ public final class CityPlateTerrain {
         double t=Math.min(1,near.distance()/EMBANKMENT_WIDTH);
         t=t*t*(3-2*t);
         double grade=plate-FOUNDATION_DEPTH+(rawHeight-(plate-FOUNDATION_DEPTH))*t;
+        // Road ramps must never lift the terrain THROUGH a nearby masonry
+        // foundation edge, including concave corners of irregular city shapes.
+        // Only exact boundary neighborhoods need this geometrical test.
+        if(near.distance()<.05){
+            for(Edge wall:edges){
+                if(wall.city()!=near.city())continue;
+                double sx=wall.bx()-wall.ax(),sz=wall.bz()-wall.az();
+                double projection=((x-wall.ax())*sx+(z-wall.az())*sz)/
+                    (World.PARCEL_METERS*World.PARCEL_METERS);
+                projection=Math.max(0,Math.min(1,projection));
+                if(Math.hypot(x-wall.ax()-projection*sx,
+                    z-wall.az()-projection*sz)<.05)
+                    return grade;
+            }
+        }
         // A highway crossing is not a two-metre masonry cliff: its generated
         // city edge must stay flush with the city road and descend gradually.
         for(Gate gate:gates){

@@ -13,7 +13,7 @@ public final class GameplayMeshes {
     public static final String[] HERO={"hero-warden","hero-medic","hero-shade","hero-occultist"};
     public static final String[] PICKUP={"pickup-health","pickup-sanity","pickup-pistol-ammo",
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
-    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade"};
+    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -167,6 +167,24 @@ public final class GameplayMeshes {
         barricade.box(0,.53,-.11,1.17,.18,.04,0xC6A963);
         barricade.box(0,.18,.12,1.44,.12,.24,0x5A6068);
         meshes.put(DEVICE[3],barricade.done());
+        // Crude, constructed field camp / claim stake. Actual 3D canvas tarp,
+        // timber supports, ground stakes and a supply crate—not a UI marker.
+        Model camp=new Model();
+        camp.box(0,.04,0,2.30,.08,1.80,0x564934);
+        for(int side=-1;side<=1;side+=2){
+            camp.box(side*.97,.48,.60,.10,.95,.12,0x6B5238);
+            camp.box(side*.97,.48,-.60,.10,.95,.12,0x6B5238);
+            camp.box(side*.97,1.00,0,.11,.09,1.54,0x8A714B);
+            for(int sign=-1;sign<=1;sign+=2)
+                camp.tri(0,1.48f,0,side*1.04f,.07f,sign*.89f,
+                    0,.09f,sign*.90f,sign>0?0x7B6950:0x625545);
+        }
+        camp.box(0,1.49,0,.13,.13,1.97,0x635039);
+        camp.box(.81,.22,-.48,.48,.37,.44,0x876443);
+        camp.box(.81,.27,-.71,.40,.09,.06,0xB19668);
+        camp.box(-1.24,.75,0,.14,1.50,.14,0x725A3F);
+        camp.box(-1.24,1.42,.15,.39,.19,.08,0x957349);
+        meshes.put(DEVICE[4],camp.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

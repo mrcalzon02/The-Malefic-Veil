@@ -188,3 +188,113 @@ jobs:
           }
           Get-Content windows-install/logs/updater.log -Tail 6
           Write-Host 'Windows portable build and updater check PASS'
+
+  windows-native-setup:
+    name: Native Windows EXE installer (bundled Java, shortcuts and uninstaller)
+    needs: release
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Ensure WiX native installer toolchain
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          jpackage --version
+          if ($LASTEXITCODE -ne 0) { throw 'jpackage missing' }
+          if (-not (Get-Command candle.exe -ErrorAction SilentlyContinue)) {
+            $candidate = Get-ChildItem 'C:\Program Files (x86)' -Directory -Filter 'WiX Toolset*' -ErrorAction SilentlyContinue | Select-Object -Last 1
+            if (-not $candidate) {
+              choco install wixtoolset --yes --no-progress
+              if ($LASTEXITCODE -ne 0) { throw 'WiX install failed' }
+              $candidate = Get-ChildItem 'C:\Program Files (x86)' -Directory -Filter 'WiX Toolset*' | Select-Object -Last 1
+            }
+            if (-not $candidate) { throw 'WiX not available' }
+            $bin = Join-Path $candidate.FullName 'bin'
+            $env:PATH = "$bin;$env:PATH"
+            $bin | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+          }
+          if (-not (Get-Command light.exe -ErrorAction SilentlyContinue)) { throw 'WiX light.exe missing' }
+      - name: Download game payload and create dedicated native bootstrap
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = 'dev-' + $env:GITHUB_SHA.Substring(0,12)
+          New-Item -ItemType Directory -Force -Path native-source, native-download, native-bootstrap | Out-Null
+          gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern 'MaleficVeil-desktop-*.zip' --dir native-download
+          if ($LASTEXITCODE -ne 0) { throw 'Game package download failed' }
+          $zip = (Get-ChildItem native-download/*.zip | Select-Object -First 1).FullName
+          Expand-Archive -LiteralPath $zip -DestinationPath native-source -Force
+          & javac --release 17 -encoding UTF-8 -d native-bootstrap src/main/java/veil/InstalledLauncher.java
+          if ($LASTEXITCODE -ne 0) { throw 'Bootstrap compile failed' }
+          & jar --create --file native-source/Launcher.jar --main-class veil.InstalledLauncher -C native-bootstrap .
+          if ($LASTEXITCODE -ne 0) { throw 'Bootstrap jar failed' }
+          foreach ($file in @('MaleficVeil.jar','updater.jar','Launcher.jar','version.txt','assets/game','lib/shared-psx-weather-java17-v1.jar')) {
+            if (-not (Test-Path "native-source/$file")) { throw "Installer payload missing: $file" }
+          }
+      - name: Verify native game executable, bundled JRE and updater
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & jpackage --type app-image --name 'The Malefic Veil' --input native-source --dest native-app --main-jar Launcher.jar --main-class veil.InstalledLauncher --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --add-modules java.desktop,java.net.http,java.logging,java.prefs,java.naming,jdk.crypto.ec
+          if ($LASTEXITCODE -ne 0) { throw 'Native launcher build failed' }
+          $image = Join-Path $PWD 'native-app/The Malefic Veil'
+          $exe = Join-Path $image 'The Malefic Veil.exe'
+          if (-not (Test-Path $exe)) { throw 'Game EXE missing' }
+          if (-not (Test-Path (Join-Path $image 'runtime/bin/javaw.exe'))) { throw 'Embedded Java missing' }
+          & $exe --check
+          if ($LASTEXITCODE -ne 0) { throw 'Native game update check failed' }
+          $log = Join-Path $image 'app/logs/launcher.log'
+          if (-not (Test-Path $log)) { throw 'Native launcher logs missing' }
+          if ((Get-Content $log -Raw) -notmatch 'UPDATER_EXIT code=0') { throw 'Updater did not complete through native launcher' }
+          Write-Host 'Native EXE, embedded runtime, startup diagnostics and updater PASS'
+      - name: Build native Windows setup EXE
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & jpackage --type exe --name 'The Malefic Veil' --app-image (Join-Path $PWD 'native-app/The Malefic Veil') --dest native-setup --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --win-per-user-install --win-dir-chooser --win-menu --win-menu-group 'The Malefic Veil' --win-shortcut --win-upgrade-uuid 'C0B86E30-48EA-4B42-ABBD-6C1557028993'
+          if ($LASTEXITCODE -ne 0) { throw 'Installer jpackage failed' }
+          $created = @(Get-ChildItem native-setup -Filter '*.exe')
+          if ($created.Count -ne 1) { throw 'Expected exactly one installer executable' }
+          $name = 'MaleficVeil-Setup-' + $env:GITHUB_SHA.Substring(0,12) + '.exe'
+          Rename-Item -LiteralPath $created[0].FullName -NewName $name
+          $file = Join-Path $PWD "native-setup/$name"
+          $data = [System.IO.File]::OpenRead($file)
+          try {
+            $head = New-Object byte[] 2
+            [void]$data.Read($head,0,2)
+            if ($data.Length -lt 1000000 -or $head[0] -ne 77 -or $head[1] -ne 90) { throw 'Invalid Windows setup PE executable' }
+          } finally { $data.Dispose() }
+          Write-Host "REAL WINDOWS INSTALLER CREATED: $name"
+      - name: Publish installer and verify release download by SHA-256
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = 'dev-' + $env:GITHUB_SHA.Substring(0,12)
+          $name = 'MaleficVeil-Setup-' + $env:GITHUB_SHA.Substring(0,12) + '.exe'
+          $original = (Resolve-Path "native-setup/$name").Path
+          gh release upload $tag $original --repo $env:GITHUB_REPOSITORY
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub rejected native installer' }
+          New-Item -ItemType Directory -Force -Path native-readback | Out-Null
+          gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern $name --dir native-readback
+          if ($LASTEXITCODE -ne 0) { throw 'Installer not downloadable from release' }
+          $retrieved = (Resolve-Path "native-readback/$name").Path
+          if ((Get-FileHash $original -Algorithm SHA256).Hash -ne (Get-FileHash $retrieved -Algorithm SHA256).Hash) { throw 'Published installer bytes differ' }
+          Write-Host "NATIVE WINDOWS INSTALLER RELEASE VERIFIED: $name"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: malefic-native-setup-${{ github.sha }}
+          path: native-setup/MaleficVeil-Setup-*.exe
+          if-no-files-found: warn

@@ -15,10 +15,12 @@ public final class KenneyCityAssemblyTest {
         World city=new World(20261020L);
         UrbanScene scene=new UrbanScene(city);
         var source=KenneyAssetPack.load();
+        var vehicles=GGBotCarPack.available()?GGBotCarPack.required().names():java.util.Set.<String>of();
         Map<Long,Integer> macroGround=new HashMap<>();
         int roads=0,walls=0,upper=0,roofs=0,doors=0,colliders=0;
         for(World.UrbanProp p:city.urbanProps){
-            check(source.modelNames().contains(p.model()+".glb"),"Non-source geometry: "+p.model());
+            check(source.modelNames().contains(p.model()+".glb")||vehicles.contains(p.model()),
+                "Unverified source geometry: "+p.model());
             if(p.radius()>0)colliders++;
             if(p.model().startsWith("road-asphalt-")&&p.scale()==1.0)roads++;
             if(p.model().startsWith("wall-")&&p.scale()==1.0){

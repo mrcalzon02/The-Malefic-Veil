@@ -60,6 +60,25 @@ public final class SurvivalCrafting {
     public synchronized Status status(){
         return new Status(hunger,hydration,Map.copyOf(items));
     }
+    /** Trusted cold-start recovery; never accepts input from a client packet. */
+    public synchronized void restoreStatus(Status snapshot){
+        if(snapshot==null||snapshot.hunger()<0||snapshot.hunger()>100||
+           snapshot.hydration()<0||snapshot.hydration()>100||
+           snapshot.inventory()==null||snapshot.inventory().size()>Item.values().length)
+            throw new IllegalArgumentException("Corrupt carried survival state");
+        long weight=0;
+        for(var entry:snapshot.inventory().entrySet()){
+            if(entry.getKey()==null||entry.getValue()==null||
+               entry.getValue()<0||entry.getValue()>200)
+                throw new IllegalArgumentException("Invalid carried item entry");
+            weight+=(long)weight(entry.getKey())*entry.getValue();
+        }
+        if(weight>200)throw new IllegalArgumentException("Overweight save");
+        items.clear();
+        for(var entry:snapshot.inventory().entrySet())
+            if(entry.getValue()>0)items.put(entry.getKey(),entry.getValue());
+        hunger=snapshot.hunger();hydration=snapshot.hydration();
+    }
     /** Server death rule: every physically carried survival item is gone. */
     public synchronized void clearOnDeath(){items.clear();}
     /** Solo client and persistence may inspect, but cannot mint consumed items. */

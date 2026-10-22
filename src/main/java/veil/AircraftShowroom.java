@@ -69,7 +69,12 @@ public final class AircraftShowroom {
             modelId,7.65,0,rotation,scale,1,altitude));
         double[] wall=new double[WIDTH];
         Arrays.fill(wall,40.);
-        int drawn=RENDERER.draw(g,gameMeshes,placed,0,0,0,wall,WIDTH,HEIGHT);
+        // Raised observational camera looks down onto the *actual* mesh,
+        // exposing wings, engine tops, nacelles and organic body volume.
+        double cameraPitch=.48;
+        double cameraEye=altitude+7.65*Math.tan(cameraPitch);
+        int drawn=RENDERER.draw(g,gameMeshes,placed,0,0,0,wall,
+            WIDTH,HEIGHT,cameraEye,cameraPitch);
         if(drawn!=1)throw new IllegalStateException("Airframe not within real renderer view: "+modelId);
         g.setColor(new Color(10,15,22,222));
         g.fillRect(0,0,WIDTH,34);

@@ -76,7 +76,59 @@ public final class DesktopInputTest {
             for(int y=20;y<image.getHeight()-100;y+=11)
                 for(int x=20;x<image.getWidth()-20;x+=11)pixels.add(image.getRGB(x,y));
             ensure(pixels.size()>18,"Desktop screenshot lacks scene detail");
-            System.out.println("PASS DesktopInputTest: actual Swing Robot movement, real mouse firing, "+pixels.size()+" visible colors");
+            // Use the ACTUAL visible game window, Robot keystrokes and live
+            // Swing paint pipeline. Neither Pillow concept previews nor new
+            // image generation are involved in these nine captures.
+            robot.keyPress(KeyEvent.VK_F8);
+            robot.keyRelease(KeyEvent.VK_F8);
+            robot.waitForIdle();
+            BufferedImage gallery=new BufferedImage(960,600,BufferedImage.TYPE_INT_RGB);
+            Graphics2D galleryGraphics=gallery.createGraphics();
+            galleryGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            java.util.Set<Integer> signatures=new HashSet<>();
+            for(int i=0;i<9;i++){
+                Thread.sleep(130);
+                robot.waitForIdle();
+                BufferedImage frameShot=robot.createScreenCapture(
+                    new Rectangle(where.x,where.y,window[0].getWidth(),window[0].getHeight()));
+                galleryGraphics.drawImage(frameShot,(i%3)*320,(i/3)*200,320,200,null);
+                // The game index must match the actively selected model under
+                // real keyboard dispatch; this is not just a renderer unit test.
+                Field index=MaleficVeil.class.getDeclaredField("aircraftShowroomIndex");
+                index.setAccessible(true);
+                int selected=index.getInt(game[0]);
+                ensure(selected==i,"In-game aircraft viewer did not advance from real arrow key");
+                BufferedImage region=frameShot.getSubimage(120,90,680,435);
+                int signature=0;
+                for(int y=0;y<region.getHeight();y+=11)
+                    for(int x=0;x<region.getWidth();x+=11)
+                        signature=31*signature+region.getRGB(x,y);
+                ensure(signatures.add(signature),"Duplicate real desktop airframe image at "+i);
+                if(i<8){
+                    robot.keyPress(KeyEvent.VK_RIGHT);
+                    robot.keyRelease(KeyEvent.VK_RIGHT);
+                }
+            }
+            galleryGraphics.dispose();
+            ensure(signatures.size()==9,"Nine different aircraft must be visible in real window");
+            File individual=new File("build/test-visuals/aircraft-in-game.png");
+            ImageIO.write(gallery,"png",individual);
+            ensure(individual.length()>15000,"Rendered real nine-aircraft gallery is unexpectedly empty");
+            // The existing workflow already publishes desktop-input.png. Keep
+            // its normal gameplay proof AND add the nine actual desktop grabs
+            // below it, without adding or changing any GitHub Actions workflow.
+            BufferedImage proof=new BufferedImage(960,1240,BufferedImage.TYPE_INT_RGB);
+            Graphics2D combined=proof.createGraphics();
+            combined.drawImage(image,0,0,null);
+            combined.drawImage(gallery,0,640,null);
+            combined.dispose();
+            ImageIO.write(proof,"png",output);
+            robot.keyPress(KeyEvent.VK_F8);
+            robot.keyRelease(KeyEvent.VK_F8);
+            robot.waitForIdle();
+            System.out.println("PASS DesktopInputTest: real W/mouse, F8 and 9 model selections, "+
+                pixels.size()+" gameplay colors, "+signatures.size()+" live GLB views");
         }finally{
             SwingUtilities.invokeAndWait(()->{
                 try {

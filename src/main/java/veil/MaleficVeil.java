@@ -110,12 +110,76 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             return null;
         }
     }
+    /** New/continue world entry, separate from joining an existing host. */
+    private static WorldCreationConfig worldSelection(boolean multiplayer){
+        String[] actions={"CREATE WORLD","LOAD WORLD","CANCEL"};
+        int action=JOptionPane.showOptionDialog(null,
+            multiplayer?"HOST A WORLD":"SINGLE PLAYER WORLDS",
+            "The Malefic Veil",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,
+            null,actions,actions[0]);
+        if(action==2||action<0)return null;
+        if(action==1){
+            try{
+                var worlds=WorldCreationConfig.list().stream()
+                    .filter(w->w.hostType().equals(multiplayer?"multi":"solo")).toList();
+                if(worlds.isEmpty()){
+                    JOptionPane.showMessageDialog(null,"No saved worlds for this mode.");
+                    return null;
+                }
+                String[] labels=worlds.stream().map(w->w.worldName()+
+                    " | "+(w.hardcore()?"Hardcore":"Normal")+" | "+w.seed())
+                    .toArray(String[]::new);
+                Object selection=JOptionPane.showInputDialog(null,"Load world",
+                    "Saved Worlds",JOptionPane.PLAIN_MESSAGE,null,labels,labels[0]);
+                if(selection==null)return null;
+                return worlds.get(java.util.Arrays.asList(labels).indexOf(selection));
+            }catch(IOException failure){
+                JOptionPane.showMessageDialog(null,failure.getMessage(),"World load error",
+                    JOptionPane.ERROR_MESSAGE);return null;
+            }
+        }
+        JTextField name=new JTextField("New Settlement",18);
+        JTextField seedField=new JTextField("",18);
+        JCheckBox hardcore=new JCheckBox("Hardcore character reset");
+        JComboBox<String> enemy=new JComboBox<>(new String[]{"normal","low","high"});
+        JComboBox<String> abundance=new JComboBox<>(new String[]{"normal","scarce","abundant"});
+        JSpinner population=new JSpinner(new SpinnerNumberModel(6,0,24,1));
+        JSpinner capacity=new JSpinner(new SpinnerNumberModel(multiplayer?12:1,1,32,1));
+        capacity.setEnabled(multiplayer);
+        JPanel panel=new JPanel(new GridLayout(0,2,6,4));
+        panel.add(new JLabel("World name"));panel.add(name);
+        panel.add(new JLabel("Seed (blank=random)"));panel.add(seedField);
+        panel.add(new JLabel("Game mode"));panel.add(hardcore);
+        panel.add(new JLabel("Enemy density (reserved)"));panel.add(enemy);
+        panel.add(new JLabel("Resource abundance (reserved)"));panel.add(abundance);
+        panel.add(new JLabel("AI characters"));panel.add(population);
+        panel.add(new JLabel("Maximum players"));panel.add(capacity);
+        if(JOptionPane.showConfirmDialog(null,panel,"Create World",
+            JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE)!=
+            JOptionPane.OK_OPTION)return null;
+        try{
+            long seed=seedField.getText().isBlank()?
+                new java.security.SecureRandom().nextLong():
+                Long.parseLong(seedField.getText().trim());
+            var config=new WorldCreationConfig(name.getText().trim(),seed,
+                hardcore.isSelected(),multiplayer?"multi":"solo",
+                (String)enemy.getSelectedItem(),(String)abundance.getSelectedItem(),
+                multiplayer?(Integer)capacity.getValue():1,(Integer)population.getValue());
+            config.saveNew();
+            return config;
+        }catch(IOException|IllegalArgumentException failure){
+            JOptionPane.showMessageDialog(null,failure.getMessage(),"World creation error",
+                JOptionPane.ERROR_MESSAGE);return null;
+        }
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(()->{
-            String[] modes={"SOLO","HOST LAN","JOIN LAN"};
+            String[] modes={"SINGLE PLAYER","HOST MULTIPLAYER","JOIN MULTIPLAYER"};
             int mode=JOptionPane.showOptionDialog(null,"THE MALEFIC VEIL — PROTOTYPE\nSelect play mode",
                 "The Malefic Veil",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,modes,modes[0]);
             if(mode<0)return;
+            WorldCreationConfig config=mode==2?null:worldSelection(mode==1);
+            if(mode!=2&&config==null)return;
             CharacterRoster.Faction faction=(CharacterRoster.Faction)JOptionPane.showInputDialog(
                 null,"Choose faction","Faction Selection",JOptionPane.PLAIN_MESSAGE,
                 null,CharacterRoster.Faction.values(),CharacterRoster.Faction.THE_UNRAVELED);
@@ -135,20 +199,32 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 return;
             }
             int character=role.existingAbilityId();
-            long seed=Long.getLong("veil.seed",20261020L);
+            long seed=config==null?20261020L:config.seed();
             NetLink link=null;
             try {
-                if(mode==1){
-                    HostAiSettings.Rules bots=hostAiDialog();
-                    if(bots==null)return;
-                    new LanServer(7777,seed,null,Boolean.getBoolean("veil.hardcore"),bots);
-                    link=new NetLink("127.0.0.1",7777);
-                } else if(mode==2){
-                    String host=JOptionPane.showInputDialog(null,"Host IP / hostname","127.0.0.1");
+                if(mode!=2){
+                    HostAiSettings.Rules bots=new HostAiSettings.Rules(
+                        config.aiPopulation(),HostAiSettings.Distribution.BALANCED,1,
+                        1,0,0,0);
+                    // Every solo and hosted world uses the same host-side
+                    // transactions, durable realm snapshots, and faction rules.
+                    int port=mode==0?0:7777;
+                    LanServer server=new LanServer(port,seed,config.directory(),
+                        config.hardcore(),bots);
+                    link=new NetLink("127.0.0.1",server.port());
+                } else {
+                    String host=JOptionPane.showInputDialog(null,
+                        "Host IP / hostname and port (default 7777)","127.0.0.1:7777");
                     if(host==null||host.isBlank())return;
-                    link=new NetLink(host.trim(),7777);
+                    String address=host.trim();int port=7777;
+                    if(address.contains(":")){
+                        int separator=address.lastIndexOf(':');
+                        port=Integer.parseInt(address.substring(separator+1));
+                        address=address.substring(0,separator);
+                    }
+                    link=new NetLink(address,port);
                 }
-            } catch(IOException ex) {
+            } catch(IOException|IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(null,"LAN connection failed: "+ex.getMessage(),"Network error",JOptionPane.ERROR_MESSAGE);
                 return;
             }

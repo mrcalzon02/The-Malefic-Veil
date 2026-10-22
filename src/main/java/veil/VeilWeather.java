@@ -27,7 +27,7 @@ public final class VeilWeather implements AutoCloseable {
     private final URLClassLoader loader;
     private final Object weather;
     private final Class<?> typeClass,viewClass,sinkClass;
-    private final Method advance,sky,overlay,setWeather,setClock,weatherState,surfaceRegister,surfaceShade,meshSink;
+    private final Method advance,sky,overlay,setWeather,setClock,getClock,setAutoWeather,weatherState,surfaceRegister,surfaceShade,meshSink;
     private final Object surfaces,materialStone;
     private final Method currentWeather,skyState;
     private final Method sampleRgb;
@@ -101,6 +101,10 @@ public final class VeilWeather implements AutoCloseable {
     }
     @SuppressWarnings({"unchecked","rawtypes"})
     public VeilWeather(long seed,Path root)throws IOException{
+        this(seed,root,true);
+    }
+    /** Host-only instances run the SAME shared simulation, without client GLBs/audio. */
+    public VeilWeather(long seed,Path root,boolean graphicsAndAudio)throws IOException{
         try{
             Path jar=root.resolve("lib").resolve(VERSION+".jar");
             byte[] contents=Files.readAllBytes(jar);
@@ -116,6 +120,8 @@ public final class VeilWeather implements AutoCloseable {
             overlay=module.getMethod("renderOverlay",Graphics2D.class,int.class,int.class);
             setWeather=module.getMethod("setWeather",typeClass,double.class);
             setClock=module.getMethod("setTimeOfDay",double.class);
+            getClock=module.getMethod("timeOfDay");
+            setAutoWeather=module.getMethod("setAutoWeather",boolean.class,double.class,double.class,double.class);
             weatherState=module.getMethod("weather");
             meshSink=module.getMethod("emitMeshes",sinkClass);
             currentWeather=Class.forName("dev.mrcalzon.weather.WeatherSystem",true,loader).getMethod("state");
@@ -128,14 +134,13 @@ public final class VeilWeather implements AutoCloseable {
             Class<?> sample=Class.forName("dev.mrcalzon.weather.WeatherSurfaceGrid$Sample",true,loader);
             sampleRgb=sample.getMethod("rgb");
             audio=module.getMethod("audio").invoke(weather);
-            meshes=loadMeshes(root);
+            meshes=graphicsAndAudio?loadMeshes(root):Collections.emptyMap();
             module.getMethod("setDayLength",double.class).invoke(weather,1500d);
-            module.getMethod("setAutoWeather",boolean.class,double.class,double.class,double.class)
-                .invoke(weather,true,240d,.55,65d);
+            setAutoWeather.invoke(weather,true,240d,.55,65d);
             setPreset("OVERCAST",0);
             // Java Sound is genuinely optional; a dedicated server or headless
             // CI must NEVER require a physical audio device to start gameplay.
-            if(!java.awt.GraphicsEnvironment.isHeadless()&&
+            if(graphicsAndAudio&&!java.awt.GraphicsEnvironment.isHeadless()&&
                !Boolean.getBoolean("veil.weather.mute")){
                 Class<?> player=Class.forName("dev.mrcalzon.weather.WeatherAudioPlayer",true,loader);
                 audioPlayer=player.getConstructor(Path.class).newInstance(unpackAudio(root));
@@ -154,6 +159,26 @@ public final class VeilWeather implements AutoCloseable {
         }catch(ReflectiveOperationException e){throw new IllegalStateException("Weather preset",e);}
     }
     public String cycle(){setPreset(PRESETS[(selection+1)%PRESETS.length],8);return PRESETS[selection];}
+    public double timeOfDay(){
+        try{return ((Number)getClock.invoke(weather)).doubleValue();}
+        catch(ReflectiveOperationException e){throw new IllegalStateException("Weather clock read",e);}
+    }
+    public void autoWeather(boolean enabled,double interval,double variance,double transition){
+        try{setAutoWeather.invoke(weather,enabled,interval,variance,transition);}
+        catch(ReflectiveOperationException e){throw new IllegalStateException("Weather automation",e);}
+    }
+    /** A network client's weather MUST follow the host, not run a rival RNG schedule. */
+    public void followHost(){autoWeather(false,240,.55,65);}
+    public void applyHostWeather(String preset,double dayFraction){
+        if(!Arrays.asList(PRESETS).contains(preset)||!Double.isFinite(dayFraction)||
+           dayFraction<0||dayFraction>=1)
+            throw new IllegalArgumentException("Invalid authoritative weather packet");
+        if(!current().equals(preset))setPreset(preset,3);
+        double local=timeOfDay();
+        double difference=Math.abs(local-dayFraction);
+        difference=Math.min(difference,1-difference);
+        if(difference>.003)setTimeOfDay(dayFraction);
+    }
     public String current(){return PRESETS[selection];}
     public double rain(){return rain;}
     public double snow(){return snow;}

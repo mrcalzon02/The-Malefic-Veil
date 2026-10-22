@@ -87,6 +87,63 @@ public final class HostAiSettings {
         if(n<min||n>max)throw new IllegalArgumentException("AI setting out of bounds "+raw);
         return n;
     }
+    /**
+     * Bind immutable AI population rules to this realm. Persisted bot IDs and
+     * allegiances must never be silently repurposed on a restart: doing so
+     * could orphan group memberships, claims, and material inventories.
+     * Migration must be a separate, explicit operation.
+     */
+    public static Rules bind(Path root,Rules requested)throws IOException{
+        Objects.requireNonNull(requested,"AI host rules");
+        if(root==null)return requested;
+        Files.createDirectories(root);
+        Path file=root.resolve("ai-host-settings.properties");
+        if(!Files.exists(file)){
+            save(root,requested);
+            return requested;
+        }
+        Properties properties=new Properties();
+        try(var in=Files.newInputStream(file)){properties.load(in);}
+        if(properties.size()!=6||!"1".equals(properties.getProperty("schema"))||
+           !properties.stringPropertyNames().equals(Set.of(
+               "schema","count","mode","team","level","split")))
+            throw new IOException("Unknown or corrupt saved AI host settings");
+        Rules recorded;
+        try{
+            recorded=fromOptions(List.of(
+                "--ai-count="+properties.getProperty("count"),
+                "--ai-mode="+properties.getProperty("mode"),
+                "--ai-team="+properties.getProperty("team"),
+                "--ai-level="+properties.getProperty("level"),
+                "--ai-split="+properties.getProperty("split"))
+            );
+        }catch(IllegalArgumentException invalid){
+            // BALANCED and SINGLE_FACTION persist their zero count split, but
+            // that split is not a CLI control for those two modes.
+            try{
+                var controls=new ArrayList<String>(List.of(
+                    "--ai-count="+properties.getProperty("count"),
+                    "--ai-mode="+properties.getProperty("mode"),
+                    "--ai-team="+properties.getProperty("team"),
+                    "--ai-level="+properties.getProperty("level")));
+                if("CUSTOM".equals(properties.getProperty("mode")))
+                    controls.add("--ai-split="+properties.getProperty("split"));
+                recorded=fromOptions(controls);
+                String expected=recorded.unraveled()+","+
+                    recorded.penitent()+","+recorded.begotten();
+                if(!expected.equals(properties.getProperty("split")))
+                    throw new IOException("Corrupt saved AI faction distribution");
+            }catch(IllegalArgumentException ex){
+                throw new IOException("Corrupt saved AI host settings",ex);
+            }
+        }
+        if(!recorded.equals(requested))
+            throw new IOException("AI population/settings changed for existing realm: saved "+
+                recorded.description()+" requested "+requested.description()+
+                ". Explicit bot-account and faction migration required.");
+        return recorded;
+    }
+
     /** Store exactly what was selected, rather than changing an old host silently. */
     public static void save(Path root,Rules r)throws IOException {
         if(root==null)return;

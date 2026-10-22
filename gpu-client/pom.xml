@@ -91,7 +91,7 @@
       </resource>
       <resource>
         <directory>${project.basedir}/../assets/game</directory>
-        <includes><include>kenney/retro-urban-kit-2.0.zip</include></includes>
+        <includes><include>kenney/retro-urban-kit-2.0.zip</include><include>ggbot/psx-style-cars.zip</include></includes>
       </resource>
     </resources>
   </build>

@@ -162,9 +162,17 @@ public final class DesktopUpdater {
         catch(AtomicMoveNotSupportedException unsupported){Files.move(source,target);}
     }
     private static void state(Path root,String value)throws IOException{
-        Files.writeString(root.resolve(".update-state"),value+"\n",
-            StandardCharsets.UTF_8,StandardOpenOption.CREATE,
-            StandardOpenOption.TRUNCATE_EXISTING,StandardOpenOption.SYNC);
+        // Journal transitions are atomic: a kill cannot leave a truncated phase.
+        Path temporary=root.resolve(".update-state.tmp");
+        Files.writeString(temporary,value+"\n",StandardCharsets.UTF_8,
+            StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING,
+            StandardOpenOption.SYNC);
+        Path journal=root.resolve(".update-state");
+        try{Files.move(temporary,journal,StandardCopyOption.ATOMIC_MOVE,
+            StandardCopyOption.REPLACE_EXISTING);}
+        catch(AtomicMoveNotSupportedException unsupported){
+            Files.move(temporary,journal,StandardCopyOption.REPLACE_EXISTING);
+        }
     }
     /** Deterministic crash recovery, also executed before ANY network request. */
     static void recover(Path root)throws IOException{
@@ -172,7 +180,9 @@ public final class DesktopUpdater {
         Path backup=root.resolve(".update-backup");
         Path stage=root.resolve(".update-stage");
         if(!Files.exists(flag)){
-            deleteTree(backup);deleteTree(stage);return;
+            deleteTree(backup);deleteTree(stage);
+            Files.deleteIfExists(root.resolve(".update-state.tmp"));
+            return;
         }
         String phase=Files.readString(flag).trim();
         if(!phase.equals("BACKUP")&&!phase.equals("INSTALL"))

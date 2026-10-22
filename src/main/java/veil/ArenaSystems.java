@@ -433,7 +433,8 @@ public final class ArenaSystems {
         }
         for(int i=0;i<world.devices.size();i++){
             World.Device d=world.devices.get(i);
-            if(d.hp<=0||p.id==d.ownerId||p.accountKey.equals(d.ownerKey))continue;
+            if(d.hp<=0||p.id==d.ownerId||p.accountKey.equals(d.ownerKey)||
+               factions.allied(p.accountKey,d.ownerKey))continue;
             double range=Math.hypot(d.x-p.x,d.y-p.y);
             if(range>=nearest||range<.01||!world.lineClear(p.x,p.y,d.x,d.y))continue;
             double diff=Math.atan2(Math.sin(Math.atan2(d.y-p.y,d.x-p.x)-p.angle),
@@ -713,6 +714,7 @@ public final class ArenaSystems {
                 Player opponent=null;double nearest=6;
                 for(Player p:players.values()){
                     if(p.dead||p.id==d.ownerId||p.accountKey.equals(d.ownerKey)||
+                       factions.allied(p.accountKey,d.ownerKey)||
                         Math.hypot(p.x-d.x,p.y-d.y)>=nearest||!clear(d.x,d.y,p.x,p.y))continue;
                     // Prototype turret is a public hazard; future build owner/team should be recorded.
                     opponent=p;nearest=Math.hypot(p.x-d.x,p.y-d.y);
@@ -732,7 +734,8 @@ public final class ArenaSystems {
             Player nearest=null;double best=10;
             for(Player p:players.values()){
                 double dist=Math.hypot(p.x-n.x,p.y-n.y);
-                if(!p.dead&&p.visibility>.10&&dist<best&&clear(n.x,n.y,p.x,p.y)){
+                if(!p.dead&&factions.faction(p.accountKey)!=CharacterRoster.Faction.THE_BEGOTTEN&&
+                   p.visibility>.10&&dist<best&&clear(n.x,n.y,p.x,p.y)){
                     nearest=p;best=dist;
                 }
             }

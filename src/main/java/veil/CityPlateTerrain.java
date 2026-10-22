@@ -123,13 +123,13 @@ public final class CityPlateTerrain {
             double sx=gate.bx()-gate.ax(),sz=gate.bz()-gate.az();
             double progress=((x-gate.ax())*sx+(z-gate.az())*sz)/
                 (World.PARCEL_METERS*World.PARCEL_METERS);
-            double shoulder=Math.max(0,Math.max(-progress,progress-1))*World.PARCEL_METERS;
-            if(shoulder>=1.5)continue;
+            // A ramp occupies the exact six-metre road exit. Extending its
+            // crossfall into neighboring wall cells would lift the terrain at
+            // their retaining feet and reopen a crack beside the gateway.
+            if(progress<0||progress>1)continue;
             double falloff=along/ROAD_RAMP_LENGTH;
             falloff=falloff*falloff*(3-2*falloff);
-            double edgeFade=shoulder/1.5;
-            edgeFade=edgeFade*edgeFade*(3-2*edgeFade);
-            double weight=(1-falloff)*(1-edgeFade);
+            double weight=1-falloff;
             grade+=(plate-grade)*weight;
         }
         return grade;

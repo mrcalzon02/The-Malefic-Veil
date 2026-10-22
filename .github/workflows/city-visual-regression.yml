@@ -1,0 +1,75 @@
+name: City and wilderness visual regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/main/java/veil/**'
+      - 'gpu-client/**'
+      - 'assets/game/kenney/**'
+      - '.github/workflows/city-visual-regression.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  seeded-world-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: gpu-client/pom.xml
+      - name: Fetch and checksum the original CC0 car atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/game/ggbot
+          curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
+          echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
+      - name: Test foundation elevations and capture shipped Java2D game
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/classes build/test-visuals
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          java -Djava.awt.headless=true -cp build/classes veil.ContinentVistaTest
+          java -Djava.awt.headless=true -cp build/classes veil.CityVisualRegressionTest |
+            tee build/test-visuals/city-java2d.log
+          test "$(grep -c 'CITY_VISUAL_CAPTURE pose=' build/test-visuals/city-java2d.log)" -eq 8
+          test "$(find build/test-visuals -name 'city-regression-*.png' | wc -l)" -eq 8
+      - name: Compile real OpenGL instanced-mesh client
+        run: mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
+      - name: Install virtual display and Mesa OpenGL
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils
+      - name: Capture ten inside and outside city poses on two real seeds
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          for seed in 20261020 887766; do
+            xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+              timeout 180s java -jar gpu-client/target/MaleficVeil-GPU.jar \
+                --gallery --seed="$seed" | tee "build/test-visuals/gpu-city-$seed.log"
+            test "$(grep -c 'GALLERY_CAPTURE seed=' "build/test-visuals/gpu-city-$seed.log")" -eq 10
+            for view in 01-city-street 02-central-streets 03-urban-rooftops 04-city-overhead 05-city-woodland-edge 06-urban-night 07-outside-toward-city 08-outside-woodland 09-southern-foundation 10-east-embankment; do
+              test -s "build/test-visuals/gallery-seed-$seed-$view.png"
+            done
+          done
+          echo 'VISUAL GATE: 8 shipped-client screenshots + 20 live GPU screenshots'
+      - name: Preserve every image and diagnostics even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: malefic-city-visual-${{ github.sha }}
+          path: build/test-visuals/
+          if-no-files-found: warn

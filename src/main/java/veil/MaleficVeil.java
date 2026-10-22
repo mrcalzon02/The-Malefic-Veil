@@ -1212,11 +1212,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         int recipient=-1;double distance=3;
         if(trading){
             for(var e:net.others.entrySet()){
-                var other=e.getValue();double dx=other.x()-px,dy=other.y()-py;
+                var other=e.getValue();double dx=other.x-px,dy=other.y-py;
                 double range=Math.hypot(dx,dy);
                 if(range>.01&&range<distance&&
                     dx*Math.cos(angle)+dy*Math.sin(angle)>=range*Math.cos(Math.PI/6)&&
-                    world.lineClear(px,py,other.x(),other.y())){
+                    world.lineClear(px,py,other.x,other.y)){
                     recipient=e.getKey();distance=range;
                 }
             }

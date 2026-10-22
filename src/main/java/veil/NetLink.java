@@ -28,6 +28,8 @@ public final class NetLink implements AutoCloseable {
     public record CargoYard(int id,int x,int y,String type,int stock){}
     public record CargoDrop(int id,double x,double y,String type){}
     public record ResourceNode(int id,double x,double y,String type,int remaining,int capacity){}
+    public record WeatherSnapshot(String preset,double dayFraction){}
+
 
     // Core session state from the original LAN transport. Preserve it when
     // extending ordinary world-resource replication; NEVER replace it.
@@ -42,6 +44,8 @@ public final class NetLink implements AutoCloseable {
 
     public final ConcurrentHashMap<Integer,ResourceNode> resourceNodes=new ConcurrentHashMap<>();
     public final ConcurrentLinkedQueue<String> harvestResults=new ConcurrentLinkedQueue<>();
+    private volatile WeatherSnapshot authoritativeWeather;
+    public WeatherSnapshot weather(){return authoritativeWeather;}
     private volatile Rpg rpg;
     private volatile boolean hardcore;
     private volatile String faction="NONE",crew="NONE",crewRole="NONE";
@@ -122,6 +126,15 @@ public final class NetLink implements AutoCloseable {
                             case "DEVICE" -> {
                                 if(s.length==6)structures.add(new DeviceEvent(Integer.parseInt(s[1]),
                                     Integer.parseInt(s[2]),Double.parseDouble(s[3]),Double.parseDouble(s[4]),Integer.parseInt(s[5])));
+                            }
+                            case "WEATHER" -> {
+                                if(s.length==3){
+                                    String preset=s[1];
+                                    double day=Double.parseDouble(s[2]);
+                                    if(preset.matches("[A-Z_]{3,24}")&&
+                                       Double.isFinite(day)&&day>=0&&day<1)
+                                        authoritativeWeather=new WeatherSnapshot(preset,day);
+                                }
                             }
                             case "SERVER_MODE" -> {
                                 if(s.length==2)hardcore=s[1].equals("HARDCORE");

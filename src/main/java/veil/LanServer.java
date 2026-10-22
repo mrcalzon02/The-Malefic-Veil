@@ -23,6 +23,7 @@ public final class LanServer implements AutoCloseable {
     public final ArenaSystems match;
     public final ContinentSectors continentSectors;
     public final WorldHarvesting harvesting;
+    public final CityLootEconomy loot;
     public final FactionAiDirector ai;
     private final VeilWeather weather;
     private volatile boolean running=true;
@@ -55,6 +56,7 @@ public final class LanServer implements AutoCloseable {
         ContinentLayout continent=match.world.continent();
         continentSectors=new ContinentSectors(continent,new ContinentPopulation(continent));
         harvesting=new WorldHarvesting(match.world);
+        loot=new CityLootEconomy(match.world);
         // One atmospheric simulation per connected world, NOT per player or
         // separate city/wilderness scene. Dedicated hosts do not load GLBs/audio.
         weather=new VeilWeather(seed,Path.of("."),false);
@@ -77,6 +79,7 @@ public final class LanServer implements AutoCloseable {
             try {
                 match.advance(100);
                 harvesting.advance(100);
+                loot.expire(System.currentTimeMillis());
                 ai.advance(100);
                 synchronized(weather){
                     weather.tick(.1,match.world.spawns[0][0],
@@ -275,6 +278,10 @@ public final class LanServer implements AutoCloseable {
             peer.send(weatherPacket());
             connections.put(peer.id,peer);
             sendWorld(peer);peer.send(selfPacket(actor));syncResources(peer,actor);
+            for(var c:loot.containers())
+                peer.send("SCAVENGE_NODE|"+c.id()+"|"+c.source()+"|"+c.x()+"|"+c.y()+"|"+loot.looted(c.id()));
+            for(var g:loot.ground(System.currentTimeMillis()))
+                peer.send("GROUND_ITEM|"+g.id()+"|"+g.x()+"|"+g.y()+"|"+g.item()+"|"+g.quantity()+"|"+g.expiresAtMs());
             peer.send(progressionPacket(actor));peer.send(inventoryPacket(actor));
             factionStateTo(actor,peer);
             broadcast(peerPacket(actor),peer.id);
@@ -298,7 +305,7 @@ public final class LanServer implements AutoCloseable {
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
                            "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND",
-                           "HARVEST").contains(s[0])){
+                           "HARVEST","SCAVENGE","DROP_ITEM","GET_DROP","TRADE_ITEM").contains(s[0])){
                         peer.send("FACTION_RESULT|REQUIRED");continue;
                     }
                     switch(s[0]){
@@ -438,6 +445,60 @@ public final class LanServer implements AutoCloseable {
                                 }
                             }
                         }
+                        case "SCAVENGE" -> {
+                            if(s.length!=2)continue;
+                            var p=match.player(peer.id);
+                            int id=Integer.parseInt(s[1]);
+                            boolean ok=p!=null&&!p.dead&&loot.scavenge(id,p.x,p.y,p.survival);
+                            peer.send("SCAVENGE_RESULT|"+id+"|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                peer.send(inventoryPacket(p));
+                                broadcast("SCAVENGE_TAKEN|"+id,-1);
+                            }
+                        }
+                        case "DROP_ITEM" -> {
+                            if(s.length!=3)continue;
+                            var p=match.player(peer.id);
+                            var item=SurvivalCrafting.Item.valueOf(s[1]);
+                            boolean ok=p!=null&&!p.dead&&loot.drop(p.survival,item,
+                                Integer.parseInt(s[2]),p.x,p.y,System.currentTimeMillis());
+                            peer.send("DROP_RESULT|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                peer.send(inventoryPacket(p));
+                                for(var g:loot.ground(System.currentTimeMillis()))
+                                    broadcast("GROUND_ITEM|"+g.id()+"|"+g.x()+"|"+g.y()+"|"+
+                                        g.item()+"|"+g.quantity()+"|"+g.expiresAtMs(),-1);
+                            }
+                        }
+                        case "GET_DROP" -> {
+                            if(s.length!=2)continue;
+                            var p=match.player(peer.id);
+                            long id=Long.parseLong(s[1]);
+                            boolean ok=p!=null&&!p.dead&&loot.pickup(id,p.survival,
+                                p.x,p.y,System.currentTimeMillis());
+                            peer.send("GET_DROP_RESULT|"+id+"|"+(ok?"OK":"DENIED"));
+                            if(ok){peer.send(inventoryPacket(p));broadcast("GROUND_TAKEN|"+id,-1);}
+                        }
+                        case "TRADE_ITEM" -> {
+                            if(s.length!=4)continue;
+                            var giver=match.player(peer.id);
+                            int to=Integer.parseInt(s[1]);
+                            var receiver=match.player(to);
+                            var item=SurvivalCrafting.Item.valueOf(s[2]);
+                            boolean ok=giver!=null&&receiver!=null&&!giver.dead&&!receiver.dead&&
+                                connections.containsKey(to)&&loot.trade(giver.survival,
+                                receiver.survival,item,Integer.parseInt(s[3]),
+                                giver.x,giver.y,giver.angle,receiver.x,receiver.y);
+                            peer.send("TRADE_RESULT|"+to+"|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                peer.send(inventoryPacket(giver));
+                                Peer target=connections.get(to);
+                                if(target!=null){
+                                    target.send(inventoryPacket(receiver));
+                                    target.send("TRADE_RECEIVED|"+peer.id+"|"+item+"|"+s[3]);
+                                }
+                            }
+                        }
                         case "STATE" -> {
                             if(s.length!=5)continue;
                             changed=match.move(peer.id,Double.parseDouble(s[1]),
@@ -571,7 +632,7 @@ public final class LanServer implements AutoCloseable {
                             broadcast(peerPacket(updated),peer.id);
                         }
                     }
-                }catch(NumberFormatException ignored){/* malformed client command rejected */}
+                }catch(IllegalArgumentException ignored){/* malformed client command rejected */}
             }
         }catch(IOException ignored){
         }finally{

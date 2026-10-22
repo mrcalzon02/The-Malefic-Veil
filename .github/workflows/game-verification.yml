@@ -119,6 +119,11 @@ jobs:
       - name: Profile complete Swing PSX game frames, not just prop meshes
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.FullFramePerformanceTest
+      - name: World creation and restart persistence end-to-end
+        shell: bash
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.WorldCreationConfigTest
+          java -Djava.awt.headless=true -cp build/classes veil.WorldCreationEndToEndTest
       - name: Assemble runnable jar
         shell: bash
         run: |

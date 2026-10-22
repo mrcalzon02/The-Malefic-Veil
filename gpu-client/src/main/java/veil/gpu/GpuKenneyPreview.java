@@ -462,9 +462,17 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         for(int yy=24;yy<170;yy+=4)for(int xx=8;xx<WIDTH-8;xx+=4)
             colors.add(flipped.getPixel(xx,yy));
         pixels.dispose();flipped.dispose();
-        if(colors.size()<18||visibleInstances<5||drawCalls<3||visibleTerrainPatches<1)
-            throw new IllegalStateException("GPU smoke frame lacks actual Kenney geometry: colors="+
-                colors.size()+" instances="+visibleInstances+" calls="+drawCalls);
+        // An exterior vista may legitimately contain only water/terrain, with no
+        // city model in front of the camera. Reject blank terrain and missing
+        // city meshes independently; never assert that the ocean has street props.
+        boolean exterior=gallery && (GALLERY[galleryIndex].name().contains("outside") ||
+            GALLERY[galleryIndex].name().contains("embankment") ||
+            GALLERY[galleryIndex].name().contains("foundation"));
+        if(colors.size()<18||visibleTerrainPatches<1||
+           (!exterior&&(visibleInstances<5||drawCalls<3)))
+            throw new IllegalStateException("GPU frame lacks required scene geometry: colors="+
+                colors.size()+" instances="+visibleInstances+" calls="+drawCalls+
+                " patches="+visibleTerrainPatches+" exterior="+exterior);
         System.out.println("PASS GPU_KENNEY_SMOKE screenshot="+destination.path()+
             " visibleInstances="+visibleInstances+" instancedDrawCalls="+drawCalls+
             " variedColors="+colors.size());

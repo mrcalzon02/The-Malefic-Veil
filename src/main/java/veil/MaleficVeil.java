@@ -18,6 +18,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final World world;
     private final UrbanScene urban;
     private final ContinentVista vista;
+    private final int[][] groundAlbedo=new int[World.SIZE][World.SIZE];
     private final PropRenderer urbanRenderer=new PropRenderer();
     private final PerformanceSettings performance=new PerformanceSettings();
     private final GameplayMeshes actorModels=new GameplayMeshes();
@@ -60,7 +61,19 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         try{weather=new VeilWeather(seed,java.nio.file.Path.of("."));}
         catch(java.io.IOException ex){throw new IllegalStateException("Pinned shared weather library missing",ex);}
         if(net!=null)weather.followHost();
-        try{urban=new UrbanScene(world,vista.foundations());}catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
+        try{urban=new UrbanScene(world,vista.foundations());}
+        catch(IOException e){throw new IllegalStateException("Curated urban meshes unavailable",e);}
+        // Build the floor material lookup from the SAME Kenney source placements
+        // used for real geometry. This fills near-plane gaps during steep looks.
+        for(World.UrbanProp item:world.urbanProps){
+            if(item.heightOffset()!=0||!(item.model().startsWith("road-")||
+                item.model().equals("grass")))continue;
+            int gx=(int)Math.floor(item.x()),gz=(int)Math.floor(item.y());
+            if(gx<0||gz<0||gx>=World.SIZE||gz>=World.SIZE)continue;
+            GlbMesh source=urban.models().get(item.model());
+            if(source!=null&&!source.triangles().isEmpty())
+                groundAlbedo[gx][gz]=source.triangles().get(0).rgb()&0xffffff;
+        }
         px=world.spawns[0][0];py=world.spawns[0][1];
         if(net==null){
             world.npcs.add(new World.Npc(7.5,1.5));
@@ -598,6 +611,38 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         return (int)Math.max(-RH*4,Math.min(RH*5,
             Math.round(RH/2.0+Math.tan(cameraPitch)*focal)));
     }
+    /** Perspective ground texels use genuine source-kit surface colors and the
+     * same continent biome projection. No eye-level flat plane is drawn. */
+    private void drawPerspectiveGround(Graphics2D g){
+        double focal=RW/(2*Math.tan(FOV/2));
+        int start=Math.max(0,horizon());
+        for(int row=start;row<RH;row+=3){
+            double downward=Math.atan((row+1.5-RH*.5)/focal)-cameraPitch;
+            if(downward<=0)continue;
+            double distance=Math.min(170,1.65/Math.tan(downward));
+            for(int col=0;col<RW;col+=3){
+                double offset=Math.atan(((col+1.5)/RW-.5)*2*Math.tan(FOV/2));
+                double d=distance/Math.cos(offset),ray=angle+offset;
+                double wx=px+Math.cos(ray)*d,wz=py+Math.sin(ray)*d;
+                int sx=(int)Math.floor(wx),sz=(int)Math.floor(wz);
+                int rgb=0x1d1c1d;
+                if(sx>=0&&sz>=0&&sx<World.SIZE&&sz<World.SIZE){
+                    int authored=groundAlbedo[sx][sz];
+                    if(authored!=0)rgb=authored;
+                }else{
+                    var type=world.continent().biome(world.parcelX(wx),world.parcelY(wz));
+                    rgb=switch(type){
+                        case FOREST -> 0x455a3b; case PLAINS -> 0x68754a;
+                        case HILLS -> 0x655d4c; case MOUNTAINS -> 0x696a6d;
+                        case MARSH -> 0x3c5556; case BEACH -> 0x8a8063;
+                        case WATER -> 0x344e70;
+                    };
+                }
+                g.setColor(new Color(weather.tint(wx,wz,rgb)));
+                g.fillRect(col,row,3,3);
+            }
+        }
+    }
     /** Walkable streamed continent scene, using imported GLB trees and real 3D node meshes. */
     private void renderContinentalGround(Graphics2D g){
         int horizon=horizon();
@@ -733,8 +778,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.setColor(new Color(14,14,27));
         g.fillRect(0,0,RW,Math.max(0,Math.min(RH,horizon)));
         weather.paintSky(g,RW,RH);
-        g.setColor(new Color(weather.tint(px,py,0x1d1c1d)));
-        g.fillRect(0,Math.max(0,horizon),RW,Math.max(0,RH-Math.max(0,horizon)));
+        drawPerspectiveGround(g);
         urbanRenderer.setCamera(1.65,cameraPitch);
         for(int i=0;i<RW;i++){
             double offset=Math.atan(((i+.5)/RW-.5)*2*Math.tan(FOV/2));

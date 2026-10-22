@@ -149,3 +149,5 @@ item_id,label,category,icon_pack,icon_entry,icon_sha256,unit_storage,max_stack,b
 "STEM_BUNDLE","Stem Bundle","MATERIAL","begotten_biology","icons/STEM_BUNDLE_small.png","d965a83687f9803a71c86bfc15e364125303696e264016d4bd4bae52f49a83b0","1","100","2","PROPOSED_BALANCE"
 "THORN_BUNDLE","Thorn Bundle","MATERIAL","begotten_biology","icons/THORN_BUNDLE_small.png","41b44ff911fcff576593351c0634fb5d06af730e6d9443177e6689ed3f94dc8b","1","100","2","PROPOSED_BALANCE"
 "PULSE_ORGAN","Pulse Organ","MATERIAL","begotten_biology","icons/PULSE_ORGAN_small.png","263f249f1835ebe6a423c81c81f301708e05805025fc71024171cc80f3a54481","1","100","2","PROPOSED_BALANCE"
+"BANDAGE","Bandage","EQUIPMENT","","","","4","20","8","ICON_REQUIRED"
+"WORKBENCH","Workbench","EQUIPMENT","","","","4","20","8","ICON_REQUIRED"

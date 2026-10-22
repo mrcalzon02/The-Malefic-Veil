@@ -362,6 +362,13 @@ public final class FactionAiDirector {
             if(device.hp>0&&player.accountKey.equals(device.ownerKey))total++;
         agent.buildings=total;
     }
+    private World.Device owned(Agent agent,int kind){
+        ArenaSystems.Player p=arena.player(agent.id);
+        if(p==null)return null;
+        for(World.Device d:arena.world.devices)
+            if(d.hp>0&&d.kind==kind&&p.accountKey.equals(d.ownerKey))return d;
+        return null;
+    }
     private WildernessResources.Node select(Agent a,ArenaSystems.Player p){
         WildernessResources.Node best=null;
         double score=Double.POSITIVE_INFINITY;
@@ -377,7 +384,7 @@ public final class FactionAiDirector {
                 case FIBER -> p.survival.count(item)<6?-11:0;
                 case FIELD_STONE -> p.survival.count(item)<4?-9:0;
                 case EDIBLES -> p.survival.status().hunger()<70?-14:2;
-                case DIRTY_WATER -> p.survival.count(item)<2?-5:3;
+                case DIRTY_WATER -> p.survival.count(item)<4&&p.survival.count(SurvivalCrafting.Item.CLEAN_WATER)<3?-12:5;
                 default -> 3;
             };
             // Distinct, deterministic supply priorities per three-member
@@ -421,11 +428,15 @@ public final class FactionAiDirector {
         if(combat(agent,p,ms))return;
         if(p.survival.status().hunger()<75&&p.survival.count(SurvivalCrafting.Item.EDIBLES)>0)
             p.survival.consume(SurvivalCrafting.Item.EDIBLES);
+        if(p.survival.status().hydration()<75&&p.survival.count(SurvivalCrafting.Item.CLEAN_WATER)>0)
+            p.survival.consume(SurvivalCrafting.Item.CLEAN_WATER);
         // Real host crafting consumes gathered inventory, never grants stock.
         if(arena.time()>=p.craftReadyAt){
-            if(p.survival.count(SurvivalCrafting.Item.TENT_KIT)==0&&
+            if(owned(agent,ArenaSystems.CAMP_STAKE)==null&&
+               p.survival.count(SurvivalCrafting.Item.TENT_KIT)==0&&
                arena.craftHand(agent.id,"tent"))agent.activity=Activity.CRAFTING;
-            else if(p.survival.count(SurvivalCrafting.Item.CAMPFIRE)==0&&
+            else if(owned(agent,ArenaSystems.FIELD_FIRE)==null&&
+                    p.survival.count(SurvivalCrafting.Item.CAMPFIRE)==0&&
                     arena.craftHand(agent.id,"campfire"))agent.activity=Activity.CRAFTING;
             else if(p.survival.count(SurvivalCrafting.Item.CRATE_KIT)==0&&
                     arena.craftHand(agent.id,"crate"))agent.activity=Activity.CRAFTING;
@@ -448,6 +459,31 @@ public final class FactionAiDirector {
                 }
             }
             return;
+        }
+        World.Device camp=owned(agent,ArenaSystems.CAMP_STAKE);
+        World.Device fire=owned(agent,ArenaSystems.FIELD_FIRE);
+        if(camp!=null&&fire==null&&p.survival.count(SurvivalCrafting.Item.CAMPFIRE)>0){
+            agent.activity=Activity.BUILDING;
+            if(Math.hypot(p.x-agent.homeX,p.y-agent.homeY)>1.6){
+                walk(agent,p,agent.homeX,agent.homeY,ms);
+            }else{
+                for(int step=0;step<8;step++){
+                    p.angle=step*Math.PI/4;
+                    if(arena.buildOutcome(agent.id,ArenaSystems.FIELD_FIRE).built()){
+                        recountBuildings(agent,p);break;
+                    }
+                }
+            }
+            return;
+        }
+        if(fire!=null&&p.survival.count(SurvivalCrafting.Item.DIRTY_WATER)>0&&
+           p.survival.count(SurvivalCrafting.Item.CLEAN_WATER)<3){
+            agent.activity=Activity.CRAFTING;
+            if(Math.hypot(p.x-fire.x,p.y-fire.y)>1.9){
+                walk(agent,p,fire.x,fire.y,ms);
+                return;
+            }
+            if(arena.craftStation(agent.id,"boil-water"))return;
         }
         // Three-character crews trade real inventory at arm's reach.
         // These are material handoffs, NOT free remote production.
@@ -476,7 +512,7 @@ public final class FactionAiDirector {
                 }
             }
         }
-        if(agent.buildings==1&&p.cash>=60&&p.scrap>=3){
+        if(camp!=null&&owned(agent,ArenaSystems.TURRET)==null&&p.cash>=60&&p.scrap>=3){
             if(Math.hypot(p.x-agent.homeX,p.y-agent.homeY)>2.5){
                 walk(agent,p,agent.homeX,agent.homeY,ms);
             }else{

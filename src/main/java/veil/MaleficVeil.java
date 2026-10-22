@@ -1100,8 +1100,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 possessed.put(item.getKey().name(),item.getValue());
         }else possessed=net.survivalInventory;
         java.util.List<String> recipes=new java.util.ArrayList<>();
+        boolean nearFire=net!=null&&world.devices.stream().anyMatch(d->
+            d.hp>0&&d.kind==ArenaSystems.FIELD_FIRE&&
+            Math.hypot(d.x-px,d.y-py)<=2.2);
         for(var recipe:SurvivalCrafting.recipes().values()){
-            if(recipe.station()!=SurvivalCrafting.Station.HAND)continue;
+            if(recipe.station()!=SurvivalCrafting.Station.HAND&&
+               !(recipe.station()==SurvivalCrafting.Station.FIRE&&nearFire))continue;
             boolean affordable=true;
             for(var part:recipe.requires().entrySet())
                 if(possessed.getOrDefault(part.getKey().name(),0)<part.getValue())
@@ -1118,7 +1122,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             "Field Crafting",JOptionPane.PLAIN_MESSAGE,null,
             recipes.toArray(String[]::new),recipes.get(0));
         if(chosen!=null){
-            if(net!=null)net.craftHand(chosen);
+            if(net!=null){
+                if(SurvivalCrafting.recipes().get(chosen).station()==SurvivalCrafting.Station.FIRE)
+                    net.craftFire(chosen);
+                else net.craftHand(chosen);
+            }
             else toast(localHost.player(1).survival.craft(chosen,SurvivalCrafting.Station.HAND)?
                 "CRAFTED "+chosen:"CRAFT DENIED");
         }
@@ -1264,6 +1272,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         menuAction(worldMenu,"City map (M)",()->{mapVisible=true;continentVisible=false;repaint();});
         menuAction(worldMenu,"Continent (N)",()->{continentVisible=true;mapVisible=false;repaint();});
         menuAction(worldMenu,"Crew management (O)",this::crewDialog);
+        if(net!=null){
+            menuAction(worldMenu,"Place camp (tent kit)",()->deploy(ArenaSystems.CAMP_STAKE));
+            menuAction(worldMenu,"Place fire (campfire kit)",()->deploy(ArenaSystems.FIELD_FIRE));
+        }
         JMenu vehicleMenu=new JMenu("Vehicles");
         menuAction(vehicleMenu,"Enter / exit (Q)",this::toggleCar);
         menuAction(vehicleMenu,"Vehicle inspection",this::vehicleInspection);

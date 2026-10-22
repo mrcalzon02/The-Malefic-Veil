@@ -362,6 +362,7 @@ public final class NetLink implements AutoCloseable {
     public void respawn(int index){send("RESPAWN|"+index);}
     public void sceneReady(){send("SCENE_READY");}
     public void craftHand(String recipeId){send("CRAFT_HAND|"+recipeId);}
+    public void craftFire(String recipeId){send("CRAFT_FIRE|"+recipeId);}
     public void harvest(int nodeId){send("HARVEST|"+nodeId);}
     public void scavenge(int nodeId){send("SCAVENGE|"+nodeId);}
     public void dropItem(String item,int amount){send("DROP_ITEM|"+item+"|"+amount);}

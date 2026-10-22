@@ -13,7 +13,7 @@ public final class GameplayMeshes {
     public static final String[] HERO={"hero-warden","hero-medic","hero-shade","hero-occultist"};
     public static final String[] PICKUP={"pickup-health","pickup-sanity","pickup-pistol-ammo",
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
-    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp"};
+    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -185,6 +185,16 @@ public final class GameplayMeshes {
         camp.box(-1.24,.75,0,.14,1.50,.14,0x725A3F);
         camp.box(-1.24,1.42,.15,.39,.19,.08,0x957349);
         meshes.put(DEVICE[4],camp.done());
+        Model fieldFire=new Model();
+        for(int i=0;i<8;i++){
+            double a=i*Math.PI/4;
+            fieldFire.box(Math.cos(a)*.40,.115,Math.sin(a)*.40,.23,.23,.20,0x77716B);
+        }
+        fieldFire.box(-.12,.20,0,.63,.14,.15,0x62432D);
+        fieldFire.box(.12,.21,0,.16,.14,.60,0x715038);
+        fieldFire.diamond(0,.46,0,.20,.67,0xE9A23C);
+        fieldFire.diamond(.07,.42,-.04,.11,.43,0xF3CB65);
+        meshes.put(DEVICE[5],fieldFire.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

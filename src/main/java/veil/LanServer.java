@@ -309,7 +309,7 @@ public final class LanServer implements AutoCloseable {
                     if(moderation!=null&&peer.authenticated&&
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
-                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND",
+                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND","CRAFT_FIRE",
                            "HARVEST","SCAVENGE","DROP_ITEM","GET_DROP","TRADE_ITEM").contains(s[0])){
                         peer.send("FACTION_RESULT|REQUIRED");continue;
                     }
@@ -533,9 +533,10 @@ public final class LanServer implements AutoCloseable {
                             changed=match.reload(peer.id,Integer.parseInt(s[1]));
                         }
                         case "ABILITY" -> changed=match.ability(peer.id);
-                        case "CRAFT_HAND" -> {
+                        case "CRAFT_HAND", "CRAFT_FIRE" -> {
                             if(s.length!=2||s[1].length()>48)continue;
-                            boolean crafted=match.craftHand(peer.id,s[1]);
+                            boolean crafted=s[0].equals("CRAFT_FIRE")?
+                                match.craftStation(peer.id,s[1]):match.craftHand(peer.id,s[1]);
                             peer.send("CRAFT_RESULT|"+s[1]+"|"+(crafted?"OK":"DENIED"));
                             changed=crafted;
                             if(crafted){

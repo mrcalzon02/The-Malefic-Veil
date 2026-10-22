@@ -1,0 +1,10 @@
+container_id,accepts_category,capacity_units,max_slots,utility_demand,decay_per_hour,era,notes
+"BACKPACK","ALL","200","24","0","0","PERSONAL","Weight 200 matches current survival inventory"
+"WOODEN_CRATE","DRY","300","12","0","0","ENCAMPMENT","Proposed capacity"
+"WATER_BARREL","LIQUID","500","2","0","0","ENCAMPMENT","Proposed capacity"
+"ROOT_CELLAR","FOOD","2400","32","0","0","ENCAMPMENT","Proposed capacity"
+"DRY_STORE","DRY","4500","64","0","0","ENCAMPMENT","Proposed capacity"
+"CARGO_LAYDOWN","BULK","7500","3","0","0","ENCAMPMENT","Three pallets already canonical"
+"FREIGHT_BAY","BULK","24000","32","0","0","SALVAGE","Proposed capacity"
+"INDUSTRIAL_WAREHOUSE","ALL","60000","128","8","0","AUTOMATION","Proposed future facility"
+"TRUCK_CARGO","BULK","6000","1","0","0","SALVAGE","One pallet canonical"

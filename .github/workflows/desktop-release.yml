@@ -245,9 +245,16 @@ jobs:
           }
       - name: Verify native game executable, bundled JRE and updater
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = 'Stop'
-          & jpackage --type app-image --name 'The Malefic Veil' --input native-source --dest native-app --main-jar Launcher.jar --main-class veil.InstalledLauncher --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --add-modules java.desktop,java.net.http,java.logging,java.prefs,java.naming,jdk.crypto.ec
+          # jpackage's default jlink options strip Java command executables.
+          # Our isolated updater needs javaw.exe, so supply an explicit full runtime.
+          & jlink --add-modules java.desktop,java.net.http,java.logging,java.prefs,java.naming,jdk.crypto.ec --output native-runtime --no-header-files --no-man-pages
+          if ($LASTEXITCODE -ne 0) { throw 'Bundled Java runtime build failed' }
+          if (-not (Test-Path native-runtime/bin/javaw.exe)) { throw 'Bundled runtime lacks Java launcher' }
+          & jpackage --type app-image --name 'The Malefic Veil' --input native-source --dest native-app --main-jar Launcher.jar --main-class veil.InstalledLauncher --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --runtime-image native-runtime
           if ($LASTEXITCODE -ne 0) { throw 'Native launcher build failed' }
           $image = Join-Path $PWD 'native-app/The Malefic Veil'
           $exe = Join-Path $image 'The Malefic Veil.exe'
@@ -258,6 +265,12 @@ jobs:
           $log = Join-Path $image 'app/logs/launcher.log'
           if (-not (Test-Path $log)) { throw 'Native launcher logs missing' }
           if ((Get-Content $log -Raw) -notmatch 'UPDATER_EXIT code=0') { throw 'Updater did not complete through native launcher' }
+          $updateLog = Join-Path $image 'app/logs/updater.log'
+          if (-not (Test-Path $updateLog)) { throw 'Update diagnostic log missing' }
+          $diagnostics = Get-Content $updateLog -Raw
+          if ($diagnostics -match 'UPDATE_ERROR' -or $diagnostics -notmatch 'CURRENT_OR_NEWER|UPDATE_AVAILABLE') {
+            throw "Native update check did not complete successfully: $diagnostics"
+          }
           Write-Host 'Native EXE, embedded runtime, startup diagnostics and updater PASS'
       - name: Build native Windows setup EXE
         shell: pwsh

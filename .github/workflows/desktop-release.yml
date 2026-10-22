@@ -157,3 +157,34 @@ jobs:
             build/package/update.properties
             build/package/updater.jar
           if-no-files-found: warn
+
+  windows-review-installer:
+    name: Windows packaged updater launch and diagnostics
+    needs: release
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Download published Windows desktop ZIP and check for updates
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = 'dev-' + $env:GITHUB_SHA.Substring(0, 12)
+          New-Item -ItemType Directory -Force -Path windows-download, windows-install | Out-Null
+          gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern 'MaleficVeil-desktop-*.zip' --dir windows-download
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot download published Windows build' }
+          $zip = (Get-ChildItem windows-download/*.zip | Select-Object -First 1).FullName
+          Expand-Archive -LiteralPath $zip -DestinationPath windows-install -Force
+          & .\windows-install\play-release.bat --check
+          if ($LASTEXITCODE -ne 0) { throw 'Windows updater launcher failed' }
+          if (-not (Test-Path windows-install/logs/updater.log)) {
+            throw 'Windows updater did not persist diagnostics'
+          }
+          Get-Content windows-install/logs/updater.log -Tail 6
+          Write-Host 'Windows portable build and updater check PASS'

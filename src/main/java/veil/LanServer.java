@@ -15,7 +15,7 @@ public final class LanServer implements AutoCloseable {
     private final ExecutorService workers=Executors.newCachedThreadPool();
     private final ScheduledExecutorService ticks=Executors.newSingleThreadScheduledExecutor();
     private final ScheduledExecutorService saves=Executors.newSingleThreadScheduledExecutor();
-    private final Semaphore connectionSlots=new Semaphore(32);
+    private final Semaphore connectionSlots;
     private final HostModeration moderation;
     private final Path dataDirectory;
     private final long startup=System.currentTimeMillis();
@@ -50,6 +50,15 @@ public final class LanServer implements AutoCloseable {
     public LanServer(int port,long seed,Path saveDir,boolean hardcore,
                      HostAiSettings.Rules aiSettings)throws IOException {
         dataDirectory=saveDir;
+        int playerLimit=32;
+        if(saveDir!=null&&Files.exists(saveDir.resolve("world.properties"))){
+            WorldCreationConfig creation=WorldCreationConfig.load(saveDir);
+            if(creation.seed()!=seed||creation.hardcore()!=hardcore||
+                creation.aiPopulation()!=aiSettings.count())
+                throw new IOException("World rules differ from persisted creation settings");
+            playerLimit=creation.maxPlayers();
+        }
+        connectionSlots=new Semaphore(playerLimit);
         // Bot accounts/groups/claims are durable identities. Changing roster
         // numbers or factions at restart requires an explicit migration.
         HostAiSettings.Rules boundAI=HostAiSettings.bind(saveDir,aiSettings);

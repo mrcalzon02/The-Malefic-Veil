@@ -133,6 +133,11 @@ public final class GGBotCarPack {
             .filter(s->!s.startsWith("ggbot-06-"))
             .toList();
     }
+    /** Rare police and taxi parking variants with dedicated source geometry. */
+    public List<String> serviceModels(){
+        return models.keySet().stream().filter(s->
+            s.contains("police")||s.contains("taxi")).toList();
+    }
     public List<String> wreckModels(){
         return models.keySet().stream().filter(s->s.startsWith("ggbot-06-")).toList();
     }

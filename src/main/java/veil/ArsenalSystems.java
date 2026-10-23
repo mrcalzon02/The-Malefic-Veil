@@ -79,7 +79,7 @@ public final class ArsenalSystems {
     private World.Device bench(int id){
         ArenaSystems.Player p=host.player(id);if(p==null)return null;World.Device nearest=null;double best=2.6;
         for(World.Device d:host.world.devices)if(d.kind==ArenaSystems.FIELD_BENCH&&d.hp>0&&(d.ownerId==id||p.accountKey.equals(d.ownerKey))){
-            double dist=Math.hypot(d.x-p.x,d.y-p.y);if(dist<best&&host.clear(p.x,p.y,d.x,d.y)){nearest=d;best=dist;}
+            double dist=Math.hypot(d.x-p.x,d.y-p.y);if(dist<best&&host.world.lineClear(p.x,p.y,d.x,d.y)){nearest=d;best=dist;}
         }return nearest;
     }
     public View view(int id){synchronized(host){State s=state(id);ArenaSystems.Player p=host.player(id);if(s==null||p==null)return null;

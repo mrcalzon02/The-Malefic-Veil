@@ -41,3 +41,8 @@ recipe_id,kind,era,faction,station_id,output_item,output_quantity,seconds,utilit
 "binding-resin","INDUSTRIAL","AUTOMATION","BEGOTTEN","nutrient-digestor","BINDING_RESIN","1","1260","12","ENGINEERING","1","PROPOSED_SKILL_GATE"
 "spine-supply","INDUSTRIAL","INCURSION","BEGOTTEN","incursion-anchor","SPINE_SUPPLY","1","2400","25","ENGINEERING","1","PROPOSED_SKILL_GATE"
 "field-maintenance","INDUSTRIAL","AUTOMATION","UNRAVELED","motor-pool","VEHICLE_REPAIR_KIT","1","900","12","ENGINEERING","1","PROPOSED_SKILL_GATE"
+"cold-preservation","INDUSTRIAL","SALVAGE","ALL","cold-store","PRESERVED_RATIONS","3","900","0","ENGINEERING","1","PROPOSED_SKILL_GATE"
+"guard-provisions","INDUSTRIAL","SALVAGE","ALL","barracks","GUARD_PROVISIONS","2","960","0","ENGINEERING","1","PROPOSED_SKILL_GATE"
+"treat-contaminated-water","INDUSTRIAL","ELECTRIC","ALL","purification-works","STERILE_WATER","4","780","6","ENGINEERING","1","PROPOSED_SKILL_GATE"
+"secure-ammo-cache","INDUSTRIAL","AUTOMATION","UNRAVELED","security-grid","DEFENSE_CACHE","2","1440","16","ENGINEERING","1","PROPOSED_SKILL_GATE"
+"fortified-rations","INDUSTRIAL","AUTOMATION","ALL","industrial-workshop","FIELD_MRE","3","1200","12","ENGINEERING","1","PROPOSED_SKILL_GATE"

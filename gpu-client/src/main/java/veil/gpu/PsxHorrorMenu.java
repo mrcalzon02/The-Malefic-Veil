@@ -23,7 +23,13 @@ import java.util.zip.*;
  * No Godot runtime is needed; the source PNGs are loaded from the licensed ZIP.
  */
 public final class PsxHorrorMenu implements AutoCloseable {
-    private static final String ZIP="/psx-ui/psx-horror-ui-free-assets.zip";
+    // Original licensed bytes are verified before first GPU texture upload.
+    private static final int CANVAS_W=640,CANVAS_H=400;
+    private static final int REFERENCE_W=320,REFERENCE_H=200;
+    private static final int OFFSET_X=(CANVAS_W-REFERENCE_W)/2;
+    private static final int OFFSET_Y=(CANVAS_H-REFERENCE_H)/2;
+    private int sourcedDraws;
+    public int sourcedDraws(){return sourcedDraws;}
     public interface Settings {
         void changeView(int delta);
         void changeLights(int delta);
@@ -48,10 +54,8 @@ public final class PsxHorrorMenu implements AutoCloseable {
         // extracting assets into game data folders or redistributing content.
         Path archive=null;
         byte[] fontDefinition=null,fontAtlas=null;
-        try(InputStream file=PsxHorrorMenu.class.getResourceAsStream(ZIP)){
-            if(file==null)throw new IOException("Missing CC BY 4.0 PSX Horror UI Free resource "+ZIP);
-            archive=Files.createTempFile("malefic-psx-ui-", ".zip");
-            Files.copy(file,archive,java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        try{
+            archive=PsxHorrorUiSource.verifiedCopy();
             try(ZipFile zip=new ZipFile(archive.toFile())){
                 Enumeration<? extends ZipEntry> entries=zip.entries();
                 while(entries.hasMoreElements()){
@@ -67,7 +71,8 @@ public final class PsxHorrorMenu implements AutoCloseable {
                     }
                     if(!name.startsWith(base)||!name.endsWith(".png"))continue;
                     String key=name.substring(base.length(),name.length()-4);
-                    if(!required.contains(key))continue;
+                    // Load all 53 original fog sprites, including inventory,
+                    // health, maps, cursor, dialogs and save-slot art.
                     if(entry.getSize()<0||entry.getSize()>256*1024)
                         throw new IOException("Invalid UI sprite size for "+name);
                     byte[] bytes;
@@ -107,8 +112,9 @@ public final class PsxHorrorMenu implements AutoCloseable {
                 }catch(IOException ignored){}
             }
         }
-        if(!textures.keySet().containsAll(required))
-            throw new IllegalStateException("Incomplete PSX UI kit: "+required+" vs "+textures.keySet());
+        if(!textures.keySet().containsAll(required)||textures.size()!=53)
+            throw new IllegalStateException("Incomplete original PSX UI fog theme: "+
+                textures.size()+" sprites, required="+required);
         patch("window",5,18,5,5);
         patch("panel",5,5,5,5);
         patch("menu_band",4,16,6,7);
@@ -116,12 +122,60 @@ public final class PsxHorrorMenu implements AutoCloseable {
         patch("button_hover",4,4,7,8);
         patch("slider",3,3,2,2);
         patch("slider_fill",3,3,2,2);
+        patch("progress_bg",4,4,3,3);
+        patch("progress_fill",3,3,3,3);
+        patch("tooltip",4,4,4,4);
+        patch("line_edit",4,4,4,4);
+        patch("slot",6,6,6,6);
+        patch("slot_selected",6,6,6,6);
+        patch("slot_equipped",6,6,6,6);
+        System.out.println("PSX_HORROR_UI_READY source=heyheythere sha256="+
+            PsxHorrorUiSource.SHA256+" sprites="+textures.size()+
+            " font=original fog-theme=yes");
     }
     private void patch(String id,int left,int right,int top,int bottom){
         patches.put(id,new NinePatch(new TextureRegion(textures.get(id)),
             left,right,top,bottom));
     }
     public BitmapFont font(){return packFont;}
+    private void source(NinePatch sprite,SpriteBatch batch,float x,float y,float w,float h){
+        sprite.draw(batch,x,y,w,h);sourcedDraws++;
+    }
+    private void raw(String key,SpriteBatch batch,float x,float y,float w,float h){
+        Texture t=textures.get(key);
+        if(t==null)throw new IllegalStateException("Original heyheythere sprite missing: "+key);
+        batch.draw(t,x,y,w,h);sourcedDraws++;
+    }
+    /** The same original nine-sliced window/panel assets as the main menu. */
+    public void frame(SpriteBatch batch,float x,float y,float width,float height){
+        source(patches.get("window"),batch,x,y,width,height);
+    }
+    public void panel(SpriteBatch batch,float x,float y,float width,float height){
+        source(patches.get("panel"),batch,x,y,width,height);
+    }
+    public void tooltip(SpriteBatch batch,float x,float y,float width,float height){
+        source(patches.get("tooltip"),batch,x,y,width,height);
+    }
+    /** The actual source progress sprites, not hand-drawn status rectangles. */
+    public void progress(SpriteBatch batch,float x,float y,float width,float fraction){
+        if(!Float.isFinite(fraction))throw new IllegalArgumentException("Invalid status fraction");
+        float bounded=Math.max(0,Math.min(1,fraction));
+        source(patches.get("progress_bg"),batch,x,y,width,11);
+        if(bounded>0)source(patches.get("progress_fill"),batch,x+2,y+2,
+            Math.max(6,(width-4)*bounded),7);
+    }
+    public void slot(SpriteBatch batch,float x,float y,boolean selected){
+        source(patches.get(selected?"slot_selected":"slot"),batch,x,y,38,38);
+    }
+    public void marker(SpriteBatch batch,float x,float y){
+        raw("mark_you",batch,x,y,9,9);
+    }
+    public void separator(SpriteBatch batch,float x,float y,float width){
+        raw("divider",batch,x,y,width,5);
+    }
+    public void band(SpriteBatch batch,float x,float y,float width,float height){
+        source(patches.get("menu_band"),batch,x,y,width,height);
+    }
     public Screen screen(){return screen;}
     public void showMain(){screen=Screen.MAIN;selection=0;}
     public void showRunning(){screen=Screen.RUNNING;selection=0;}
@@ -165,8 +219,10 @@ public final class PsxHorrorMenu implements AutoCloseable {
             return false;
         }
         if(Gdx.input.justTouched()){
-            float px=Gdx.input.getX()*320f/Gdx.graphics.getWidth();
-            float py=200-Gdx.input.getY()*200f/Gdx.graphics.getHeight();
+            // UI renders at the center of the 640x400 framebuffer, not at
+            // the old 320x200 origin. Match pointer hitboxes to actual art.
+            float px=Gdx.input.getX()*CANVAS_W/Gdx.graphics.getWidth()-OFFSET_X;
+            float py=CANVAS_H-Gdx.input.getY()*CANVAS_H/Gdx.graphics.getHeight()-OFFSET_Y;
             if(px>=54&&px<=269){
                 for(int n=0;n<size();n++){
                     float top=128-n*23;
@@ -180,23 +236,23 @@ public final class PsxHorrorMenu implements AutoCloseable {
         font.draw(batch,value,x,y);
     }
     private void button(SpriteBatch batch,BitmapFont font,int index,String label){
-        int y=128-index*23;
-        patches.get("menu_band").draw(batch,54,y,212,20);
-        if(index==selection)patches.get("button_hover").draw(batch,58,y+1,204,18);
-        else patches.get("button_normal").draw(batch,58,y+1,204,18);
-        drawText(font,batch,(index==selection?"> ":"  ")+label,68,y+13);
+        int y=OFFSET_Y+128-index*23;
+        band(batch,OFFSET_X+54,y,212,20);
+        source(patches.get(index==selection?"button_hover":"button_normal"),
+            batch,OFFSET_X+58,y+1,204,18);
+        drawText(font,batch,(index==selection?"> ":"  ")+label,OFFSET_X+68,y+13);
     }
     public void draw(SpriteBatch batch,BitmapFont font,float viewRange,int maxLights,int timeSpeed){
         if(screen==Screen.RUNNING)return;
-        patches.get("window").draw(batch,34,18,252,170);
-        drawText(font,batch,"THE MALEFIC VEIL",47,176);
+        frame(batch,OFFSET_X+34,OFFSET_Y+18,252,170);
+        drawText(font,batch,"THE MALEFIC VEIL",OFFSET_X+47,OFFSET_Y+176);
         String subtitle=switch(screen){
             case MAIN -> "THE WORLD HAS FORGOTTEN ITSELF";
             case GRAPHICS -> "GRAPHICS / ENVIRONMENT";
             case CREDITS -> "ART / ATTRIBUTION";
             case RUNNING -> "";
         };
-        drawText(font,batch,subtitle,47,157);
+        drawText(font,batch,subtitle,OFFSET_X+47,OFFSET_Y+157);
         if(screen==Screen.MAIN){
             button(batch,font,0,"ENTER THE VEIL");
             button(batch,font,1,"GRAPHICS");
@@ -208,14 +264,15 @@ public final class PsxHorrorMenu implements AutoCloseable {
             button(batch,font,2,"TIME SPEED: "+timeSpeed+"X   -/+");
             button(batch,font,3,"RETURN");
         }else if(screen==Screen.CREDITS){
-            patches.get("panel").draw(batch,50,60,220,88);
-            drawText(font,batch,"PSX Horror UI Free by heyheythere",57,130);
-            drawText(font,batch,"CC BY 4.0",57,116);
-            drawText(font,batch,"heyheythere.itch.io/psx-horror-ui-free",57,103);
-            drawText(font,batch,"KENNEY RETRO URBAN KIT - CC0",57,88);
+            panel(batch,OFFSET_X+50,OFFSET_Y+60,220,88);
+            drawText(font,batch,"PSX Horror UI Free by heyheythere",OFFSET_X+57,OFFSET_Y+130);
+            drawText(font,batch,"CC BY 4.0",OFFSET_X+57,OFFSET_Y+116);
+            drawText(font,batch,"heyheythere.itch.io/psx-horror-ui-free",OFFSET_X+57,OFFSET_Y+103);
+            drawText(font,batch,"KENNEY RETRO URBAN KIT - CC0",OFFSET_X+57,OFFSET_Y+88);
             button(batch,font,0,"RETURN");
         }
-        drawText(font,batch,"ARROWS SELECT   ENTER APPLY   ESC BACK",47,30);
+        drawText(font,batch,"ARROWS SELECT   ENTER APPLY   ESC BACK",
+            OFFSET_X+47,OFFSET_Y+30);
     }
     @Override public void close(){
         for(Texture texture:textures.values())texture.dispose();

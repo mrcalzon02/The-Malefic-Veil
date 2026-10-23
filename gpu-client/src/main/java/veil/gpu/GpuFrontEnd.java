@@ -119,7 +119,21 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         }
         rebuild(false);
     }
-    private void gotoScreen(Screen next){screen=next;selected=0;rebuild();}
+    private void gotoScreen(Screen next){
+        screen=next;selected=0;rebuild();
+        message=switch(next){
+            case HOME -> "Select a mode. All setup stays in this window.";
+            case WORLDS -> "Create a new world or resume existing host data.";
+            case CREATE -> "Enter world name/seed; arrows change rule values.";
+            case LOAD -> "Select an existing world using its saved host rules.";
+            case JOIN -> "Enter server IP and port, then choose your character.";
+            case FACTION -> "Faction is permanent for this character's session.";
+            case CLASS -> "Unavailable roles cannot be selected.";
+            case VIDEO,AUDIO,CONTROLS -> "Left/right change values. Save before leaving.";
+            case CREDITS -> "Licensed original PSX UI art by heyheythere.";
+            case CONNECTING -> "Connecting... ESC or Cancel returns to classes.";
+        };
+    }
     private void note(String value){message=value;System.out.println("GPU_MENU "+value);}
     private void item(String label,Runnable action){
         entries.add(new Entry(label,action,null,null,null));
@@ -499,7 +513,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             case CONTROLS -> "OPTIONS / CONTROLS";
             case CREDITS -> "CREDITS";
             case CONNECTING -> "WORLD LOADING";
-        },38,335);
+        },38,341);
         for(int i=0;i<entries.size();i++){
             String label=entries.get(i).label();
             if(label.length()>49)label=label.substring(0,48)+"~";
@@ -528,7 +542,13 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 frames++;
                 if(frames==65)gameRenderer.auditPause(true);
                 if(frames==68)capture("gpu-frontend-live-pause");
-                if(frames==72)gameRenderer.auditPause(false);
+                if(frames==70)gameRenderer.auditPanel("craft");
+                if(frames==73)capture("gpu-frontend-live-crafting");
+                if(frames==76)gameRenderer.auditPanel("crew");
+                if(frames==79)capture("gpu-frontend-live-crew");
+                if(frames==82)gameRenderer.auditPanel("crew-input");
+                if(frames==85)capture("gpu-frontend-live-crew-input");
+                if(frames==88)gameRenderer.auditPause(false);
             }
             if(flowSmoke&&frames==110){
                 MaleficVeil.GpuFrame frame=readyGame.gpuFrame();

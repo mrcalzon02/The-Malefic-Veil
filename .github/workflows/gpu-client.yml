@@ -118,6 +118,9 @@ jobs:
           grep -q 'PASS GPU_UNIFIED_FRONTEND_FULL_FLOW' build/test-visuals/unified-live-session.log
           test -s build/test-visuals/gpu-frontend-live-world.png
           test -s build/test-visuals/gpu-frontend-live-pause.png
+          test -s build/test-visuals/gpu-frontend-live-crafting.png
+          test -s build/test-visuals/gpu-frontend-live-crew.png
+          test -s build/test-visuals/gpu-frontend-live-crew-input.png
       - name: Reuse published editor module in actual GPU viewport
         if: runner.os == 'Linux'
         shell: bash

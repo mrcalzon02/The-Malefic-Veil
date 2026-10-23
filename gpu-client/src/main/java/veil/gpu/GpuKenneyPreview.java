@@ -173,6 +173,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(gameplayMenu==null)throw new IllegalStateException("No live gameplay overlay");
         gameplayMenu.auditPause(paused);
     }
+    public void auditPanel(String id){
+        if(gameplayMenu==null)throw new IllegalStateException("Not in live gameplay");
+        gameplayMenu.auditPanel(id);
+    }
     public com.badlogic.gdx.InputProcessor worldInputProcessor(){
         return gameplayMenu==null?null:gameplayMenu.inputProcessor();
     }

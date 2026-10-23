@@ -62,6 +62,14 @@ public final class GpuOverlayMenu {
     }
     /** CI-only visible-state proof; production uses ESC/F11. */
     void auditPause(boolean paused){show(paused?Screen.PAUSE:Screen.GAME);}
+    void auditPanel(String name){
+        switch(name){
+            case "craft"->openCraft();
+            case "crew"->openCrew();
+            case "crew-input"->beginCrewInput("CREATE");
+            default->throw new IllegalArgumentException("Unknown menu proof: "+name);
+        }
+    }
     private void add(String label,Runnable action){items.add(new Item(label,action,null,null));}
     private void slider(String label,Runnable before,Runnable after){
         items.add(new Item(label,after,before,after));

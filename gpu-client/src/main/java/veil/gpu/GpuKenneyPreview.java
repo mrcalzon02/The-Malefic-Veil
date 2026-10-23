@@ -467,50 +467,71 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             worldTimeMs=(long)(WorldDayNight.DAY_MS*frame.hour()/24.0);
         }
     }
+    /** Every gameplay panel uses original heyheythere fog-theme source widgets.
+     * The data still comes only from the authoritative host snapshot. */
     private void drawLiveHud(MaleficVeil.GpuFrame frame){
+        menu.panel(sprites,6,348,438,46);
         String weapon=frame.weapon()==0?"PISTOL":"SHOTGUN";
         String rounds=frame.weapon()==0?
             frame.pistolClip()+"/"+frame.pistolReserve():
             frame.shellClip()+"/"+frame.shellReserve();
         font.draw(sprites,"HP "+frame.health()+"  SAN "+frame.sanity()+
-            "  "+weapon+" "+rounds+"  MED "+frame.medkits(),9,391);
+            "  "+weapon+" "+rounds+"  MED "+frame.medkits(),14,383);
+        menu.progress(sprites,15,355,91,frame.health()/100f);
+        menu.progress(sprites,119,355,91,frame.sanity()/100f);
         font.draw(sprites,"CASH "+frame.cash()+"  SCRAP "+frame.scrap()+
-            "  KILLS "+frame.frags()+"  GPU / LIVE WORLD",9,369);
-        font.draw(sprites,"+",WIDTH/2f-4,HEIGHT/2f+5);
-        if(!frame.notice().isBlank())
-            font.draw(sprites,frame.notice(),12,HEIGHT/2f+50);
-        if(!frame.connected())
-            font.draw(sprites,"HOST CONNECTION LOST",WIDTH/2f-112,HEIGHT/2f+28);
-        if(frame.dead())
-            font.draw(sprites,"YOU HAVE FALLEN  1/2/3 RESPAWN LOCATION  ENTER DEPLOY",
-                17,HEIGHT/2f);
+            "  KILLS "+frame.frags(),221,364);
+        // Source cursor sprite and source tooltip/dialogue are not impostor polygons.
+        menu.marker(sprites,WIDTH/2f-4,HEIGHT/2f-4);
+        if(!frame.notice().isBlank()){
+            menu.tooltip(sprites,8,HEIGHT/2f+29,Math.min(WIDTH-16,450),30);
+            font.draw(sprites,frame.notice(),16,HEIGHT/2f+49);
+        }
+        if(!frame.connected()){
+            menu.frame(sprites,178,HEIGHT/2f+13,285,39);
+            font.draw(sprites,"HOST CONNECTION LOST",194,HEIGHT/2f+38);
+        }
+        if(frame.dead()){
+            menu.frame(sprites,90,HEIGHT/2f-36,460,87);
+            font.draw(sprites,"YOU HAVE FALLEN",118,HEIGHT/2f+20);
+            font.draw(sprites,"1/2/3 RESPAWN  ENTER DEPLOY",115,HEIGHT/2f-7);
+        }
         if(frame.inventory()){
-            font.draw(sprites,"INVENTORY",WIDTH-205,HEIGHT-35);
+            menu.frame(sprites,WIDTH-248,61,241,285);
+            font.draw(sprites,"INVENTORY  I CLOSE",WIDTH-231,HEIGHT-77);
+            menu.separator(sprites,WIDTH-229,HEIGHT-88,201);
             int row=0;
             for(var item:frame.inventoryItems().entrySet()){
-                if(row>=12)break;
+                if(row>=11)break;
+                float top=HEIGHT-117-row*21;
+                menu.slot(sprites,WIDTH-230,top-5,20,row==0);
                 font.draw(sprites,item.getKey()+" x"+item.getValue(),
-                    WIDTH-210,HEIGHT-57-row*18);
+                    WIDTH-205,top+10);
                 row++;
             }
-            if(row==0)font.draw(sprites,"EMPTY",WIDTH-210,HEIGHT-57);
+            if(row==0)font.draw(sprites,"EMPTY",WIDTH-226,HEIGHT-115);
         }else if(frame.skills()){
-            font.draw(sprites,"CHARACTER / SKILLS  K CLOSE",WIDTH-265,HEIGHT-35);
+            menu.frame(sprites,WIDTH-311,69,304,277);
+            font.draw(sprites,"CHARACTER / SKILLS  K CLOSE",WIDTH-294,HEIGHT-77);
+            menu.separator(sprites,WIDTH-294,HEIGHT-88,275);
             int row=0;
             for(String line:frame.skillStats()){
                 if(row>=11)break;
-                font.draw(sprites,line,WIDTH-267,HEIGHT-56-row*18);
+                font.draw(sprites,line,WIDTH-294,HEIGHT-111-row*20);
                 row++;
             }
         }
         if(frame.map()||frame.continent()){
             Texture source=frame.map()?cityMapTexture:continentMapTexture;
             if(source==null)throw new IllegalStateException("Missing authoritative GPU map");
-            float left=WIDTH-280,base=HEIGHT-325;
+            float left=WIDTH-285,base=52;
+            menu.frame(sprites,left-7,base-12,278,305);
+            font.draw(sprites,frame.map()?"CITY MAP  M CLOSE":"CONTINENT  N CLOSE",
+                left+3,base+281);
+            // Seed-generated map images remain gameplay data, inside a sourced
+            // nine-slice frame. The position uses the original mark_you sprite.
             sprites.draw(source,left,base,255,255,0,0,
                 source.getWidth(),source.getHeight(),false,true);
-            font.draw(sprites,frame.map()?"CITY (M CLOSE)":"CONTINENT (N CLOSE)",
-                left,base+278);
             float markerX=frame.map()?
                 (float)(frame.x()/World.SIZE*255):
                 (float)((world.parcelX(frame.x())+.5)/ContinentLayout.SIZE*255);
@@ -519,10 +540,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 (float)((ContinentLayout.SIZE-world.parcelY(frame.z())-.5)/
                     ContinentLayout.SIZE*255);
             if(markerX>=0&&markerX<=255&&markerY>=0&&markerY<=255)
-                font.draw(sprites,"+",left+markerX-5,base+markerY+7);
+                menu.marker(sprites,left+markerX-5,base+markerY-5);
         }
+        menu.band(sprites,4,5,WIDTH-8,23);
         font.draw(sprites,"WASD MOVE  MOUSE AIM/FIRE  E USE  R RELOAD  I INVENTORY  "+
-            "K SKILLS  F11 MORE  ESC MENU",9,20);
+            "K SKILLS  F11 MORE  ESC MENU",12,20);
     }
     /** Foreground sourced weapon mesh, drawn as a camera-relative 3D object. */
     private void renderLiveWeapon(MaleficVeil.GpuFrame frame){
@@ -758,10 +780,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
         sprites.begin();
         if(menu.running()&&editorMode){
-            font.draw(sprites,"LEVEL EDITOR KIT / CITY A  F11 DOCK  CTRL+CLICK PICK",9,391);
+            menu.panel(sprites,5,351,480,43);
+            font.draw(sprites,"LEVEL EDITOR KIT / CITY A  F11 DOCK  CTRL+CLICK PICK",14,381);
             font.draw(sprites,"SEED "+seed+"  LAYER "+
-                editorProject.placements().size()+"  MESHES "+visibleInstances,9,370);
-            font.draw(sprites,"WASD FLY  MOUSE LOOK  SPACE UP  CTRL DOWN  F11 PALETTE",9,20);
+                editorProject.placements().size()+"  MESHES "+visibleInstances,14,364);
+            menu.band(sprites,4,5,WIDTH-8,23);
+            font.draw(sprites,"WASD FLY  MOUSE LOOK  SPACE UP  CTRL DOWN  F11 PALETTE",12,20);
         }else if(menu.running()&&gameplay!=null){
             MaleficVeil.GpuFrame live=gameplay.gpuFrame();
             if(live!=null)drawLiveHud(live);
@@ -889,6 +913,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 }
             }
             if(frames==65){
+                if(menu.sourcedDraws()<20)
+                    throw new IllegalStateException("Editor GPU UI lacks original PSX skin");
+                System.out.println("PASS PSX_HORROR_UI_EDITOR_RENDER source="+
+                    PsxHorrorUiSource.SHA256+" sourcedDraws="+menu.sourcedDraws());
                 if(!models.containsKey(editorProject.get(smokeObject).model()))
                     throw new IllegalStateException("Editor-authored mesh never reached OpenGL");
                 saveFrame("gpu-standalone-editor-live-viewport.png");
@@ -914,6 +942,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 gameplay.gpuFire();
             }
             if(frames==60){
+                if(menu.sourcedDraws()<20)
+                    throw new IllegalStateException("Gameplay HUD did not render original UI skin");
+                System.out.println("PASS PSX_HORROR_UI_GAMEPLAY_RENDER source="+
+                    PsxHorrorUiSource.SHA256+" sourcedDraws="+menu.sourcedDraws());
                 saveFrame("gpu-live-play-shipped-client.png");
                 MaleficVeil.GpuFrame f=gameplay.gpuFrame();
                 if(f==null||f.pistolClip()>=smokeStartingAmmo)
@@ -934,6 +966,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 saveFrame("gpu-kenney-night.png");
                 menu.showMain();
             }else if(frames==36){
+                if(menu.sourcedDraws()<5)
+                    throw new IllegalStateException("Source PSX Horror UI menu not drawn");
+                System.out.println("PASS PSX_HORROR_UI_MENU_RENDER source="+
+                    PsxHorrorUiSource.SHA256+" sourcedDraws="+menu.sourcedDraws());
                 saveFrame("gpu-psx-menu.png");
                 menu.showRunning();
                 heading=Math.PI*1.25;

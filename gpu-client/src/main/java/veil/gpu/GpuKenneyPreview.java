@@ -169,6 +169,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private Runnable onReturnMain;
     public void audioBus(GpuAudioBus bus){this.audioBus=bus;}
     public void onReturnMain(Runnable callback){this.onReturnMain=callback;}
+    public void auditPause(boolean paused){
+        if(gameplayMenu==null)throw new IllegalStateException("No live gameplay overlay");
+        gameplayMenu.auditPause(paused);
+    }
     private float menuTime;
 
     private double cameraHeight=1.65, cameraPitch=-.04;

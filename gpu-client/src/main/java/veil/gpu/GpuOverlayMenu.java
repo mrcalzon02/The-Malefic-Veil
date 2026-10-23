@@ -35,6 +35,8 @@ public final class GpuOverlayMenu {
         this.audio=audio;this.goMain=goMain;this.apply=apply;
     }
     public Screen screen(){return screen;}
+    /** CI-only visible-state proof. Production inputs use ESC/F10/F11. */
+    void auditPause(boolean paused){show(paused?Screen.PAUSE:Screen.GAME);}
     public boolean active(){return screen==Screen.GAME;}
     private void show(Screen target){screen=target;selected=0;build();}
     private void add(String label,Runnable action){items.add(new Item(label,action,null,null));}

@@ -470,18 +470,27 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         }
         ui.end();
     }
+    private void capture(String basename){
+        Pixmap pix=Pixmap.createFromFrameBuffer(0,0,
+            Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        var out=Gdx.files.absolute(new java.io.File(
+            "build/test-visuals/"+basename+".png").getAbsolutePath());
+        out.parent().mkdirs();PixmapIO.writePNG(out,pix);pix.dispose();
+    }
     @Override public void render(){
         if(gameRenderer!=null){
             gameRenderer.render();
-            if(flowSmoke&&++frames==110){
+            if(flowSmoke){
+                frames++;
+                if(frames==65)gameRenderer.auditPause(true);
+                if(frames==68)capture("gpu-frontend-live-pause");
+                if(frames==72)gameRenderer.auditPause(false);
+            }
+            if(flowSmoke&&frames==110){
                 MaleficVeil.GpuFrame frame=readyGame.gpuFrame();
                 if(frame==null||!frame.connected())
                     throw new IllegalStateException("In-window world launch not connected");
-                Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,
-                    Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-                var out=Gdx.files.absolute(new java.io.File(
-                    "build/test-visuals/gpu-frontend-live-world.png").getAbsolutePath());
-                out.parent().mkdirs();PixmapIO.writePNG(out,pixels);pixels.dispose();
+                capture("gpu-frontend-live-world");
                 System.out.println("PASS GPU_UNIFIED_FRONTEND_FULL_FLOW seed="+
                     readyGame.gpuWorld().seed+" world="+readyGame.gpuFrame().connected()+
                     " faction="+faction+" role=WARDEN source=authoritative-lan");
@@ -522,16 +531,32 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                     FactionClasses.Role::playable).findFirst().orElseThrow());
             }
         }
-        if(smoke&&++frames==65){
-            if(skin.sourcedDraws()<150)throw new IllegalStateException("PSX scene menu not drawn");
-            Pixmap pix=Pixmap.createFromFrameBuffer(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-            var dst=Gdx.files.absolute(new java.io.File(
-                "build/test-visuals/gpu-unified-front-end.png").getAbsolutePath());
-            dst.parent().mkdirs();PixmapIO.writePNG(dst,pix);pix.dispose();
-            System.out.println("PASS GPU_UNIFIED_FRONTEND_MENU camera=animated-city ui="+
-                skin.sourcedDraws()+" state="+screen+" resolution="+Gdx.graphics.getWidth()+
-                "x"+Gdx.graphics.getHeight());
-            Gdx.app.exit();
+        if(smoke){
+            frames++;
+            switch(frames){
+                case 10 -> capture("gpu-frontend-home");
+                case 20 -> gotoScreen(Screen.VIDEO);
+                case 24 -> capture("gpu-frontend-video");
+                case 28 -> gotoScreen(Screen.AUDIO);
+                case 32 -> capture("gpu-frontend-audio");
+                case 36 -> gotoScreen(Screen.CONTROLS);
+                case 40 -> capture("gpu-frontend-controls");
+                case 43 -> {worldMode("solo");gotoScreen(Screen.CREATE);}
+                case 48 -> capture("gpu-frontend-create-world");
+                case 50 -> {mode="join";gotoScreen(Screen.JOIN);}
+                case 54 -> capture("gpu-frontend-join");
+                case 58 -> gotoScreen(Screen.HOME);
+                case 65 -> {
+                    if(skin.sourcedDraws()<150)
+                        throw new IllegalStateException("Original source menu skin absent");
+                    capture("gpu-unified-front-end");
+                    System.out.println("PASS GPU_UNIFIED_FRONTEND_MENU camera=animated-city ui="+
+                        skin.sourcedDraws()+" screens=HOME,VIDEO,AUDIO,CONTROLS,CREATE,JOIN"+
+                        " resolution="+Gdx.graphics.getWidth()+"x"+Gdx.graphics.getHeight());
+                    Gdx.app.exit();
+                }
+                default -> {}
+            }
         }
     }
     @Override public void dispose(){

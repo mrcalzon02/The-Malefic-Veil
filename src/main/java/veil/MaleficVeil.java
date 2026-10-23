@@ -141,9 +141,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 else if(recipe.station()==SurvivalCrafting.Station.WORKBENCH)
                     net.craftWorkbench(id);
                 else net.craftHand(id);
-            }else if(localHost!=null)
-                toast(localHost.player(1).survival.craft(id,SurvivalCrafting.Station.HAND)?
-                    "CRAFTED "+id:"CRAFT DENIED");
+            }else if(localHost!=null){
+                boolean accepted=switch(recipe.station()){
+                    case HAND -> localHost.craftHand(1,id);
+                    case FIRE -> localHost.craftStation(1,id);
+                    case WORKBENCH -> localHost.craftWorkbench(1,id);
+                };
+                toast(accepted?"CRAFTED "+id:"CRAFT DENIED");
+            }
         });
     }
     /** A crafted kit is consumed by the host only after real placement validation. */

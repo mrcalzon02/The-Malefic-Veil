@@ -132,7 +132,8 @@ public final class SurvivalCrafting {
     }
     public synchronized boolean craft(String recipeId,Station station){
         Recipe recipe=RECIPES.get(recipeId);
-        if(recipe==null||station==null||station.ordinal()<recipe.station().ordinal())return false;
+        if(recipe==null||station==null||
+            recipe.station()!=Station.HAND&&recipe.station()!=station)return false;
         for(var part:recipe.requires().entrySet())
             if(count(part.getKey())<part.getValue())return false;
         int newMass=mass()+weight(recipe.result())*recipe.quantity();

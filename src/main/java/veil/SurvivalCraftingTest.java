@@ -35,6 +35,10 @@ public final class SurvivalCraftingTest {
         check(a.acquire(SurvivalCrafting.Item.DIRTY_WATER,1,false),"Gathered dirty water");
         check(!a.craft("boil-water",SurvivalCrafting.Station.HAND),
             "Cannot purify water without fire");
+        check(!a.craft("boil-water",SurvivalCrafting.Station.WORKBENCH),
+            "Workbench token bypassed the required live campfire station");
+        check(a.count(SurvivalCrafting.Item.DIRTY_WATER)==1,
+            "Rejected cross-station craft consumed ingredients");
         check(a.craft("boil-water",SurvivalCrafting.Station.FIRE),
             "Boiling converts dirty water into safe water");
         a.advance(60_000);

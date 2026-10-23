@@ -159,7 +159,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private boolean menuBackdrop;
     private GpuClientSettings clientSettings=GpuClientSettings.load();
     private GpuAudioBus audioBus;
+    private GpuOverlayMenu gameplayMenu;
+    private Runnable onReturnMain;
     public void audioBus(GpuAudioBus bus){this.audioBus=bus;}
+    public void onReturnMain(Runnable callback){this.onReturnMain=callback;}
     private float menuTime;
 
     private double cameraHeight=1.65, cameraPitch=-.04;
@@ -370,6 +373,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(gallery)setGalleryView(galleryViews[0]);
         if(gameplay!=null){
             buildGameplayMaps();
+            gameplayMenu=new GpuOverlayMenu(menu,gameplay,clientSettings,audioBus,
+                ()->{
+                    if(onReturnMain==null)Gdx.app.exit();
+                    else Gdx.app.postRunnable(onReturnMain);
+                },()->clientSettings(clientSettings));
             gameplay.gpuSceneReady();
         }
         if(editorMode){
@@ -448,16 +456,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     /** Only input adapters live here: movement, shooting, skills, factions,
      * cargo, crafting and host transactions remain in MaleficVeil. */
     private void liveControls(){
-        PsxHorrorMenu.Settings settings=new PsxHorrorMenu.Settings(){
-            public void changeView(int delta){
-                visualDistance=Math.max(45,Math.min(240,visualDistance+delta*3));
-            }
-            public void changeLights(int delta){
-                maxLights=Math.max(0,Math.min(8,maxLights+delta));
-            }
-            public void changeTimeSpeed(int ignored){} // server owns world time
-        };
-        boolean active=menu.input(settings);
+        boolean active=gameplayMenu.input();
         for(int[] binding:LIVE_BINDINGS){
             boolean pressed=active&&Gdx.input.isKeyPressed(binding[0]);
             boolean wasDown=liveHeld.contains(binding[1]);
@@ -469,10 +468,6 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(!active){
             Gdx.input.setCursorCatched(false);
             return;
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F11)){
-            Gdx.input.setCursorCatched(false);
-            gameplay.gpuManagement();
         }
         if(!Gdx.input.isCursorCatched()){
             Gdx.input.setCursorCatched(true);
@@ -571,7 +566,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         menu.band(sprites,4,5,WIDTH-8,23);
         font.draw(sprites,"WASD MOVE  MOUSE AIM/FIRE  E USE  R RELOAD  I INVENTORY  "+
-            "K SKILLS  F11 MORE  ESC MENU",12,20);
+            "K SKILLS  F11 MENU  ESC PAUSE",12,20);
     }
     /** Foreground sourced weapon mesh, drawn as a camera-relative 3D object. */
     private void renderLiveWeapon(MaleficVeil.GpuFrame frame){
@@ -819,6 +814,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }else if(menu.running()&&gameplay!=null){
             MaleficVeil.GpuFrame live=gameplay.gpuFrame();
             if(live!=null)drawLiveHud(live);
+            if(gameplayMenu!=null)gameplayMenu.draw(sprites);
         }else if(menu.running()){
             font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),9,391);
             font.draw(sprites,"TILES "+visibleInstances+"  LAND "+visibleTerrain+"  DRAWS "+drawCalls+

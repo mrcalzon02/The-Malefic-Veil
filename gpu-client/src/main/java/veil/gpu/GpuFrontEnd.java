@@ -30,6 +30,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     private GpuKenneyPreview gameRenderer;
     private PsxHorrorMenu skin;
     private SpriteBatch ui;
+    private InputAdapter typing;
     private GpuClientSettings settings;
     private GpuAudioBus audio;
     private Screen screen=Screen.HOME;
@@ -66,7 +67,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         audio=new GpuAudioBus(settings);
         audio.open();
         applyVideo();
-        Gdx.input.setInputProcessor(new InputAdapter(){
+        typing=new InputAdapter(){
             @Override public boolean keyTyped(char character){
                 if(screen!=Screen.CREATE&&screen!=Screen.JOIN)return false;
                 if(selected<0||selected>=entries.size())return false;
@@ -83,7 +84,8 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 }
                 return false;
             }
-        });
+        };
+        Gdx.input.setInputProcessor(typing);
         rebuild();
     }
     private String getText(String key){return switch(key){
@@ -307,11 +309,27 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(skin!=null){skin.close();skin=null;}
         if(ui!=null){ui.dispose();ui=null;}
         gameRenderer=view;
+        gameRenderer.onReturnMain(this::returnToMenu);
         gameRenderer.clientSettings(settings);
         gameRenderer.audioBus(audio);
         gameRenderer.create();
         Gdx.input.setInputProcessor(null);
         Gdx.input.setCursorCatched(false);
+    }
+    /** Returning from live play destroys that session, not the launcher. */
+    private void returnToMenu(){
+        if(gameRenderer!=null){gameRenderer.dispose();gameRenderer=null;}
+        readyGame=null;
+        if(audio!=null)audio.menu();
+        skin=new PsxHorrorMenu(true);
+        ui=new SpriteBatch();
+        backdrop=GpuKenneyPreview.menuBackdrop(20261020);
+        backdrop.clientSettings(settings);
+        backdrop.create();
+        Gdx.input.setCursorCatched(false);
+        Gdx.input.setInputProcessor(typing);
+        gotoScreen(Screen.HOME);
+        note("Returned to menu. Host and character simulation closed.");
     }
     private void changeView(int step){
         settings.distance=Math.max(45,Math.min(240,settings.distance+step));

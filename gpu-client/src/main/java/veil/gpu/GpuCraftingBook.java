@@ -118,7 +118,8 @@ public final class GpuCraftingBook implements AutoCloseable {
         List<Line> rows=entries();
         if(rows.isEmpty()||rows.get(choice).recipe()==null)return;
         List<String> ids=new ArrayList<>(rows.get(choice).recipe().inputs().keySet());
-        int index=ingredientOffset+row;
+        int start=Math.min(ingredientOffset,Math.max(0,((ids.size()-1)/4)*4));
+        int index=start+row;
         if(index>=0&&index<ids.size()){
             remember();inspectItem(ids.get(index));
         }
@@ -236,6 +237,19 @@ public final class GpuCraftingBook implements AutoCloseable {
                         if(offset+i<entries().size())setChoice(offset+i);touched=true;break;
                     }
                 }
+            }else if(x>=314&&x<=614){
+                List<Line> rows=entries();
+                if(!rows.isEmpty()&&rows.get(choice).recipe()!=null){
+                    for(int i=0;i<4;i++){
+                        float bottom=161-i*24;
+                        if(y>=bottom&&y<bottom+23){
+                            followIngredient(i);touched=true;break;
+                        }
+                    }
+                }
+                if(!touched&&y>=39&&y<=65){
+                    followDownstream();touched=true;
+                }
             }
         }
         return touched;
@@ -289,7 +303,8 @@ public final class GpuCraftingBook implements AutoCloseable {
             line(batch,"+"+(record.inputs().size()-start-row)+" MORE  ] NEXT",314,79);
         else if(start>0)
             line(batch,"[ PREVIOUS COMPONENTS",314,79);
-        String related=CraftingRecipeIndex.usesText(record.output(),2,listingFaction());
+        String related=browse==1?CraftingRecipeIndex.usesText(record.output(),2):
+            CraftingRecipeIndex.usesText(record.output(),2,listingFaction());
         line(batch,"USED FOR: "+clipped(related,34),314,48);
         if(record.kind()==CraftingRecipeIndex.Kind.FACILITY &&
            !record.prerequisites().isEmpty())
@@ -300,9 +315,15 @@ public final class GpuCraftingBook implements AutoCloseable {
         skin.slot(batch,315,248,52,false);
         icons.draw(batch,item,315,248,52);
         if(!icons.contains(item))line(batch,"UNILLUSTRATED SOURCE ITEM",374,280);
-        String status=!makers(item).isEmpty()?
-            "YOUR FACTION HAS PRODUCTION":
-            (CraftingRecipeIndex.items().contains(item)?"HARVEST/LOOT OR INPUT":"ICON-ONLY CONCEPT");
+        List<Record> available=makers(item);
+        String status=available.isEmpty()?
+            (CraftingRecipeIndex.items().contains(item)?
+                "HARVEST / LOOT / INGREDIENT":"ICON-ONLY CONCEPT"):
+            available.stream().noneMatch(r->CraftingRecipeIndex.belongsTo(r,faction()))?
+                "FOREIGN FORMULAS / VIEW ONLY":
+            available.stream().anyMatch(r->r.kind()==CraftingRecipeIndex.Kind.FIELD)?
+                "FIELD RECIPE / HOST CHECK REQUIRED":
+                "PLANNED INDUSTRIAL FORMULA / NO HOST PRODUCTION";
         line(batch,status,314,236);
         List<Record> makers=makers(item);
         line(batch,"MADE AT:",314,218);

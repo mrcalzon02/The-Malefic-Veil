@@ -56,6 +56,18 @@ jobs:
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'kenney/retro-urban-kit-2.0.zip'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'ggbot/psx-style-cars.zip'
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'psx-ui/psx-horror-ui-free-assets.zip'
+      - name: Verify exact licensed source, 53 fog sprites and Swing editor skin
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/test-visuals
+          java -cp gpu-client/target/MaleficVeil-GPU.jar \
+            veil.gpu.PsxHorrorUiSource | tee build/test-visuals/psx-source-audit.log
+          java -Djava.awt.headless=true -cp gpu-client/target/MaleficVeil-GPU.jar \
+            veil.gpu.PsxHorrorSwingSkin | tee -a build/test-visuals/psx-source-audit.log
+          grep -q 'PASS PSX_HORROR_UI_SOURCE' build/test-visuals/psx-source-audit.log
+          grep -q 'PASS PSX_HORROR_SWING_EDITOR_SKIN' build/test-visuals/psx-source-audit.log
       - name: Prepare Mesa OpenGL and virtual display
         if: runner.os == 'Linux'
         shell: bash
@@ -70,7 +82,10 @@ jobs:
         run: |
           mkdir -p build/test-visuals
           xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
-            timeout 90s java -Djava.awt.headless=false -jar gpu-client/target/MaleficVeil-GPU.jar --smoke
+            timeout 90s java -Djava.awt.headless=false -jar gpu-client/target/MaleficVeil-GPU.jar --smoke |
+            tee build/test-visuals/gpu-psx-ui-menu.log
+          grep -q 'PASS PSX_HORROR_UI_MENU_RENDER' build/test-visuals/gpu-psx-ui-menu.log
+          grep -q 'PSX_HORROR_UI_READY' build/test-visuals/gpu-psx-ui-menu.log
           test -s build/test-visuals/gpu-kenney-city.png
           test -s build/test-visuals/gpu-kenney-night.png
           test -s build/test-visuals/gpu-psx-menu.png
@@ -90,6 +105,7 @@ jobs:
             timeout 150s java -jar gpu-client/target/MaleficVeil-GPU.jar \
             --editor-smoke --seed=20261020 | tee build/test-visuals/editor-kit.log
           grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' build/test-visuals/editor-kit.log
+          grep -q 'PASS PSX_HORROR_UI_EDITOR_RENDER' build/test-visuals/editor-kit.log
           test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
           test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
       - name: Three seeded GPU worlds, ten city and exterior camera poses each
@@ -126,5 +142,7 @@ jobs:
             build/test-visuals/gallery-seed-*.log
             build/test-visuals/gpu-standalone-editor-live-viewport.png
             build/test-visuals/editor-kit.log
+            build/test-visuals/psx-source-audit.log
+            build/test-visuals/gpu-psx-ui-menu.log
             build/test-visuals/editor-kit-smoke/seed-*/city-A.properties
           if-no-files-found: warn

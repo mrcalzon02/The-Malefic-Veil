@@ -58,6 +58,11 @@ jobs:
           cp gpu-client/target/MaleficVeil-GPU.jar build/package/MaleficVeil.jar
           jar tf build/package/MaleficVeil.jar | grep -qx 'veil/gpu/GpuKenneyPreview.class'
           jar tf build/package/MaleficVeil.jar | grep -qx 'veil/MaleficVeil.class'
+          jar tf build/package/MaleficVeil.jar |
+            grep -qx 'psx-ui/psx-horror-ui-free-assets.zip'
+          java -cp build/package/MaleficVeil.jar veil.gpu.PsxHorrorUiSource
+          java -Djava.awt.headless=true -cp build/package/MaleficVeil.jar \
+            veil.gpu.PsxHorrorSwingSkin
           unzip -p build/package/MaleficVeil.jar META-INF/MANIFEST.MF |
             grep -q 'Main-Class: veil.gpu.GpuDesktop'
       - name: Run real shipped game/render/input in Mesa OpenGL
@@ -74,6 +79,7 @@ jobs:
             -jar build/package/MaleficVeil.jar --play-smoke |
             tee build/test-visuals/release-live-gpu.log
           grep -q 'PASS GPU_LIVE_PLAY_REAL_GAME' build/test-visuals/release-live-gpu.log
+          grep -q 'PASS PSX_HORROR_UI_GAMEPLAY_RENDER' build/test-visuals/release-live-gpu.log
           test -s build/test-visuals/gpu-live-play-shipped-client.png
       - name: Verify published editor module drives the actual game viewport
         shell: bash
@@ -86,6 +92,8 @@ jobs:
               --editor-smoke --seed=20261020 |
               tee build/test-visuals/release-editor-kit.log
           grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' \
+            build/test-visuals/release-editor-kit.log
+          grep -q 'PASS PSX_HORROR_UI_EDITOR_RENDER' \
             build/test-visuals/release-editor-kit.log
           test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
           test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties

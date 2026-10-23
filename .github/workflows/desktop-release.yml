@@ -189,6 +189,8 @@ jobs:
             build/package/MaleficVeil-*.zip
             build/package/update.properties
             build/package/updater.jar
+            build/test-visuals/gpu-live-play-shipped-client.png
+            build/test-visuals/release-live-gpu.log
           if-no-files-found: warn
 
   windows-review-installer:

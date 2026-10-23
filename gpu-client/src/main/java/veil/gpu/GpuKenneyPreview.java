@@ -393,6 +393,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         {Input.Keys.J,KeyEvent.VK_J},{Input.Keys.O,KeyEvent.VK_O},
         {Input.Keys.P,KeyEvent.VK_P},{Input.Keys.U,KeyEvent.VK_U},
         {Input.Keys.M,KeyEvent.VK_M},{Input.Keys.N,KeyEvent.VK_N},
+        {Input.Keys.F9,KeyEvent.VK_F9},
         {Input.Keys.NUM_1,KeyEvent.VK_1},{Input.Keys.NUM_2,KeyEvent.VK_2},
         {Input.Keys.NUM_3,KeyEvent.VK_3},{Input.Keys.ENTER,KeyEvent.VK_ENTER}
     };

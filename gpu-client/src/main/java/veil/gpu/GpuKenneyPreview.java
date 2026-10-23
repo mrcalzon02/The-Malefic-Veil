@@ -157,6 +157,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private WorldDayNight.Conditions environment=WorldDayNight.atHour(12);
     private boolean shownFailure;
     private boolean menuBackdrop;
+    private Runnable launcherOverlay;
+    /** Draw launcher text and city in one native framebuffer and orientation. */
+    public void launcherOverlay(Runnable overlay){
+        if(!menuBackdrop)throw new IllegalStateException("Launcher callback needs backdrop mode");
+        launcherOverlay=overlay;
+    }
     private GpuClientSettings clientSettings=GpuClientSettings.load();
     private GpuAudioBus audioBus;
     private GpuOverlayMenu gameplayMenu;
@@ -894,6 +900,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         else if(gameplay==null&&!smoke&&!gallery&&!editorMode)control();
         framebuffer.begin();
         drawWorld();
+        if(menuBackdrop&&launcherOverlay!=null)launcherOverlay.run();
         if(gallery){
             frames++;
             if(frames%5==0){

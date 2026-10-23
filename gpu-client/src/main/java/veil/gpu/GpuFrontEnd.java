@@ -502,8 +502,10 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             note("Cannot join/start world: "+why.getCause());
         }
         input();
+        // Both UI art and licensed GLBs enter the same FBO before screen
+        // presentation. Do not draw an extra, reversed default-FBO overlay.
+        backdrop.launcherOverlay(this::draw);
         backdrop.render();
-        draw();
         if(flowSmoke){
             frames++;
             if(frames==18){

@@ -1,0 +1,13 @@
+**The Malefic Veil**
+* [Home](Home.md)
+* [Getting Started](Getting-Started.md)
+* [Gameplay](Gameplay.md)
+* [Items](Items.md)
+* [Recipes](Recipes.md)
+* [Structures](Structures.md)
+* [Factions](Factions.md)
+* [Classes](Classes.md)
+* [The Lost](The-Lost.md)
+* [Lost Arsenal](Lost-Arsenal.md)
+* [World](World.md)
+* [Source & Status](Source-and-Status.md)

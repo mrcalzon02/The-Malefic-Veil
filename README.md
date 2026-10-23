@@ -1,5 +1,10 @@
 # The Malefic Veil
 
+## Repository wiki: systems, inventories, recipes and the Lost
+
+Browse the [source-driven wiki](wiki/Home.md) for a navigable reference covering 157 exported items, 22 field recipes, 62 industrial processes, 69 facility blueprints, three factions, nine class definitions, current gameplay systems and world generation. [The Lost](wiki/The-Lost.md) now have a detailed five-family bestiary and [25 proposed weapon profiles](wiki/Lost-Arsenal.md) with distinct tactics, windups, counterplay and encounter roles, backed by the [LostArsenal design registry](src/main/java/veil/LostArsenal.java) and a self-test. **The roster is descriptive data, not live NPC weapon logic**; current host monsters still use the basic attack in `ArenaSystems`.
+
+
 A Java 17, PSX-inspired urban horror arena shooter: fast Doom/Unreal Tournament-style combat overlaid with health, sanity, stealth, resources, equipment, character abilities and deployable infrastructure.
 
 **Current build:** Java 17 Swing prototype with the **entire licensed 124-GLB / 22-texture Kenney Retro Urban CC0 source kit**, 42 selected procedural city model types, and **18 original low-poly gameplay models** covering classes, hostiles, both weapons, seven pickups and four deployables. Models use original mesh triangles and per-triangle source PNG color sampling; full UV/pixel rasterization, skinned characters and animation are separate gated phases. No purchased PSX Mega Pack originals are published.

@@ -136,6 +136,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private BitmapFont font;
     private GpuSkybox skybox;
     private GpuContinentTerrain terrain;
+    private Texture cityMapTexture,continentMapTexture;
     private UrbanLighting lighting;
     private PsxHorrorMenu menu;
     private final Map<String,List<GpuModel>> models=new LinkedHashMap<>();
@@ -328,11 +329,54 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
         galleryViews=focusCity=='A'?GALLERY:generatedCityViews();
         if(gallery)setGalleryView(galleryViews[0]);
-        if(gameplay!=null)gameplay.gpuSceneReady();
+        if(gameplay!=null){
+            buildGameplayMaps();
+            gameplay.gpuSceneReady();
+        }
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
             scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
     }
 
+    private static int mapColor(ContinentLayout.Biome biome){
+        return switch(biome){
+            case WATER -> 0x25436Bff;
+            case BEACH -> 0xAA956Cff;
+            case PLAINS -> 0x638C4Eff;
+            case FOREST -> 0x265A3Cff;
+            case HILLS -> 0x79795Bff;
+            case MOUNTAINS -> 0x88898Aff;
+            case MARSH -> 0x516B5Bff;
+        };
+    }
+    /** Both maps are actual generated cell masks from the same World as combat. */
+    private void buildGameplayMaps(){
+        Pixmap city=new Pixmap(World.SIZE,World.SIZE,Pixmap.Format.RGBA8888);
+        for(int iz=0;iz<World.SIZE;iz++)for(int ix=0;ix<World.SIZE;ix++){
+            CityLayout.Category category=world.city.categoryAt(ix,iz);
+            int rgba=world.city.road(ix/CityLayout.CELL,iz/CityLayout.CELL)?
+                0xC4BCA5ff:switch(category){
+                    case HAZARD -> 0x76515Aff;
+                    case RESOURCE -> 0x9A8A56ff;
+                    case SAFE -> 0x567868ff;
+                    case OPEN -> 0x77776Aff;
+                };
+            city.drawPixel(ix,World.SIZE-1-iz,rgba);
+        }
+        cityMapTexture=new Texture(city);city.dispose();
+        cityMapTexture.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
+        Pixmap continent=new Pixmap(ContinentLayout.SIZE,ContinentLayout.SIZE,
+            Pixmap.Format.RGBA8888);
+        ContinentLayout map=world.continent();
+        for(int iz=0;iz<ContinentLayout.SIZE;iz++)
+            for(int ix=0;ix<ContinentLayout.SIZE;ix++){
+                int rgba=mapColor(map.biome(ix,iz));
+                if(map.cityAt(ix,iz)!='\0')rgba=0x978B78ff;
+                if(map.road(ix,iz))rgba=0xC5BCACff;
+                continent.drawPixel(ix,ContinentLayout.SIZE-1-iz,rgba);
+            }
+        continentMapTexture=new Texture(continent);continent.dispose();
+        continentMapTexture.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
+    }
     private static final int[][] LIVE_BINDINGS={
         {Input.Keys.W,KeyEvent.VK_W},{Input.Keys.S,KeyEvent.VK_S},
         {Input.Keys.A,KeyEvent.VK_A},{Input.Keys.D,KeyEvent.VK_D},
@@ -423,11 +467,31 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
             if(row==0)font.draw(sprites,"EMPTY",WIDTH-210,HEIGHT-57);
         }else if(frame.skills()){
-            font.draw(sprites,"SKILLS / HOST AUTHORITATIVE  K CLOSE",WIDTH-345,HEIGHT-35);
+            font.draw(sprites,"CHARACTER / SKILLS  K CLOSE",WIDTH-265,HEIGHT-35);
+            int row=0;
+            for(String line:frame.skillStats()){
+                if(row>=11)break;
+                font.draw(sprites,line,WIDTH-267,HEIGHT-56-row*18);
+                row++;
+            }
         }
         if(frame.map()||frame.continent()){
-            font.draw(sprites,frame.map()?"CITY MAP (M CLOSE)":
-                "CONTINENT (N CLOSE)",WIDTH-275,HEIGHT-35);
+            Texture source=frame.map()?cityMapTexture:continentMapTexture;
+            if(source==null)throw new IllegalStateException("Missing authoritative GPU map");
+            float left=WIDTH-280,base=HEIGHT-325;
+            sprites.draw(source,left,base,255,255,0,0,
+                source.getWidth(),source.getHeight(),false,true);
+            font.draw(sprites,frame.map()?"CITY (M CLOSE)":"CONTINENT (N CLOSE)",
+                left,base+278);
+            float markerX=frame.map()?
+                (float)(frame.x()/World.SIZE*255):
+                (float)((world.parcelX(frame.x())+.5)/ContinentLayout.SIZE*255);
+            float markerY=frame.map()?
+                (float)((World.SIZE-frame.z())/World.SIZE*255):
+                (float)((ContinentLayout.SIZE-world.parcelY(frame.z())-.5)/
+                    ContinentLayout.SIZE*255);
+            if(markerX>=0&&markerX<=255&&markerY>=0&&markerY<=255)
+                font.draw(sprites,"+",left+markerX-5,base+markerY+7);
         }
         font.draw(sprites,"WASD MOVE  MOUSE AIM/FIRE  E USE  R RELOAD  I INVENTORY  "+
             "K SKILLS  F11 MORE  ESC MENU",9,20);
@@ -790,6 +854,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(skybox!=null)skybox.close();
         if(Gdx.input!=null)Gdx.input.setCursorCatched(false);
         if(terrain!=null)terrain.close();
+        if(cityMapTexture!=null)cityMapTexture.dispose();
+        if(continentMapTexture!=null)continentMapTexture.dispose();
         if(gameplay!=null)gameplay.gpuShutdown();
     }
 }

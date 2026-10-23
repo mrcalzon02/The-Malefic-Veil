@@ -1,7 +1,7 @@
 # Crafting and construction — implementation ledger
 
 This report is a **live-state classification**, not a promise that every
-indexed blueprint is buildable. The machine-readable index is generated from
+indexed blueprint is buildable. The current generated catalog has **273 rows** (22 survival + 47 industry + 54 facilities + 150 illustrated item entries). The machine-readable index is generated from
 the game code, via `veil.CraftingCatalogExport`, during the host, GPU and
 release tests. Download `build/test-visuals/crafting-completion-catalog.csv`
 from the latest successful test artifact to inspect every producer, input,
@@ -19,7 +19,7 @@ output, prerequisite, station, faction, era, dependency and icon provenance.
   bounded progress, power/service interruption, wear/repair, exactly-once
   completion, replay protection, and cold snapshot restoration. This engine
   component is **not yet attached to physical host-owned base machines**.
-- `CraftingEraRegistry.facilities()`: **53 buildings** with real construction
+- `CraftingEraRegistry.facilities()`: **54 buildings** with real construction
   material requirements, predecessor chains, faction locks, dimensions, time
   and utility demand. `SettlementAuthority` uses these IDs for blueprint
   permissions and capacity. A blueprint's existence **does not create**

@@ -55,6 +55,7 @@ jobs:
           test -s gpu-client/target/MaleficVeil-GPU.jar
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingRecipeIndexTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingEconomyCsvTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuClientSettingsTest
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'crafting/icons_index.csv'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'crafting/packs/shared_core_sprites_only.zip'

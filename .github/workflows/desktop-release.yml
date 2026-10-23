@@ -63,6 +63,7 @@ jobs:
           jar tf build/package/MaleficVeil.jar |
             grep -qx 'audio/cold-unresolved-drone.mp3.part07'
           java -cp build/package/MaleficVeil.jar veil.CraftingRecipeIndexTest
+          java -cp build/package/MaleficVeil.jar veil.CraftingEconomyCsvTest
           jar tf build/package/MaleficVeil.jar |
             grep -qx 'crafting/packs/begotten_biology_sprites_only.zip'
           java -cp build/package/MaleficVeil.jar veil.gpu.GpuAudioBus

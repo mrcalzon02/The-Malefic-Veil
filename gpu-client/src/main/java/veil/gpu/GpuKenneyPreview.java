@@ -156,6 +156,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final float[] lightUniforms=new float[8*4];
     private WorldDayNight.Conditions environment=WorldDayNight.atHour(12);
     private boolean shownFailure;
+    private boolean menuBackdrop;
+    private GpuClientSettings clientSettings=GpuClientSettings.load();
+    private float menuTime;
 
     private double cameraHeight=1.65, cameraPitch=-.04;
     private ContinentVista vista;
@@ -172,6 +175,16 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     /** Same licensed GPU scene, with project-independent editor library attached. */
     public static GpuKenneyPreview editableWorld(long seed,boolean smoke){
         return new GpuKenneyPreview(seed,false,false,'A',null,false,true,smoke);
+    }
+    public static GpuKenneyPreview menuBackdrop(long seed){
+        GpuKenneyPreview scene=new GpuKenneyPreview(seed,false,false,'A');
+        scene.menuBackdrop=true;return scene;
+    }
+    public void clientSettings(GpuClientSettings settings){
+        this.clientSettings=Objects.requireNonNull(settings);
+        visualDistance=settings.distance;
+        maxLights=settings.lights;
+        if(camera!=null)camera.fieldOfView=settings.fieldOfView;
     }
     private GpuKenneyPreview(long seed,boolean smoke,boolean gallery,char site,
             MaleficVeil gameplay,boolean playSmoke,boolean editorMode,boolean editorSmoke){
@@ -346,6 +359,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         font=menu.font();
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
         galleryViews=focusCity=='A'?GALLERY:generatedCityViews();
+        clientSettings(clientSettings);
+        if(menuBackdrop){
+            menu.showRunning();
+            x=68;y=68;heading=.3;cameraPitch=-.42;cameraHeight=30;
+            visualDistance=Math.max(145,clientSettings.distance);
+        }
         if(gallery)setGalleryView(galleryViews[0]);
         if(gameplay!=null){
             buildGameplayMaps();
@@ -457,7 +476,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             Gdx.input.setCursorCatched(true);
             Gdx.input.getDeltaX();Gdx.input.getDeltaY();
         }else{
-            gameplay.gpuLook(Gdx.input.getDeltaX(),Gdx.input.getDeltaY());
+            gameplay.gpuLook(Gdx.input.getDeltaX()*
+                clientSettings.sensitivity/100.0,
+                Gdx.input.getDeltaY()*clientSettings.sensitivity/100.0*
+                (clientSettings.invertY?-1:1));
         }
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))gameplay.gpuFire();
         MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
@@ -779,7 +801,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
         sprites.begin();
-        if(menu.running()&&editorMode){
+        if(menuBackdrop){
+            // Foreground launcher paints its own source widgets; this viewport
+            // is purely the live seeded world, never a fake static wallpaper.
+        }else if(menu.running()&&editorMode){
             menu.panel(sprites,5,351,480,43);
             font.draw(sprites,"LEVEL EDITOR KIT / CITY A  F11 DOCK  CTRL+CLICK PICK",14,381);
             font.draw(sprites,"SEED "+seed+"  LAYER "+
@@ -856,7 +881,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
 
     @Override public void render() {
-        if(editorMode&&!editorSmoke)editorControls();
+        if(menuBackdrop){
+            menuTime+=Math.min(.1f,Gdx.graphics.getDeltaTime());
+            x=67+Math.sin(menuTime*.10)*9;
+            y=67+Math.cos(menuTime*.08)*11;
+            heading=.35+Math.sin(menuTime*.04)*.47;
+            cameraPitch=-.45+Math.cos(menuTime*.055)*.10;
+            cameraHeight=31+Math.cos(menuTime*.065)*4;
+        }else if(editorMode&&!editorSmoke)editorControls();
         else if(gameplay!=null&&!playSmoke)liveControls();
         else if(gameplay==null&&!smoke&&!gallery&&!editorMode)control();
         framebuffer.begin();

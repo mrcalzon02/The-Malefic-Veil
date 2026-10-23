@@ -179,6 +179,13 @@ public final class PsxHorrorMenu implements AutoCloseable {
     public void band(SpriteBatch batch,float x,float y,float width,float height){
         source(patches.get("menu_band"),batch,x,y,width,height);
     }
+    /** Standardized in-game menu row; original licensed normal/hover skin. */
+    public void choice(SpriteBatch batch,String text,float x,float y,float width,
+                       float height,boolean highlighted){
+        source(patches.get(highlighted?"button_hover":"button_normal"),
+            batch,x,y,width,height);
+        packFont.draw(batch,text,x+10,y+height-5);
+    }
     public Screen screen(){return screen;}
     public void showMain(){screen=Screen.MAIN;selection=0;}
     public void showRunning(){screen=Screen.RUNNING;selection=0;}

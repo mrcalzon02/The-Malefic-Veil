@@ -19,14 +19,51 @@ public final class GpuCraftingBook implements AutoCloseable {
     private final PsxHorrorMenu skin;
     private final GpuCraftingIcons icons;
     private View view=View.RECIPES;
-    private int choice=0,offset=0,filter=0;
+    private int choice=0,offset=0,filter=0,ingredientOffset=0;
+    private String search="";
     private static final String[] FILTERS={"ALL","FIELD","INDUSTRIAL","FACILITIES"};
     private record Line(String title,String output,Record recipe){}
     public GpuCraftingBook(PsxHorrorMenu skin){
         this.skin=Objects.requireNonNull(skin);
         this.icons=new GpuCraftingIcons();
     }
-    public void reset(){view=View.RECIPES;choice=0;offset=0;filter=0;}
+    public void reset(){
+        view=View.RECIPES;choice=0;offset=0;filter=0;ingredientOffset=0;search="";
+    }
+    public boolean type(char c){
+        if(c=='\b'||c==127){
+            if(!search.isEmpty())search=search.substring(0,search.length()-1);
+        }else if(c>=32&&c<=126&&search.length()<28){
+            search+=c;
+        }else return false;
+        choice=0;offset=0;ingredientOffset=0;
+        return true;
+    }
+    /** Real selection follows original recipe keys, never menu row guesses. */
+    void inspectRecipe(String recipeKey){
+        view=View.RECIPES;filter=0;search="";offset=0;
+        var selected=entries();
+        for(int i=0;i<selected.size();i++){
+            Record r=selected.get(i).recipe();
+            if(r!=null&&r.key().equals(recipeKey)){setChoice(i);return;}
+        }
+        throw new IllegalArgumentException("Unknown recipe selection "+recipeKey);
+    }
+    private void followSelected(){
+        List<Line> rows=entries();
+        if(rows.isEmpty())return;
+        Line chosen=rows.get(choice);
+        if(chosen.recipe()!=null){
+            String target=chosen.output();
+            view=View.ITEMS;filter=0;search="";offset=0;
+            List<Line> products=entries();
+            for(int i=0;i<products.size();i++)
+                if(products.get(i).output().equals(target)){setChoice(i);return;}
+        }else{
+            var producers=CraftingRecipeIndex.makes(chosen.output());
+            if(!producers.isEmpty())inspectRecipe(producers.get(0).key());
+        }
+    }
     public void drawIcon(SpriteBatch batch,String item,float x,float y,float size){
         icons.draw(batch,item,x,y,size);
     }
@@ -51,6 +88,12 @@ public final class GpuCraftingBook implements AutoCloseable {
             if(filter==3&&recipe.kind()!=CraftingRecipeIndex.Kind.FACILITY)continue;
             list.add(new Line(recipe.name(),recipe.output(),recipe));
         }
+        if(!search.isBlank()){
+            String term=search.toLowerCase(Locale.ROOT);
+            list.removeIf(r->!(r.title()+" "+r.output()+" "+
+                (r.recipe()==null?"":r.recipe().station())).toLowerCase(Locale.ROOT)
+                .contains(term));
+        }
         return list;
     }
     private void setChoice(int n){
@@ -58,6 +101,7 @@ public final class GpuCraftingBook implements AutoCloseable {
         choice=Math.max(0,Math.min(size-1,n));
         if(choice<offset)offset=choice;
         if(choice>=offset+PER_PAGE)offset=choice-PER_PAGE+1;
+        ingredientOffset=0;
     }
     public boolean input(){
         boolean touched=false;
@@ -65,8 +109,18 @@ public final class GpuCraftingBook implements AutoCloseable {
             view=view==View.RECIPES?View.ITEMS:View.RECIPES;
             choice=0;offset=0;filter=0;touched=true;
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
-            filter=(filter+1)%FILTERS.length;choice=0;offset=0;touched=true;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F4)){
+            filter=(filter+1)%FILTERS.length;choice=0;offset=0;
+            ingredientOffset=0;touched=true;
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+            followSelected();ingredientOffset=0;touched=true;
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT_BRACKET)){
+            ingredientOffset=Math.max(0,ingredientOffset-4);touched=true;
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT_BRACKET)){
+            ingredientOffset+=4;touched=true;
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){setChoice(choice-1);touched=true;}
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){setChoice(choice+1);touched=true;}
@@ -108,9 +162,12 @@ public final class GpuCraftingBook implements AutoCloseable {
         line(batch,"ERA "+record.era()+"  "+record.faction(),314,223);
         if(record.seconds()>0)
             line(batch,"TIME "+record.seconds()+"S   POWER "+record.power(),314,207);
-        line(batch,"INGREDIENTS",314,191);
-        int row=0;
+        line(batch,"INGREDIENTS  [ / ] PAGE",314,191);
+        int row=0,seen=0;
+        int start=Math.min(ingredientOffset,
+            Math.max(0,((record.inputs().size()-1)/4)*4));
         for(var ingredient:record.inputs().entrySet()){
+            if(seen++<start)continue;
             if(row==4)break;
             float y=161-row*24;
             skin.slot(batch,315,y,23,false);
@@ -119,8 +176,10 @@ public final class GpuCraftingBook implements AutoCloseable {
                 344,y+16);
             row++;
         }
-        if(record.inputs().size()>row)
-            line(batch,"+"+(record.inputs().size()-row)+" MORE COMPONENTS",314,70);
+        if(record.inputs().size()>start+row)
+            line(batch,"+"+(record.inputs().size()-start-row)+" MORE  ] NEXT",314,70);
+        else if(start>0)
+            line(batch,"[ PREVIOUS COMPONENTS",314,70);
         String related=CraftingRecipeIndex.usesText(record.output(),2);
         line(batch,"USED FOR: "+clipped(related,34),314,53);
         if(!record.prerequisites().isEmpty())
@@ -163,7 +222,8 @@ public final class GpuCraftingBook implements AutoCloseable {
         skin.band(batch,19,348,600,31);
         line(batch,"CRAFT / RECIPE INDEX     "+view+"  ["+FILTERS[filter]+"]",
             29,368);
-        line(batch,""+all.size()+" ENTRIES  TAB ITEMS/RECIPES  F FILTER",29,339);
+        line(batch,clipped(all.size()+" ENTRIES  TAB VIEW  F4 FILTER  FIND: "+
+            search+"_",59),29,339);
         skin.panel(batch,20,34,260,294);
         for(int i=offset;i<Math.min(offset+PER_PAGE,all.size());i++){
             Line entry=all.get(i);
@@ -192,7 +252,7 @@ public final class GpuCraftingBook implements AutoCloseable {
             else detailItem(batch,line.output());
         }
         skin.band(batch,18,14,603,18);
-        line(batch,"UP/DOWN BROWSE  PGUP/DOWN SCROLL  TAB VIEW  F FILTER  ESC BACK",29,28);
+        line(batch,"ARROWS NAV  PGUP/DN  ENTER FOLLOW  TAB VIEW  F4 FILTER  ESC",29,28);
     }
     @Override public void close(){icons.close();}
 }

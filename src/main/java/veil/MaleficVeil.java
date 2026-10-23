@@ -1402,10 +1402,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.setColor(new Color(10,11,16,225));g.fillRect(0,h-70,w,70);
         g.setColor(new Color(215,215,207));
         g.drawString("HP "+health+"   SAN "+sanity+"   CASH $"+cash+"   SUP "+scrap+"   MED "+medkits+"   KILLS "+frags,105,h-44);
-        ArsenalSystems.View arsenal=arsenalView();int selected=arsenal==null?0:arsenal.selected();
-        g.drawString(ArsenalCatalog.get(selected).name()+" "+
-            (arsenal==null?0:arsenal.clip()[selected])+"/"+
-            (arsenal==null?0:arsenal.reserve()[selected])+
+        ArsenalSystems.View arsenal=arsenalView();int equippedIndex=arsenal==null?0:arsenal.selected();
+        g.drawString(ArsenalCatalog.get(equippedIndex).name()+" "+
+            (arsenal==null?0:arsenal.clip()[equippedIndex])+"/"+
+            (arsenal==null?0:arsenal.reserve()[equippedIndex])+
             "     "+names[archetype]+"  F "+(abilityCooldown==0?"READY":String.format("%.0fs",abilityCooldown)),105,h-17);
         double gem=net!=null&&net.self()!=null?net.self().visibility():visibility();
         drawGem(g,gem,31,h-35);
@@ -1458,9 +1458,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         if(help&&!dead){g.setColor(new Color(9,10,17,220));g.fillRect(12,64,440,100);
             g.setColor(Color.WHITE);g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,13));
             g.drawString("WASD move / Mouse look (360 + vertical) / Shift sprint / C crouch",23,87);
-            g.drawString("CLICK/SPACE fire  1/2 weapons  R reload  F ability",23,107);
+            g.drawString("CLICK / RMB alternate  1-8 select  [/] cycle  R reload",23,107);
             g.drawString("E INTERACT / HARVEST  X MEDKIT  Q VEHICLE",23,127);
-            g.drawString("I inventory K skills J craft F8 aircraft F9 weather",23,147);}
+            g.drawString("I inventory K arsenal J field craft F8 aircraft F9 weather",23,147);}
         if(net!=null&&!net.connected()){
             g.setColor(new Color(0,0,0,220));g.fillRect(0,h/3,w,h/3);
             g.setColor(new Color(255,126,126));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,23));

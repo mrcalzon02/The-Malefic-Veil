@@ -40,6 +40,13 @@ public final class GpuCraftingBook implements AutoCloseable {
         return true;
     }
     /** Real selection follows original recipe keys, never menu row guesses. */
+    void inspectItem(String itemId){
+        view=View.ITEMS;filter=0;search="";choice=0;offset=0;
+        List<Line> known=entries();
+        for(int i=0;i<known.size();i++)
+            if(known.get(i).output().equals(itemId)){setChoice(i);return;}
+        throw new IllegalArgumentException("Unknown indexed item "+itemId);
+    }
     void inspectRecipe(String recipeKey){
         view=View.RECIPES;filter=0;search="";offset=0;
         var selected=entries();
@@ -222,8 +229,8 @@ public final class GpuCraftingBook implements AutoCloseable {
         skin.band(batch,19,348,600,31);
         line(batch,"CRAFT / RECIPE INDEX     "+view+"  ["+FILTERS[filter]+"]",
             29,368);
-        line(batch,clipped(all.size()+" ENTRIES  TAB VIEW  F4 FILTER  FIND: "+
-            search+"_",59),29,339);
+        line(batch,all.size()+" ENTRIES  TAB VIEW  F4 FILTER",29,339);
+        line(batch,"FIND: "+clipped(search,17)+"_",391,339);
         skin.panel(batch,20,34,260,294);
         for(int i=offset;i<Math.min(offset+PER_PAGE,all.size());i++){
             Line entry=all.get(i);
@@ -252,7 +259,7 @@ public final class GpuCraftingBook implements AutoCloseable {
             else detailItem(batch,line.output());
         }
         skin.band(batch,18,14,603,18);
-        line(batch,"ARROWS NAV  PGUP/DN  ENTER FOLLOW  TAB VIEW  F4 FILTER  ESC",29,28);
+        line(batch,"ARROWS  PGUP/DN  ENTER FOLLOW  TAB  F4  ESC",29,28);
     }
     @Override public void close(){icons.close();}
 }

@@ -27,6 +27,7 @@ public final class GpuOverlayMenu {
     private final List<Item> items=new ArrayList<>();
     private final InputAdapter inputProcessor=new InputAdapter(){
         @Override public boolean keyTyped(char character){
+            if(screen==Screen.BOOK)return book.type(character);
             if(screen!=Screen.CREW_INPUT)return false;
             if(character=='\b'||character==127){
                 if(!crewText.isEmpty())crewText=crewText.substring(0,crewText.length()-1);
@@ -68,7 +69,15 @@ public final class GpuOverlayMenu {
     void auditPanel(String name){
         switch(name){
             case "craft"->openCraft();
-            case "book"->openBook();
+            case "book"->{
+                openBook();book.inspectRecipe("hand:camp-ration");
+            }
+            case "book-industrial"->{
+                openBook();book.inspectRecipe("process:tracking-electronics");
+            }
+            case "book-item"->{
+                openBook();book.inspectItem("TIMBER");
+            }
             case "crew"->openCrew();
             case "crew-input"->beginCrewInput("CREATE");
             default->throw new IllegalArgumentException("Unknown menu proof: "+name);

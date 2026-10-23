@@ -551,9 +551,13 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 if(gameFrames==85)capture("gpu-frontend-live-crew-input");
                 if(gameFrames==88)gameRenderer.auditPanel("book");
                 if(gameFrames==91)capture("gpu-frontend-live-recipe-book");
-                if(gameFrames==94)gameRenderer.auditPause(false);
+                if(gameFrames==94)gameRenderer.auditPanel("book-industrial");
+                if(gameFrames==97)capture("gpu-frontend-live-industrial-book");
+                if(gameFrames==100)gameRenderer.auditPanel("book-item");
+                if(gameFrames==103)capture("gpu-frontend-live-item-index");
+                if(gameFrames==106)gameRenderer.auditPause(false);
             }
-            if(flowSmoke&&gameFrames==110){
+            if(flowSmoke&&gameFrames==122){
                 MaleficVeil.GpuFrame frame=readyGame.gpuFrame();
                 if(frame==null||!frame.connected())
                     throw new IllegalStateException("In-window world launch not connected");

@@ -166,6 +166,56 @@ public final class CraftingEraRegistry {
             22,22,14400,25,"METAL_STOCK",16,"MACHINE_PARTS",12,"FIELD_STONE",60);
         facility("incursion-anchor",Era.INCURSION,Faction.BEGOTTEN,"nutrient-digestor assembly-line",
             22,22,14400,25,"METAL_STOCK",16,"MACHINE_PARTS",12,"FIELD_STONE",60);
+        // Parallel faction-owned production spines. ALL facilities below are
+        // generic infrastructure, NOT a common faction upgrade path.
+        // Unraveled: scavenged metal -> machinery -> powered sensing -> defense.
+        facility("unraveled-scrap-outpost",Era.ENCAMPMENT,Faction.UNRAVELED,
+            "claim-heart hand-workshop",8,10,720,0,
+            "TIMBER",12,"FIELD_STONE",8,"FIBER",4);
+        facility("unraveled-machinist-bay",Era.SALVAGE,Faction.UNRAVELED,
+            "unraveled-scrap-outpost materials-recycler",10,12,1500,0,
+            "METAL_STOCK",2,"MACHINE_PARTS",2,"FIELD_STONE",12);
+        facility("unraveled-pressure-shop",Era.STEAM,Faction.UNRAVELED,
+            "unraveled-machinist-bay mechanical-shaft",12,12,2400,3,
+            "METAL_STOCK",4,"MACHINE_PARTS",3,"RAW_ORE",8);
+        facility("unraveled-sensor-lab",Era.ELECTRIC,Faction.UNRAVELED,
+            "unraveled-pressure-shop electric-bus",10,12,3600,8,
+            "METAL_STOCK",4,"MACHINE_PARTS",5,"CONDUCTOR_WIRE",4);
+        facility("unraveled-defense-works",Era.AUTOMATION,Faction.UNRAVELED,
+            "unraveled-sensor-lab security-grid",16,16,6000,16,
+            "METAL_STOCK",8,"MACHINE_PARTS",8,"CONTROL_BOARD",3);
+        // Penitent: rites and incense -> reliquary -> resonant hymn -> wards.
+        facility("penitent-votive-altar",Era.ENCAMPMENT,Faction.PENITENT,
+            "claim-heart herb-plot",8,8,840,0,
+            "TIMBER",10,"FIELD_STONE",10,"FIBER",8);
+        facility("penitent-reliquary",Era.SALVAGE,Faction.PENITENT,
+            "penitent-votive-altar forge",10,12,2100,0,
+            "METAL_STOCK",2,"FIELD_STONE",16,"MEDICINAL_HERBS",10);
+        facility("penitent-cantor-dais",Era.STEAM,Faction.PENITENT,
+            "penitent-reliquary mechanical-shaft",12,10,2700,3,
+            "METAL_STOCK",3,"MACHINE_PARTS",2,"FIELD_STONE",18);
+        facility("penitent-choir-relay",Era.ELECTRIC,Faction.PENITENT,
+            "penitent-cantor-dais electric-bus",12,12,4200,8,
+            "METAL_STOCK",5,"MACHINE_PARTS",4,"MEDICINAL_HERBS",16);
+        facility("penitent-ward-sanctum",Era.AUTOMATION,Faction.PENITENT,
+            "penitent-choir-relay terror-collector",16,16,7200,16,
+            "METAL_STOCK",8,"MACHINE_PARTS",7,"FIELD_STONE",24);
+        // Begotten: living feed -> propagules -> chitin -> membranes -> organs.
+        facility("begotten-brood-nest",Era.ENCAMPMENT,Faction.BEGOTTEN,
+            "claim-heart forager-garden",10,12,960,0,
+            "TIMBER",12,"EDIBLES",12,"FIBER",9);
+        facility("begotten-spore-basin",Era.SALVAGE,Faction.BEGOTTEN,
+            "begotten-brood-nest charcoal-kiln",12,12,1800,0,
+            "EDIBLES",18,"MEDICINAL_HERBS",8,"FIELD_STONE",16);
+        facility("begotten-chitin-vat",Era.STEAM,Faction.BEGOTTEN,
+            "begotten-spore-basin steam-boiler",12,16,3600,3,
+            "METAL_STOCK",2,"EDIBLES",25,"FIELD_STONE",18);
+        facility("begotten-membrane-lab",Era.ELECTRIC,Faction.BEGOTTEN,
+            "begotten-chitin-vat water-works",12,14,4800,8,
+            "MACHINE_PARTS",4,"EDIBLES",30,"MEDICINAL_HERBS",12);
+        facility("begotten-organ-lattice",Era.AUTOMATION,Faction.BEGOTTEN,
+            "begotten-membrane-lab nutrient-digestor",16,20,7200,16,
+            "METAL_STOCK",6,"MACHINE_PARTS",6,"EDIBLES",40);
         // Shared extreme final recovery monument: identical 40-truck price.
         facility("monument-graveyard",Era.INCURSION,Faction.ALL,
             "research-archive infirmary signal-relay command-hall",
@@ -284,6 +334,55 @@ public final class CraftingEraRegistry {
             "TRACKING_CIRCUIT",1);
         process("fortified-rations",Era.AUTOMATION,Faction.ALL,"industrial-workshop",
             "FIELD_MRE",3,1200,12,"PRESERVED_RATIONS",2,"GUARD_PROVISIONS",2);
+        // Those three spines are materially separate at every era, with
+        // distinct stations and icon-backed outputs, not re-skinned clones.
+        process("unraveled-recover-scrap",Era.ENCAMPMENT,Faction.UNRAVELED,
+            "unraveled-scrap-outpost","SCRAP_METAL",2,300,0,
+            "RAW_ORE",2,"FIREWOOD",1);
+        process("unraveled-make-bearings",Era.SALVAGE,Faction.UNRAVELED,
+            "unraveled-machinist-bay","BEARING_SET",2,720,0,
+            "SCRAP_METAL",3,"FASTENERS",1);
+        process("unraveled-pressure-vessel",Era.STEAM,Faction.UNRAVELED,
+            "unraveled-pressure-shop","PRESSURE_TANK",1,780,3,
+            "METAL_BILLET",2,"BEARING_SET",2);
+        process("unraveled-calibrate-sensors",Era.ELECTRIC,Faction.UNRAVELED,
+            "unraveled-sensor-lab","SENSOR_HEAD",2,900,8,
+            "CONTROL_BOARD",2,"CONDUCTOR_WIRE",3,"PRESSURE_TANK",1);
+        process("unraveled-defense-scanner",Era.AUTOMATION,Faction.UNRAVELED,
+            "unraveled-defense-works","RELAY_BOX",1,1500,16,
+            "SENSOR_HEAD",2,"TRACKING_CIRCUIT",1,"MACHINE_PARTS",3);
+
+        process("penitent-weave-ritual",Era.ENCAMPMENT,Faction.PENITENT,
+            "penitent-votive-altar","RITUAL_CLOTH",2,360,0,
+            "CLOTH_ROLL",1,"MEDICINAL_HERBS",1);
+        process("penitent-engrave-reliquary",Era.SALVAGE,Faction.PENITENT,
+            "penitent-reliquary","RELIQUARY_PLATE",1,840,0,
+            "METAL_BILLET",2,"RITUAL_CLOTH",1);
+        process("penitent-cast-censer",Era.STEAM,Faction.PENITENT,
+            "penitent-cantor-dais","BRONZE_CENSER",1,900,3,
+            "RELIQUARY_PLATE",2,"WITNESS_SEAL",1);
+        process("penitent-score-hymn",Era.ELECTRIC,Faction.PENITENT,
+            "penitent-choir-relay","CHOIR_SCORE",1,1260,8,
+            "BRONZE_CENSER",1,"CHORUS_RESONANCE",1);
+        process("penitent-sanctify-shell",Era.AUTOMATION,Faction.PENITENT,
+            "penitent-ward-sanctum","CONSECRATED_SHELL",1,1800,16,
+            "CHOIR_SCORE",2,"DREAD_IMPRINT",3,"BOUND_LITURGY",1);
+
+        process("begotten-mix-slurry",Era.ENCAMPMENT,Faction.BEGOTTEN,
+            "begotten-brood-nest","NUTRIENT_SLURRY",2,420,0,
+            "EDIBLES",4,"DIRTY_WATER",2);
+        process("begotten-culture-spores",Era.SALVAGE,Faction.BEGOTTEN,
+            "begotten-spore-basin","SPORE_POD",2,960,0,
+            "NUTRIENT_SLURRY",2,"MEDICINAL_HERBS",2);
+        process("begotten-harden-chitin",Era.STEAM,Faction.BEGOTTEN,
+            "begotten-chitin-vat","CHITIN_SHARDS",2,960,3,
+            "SPORE_POD",2,"RAW_ORE",1);
+        process("begotten-grow-membrane",Era.ELECTRIC,Faction.BEGOTTEN,
+            "begotten-membrane-lab","LIVING_MEMBRANE",1,1440,8,
+            "CHITIN_SHARDS",3,"CLEAN_WATER",2);
+        process("begotten-pulse-organ",Era.AUTOMATION,Faction.BEGOTTEN,
+            "begotten-organ-lattice","ORGAN_CORE",1,2100,16,
+            "LIVING_MEMBRANE",2,"NUTRIENT_STOCK",2,"GROWTH_FEED",2);
         validate();
     }
     private CraftingEraRegistry(){}
@@ -313,6 +412,7 @@ public final class CraftingEraRegistry {
         // Industrial outputs are produced by distinct, ordered processes;
         // no same-era cycle and no ingredient manufactured in a later era.
         Set<String> available=new HashSet<>(EXTERNAL);
+        Map<String,Faction> outputOwnership=new HashMap<>();
         for(Process p:PROCESSES.values()){
             Facility machine=FACILITIES.get(p.facility());
             require(machine!=null,"Unknown machine "+p.id());
@@ -324,9 +424,16 @@ public final class CraftingEraRegistry {
                 "Free/instant output "+p.id());
             require(!available.contains(p.output()),
                 "Recipe output duplicates another source/recipe "+p.id());
-            for(var ingredient:p.inputs().entrySet())
+            for(var ingredient:p.inputs().entrySet()){
                 require(available.contains(ingredient.getKey())&&ingredient.getValue()>0,
                     "Unobtainable ingredient "+ingredient+" for "+p.id());
+                Faction owner=outputOwnership.getOrDefault(ingredient.getKey(),Faction.ALL);
+                require(owner==Faction.ALL||owner==p.faction(),
+                    "Uncontracted foreign-faction manufacturing input "+
+                        ingredient.getKey()+" ("+owner+") in "+p.id()+
+                        " ("+p.faction()+")");
+            }
+            outputOwnership.put(p.output(),p.faction());
             available.add(p.output());
         }
         require(FACILITIES.get("monument-graveyard").materials().get("METAL_STOCK")==24&&

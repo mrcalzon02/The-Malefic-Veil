@@ -589,17 +589,29 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(flowSmoke){
             frames++;
             if(frames==18){
-                worldMode("solo");
-                gotoScreen(Screen.CREATE);
-                worldName="UIFlow"+Long.toUnsignedString(System.nanoTime(),36);
-                seedText="20261020";
-                createWorld();
+                if(screen!=Screen.HOME)throw new IllegalStateException("Wrong launcher home state");
+                selected=0;activate(0);
+                if(screen!=Screen.WORLDS)throw new IllegalStateException("Solo mode button failed");
+                selected=0;activate(0);
+                if(screen!=Screen.CREATE)throw new IllegalStateException("Create button failed");
+                // Drive the same in-window text field events users type, rather
+                // than assign test-only values behind the menu's back.
+                selected=0;replaceFieldOnType=true;
+                String generatedName="UIFlow"+Long.toUnsignedString(System.nanoTime(),36);
+                for(char letter:generatedName.toCharArray())typing.keyTyped(letter);
+                if(!worldName.equals(generatedName))
+                    throw new IllegalStateException("Real world name text editing failed");
+                selected=1;replaceFieldOnType=true;
+                for(char letter:"20261020".toCharArray())typing.keyTyped(letter);
+                if(!seedText.equals("20261020"))
+                    throw new IllegalStateException("Real world seed text editing failed");
+                selected=entries.size()-2;activate(0);
                 if(screen!=Screen.FACTION)throw new IllegalStateException(
-                    "World create did not advance to faction selection");
-                faction=CharacterRoster.Faction.THE_UNRAVELED;
-                gotoScreen(Screen.CLASS);
-                startGame(FactionClasses.faction(faction).stream().filter(
-                    FactionClasses.Role::playable).findFirst().orElseThrow());
+                    "Persistent world creation button failed");
+                selected=0;activate(0);
+                if(screen!=Screen.CLASS)throw new IllegalStateException("Faction button failed");
+                selected=0;activate(0);
+                if(screen!=Screen.CONNECTING)throw new IllegalStateException("Class selection button failed");
             }
         }
         if(smoke){
@@ -615,7 +627,14 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 case 43 -> {worldMode("solo");gotoScreen(Screen.CREATE);}
                 case 48 -> capture("gpu-frontend-create-world");
                 case 50 -> {mode="join";gotoScreen(Screen.JOIN);}
-                case 54 -> capture("gpu-frontend-join");
+                case 54 -> {
+                    capture("gpu-frontend-join");
+                    portText="NOT_A_PORT";selected=2;activate(0);
+                    if(screen!=Screen.JOIN)
+                        throw new IllegalStateException("Invalid LAN port allowed connection");
+                    portText="7777";
+                    System.out.println("PASS GPU_FRONTEND_INVALID_JOIN_REJECTED");
+                }
                 case 58 -> gotoScreen(Screen.HOME);
                 case 65 -> {
                     if(skin.sourcedDraws()<150)

@@ -165,7 +165,10 @@ public final class PsxHorrorMenu implements AutoCloseable {
             Math.max(6,(width-4)*bounded),7);
     }
     public void slot(SpriteBatch batch,float x,float y,boolean selected){
-        source(patches.get(selected?"slot_selected":"slot"),batch,x,y,38,38);
+        slot(batch,x,y,38,selected);
+    }
+    public void slot(SpriteBatch batch,float x,float y,float size,boolean selected){
+        source(patches.get(selected?"slot_selected":"slot"),batch,x,y,size,size);
     }
     public void marker(SpriteBatch batch,float x,float y){
         raw("mark_you",batch,x,y,9,9);

@@ -16,6 +16,7 @@ public final class FactionIndustrySeparationTest {
         check(facilities.length==5&&steps.length==5,"Incomplete faction production spine");
         Set<CraftingEraRegistry.Era> stages=EnumSet.noneOf(CraftingEraRegistry.Era.class);
         for(int i=0;i<5;i++){
+            final String stageFacility=facilities[i],stageRecipe=steps[i];
             var building=CraftingEraRegistry.facility(facilities[i]);
             var process=CraftingEraRegistry.process(steps[i]);
             check(building!=null&&process!=null,"Missing faction stage "+facilities[i]);
@@ -27,12 +28,12 @@ public final class FactionIndustrySeparationTest {
                 "Production does not align with its stage "+steps[i]);
             stages.add(building.era());
             check(CraftingRecipeIndex.recipesFor(faction).stream().anyMatch(r->
-                r.key().equals("process:"+steps[i])),"Own recipe is missing from "+faction);
+                r.key().equals("process:"+stageRecipe)),"Own recipe is missing from "+faction);
             for(var other:CraftingEraRegistry.Faction.values()){
                 if(other==faction)continue;
                 check(CraftingRecipeIndex.recipesFor(other).stream().noneMatch(r->
                     r.key().equals("process:"+steps[i])||
-                    r.key().equals("facility:"+facilities[i])),
+                    r.key().equals("facility:"+stageFacility)),
                     "Leaked faction chain "+facilities[i]+" into "+other);
                 check(CraftingRecipeIndex.makes(process.output(),other).isEmpty(),
                     "Foreign output became craftable for "+other);

@@ -151,3 +151,8 @@ item_id,label,category,icon_pack,icon_entry,icon_sha256,unit_storage,max_stack,b
 "PULSE_ORGAN","Pulse Organ","MATERIAL","begotten_biology","icons/PULSE_ORGAN_small.png","263f249f1835ebe6a423c81c81f301708e05805025fc71024171cc80f3a54481","1","100","2","PROPOSED_BALANCE"
 "BANDAGE","Bandage","EQUIPMENT","","","","4","20","8","ICON_REQUIRED"
 "WORKBENCH","Workbench","EQUIPMENT","","","","4","20","8","ICON_REQUIRED"
+"PRESERVED_RATIONS","Preserved Rations","FOOD","","","","2","50","12","ICON_REQUIRED"
+"GUARD_PROVISIONS","Guard Provisions","FOOD","","","","2","50","12","ICON_REQUIRED"
+"STERILE_WATER","Sterile Water","LIQUID","","","","2","50","12","ICON_REQUIRED"
+"DEFENSE_CACHE","Defense Cache","EQUIPMENT","","","","2","50","12","ICON_REQUIRED"
+"FIELD_MRE","Field Mre","FOOD","","","","2","50","12","ICON_REQUIRED"

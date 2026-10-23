@@ -41,7 +41,7 @@ public final class GameplayAssetTest {
             "resource-ore","resource-fiber","resource-edibles",
             "resource-herbs","resource-water"));
         for(var aircraft:AirPowerMeshes.specs())required.add(aircraft.id());
-        check(required.size()==37,"Complete 18 legacy + 8 resources + 9 aircraft + 2 field structures");
+        check(required.size()==38,"Complete legacy + 8 resources + 9 aircraft + 3 field structures");
         check(lib.meshes().keySet().containsAll(required),
             "No prior gameplay mesh may disappear during aircraft integration");
         check(lib.meshes().size()>=required.size(),
@@ -66,15 +66,15 @@ public final class GameplayAssetTest {
         }
         check(changed>40,"mesh geometry never rasterized");
         check(lessVisible>20,"25%-opaque character did not alpha blend into the scene");
-        BufferedImage sheet=new BufferedImage(960,1200,BufferedImage.TYPE_INT_RGB);
+        BufferedImage sheet=new BufferedImage(960,1400,BufferedImage.TYPE_INT_RGB);
         Graphics2D g=sheet.createGraphics();
-        String[] gallery=new String[18];
+        String[] gallery=new String[21];
         System.arraycopy(GameplayMeshes.HERO,0,gallery,0,4);
         gallery[4]="enemy-walker";
         System.arraycopy(GameplayMeshes.WEAPON,0,gallery,5,2);
         System.arraycopy(GameplayMeshes.PICKUP,0,gallery,7,7);
-        System.arraycopy(GameplayMeshes.DEVICE,0,gallery,14,4);
-        for(int row=0;row<6;row++)for(int col=0;col<3;col++){
+        System.arraycopy(GameplayMeshes.DEVICE,0,gallery,14,7);
+        for(int row=0;row<7;row++)for(int col=0;col<3;col++){
             int index=row*3+col;
             String id=gallery[index];
             BufferedImage panel=new BufferedImage(320,200,BufferedImage.TYPE_INT_RGB);

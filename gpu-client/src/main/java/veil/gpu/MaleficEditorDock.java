@@ -31,6 +31,7 @@ public final class MaleficEditorDock implements AutoCloseable {
     private final JSpinner yaw=new JSpinner(new SpinnerNumberModel(0.0,-100000.0,100000.0,.1));
     private final JSpinner scale=new JSpinner(new SpinnerNumberModel(1.0,.05,12.0,.1));
     private JLabel status;
+    private PsxHorrorSwingSkin skin;
     public MaleficEditorDock(MaleficEditorProject project,Supplier<View> view){
         this.project=project;this.view=view;
         history=new EditorHistory<>(project,80);
@@ -98,13 +99,13 @@ public final class MaleficEditorDock implements AutoCloseable {
             failure.getMessage(),"Cannot reload scene",JOptionPane.ERROR_MESSAGE);}
     }
     private JButton action(String name,Runnable callback){
-        JButton control=new JButton(name);
-        control.setMargin(new Insets(3,5,3,5));
-        control.addActionListener(e->callback.run());
-        return control;
+        return skin.button(name,callback);
     }
     private void show(){
         if(frame!=null){frame.toFront();return;}
+        // The portable EditorPalettePanel/EditorHistory still own editor logic;
+        // our host applies the ORIGINAL heyheythere source to native widgets.
+        skin=new PsxHorrorSwingSkin();
         frame=new JFrame("LEVEL EDITOR KIT / THE MALEFIC VEIL");
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setLayout(new BorderLayout(4,4));
@@ -120,7 +121,7 @@ public final class MaleficEditorDock implements AutoCloseable {
             height.setValue(chosen.elevation());yaw.setValue(chosen.yaw());
             scale.setValue(chosen.scale());
         });
-        JPanel content=new JPanel(new BorderLayout(4,4));
+        JPanel content=skin.panel(new BorderLayout(4,4));
         content.add(new JLabel("AUTHORING LAYER / ORIGINAL SOURCE MODELS"),BorderLayout.NORTH);
         JSplitPane split=new JSplitPane(JSplitPane.VERTICAL_SPLIT,
             new JScrollPane(objects),
@@ -131,9 +132,9 @@ public final class MaleficEditorDock implements AutoCloseable {
         split.setResizeWeight(.38);
         content.add(split,BorderLayout.CENTER);
         frame.add(content,BorderLayout.CENTER);
-        JPanel inspector=new JPanel(new BorderLayout(3,3));
+        JPanel inspector=skin.panel(new BorderLayout(3,3));
         inspector.add(fields(),BorderLayout.NORTH);
-        JPanel controls=new JPanel(new GridLayout(2,4,3,3));
+        JPanel controls=skin.panel(new GridLayout(2,4,3,3));
         controls.add(action("Place",this::place));
         controls.add(action("Apply",this::modify));
         controls.add(action("Delete",this::delete));
@@ -152,6 +153,7 @@ public final class MaleficEditorDock implements AutoCloseable {
         status=new JLabel("Choose source model, then Place or select a layer object");
         inspector.add(status,BorderLayout.SOUTH);
         frame.add(inspector,BorderLayout.SOUTH);
+        skin.style(frame.getContentPane());
         frame.setSize(410,690);
         frame.setLocationByPlatform(true);
         refresh();

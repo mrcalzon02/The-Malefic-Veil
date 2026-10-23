@@ -13,7 +13,7 @@ public final class GameplayMeshes {
     public static final String[] HERO={"hero-warden","hero-medic","hero-shade","hero-occultist"};
     public static final String[] PICKUP={"pickup-health","pickup-sanity","pickup-pistol-ammo",
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
-    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire"};
+    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire","device-field-workbench"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -195,6 +195,19 @@ public final class GameplayMeshes {
         fieldFire.diamond(0,.46,0,.20,.67,0xE9A23C);
         fieldFire.diamond(.07,.42,-.04,.11,.43,0xF3CB65);
         meshes.put(DEVICE[5],fieldFire.done());
+        // Real deployable E0 workstation; one original low-poly authored
+        // solid mesh with tabletop, braced legs, tool roll and clamp.
+        Model bench=new Model();
+        bench.box(0,.70,0,1.55,.16,.75,0x8C6C49);
+        bench.box(0,.80,0,1.62,.055,.80,0xB49266);
+        for(int side=-1;side<=1;side+=2)
+            for(int back=-1;back<=1;back+=2)
+                bench.box(side*.61,.37,back*.24,.13,.72,.15,0x614632);
+        bench.box(0,.27,0,1.30,.12,.52,0x564832);
+        bench.box(-.41,.90,-.08,.22,.18,.27,0x54636C);
+        bench.box(.33,.90,.10,.38,.06,.16,0x857F72);
+        bench.box(.55,.91,-.18,.13,.20,.09,0xB9AB89);
+        meshes.put(DEVICE[6],bench.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

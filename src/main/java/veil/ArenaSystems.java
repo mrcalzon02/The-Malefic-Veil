@@ -88,7 +88,7 @@ public final class ArenaSystems {
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     private final Map<Integer,Integer> shieldedShot=new HashMap<>();
-    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4, FIELD_FIRE=5;
+    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4, FIELD_FIRE=5, FIELD_BENCH=6;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -483,9 +483,11 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>FIELD_FIRE)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
-        int price=kind==FIELD_FIRE?0:kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
-        int supplies=kind==FIELD_FIRE?0:kind==0?3:kind==1?1:kind==2?2:1;
+        if(kind<0||kind>FIELD_BENCH)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        int price=kind==FIELD_FIRE||kind==FIELD_BENCH?0:
+            kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
+        int supplies=kind==FIELD_FIRE||kind==FIELD_BENCH?0:
+            kind==0?3:kind==1?1:kind==2?2:1;
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
         // The current 132x132 arena is an ENTIRE fixed city sector. Player
         // structures are wilderness-only; reject here before any resource debit
@@ -502,14 +504,20 @@ public final class ArenaSystems {
                    p.accountKey.equals(existing.ownerKey))
                     return new BuildReview(false,"ALREADY_OWNS_CAMP",price,supplies,x,y);
         }
-        if(kind==FIELD_FIRE){
-            if(p.survival.count(SurvivalCrafting.Item.CAMPFIRE)<1)
+        if(kind==FIELD_BENCH&&world.detailedCity(x,y))
+            return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
+        if(kind==FIELD_BENCH&&p.survival.count(SurvivalCrafting.Item.WORKBENCH)<1)
+            return new BuildReview(false,"REQUIRES_CRAFTED_WORKBENCH",price,supplies,x,y);
+        if(kind==FIELD_FIRE||kind==FIELD_BENCH){
+            if(kind==FIELD_FIRE&&p.survival.count(SurvivalCrafting.Item.CAMPFIRE)<1)
                 return new BuildReview(false,"REQUIRES_CAMPFIRE_KIT",price,supplies,x,y);
             boolean hasCamp=false;
             for(World.Device d:world.devices){
                 if(d.hp<=0||!p.accountKey.equals(d.ownerKey))continue;
-                if(d.kind==FIELD_FIRE)
-                    return new BuildReview(false,"ALREADY_OWNS_FIRE",price,supplies,x,y);
+                if(d.kind==kind)
+                    return new BuildReview(false,
+                        kind==FIELD_FIRE?"ALREADY_OWNS_FIRE":"ALREADY_OWNS_BENCH",
+                        price,supplies,x,y);
                 if(d.kind==CAMP_STAKE&&Math.hypot(d.x-x,d.y-y)<=6)
                     hasCamp=true;
             }
@@ -567,6 +575,8 @@ public final class ArenaSystems {
             throw new IllegalStateException("Camp inventory changed after authoritative preflight");
         if(kind==FIELD_FIRE&&!p.survival.debit(SurvivalCrafting.Item.CAMPFIRE,1))
             throw new IllegalStateException("Fire kit changed after authoritative preflight");
+        if(kind==FIELD_BENCH&&!p.survival.debit(SurvivalCrafting.Item.WORKBENCH,1))
+            throw new IllegalStateException("Workbench kit changed after authoritative preflight");
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;
@@ -703,6 +713,30 @@ public final class ArenaSystems {
         p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.ENGINEERING,9,clock,3500);
+        return true;
+    }
+    /** Actual owned/allied workbench with unobstructed reach, inventory
+     * debit, cooldown and XP, identical transaction discipline as fire. */
+    public synchronized boolean craftWorkbench(int id,String recipe){
+        Player p=players.get(id);
+        if(p==null||p.dead||recipe==null||clock<p.craftReadyAt||
+            vehicles.carDrivenBy(id)>=0)return false;
+        SurvivalCrafting.Recipe record=SurvivalCrafting.recipes().get(recipe);
+        if(record==null||record.station()!=SurvivalCrafting.Station.WORKBENCH)return false;
+        boolean reachable=false;
+        for(World.Device d:world.devices){
+            if(d.hp<=0||d.kind!=FIELD_BENCH||
+               !(p.accountKey.equals(d.ownerKey)||factions.allied(p.accountKey,d.ownerKey)))
+                continue;
+            if(Math.hypot(p.x-d.x,p.y-d.y)<=2.2&&clear(p.x,p.y,d.x,d.y)){
+                reachable=true;break;
+            }
+        }
+        if(!reachable||!p.survival.craft(recipe,SurvivalCrafting.Station.WORKBENCH))
+            return false;
+        p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
+        breakGrace(p);
+        p.progression.reward(CharacterProgression.Skill.ENGINEERING,12,clock,3500);
         return true;
     }
     /** HAND recipes only: server verifies item costs, cooldown and authenticated player inventory. */

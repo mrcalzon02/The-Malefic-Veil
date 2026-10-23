@@ -98,7 +98,7 @@ public final class CraftingRecipeIndex {
         return switch(r.availability()){
             case PLAYABLE_HAND->"HOST CRAFT: HAND";
             case PLAYABLE_FIRE->"HOST CRAFT: NEAR CAMPFIRE";
-            case STATION_UNIMPLEMENTED->"WORKBENCH EXECUTION NOT WIRED";
+            case STATION_UNIMPLEMENTED->"HOST CRAFT: NEAR WORKBENCH";
             case INDUSTRIAL_PLANNED->"INDUSTRIAL PROCESS: DATA ONLY";
             case FACILITY_PLANNED->"FACILITY PLAN: DATA ONLY";
         };

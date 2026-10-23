@@ -14,6 +14,12 @@
     <gdx.version>1.14.2</gdx.version>
   </properties>
   <dependencies>
+    <!-- Real published reusable editor core, not copied castle/editor classes. -->
+    <dependency>
+      <groupId>org.beckenburg</groupId>
+      <artifactId>level-editor-kit</artifactId>
+      <version>0.1.31</version>
+    </dependency>
     <dependency>
       <groupId>com.badlogicgames.gdx</groupId>
       <artifactId>gdx</artifactId>

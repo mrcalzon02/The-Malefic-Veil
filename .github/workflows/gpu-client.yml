@@ -44,10 +44,14 @@ jobs:
           javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
           java -cp build/classes veil.WorldDayNightTest
           java -cp build/classes veil.UrbanLightingTest
+      - name: Resolve pinned standalone Beckenburg editor dependency
+        shell: bash
+        run: bash tools/install-editor-kit.sh
       - name: Build self-contained GPU desktop JAR
         shell: bash
         run: |
           mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'org/beckenburg/editor/EditorProject.class'
           test -s gpu-client/target/MaleficVeil-GPU.jar
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'kenney/retro-urban-kit-2.0.zip'

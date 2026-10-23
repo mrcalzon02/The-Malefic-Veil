@@ -47,10 +47,14 @@ jobs:
           for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest DesktopDiagnosticsTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
             java -Djava.awt.headless=true -cp build/classes "veil.$test"
           done
+      - name: Resolve pinned standalone editor module
+        shell: bash
+        run: bash tools/install-editor-kit.sh
       - name: Build the actual playable GPU game with its complete Java engine
         run: |
           set -euo pipefail
           mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'org/beckenburg/editor/EditorHistory.class'
           cp gpu-client/target/MaleficVeil-GPU.jar build/package/MaleficVeil.jar
           jar tf build/package/MaleficVeil.jar | grep -qx 'veil/gpu/GpuKenneyPreview.class'
           jar tf build/package/MaleficVeil.jar | grep -qx 'veil/MaleficVeil.class'

@@ -45,6 +45,9 @@ jobs:
             tee build/test-visuals/city-java2d.log
           test "$(grep -c 'CITY_VISUAL_CAPTURE pose=' build/test-visuals/city-java2d.log)" -eq 8
           test "$(find build/test-visuals -name 'city-regression-*.png' | wc -l)" -eq 8
+      - name: Resolve pinned portable editor module
+        shell: bash
+        run: bash tools/install-editor-kit.sh
       - name: Compile real OpenGL instanced-mesh client
         run: mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
       - name: Install virtual display and Mesa OpenGL

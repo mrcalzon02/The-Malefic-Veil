@@ -46,6 +46,30 @@ public final class CraftingRecipeIndexTest {
                 "SPINE_SUPPLY","BANDAGE","CLEAN_WATER"))
             if(!CraftingRecipeIndex.hasRecipe(required))
                 throw new AssertionError("Missing expanded product "+required);
+        for(var faction:CraftingEraRegistry.Faction.values()){
+            var scoped=CraftingRecipeIndex.recipesFor(faction);
+            if(scoped.isEmpty())throw new AssertionError("Empty recipe catalogue "+faction);
+            for(var row:scoped)
+                if(!CraftingRecipeIndex.belongsTo(row,faction))
+                    throw new AssertionError("Foreign economy in faction catalogue: "+row.key());
+        }
+        if(CraftingRecipeIndex.recipesFor(CraftingEraRegistry.Faction.UNRAVELED).stream()
+            .anyMatch(row->row.key().equals("process:bound-liturgy"))||
+           CraftingRecipeIndex.recipesFor(CraftingEraRegistry.Faction.BEGOTTEN).stream()
+            .anyMatch(row->row.key().equals("process:ballistic-resupply"))||
+           CraftingRecipeIndex.recipesFor(CraftingEraRegistry.Faction.PENITENT).stream()
+            .anyMatch(row->row.key().equals("process:spine-supply")))
+            throw new AssertionError("Faction industrial recipes were pooled");
+        if(!CraftingRecipeIndex.makes("BOUND_LITURGY",
+                CraftingEraRegistry.Faction.UNRAVELED).isEmpty()||
+           !CraftingRecipeIndex.uses("FACILITY:terror-collector",
+                CraftingEraRegistry.Faction.UNRAVELED).isEmpty()||
+           CraftingRecipeIndex.visibleItem("SACRED_SUPPLY",
+                CraftingEraRegistry.Faction.BEGOTTEN))
+            throw new AssertionError("Foreign economy dependencies leaked into item book");
+        if(!CraftingRecipeIndex.recipesFor(CraftingEraRegistry.Faction.ALL)
+                .stream().allMatch(row->row.faction().equals("ALL")))
+            throw new AssertionError("Neutral faction sees foreign processes");
         System.out.println("PASS CraftingRecipeIndexTest recipes="+records.size()+
             " hand="+SurvivalCrafting.recipes().size()+
             " processes="+CraftingEraRegistry.processes().size()+

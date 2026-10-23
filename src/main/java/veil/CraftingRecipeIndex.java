@@ -93,6 +93,37 @@ public final class CraftingRecipeIndex {
     public static List<Record> uses(String item){return CONSUMERS.getOrDefault(item,List.of());}
     public static Set<String> items(){return KNOWN_ITEMS;}
     public static boolean hasRecipe(String item){return !makes(item).isEmpty();}
+
+    /** A shared index is not a shared production permission. ALL denotes
+     * common infrastructure; faction-specific stations never leak into a
+     * different faction's active recipe ledger. */
+    public static boolean belongsTo(Record record,CraftingEraRegistry.Faction faction){
+        Objects.requireNonNull(record);
+        Objects.requireNonNull(faction);
+        return record.faction().equals("ALL")||record.faction().equals(faction.name());
+    }
+    public static List<Record> recipesFor(CraftingEraRegistry.Faction faction){
+        return RECORDS.stream().filter(row->belongsTo(row,faction)).toList();
+    }
+    public static List<Record> makes(String item,CraftingEraRegistry.Faction faction){
+        return makes(item).stream().filter(row->belongsTo(row,faction)).toList();
+    }
+    public static List<Record> uses(String item,CraftingEraRegistry.Faction faction){
+        return uses(item).stream().filter(row->belongsTo(row,faction)).toList();
+    }
+    /** Items with exclusive recipes are not mislabeled universal recipes,
+     * including products whose sprites live in shared art atlases. */
+    public static boolean visibleItem(String item,CraftingEraRegistry.Faction faction){
+        Objects.requireNonNull(item);Objects.requireNonNull(faction);
+        if(faction==CraftingEraRegistry.Faction.ALL){
+            return makes(item).stream().allMatch(r->r.faction().equals("ALL"))&&
+                uses(item).stream().allMatch(r->r.faction().equals("ALL"));
+        }
+        List<Record> producers=makes(item),consumers=uses(item);
+        if(!producers.isEmpty())return producers.stream().anyMatch(r->belongsTo(r,faction));
+        if(!consumers.isEmpty())return consumers.stream().anyMatch(r->belongsTo(r,faction));
+        return true; // sourced/harvestable goods without an exclusive recipe
+    }
     /** Plan vs actually callable status is never hidden. */
     public static String availabilityText(Record r){
         return switch(r.availability()){
@@ -105,7 +136,15 @@ public final class CraftingRecipeIndex {
     }
     /** Named use cases from actual recipe edges, not marketing descriptions. */
     public static String usesText(String item,int maximum){
-        List<Record> dependent=uses(item);
+        return usesText(item,maximum,CraftingEraRegistry.Faction.ALL,true);
+    }
+    public static String usesText(String item,int maximum,
+                                  CraftingEraRegistry.Faction faction){
+        return usesText(item,maximum,faction,false);
+    }
+    private static String usesText(String item,int maximum,
+                                   CraftingEraRegistry.Faction faction,boolean unrestricted){
+        List<Record> dependent=unrestricted?uses(item):uses(item,faction);
         if(dependent.isEmpty())return "NO REGISTERED DOWNSTREAM RECIPE";
         StringJoiner names=new StringJoiner(", ");
         int n=0;

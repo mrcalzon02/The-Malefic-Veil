@@ -144,6 +144,17 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         });
     }
     /** Existing NetLink social protocol remains server authoritative. */
+    /** Only server-confirmed faction state determines which industrial
+     * recipes appear as belonging to the player's production economy. */
+    public CraftingEraRegistry.Faction gpuCraftFaction(){
+        String hostFaction=net==null?"NONE":net.faction();
+        return switch(hostFaction){
+            case "THE_UNRAVELED" -> CraftingEraRegistry.Faction.UNRAVELED;
+            case "THE_PENITENT" -> CraftingEraRegistry.Faction.PENITENT;
+            case "THE_BEGOTTEN" -> CraftingEraRegistry.Faction.BEGOTTEN;
+            default -> CraftingEraRegistry.Faction.ALL;
+        };
+    }
     public String gpuCrewStatus(){
         return net==null?"OFFLINE - NO CREW":
             "FACTION "+net.faction()+"  CREW "+net.crew()+"  ROLE "+net.crewRole();

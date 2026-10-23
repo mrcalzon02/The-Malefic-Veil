@@ -256,7 +256,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     public static MaleficVeil createGpuSession(GpuLaunch requested)throws IOException{
         if(!SwingUtilities.isEventDispatchThread())
             throw new IllegalStateException("Initialize gameplay on Swing EDT");
-        Objects.requireNonNull(requested);
+        java.util.Objects.requireNonNull(requested);
         NetLink link=null;
         LanServer host=null;
         try{

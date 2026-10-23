@@ -116,8 +116,14 @@ public final class CraftingRecipeIndex {
     public static boolean visibleItem(String item,CraftingEraRegistry.Faction faction){
         Objects.requireNonNull(item);Objects.requireNonNull(faction);
         if(faction==CraftingEraRegistry.Faction.ALL){
-            return makes(item).stream().allMatch(r->r.faction().equals("ALL"))&&
-                uses(item).stream().allMatch(r->r.faction().equals("ALL"));
+            // A neutral compendium still needs Timber, Ore and other COMMON
+            // staples even when a faction-only building also consumes them.
+            List<Record> producers=makes(item),consumers=uses(item);
+            if(!producers.isEmpty())
+                return producers.stream().anyMatch(r->r.faction().equals("ALL"));
+            if(!consumers.isEmpty())
+                return consumers.stream().anyMatch(r->r.faction().equals("ALL"));
+            return true;
         }
         List<Record> producers=makes(item),consumers=uses(item);
         if(!producers.isEmpty())return producers.stream().anyMatch(r->belongsTo(r,faction));

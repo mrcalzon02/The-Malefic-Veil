@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import veil.CraftingRecipeIndex;
+import veil.CraftingEraRegistry;
+import java.util.function.Supplier;
 import veil.CraftingRecipeIndex.Record;
 import veil.MaleficVeil;
 import java.util.*;
@@ -18,13 +20,19 @@ public final class GpuCraftingBook implements AutoCloseable {
     private static final int PER_PAGE=8;
     private final PsxHorrorMenu skin;
     private final GpuCraftingIcons icons;
+    private final Supplier<CraftingEraRegistry.Faction> hostFaction;
+    private CraftingEraRegistry.Faction faction(){
+        return Objects.requireNonNull(hostFaction.get(),"Missing host faction");
+    }
     private View view=View.RECIPES;
     private int choice=0,offset=0,filter=0,ingredientOffset=0;
     private String search="";
     private static final String[] FILTERS={"ALL","FIELD","INDUSTRIAL","FACILITIES"};
     private record Line(String title,String output,Record recipe){}
-    public GpuCraftingBook(PsxHorrorMenu skin){
+    public GpuCraftingBook(PsxHorrorMenu skin,
+            Supplier<CraftingEraRegistry.Faction> hostFaction){
         this.skin=Objects.requireNonNull(skin);
+        this.hostFaction=Objects.requireNonNull(hostFaction);
         this.icons=new GpuCraftingIcons();
     }
     public void reset(){
@@ -67,7 +75,7 @@ public final class GpuCraftingBook implements AutoCloseable {
             for(int i=0;i<products.size();i++)
                 if(products.get(i).output().equals(target)){setChoice(i);return;}
         }else{
-            var producers=CraftingRecipeIndex.makes(chosen.output());
+            var producers=CraftingRecipeIndex.makes(chosen.output(),faction());
             if(!producers.isEmpty())inspectRecipe(producers.get(0).key());
         }
     }
@@ -83,13 +91,22 @@ public final class GpuCraftingBook implements AutoCloseable {
             Set<String> ids=new TreeSet<>(icons.ids());
             ids.addAll(CraftingRecipeIndex.items());
             for(String id:ids){
-                if(filter==1&&CraftingRecipeIndex.makes(id).isEmpty())continue;
-                if(filter==2&&CraftingRecipeIndex.makes(id).stream().noneMatch(
+                String pack=icons.pack(id);
+                if(pack.equals("unraveled_industry")&&
+                   faction()!=CraftingEraRegistry.Faction.UNRAVELED)continue;
+                if(pack.equals("penitent_ritual")&&
+                   faction()!=CraftingEraRegistry.Faction.PENITENT)continue;
+                if(pack.equals("begotten_biology")&&
+                   faction()!=CraftingEraRegistry.Faction.BEGOTTEN)continue;
+                if(!CraftingRecipeIndex.visibleItem(id,faction()))continue;
+                List<Record> producers=CraftingRecipeIndex.makes(id,faction());
+                if(filter==1&&producers.isEmpty())continue;
+                if(filter==2&&producers.stream().noneMatch(
                     r->r.kind()==CraftingRecipeIndex.Kind.INDUSTRIAL))continue;
-                if(filter==3&&!CraftingRecipeIndex.makes(id).isEmpty())continue;
+                if(filter==3&&!producers.isEmpty())continue;
                 list.add(new Line(icons.label(id),id,null));
             }
-        }else for(Record recipe:CraftingRecipeIndex.recipes()){
+        }else for(Record recipe:CraftingRecipeIndex.recipesFor(faction())){
             if(filter==1&&recipe.kind()!=CraftingRecipeIndex.Kind.FIELD)continue;
             if(filter==2&&recipe.kind()!=CraftingRecipeIndex.Kind.INDUSTRIAL)continue;
             if(filter==3&&recipe.kind()!=CraftingRecipeIndex.Kind.FACILITY)continue;
@@ -187,7 +204,7 @@ public final class GpuCraftingBook implements AutoCloseable {
             line(batch,"+"+(record.inputs().size()-start-row)+" MORE  ] NEXT",314,79);
         else if(start>0)
             line(batch,"[ PREVIOUS COMPONENTS",314,79);
-        String related=CraftingRecipeIndex.usesText(record.output(),2);
+        String related=CraftingRecipeIndex.usesText(record.output(),2,faction());
         line(batch,"USED FOR: "+clipped(related,34),314,48);
         if(record.kind()==CraftingRecipeIndex.Kind.FACILITY &&
            !record.prerequisites().isEmpty())
@@ -198,10 +215,11 @@ public final class GpuCraftingBook implements AutoCloseable {
         skin.slot(batch,315,248,52,false);
         icons.draw(batch,item,315,248,52);
         if(!icons.contains(item))line(batch,"UNILLUSTRATED SOURCE ITEM",374,280);
-        String status=CraftingRecipeIndex.hasRecipe(item)?"PRODUCTION REGISTERED":
+        String status=!CraftingRecipeIndex.makes(item,faction()).isEmpty()?
+            "YOUR FACTION HAS PRODUCTION":
             (CraftingRecipeIndex.items().contains(item)?"HARVEST/LOOT OR INPUT":"ICON-ONLY CONCEPT");
         line(batch,status,314,236);
-        List<Record> makers=CraftingRecipeIndex.makes(item);
+        List<Record> makers=CraftingRecipeIndex.makes(item,faction());
         line(batch,"MADE AT:",314,218);
         int row=0;
         for(Record r:makers){
@@ -213,13 +231,13 @@ public final class GpuCraftingBook implements AutoCloseable {
         if(makers.size()>3)line(batch,"+"+(makers.size()-3)+" OTHER FORMULAS",314,150);
         line(batch,"REQUIRED BY:",314,135);
         row=0;
-        for(Record r:CraftingRecipeIndex.uses(item)){
+        for(Record r:CraftingRecipeIndex.uses(item,faction())){
             if(row==4)break;
             line(batch,clipped(r.name()+" / "+r.station(),43),314,116-row*18);
             row++;
         }
         if(row==0)line(batch,"NO REGISTERED DOWNSTREAM USE",314,116);
-        int other=CraftingRecipeIndex.uses(item).size()-row;
+        int other=CraftingRecipeIndex.uses(item,faction()).size()-row;
         if(other>0)line(batch,"+"+other+" MORE USES",314,44);
     }
     public void draw(SpriteBatch batch,MaleficVeil.GpuFrame snapshot){
@@ -228,7 +246,7 @@ public final class GpuCraftingBook implements AutoCloseable {
         if(offset>choice)offset=choice;
         skin.frame(batch,9,11,622,377);
         skin.band(batch,19,348,600,31);
-        line(batch,"CRAFT / RECIPE INDEX     "+view+"  ["+FILTERS[filter]+"]",
+        line(batch,""+faction().name()+" / "+view+" ["+FILTERS[filter]+"]",
             29,368);
         line(batch,all.size()+" ENTRIES  TAB VIEW  F4 FILTER",29,339);
         line(batch,"FIND: "+clipped(search,17)+"_",391,339);

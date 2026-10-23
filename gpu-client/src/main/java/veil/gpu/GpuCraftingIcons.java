@@ -57,6 +57,10 @@ public final class GpuCraftingIcons implements AutoCloseable {
         return stream;
     }
     public boolean contains(String id){return catalog.containsKey(id);}
+    public String pack(String id){
+        Entry source=catalog.get(id);
+        return source==null?"":source.pack();
+    }
     public Set<String> ids(){return Collections.unmodifiableSet(catalog.keySet());}
     public String label(String id){
         Entry item=catalog.get(id);

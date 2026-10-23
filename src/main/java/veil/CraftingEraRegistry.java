@@ -363,7 +363,7 @@ public final class CraftingEraRegistry {
             "RELIQUARY_PLATE",2,"WITNESS_SEAL",1);
         process("penitent-score-hymn",Era.ELECTRIC,Faction.PENITENT,
             "penitent-choir-relay","CHOIR_SCORE",1,1260,8,
-            "BRONZE_CENSER",1,"CHORUS_RESONANCE",1);
+            "BRONZE_CENSER",1,"CONTROL_BOARD",1);
         process("penitent-sanctify-shell",Era.AUTOMATION,Faction.PENITENT,
             "penitent-ward-sanctum","CONSECRATED_SHELL",1,1800,16,
             "CHOIR_SCORE",2,"DREAD_IMPRINT",3,"BOUND_LITURGY",1);

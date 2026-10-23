@@ -83,6 +83,9 @@ jobs:
               tee build/test-visuals/release-frontend.log
           grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/release-frontend.log
           test -s build/test-visuals/gpu-unified-front-end.png
+          for label in home video audio controls create-world join; do
+            test -s "build/test-visuals/gpu-frontend-$label.png"
+          done
           xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
             timeout 180s java -Dveil.weather.mute=true \
               -jar build/package/MaleficVeil.jar --frontend-flow-smoke |
@@ -90,6 +93,7 @@ jobs:
           grep -q 'PASS GPU_UNIFIED_FRONTEND_FULL_FLOW' \
             build/test-visuals/release-frontend-session.log
           test -s build/test-visuals/gpu-frontend-live-world.png
+          test -s build/test-visuals/gpu-frontend-live-pause.png
       - name: Run real shipped game/render/input in Mesa OpenGL
         shell: bash
         env:
@@ -243,6 +247,7 @@ jobs:
             build/test-visuals/gpu-live-play-shipped-client.png
             build/test-visuals/gpu-unified-front-end.png
             build/test-visuals/gpu-frontend-live-world.png
+            build/test-visuals/gpu-frontend-*.png
             build/test-visuals/release-frontend*.log
             build/test-visuals/release-live-gpu.log
             build/test-visuals/release-editor-kit.log

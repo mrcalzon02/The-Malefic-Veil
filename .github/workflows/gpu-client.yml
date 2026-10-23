@@ -108,12 +108,16 @@ jobs:
               --frontend-smoke | tee build/test-visuals/unified-menu.log
           grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/unified-menu.log
           test -s build/test-visuals/gpu-unified-front-end.png
+          for label in home video audio controls create-world join; do
+            test -s "build/test-visuals/gpu-frontend-$label.png"
+          done
           xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
             timeout 180s java -Dveil.weather.mute=true \
               -jar gpu-client/target/MaleficVeil-GPU.jar --frontend-flow-smoke |
               tee build/test-visuals/unified-live-session.log
           grep -q 'PASS GPU_UNIFIED_FRONTEND_FULL_FLOW' build/test-visuals/unified-live-session.log
           test -s build/test-visuals/gpu-frontend-live-world.png
+          test -s build/test-visuals/gpu-frontend-live-pause.png
       - name: Reuse published editor module in actual GPU viewport
         if: runner.os == 'Linux'
         shell: bash
@@ -168,5 +172,6 @@ jobs:
             build/test-visuals/unified-live-session.log
             build/test-visuals/gpu-unified-front-end.png
             build/test-visuals/gpu-frontend-live-world.png
+            build/test-visuals/gpu-frontend-*.png
             build/test-visuals/editor-kit-smoke/seed-*/city-A.properties
           if-no-files-found: warn

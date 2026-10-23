@@ -91,6 +91,7 @@ jobs:
         run: |
           java -Djava.awt.headless=true -cp build/classes veil.CraftingEraRegistryTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingRecipeIndexTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactionIndustrySeparationTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingEconomyCsvTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingCatalogExportTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingCatalogExport

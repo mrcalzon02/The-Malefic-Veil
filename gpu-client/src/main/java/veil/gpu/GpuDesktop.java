@@ -37,6 +37,13 @@ public final class GpuDesktop {
         gpu.setDaemon(false);
         gpu.start();
     }
+    /** Shares the exact terrain/instanced GPU renderer as playable worlds. */
+    public static void launchEditor(long seed){
+        Thread thread=new Thread(()->new Lwjgl3Application(
+            GpuKenneyPreview.editableWorld(seed,false),config()),
+            "malefic-editor-gpu");
+        thread.setDaemon(false);thread.start();
+    }
     public static void main(String[] args)throws Exception{
         boolean smoke=false,gallery=false,playSmoke=false,editor=false,editorSmoke=false;
         long seed=20261020L;
@@ -59,7 +66,7 @@ public final class GpuDesktop {
             if(city!='A')throw new IllegalArgumentException("Editor document currently targets City A");
             if(editorSmoke)
                 System.setProperty("veil.editor.dir","build/test-visuals/editor-kit-smoke");
-            new Lwjgl3Application(new GpuKenneyPreview(seed,editorSmoke),config());
+            new Lwjgl3Application(GpuKenneyPreview.editableWorld(seed,editorSmoke),config());
         }else if(playSmoke){
             System.setProperty("veil.weather.mute","true");
             final MaleficVeil[] session=new MaleficVeil[1];

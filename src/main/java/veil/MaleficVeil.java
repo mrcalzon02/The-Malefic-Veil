@@ -340,11 +340,26 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         DesktopDiagnostics.install("desktop");
         DesktopDiagnostics.note("MENU_OPEN");
         SwingUtilities.invokeLater(()->{
-            String[] modes={"SINGLE PLAYER","HOST MULTIPLAYER","JOIN MULTIPLAYER"};
+            String[] modes={"SINGLE PLAYER","HOST MULTIPLAYER","JOIN MULTIPLAYER",
+                "LEVEL EDITOR (DEV)"};
             int mode=JOptionPane.showOptionDialog(null,"THE MALEFIC VEIL — PROTOTYPE\nSelect play mode",
                 "The Malefic Veil",JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,null,modes,modes[0]);
             if(mode<0)return;
             DesktopDiagnostics.note("PLAY_MODE_SELECTED mode="+mode);
+            if(mode==3){
+                WorldCreationConfig editWorld=worldSelection(false);
+                if(editWorld==null)return;
+                try{
+                    Class.forName("veil.gpu.GpuDesktop").getMethod("launchEditor",long.class)
+                        .invoke(null,editWorld.seed());
+                    DesktopDiagnostics.note("PORTABLE_LEVEL_EDITOR_LAUNCHED seed="+editWorld.seed());
+                }catch(Exception problem){
+                    DesktopDiagnostics.note("LEVEL_EDITOR_LAUNCH_FAILED "+problem);
+                    JOptionPane.showMessageDialog(null,problem.getMessage(),
+                        "Level editor launch failed",JOptionPane.ERROR_MESSAGE);
+                }
+                return;
+            }
             WorldCreationConfig config=mode==2?null:worldSelection(mode==1);
             if(mode!=2&&config==null)return;
             CharacterRoster.Faction faction=(CharacterRoster.Faction)JOptionPane.showInputDialog(

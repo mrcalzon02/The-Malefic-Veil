@@ -170,8 +170,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         this(gameplay.gpuWorld().seed,false,false,'A',gameplay,playSmoke,false,false);
     }
     /** Same licensed GPU scene, with project-independent editor library attached. */
-    public GpuKenneyPreview(long seed,boolean editorSmoke){
-        this(seed,false,false,'A',null,false,true,editorSmoke);
+    public static GpuKenneyPreview editableWorld(long seed,boolean smoke){
+        return new GpuKenneyPreview(seed,false,false,'A',null,false,true,smoke);
     }
     private GpuKenneyPreview(long seed,boolean smoke,boolean gallery,char site,
             MaleficVeil gameplay,boolean playSmoke,boolean editorMode,boolean editorSmoke){

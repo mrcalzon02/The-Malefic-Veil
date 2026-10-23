@@ -10,11 +10,12 @@ import java.util.*;
 public final class SurvivalCrafting {
     public enum Item {
         TIMBER, FIELD_STONE, FIBER, EDIBLES, MEDICINAL_HERBS, RAW_ORE,
-        FIREWOOD, RATIONS, CHARCOAL, COMPOST, CLOTH_ROLL, SMOKED_RATIONS,
-        MEAL_SACK, FIELD_CROPS, HERBAL_BUNDLE, FIRED_BRICKS,
         DIRTY_WATER, CLEAN_WATER, BANDAGE, CAMPFIRE, FILTER, WORKBENCH,
         METAL_STOCK, MACHINE_PARTS, SHELTER_KIT, VEHICLE_REPAIR_KIT,
-        TENT_KIT, CRATE_KIT, FENCE_SECTION, STAKE_TRAP, NOISE_ALARM
+        TENT_KIT, CRATE_KIT, FENCE_SECTION, STAKE_TRAP, NOISE_ALARM,
+        // Always append: original item ordinals are retained for saves/network.
+        FIREWOOD, RATIONS, CHARCOAL, COMPOST, CLOTH_ROLL, SMOKED_RATIONS,
+        MEAL_SACK, FIELD_CROPS, HERBAL_BUNDLE, FIRED_BRICKS
     }
     public enum Station { HAND, FIRE, WORKBENCH }
     public record Recipe(String id,Station station,Map<Item,Integer> requires,

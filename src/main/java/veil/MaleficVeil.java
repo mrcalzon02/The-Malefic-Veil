@@ -235,6 +235,65 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         game.publishGpuFrame();
         return game;
     }
+    /**
+     * In-window frontend path. No modal dialogs or duplicate game simulation.
+     * World rules are still validated/saved through WorldCreationConfig;
+     * host-side authority remains with LanServer and NetLink.
+     */
+    public record GpuLaunch(WorldCreationConfig world,String joinHost,int joinPort,
+                            CharacterRoster.Faction faction,FactionClasses.Role role) {
+        public GpuLaunch {
+            if(faction==null||role==null||role.faction()!=faction||!role.playable())
+                throw new IllegalArgumentException("Choose a playable faction class");
+            if(world==null){
+                if(joinHost==null||joinHost.isBlank()||joinHost.length()>253||
+                    joinPort<1||joinPort>65535)
+                    throw new IllegalArgumentException("Invalid multiplayer host");
+            }else if(joinHost!=null)
+                throw new IllegalArgumentException("Cannot host and join simultaneously");
+        }
+    }
+    public static MaleficVeil createGpuSession(GpuLaunch requested)throws IOException{
+        if(!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Initialize gameplay on Swing EDT");
+        Objects.requireNonNull(requested);
+        NetLink link=null;
+        LanServer host=null;
+        try{
+            long worldSeed;
+            if(requested.world()!=null){
+                WorldCreationConfig options=requested.world();
+                // Loading an already saved config must use the same document
+                // that was previously authenticated and persisted.
+                if(!options.equals(WorldCreationConfig.load(options.directory())))
+                    throw new IOException("Host world rules disagree with saved world");
+                HostAiSettings.Rules bots=new HostAiSettings.Rules(
+                    options.aiPopulation(),HostAiSettings.Distribution.BALANCED,1,
+                    1,0,0,0);
+                int port=options.hostType().equals("multi")?7777:0;
+                host=new LanServer(port,options.seed(),options.directory(),
+                    options.hardcore(),bots);
+                link=new NetLink("127.0.0.1",host.port());
+                worldSeed=options.seed();
+            }else{
+                link=new NetLink(requested.joinHost(),requested.joinPort());
+                worldSeed=link.seed;
+            }
+            link.selectFaction(requested.faction());
+            MaleficVeil game=new MaleficVeil(null,worldSeed,
+                requested.role().existingAbilityId(),link);
+            game.gpuPresentation=true;
+            game.gpuHostedServer=host;
+            game.publishGpuFrame();
+            DesktopDiagnostics.note("GPU_FRONTEND_WORLD_READY seed="+worldSeed+
+                " mode="+(requested.world()==null?"join":requested.world().hostType()));
+            return game;
+        }catch(IOException|RuntimeException failure){
+            if(link!=null)try{link.close();}catch(Exception ignored){}
+            if(host!=null)try{host.close();}catch(Exception ignored){}
+            throw failure;
+        }
+    }
     /** Compact host-only setup; network clients cannot change population rules. */
     private static HostAiSettings.Rules hostAiDialog(){
         HostAiSettings.Rules initial=HostAiSettings.fromProperties();

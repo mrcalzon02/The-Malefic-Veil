@@ -90,6 +90,7 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.CraftingEraRegistryTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingRecipeIndexTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingEconomyCsvTest
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingIconPacksTest
       - name: Industrial work-order cost, 24-7 restart, idempotency and incursion budget
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IndustrialWorkstationTest

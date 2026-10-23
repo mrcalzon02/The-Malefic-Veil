@@ -56,7 +56,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         boolean skills,boolean map,boolean continent,String notice,
         java.util.Map<String,Integer> inventoryItems,
         java.util.List<String> skillStats,
+        java.util.List<GpuCraftRecipe> crafts,
         java.util.List<UrbanScene.ModelInstance> dynamic) {}
+    public record GpuCraftRecipe(String id,String station,String description,
+                                 boolean affordable) {}
     private volatile GpuFrame gpuFrame;
     private LanServer gpuHostedServer;
     private boolean gpuPresentation;
@@ -88,6 +91,76 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         if(net!=null)net.sceneReady();
         DesktopDiagnostics.note("GPU_PLAY_SESSION_READY");
     });}
+    /** Read-only recipe preview. The host always validates and consumes resources. */
+    private java.util.List<GpuCraftRecipe> gpuCraftingSnapshot(){
+        var result=new java.util.ArrayList<GpuCraftRecipe>();
+        java.util.Map<String,Integer> inventory=carried();
+        boolean fire=world.devices.stream().anyMatch(d->
+            d.hp>0&&d.kind==ArenaSystems.FIELD_FIRE&&
+            Math.hypot(d.x-px,d.y-py)<=2.2);
+        for(var recipe:SurvivalCrafting.recipes().values()){
+            if(recipe.station()==SurvivalCrafting.Station.WORKBENCH)continue;
+            boolean nearby=recipe.station()==SurvivalCrafting.Station.HAND||fire;
+            boolean enough=nearby;
+            var parts=new java.util.ArrayList<String>();
+            for(var item:recipe.requires().entrySet()){
+                int count=inventory.getOrDefault(item.getKey().name(),0);
+                parts.add(item.getKey().name()+" "+count+"/"+item.getValue());
+                if(count<item.getValue())enough=false;
+            }
+            java.util.Collections.sort(parts);
+            result.add(new GpuCraftRecipe(recipe.id(),recipe.station().name(),
+                String.join("  ",parts)+(nearby?"":"  NEED CAMPFIRE"),enough));
+        }
+        result.sort(java.util.Comparator.comparing(GpuCraftRecipe::id));
+        return java.util.List.copyOf(result);
+    }
+    /** GPU UI never manipulates inventory directly; sends existing transactions. */
+    public void gpuCraft(String id){
+        var recipe=SurvivalCrafting.recipes().get(id);
+        if(recipe==null||recipe.station()==SurvivalCrafting.Station.WORKBENCH)
+            throw new IllegalArgumentException("Unknown field recipe");
+        SwingUtilities.invokeLater(()->{
+            if(net!=null){
+                if(recipe.station()==SurvivalCrafting.Station.FIRE)net.craftFire(id);
+                else net.craftHand(id);
+            }else if(localHost!=null)
+                toast(localHost.player(1).survival.craft(id,SurvivalCrafting.Station.HAND)?
+                    "CRAFTED "+id:"CRAFT DENIED");
+        });
+    }
+    /** Existing NetLink social protocol remains server authoritative. */
+    public String gpuCrewStatus(){
+        return net==null?"OFFLINE - NO CREW":
+            "FACTION "+net.faction()+"  CREW "+net.crew()+"  ROLE "+net.crewRole();
+    }
+    public void gpuCrewAction(String action,String argument){
+        if(net==null)throw new IllegalStateException("No connected multiplayer host");
+        String input=argument==null?"":argument.strip();
+        if(input.length()>32)throw new IllegalArgumentException("Crew input exceeds 32 characters");
+        int player=0;
+        if(java.util.Set.of("INVITE","PROMOTE","REMOVE","TRANSFER").contains(action)){
+            try{player=Integer.parseInt(input);}
+            catch(NumberFormatException bad){throw new IllegalArgumentException("Player ID must be numeric");}
+            if(player<1)throw new IllegalArgumentException("Player ID must be positive");
+        }
+        if(action.equals("CREATE")&&!input.matches("[A-Za-z0-9][A-Za-z0-9 _-]{2,31}"))
+            throw new IllegalArgumentException("Crew name must be 3-32 letters/numbers");
+        final int target=player;
+        SwingUtilities.invokeLater(()->{
+            switch(action){
+                case "CREATE" -> net.createCrew(input);
+                case "INVITE" -> net.inviteCrew(target);
+                case "ACCEPT" -> net.acceptCrew();
+                case "PROMOTE" -> net.promoteCrew(target);
+                case "REMOVE" -> net.kickCrew(target);
+                case "LEAVE" -> net.leaveCrew();
+                case "TRANSFER" -> net.transferCrew(target);
+                case "DISBAND" -> net.disbandCrew();
+                default -> throw new IllegalArgumentException("Unknown crew action");
+            }
+        });
+    }
     /** Close the real host and flush persistent world saves before JVM exit. */
     public void gpuShutdown(){
         SwingUtilities.invokeLater(()->{
@@ -185,7 +258,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             shellClip,shellReserve,gun,frags,dead,net==null||net.connected(),
             inventoryVisible,skillsVisible,mapVisible,continentVisible,
             noticeTicks>0?notice:"",java.util.Map.copyOf(carried()),
-            java.util.List.copyOf(stats),java.util.List.copyOf(actors));
+            java.util.List.copyOf(stats),gpuCraftingSnapshot(),
+            java.util.List.copyOf(actors));
     }
 
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {

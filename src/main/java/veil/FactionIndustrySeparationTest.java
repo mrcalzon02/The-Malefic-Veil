@@ -32,7 +32,7 @@ public final class FactionIndustrySeparationTest {
             for(var other:CraftingEraRegistry.Faction.values()){
                 if(other==faction)continue;
                 check(CraftingRecipeIndex.recipesFor(other).stream().noneMatch(r->
-                    r.key().equals("process:"+steps[i])||
+                    r.key().equals("process:"+stageRecipe)||
                     r.key().equals("facility:"+stageFacility)),
                     "Leaked faction chain "+facilities[i]+" into "+other);
                 check(CraftingRecipeIndex.makes(process.output(),other).isEmpty(),

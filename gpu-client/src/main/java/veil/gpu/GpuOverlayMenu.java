@@ -2,6 +2,7 @@ package veil.gpu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import veil.MaleficVeil;
 
@@ -9,23 +10,37 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * PSX source-skinned in-world pause/options/menu interface. Never opens Swing
- * or creates a second window. Controls talk to the actual authoritative game.
+ * Compact, source-skinned menus inside the actual world framebuffer. No
+ * native Swing dialogs. Crew and crafting commands use existing host RPCs,
+ * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS }
-    private static final int WIDTH=640,HEIGHT=400;
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,CREW,CREW_INPUT,CONFIRM_DISBAND }
+    private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=7;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
     private final MaleficVeil gameplay;
     private final GpuClientSettings settings;
-    private final Runnable goMain;
-    private final Runnable apply;
+    private final Runnable goMain,apply;
     private final GpuAudioBus audio;
     private final List<Item> items=new ArrayList<>();
+    private final InputAdapter inputProcessor=new InputAdapter(){
+        @Override public boolean keyTyped(char character){
+            if(screen!=Screen.CREW_INPUT)return false;
+            if(character=='\b'||character==127){
+                if(!crewText.isEmpty())crewText=crewText.substring(0,crewText.length()-1);
+                return true;
+            }
+            if(character>=32&&character<=126&&crewText.length()<32){
+                crewText+=character;
+                return true;
+            }
+            return false;
+        }
+    };
     private Screen screen=Screen.GAME;
-    private int selected;
-    private String notice="";
+    private int selected,pageOffset;
+    private String notice="",crewAction="",crewText="";
     public GpuOverlayMenu(PsxHorrorMenu skin,MaleficVeil game,
             GpuClientSettings settings,GpuAudioBus audio,
             Runnable goMain,Runnable apply){
@@ -34,37 +49,94 @@ public final class GpuOverlayMenu {
         this.settings=Objects.requireNonNull(settings);
         this.audio=audio;this.goMain=goMain;this.apply=apply;
     }
+    public InputAdapter inputProcessor(){return inputProcessor;}
     public Screen screen(){return screen;}
-    /** CI-only visible-state proof. Production inputs use ESC/F10/F11. */
-    void auditPause(boolean paused){show(paused?Screen.PAUSE:Screen.GAME);}
     public boolean active(){return screen==Screen.GAME;}
-    private void show(Screen target){screen=target;selected=0;build();}
-    private void add(String label,Runnable action){items.add(new Item(label,action,null,null));}
-    private void slider(String label,Runnable prev,Runnable next){
-        items.add(new Item(label,next,prev,next));
+    public void openCraft(){pageOffset=0;show(Screen.CRAFT);}
+    public void openCrew(){show(Screen.CREW);}
+    /** Existing game simulation stays live for clients; only local input pauses. */
+    private void show(Screen target){
+        screen=target;selected=0;
+        Gdx.input.setCursorCatched(false);
+        build();
     }
-    private void change(int key){
-        gameplay.gpuKey(key,true);
-        gameplay.gpuKey(key,false);
+    /** CI-only visible-state proof; production uses ESC/F11. */
+    void auditPause(boolean paused){show(paused?Screen.PAUSE:Screen.GAME);}
+    private void add(String label,Runnable action){items.add(new Item(label,action,null,null));}
+    private void slider(String label,Runnable before,Runnable after){
+        items.add(new Item(label,after,before,after));
+    }
+    private void toast(String feedback){
+        notice=feedback.length()>48?feedback.substring(0,47)+"~":feedback;
+    }
+    private void quickPanel(int key){
+        gameplay.gpuKey(key,true);gameplay.gpuKey(key,false);
         show(Screen.GAME);
     }
     private void save(){
-        try{settings.save();notice="OPTIONS SAVED";show(Screen.PAUSE);}
-        catch(IOException error){notice="COULD NOT SAVE: "+error.getMessage();}
+        try{settings.save();toast("OPTIONS SAVED");show(Screen.PAUSE);}
+        catch(IOException failure){toast("SAVE FAILED: "+failure.getMessage());}
     }
-    private void volume(String group,int delta){
-        int next;
-        switch(group){
-            case "master"->{next=settings.master+delta;settings.master=Math.max(0,Math.min(100,next));}
-            case "music"->{next=settings.music+delta;settings.music=Math.max(0,Math.min(100,next));}
-            case "effects"->{next=settings.effects+delta;settings.effects=Math.max(0,Math.min(100,next));}
-            case "ambience"->{next=settings.ambience+delta;settings.ambience=Math.max(0,Math.min(100,next));}
-            case "ui"->{next=settings.ui+delta;settings.ui=Math.max(0,Math.min(100,next));}
-            case "voice"->{next=settings.voice+delta;settings.voice=Math.max(0,Math.min(100,next));}
-            default->throw new IllegalArgumentException(group);
+    private void adjust(String key,int diff){
+        int value=switch(key){
+            case "master"->settings.master;case "music"->settings.music;
+            case "effects"->settings.effects;case "ambience"->settings.ambience;
+            case "ui"->settings.ui;case "voice"->settings.voice;
+            default->throw new IllegalArgumentException(key);
+        };
+        value=Math.max(0,Math.min(100,value+diff));
+        switch(key){
+            case "master"->settings.master=value;case "music"->settings.music=value;
+            case "effects"->settings.effects=value;case "ambience"->settings.ambience=value;
+            case "ui"->settings.ui=value;case "voice"->settings.voice=value;
         }
         if(audio!=null)audio.apply(settings);
         build();
+    }
+    private void changeVideo(String key,int direction){
+        switch(key){
+            case "distance"->settings.distance=Math.max(45,
+                Math.min(240,settings.distance+direction*10));
+            case "fov"->settings.fieldOfView=Math.max(55,
+                Math.min(100,settings.fieldOfView+direction*5));
+            case "lights"->settings.lights=Math.max(0,Math.min(8,settings.lights+direction));
+            case "vsync"->{settings.vsync=!settings.vsync;Gdx.graphics.setVSync(settings.vsync);}
+            case "fullscreen"->{
+                settings.fullscreen=!settings.fullscreen;
+                if(settings.fullscreen)Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                else{
+                    int[] size=GpuClientSettings.WINDOWS[settings.windowSize];
+                    Gdx.graphics.setWindowedMode(size[0],size[1]);
+                }
+            }
+            default->throw new IllegalArgumentException(key);
+        }
+        apply.run();build();
+    }
+    private List<MaleficVeil.GpuCraftRecipe> crafts(){
+        MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
+        return frame==null?List.of():frame.crafts();
+    }
+    private void beginCrewInput(String action){
+        crewAction=action;crewText="";show(Screen.CREW_INPUT);
+    }
+    private void submitCrew(){
+        try{
+            gameplay.gpuCrewAction(crewAction,crewText);
+            show(Screen.CREW);
+            toast("REQUESTED HOST "+crewAction);
+        }catch(IllegalArgumentException|IllegalStateException failure){
+            toast(failure.getMessage());
+        }
+    }
+    private void crewImmediate(String action){
+        try{
+            gameplay.gpuCrewAction(action,"");
+            show(Screen.CREW);
+            toast("REQUESTED HOST "+action);
+        }catch(IllegalArgumentException|IllegalStateException failure){
+            toast(failure.getMessage());
+        }
     }
     private void build(){
         items.clear();
@@ -72,60 +144,89 @@ public final class GpuOverlayMenu {
             case GAME->{}
             case PAUSE->{
                 add("RESUME GAME",()->show(Screen.GAME));
-                add("INVENTORY",()->change(java.awt.event.KeyEvent.VK_I));
-                add("CHARACTER / SKILLS",()->change(java.awt.event.KeyEvent.VK_K));
-                add("CITY MAP",()->change(java.awt.event.KeyEvent.VK_M));
-                add("CONTINENT MAP",()->change(java.awt.event.KeyEvent.VK_N));
+                add("INVENTORY",()->quickPanel(java.awt.event.KeyEvent.VK_I));
+                add("CHARACTER / SKILLS",()->quickPanel(java.awt.event.KeyEvent.VK_K));
+                add("CITY / CONTINENT MAP",()->quickPanel(java.awt.event.KeyEvent.VK_M));
+                add("FIELD CRAFTING",this::openCraft);
+                add("FACTION / CREW",this::openCrew);
                 add("VIDEO / GRAPHICS",()->show(Screen.VIDEO));
-                add("SOUND / VOLUME",()->show(Screen.AUDIO));
-                add("CONTROLS",()->show(Screen.CONTROLS));
+                add("SOUND / CONTROLS",()->show(Screen.AUDIO));
                 add("RETURN TO MAIN MENU",goMain);
             }
             case VIDEO->{
-                slider("DRAW DISTANCE "+settings.distance+" M",
-                    ()->{settings.distance=Math.max(45,settings.distance-10);apply.run();build();},
-                    ()->{settings.distance=Math.min(240,settings.distance+10);apply.run();build();});
-                slider("FOV "+settings.fieldOfView+" DEG",
-                    ()->{settings.fieldOfView=Math.max(55,settings.fieldOfView-5);apply.run();build();},
-                    ()->{settings.fieldOfView=Math.min(100,settings.fieldOfView+5);apply.run();build();});
+                slider("VIEW DISTANCE "+settings.distance+" M",
+                    ()->changeVideo("distance",-1),()->changeVideo("distance",1));
+                slider("FIELD OF VIEW "+settings.fieldOfView+" DEG",
+                    ()->changeVideo("fov",-1),()->changeVideo("fov",1));
                 slider("LOCAL LIGHTS "+settings.lights,
-                    ()->{settings.lights=Math.max(0,settings.lights-1);apply.run();build();},
-                    ()->{settings.lights=Math.min(8,settings.lights+1);apply.run();build();});
+                    ()->changeVideo("lights",-1),()->changeVideo("lights",1));
                 slider("VSYNC "+(settings.vsync?"ON":"OFF"),
-                    this::vsync,this::vsync);
+                    ()->changeVideo("vsync",0),()->changeVideo("vsync",0));
                 slider("FULLSCREEN "+(settings.fullscreen?"YES":"NO"),
-                    this::fullscreen,this::fullscreen);
+                    ()->changeVideo("fullscreen",0),()->changeVideo("fullscreen",0));
+                add("CONTROLS",()->show(Screen.CONTROLS));
                 add("SAVE / BACK",this::save);
             }
             case AUDIO->{
-                slider("MASTER "+settings.master+"%",()->volume("master",-5),()->volume("master",5));
-                slider("MUSIC "+settings.music+"%",()->volume("music",-5),()->volume("music",5));
-                slider("EFFECTS "+settings.effects+"%",()->volume("effects",-5),()->volume("effects",5));
-                slider("AMBIENCE "+settings.ambience+"%",()->volume("ambience",-5),()->volume("ambience",5));
-                slider("UI "+settings.ui+"%",()->volume("ui",-5),()->volume("ui",5));
-                slider("VOICE "+settings.voice+"%",()->volume("voice",-5),()->volume("voice",5));
+                slider("MASTER "+settings.master+"%",()->adjust("master",-5),()->adjust("master",5));
+                slider("MUSIC "+settings.music+"%",()->adjust("music",-5),()->adjust("music",5));
+                slider("EFFECTS "+settings.effects+"%",()->adjust("effects",-5),()->adjust("effects",5));
+                slider("AMBIENCE "+settings.ambience+"%",()->adjust("ambience",-5),()->adjust("ambience",5));
+                slider("UI "+settings.ui+"%",()->adjust("ui",-5),()->adjust("ui",5));
+                slider("VOICE "+settings.voice+"%",()->adjust("voice",-5),()->adjust("voice",5));
+                add("CONTROLS",()->show(Screen.CONTROLS));
                 add("SAVE / BACK",this::save);
             }
             case CONTROLS->{
-                slider("LOOK SENSITIVITY "+settings.sensitivity+"%",
+                slider("MOUSE LOOK "+settings.sensitivity+"%",
                     ()->{settings.sensitivity=Math.max(20,settings.sensitivity-10);build();},
                     ()->{settings.sensitivity=Math.min(200,settings.sensitivity+10);build();});
-                slider("INVERT MOUSE Y "+(settings.invertY?"ON":"OFF"),
+                slider("INVERT Y "+(settings.invertY?"ON":"OFF"),
                     ()->{settings.invertY=!settings.invertY;build();},
                     ()->{settings.invertY=!settings.invertY;build();});
                 add("SAVE / BACK",this::save);
             }
+            case CRAFT->{
+                List<MaleficVeil.GpuCraftRecipe> available=crafts();
+                int end=Math.min(available.size(),pageOffset+MAX_RECIPES_PER_PAGE);
+                for(int i=pageOffset;i<end;i++){
+                    var recipe=available.get(i);
+                    add((recipe.affordable()?"CRAFT ":"NEED ")+recipe.id().toUpperCase(Locale.ROOT),
+                        ()->{
+                            if(!recipe.affordable()){toast(recipe.description());return;}
+                            gameplay.gpuCraft(recipe.id());
+                            toast("HOST CRAFT REQUEST: "+recipe.id());
+                        });
+                }
+                if(pageOffset>0)add("PREVIOUS RECIPES",()->{
+                    pageOffset=Math.max(0,pageOffset-MAX_RECIPES_PER_PAGE);show(Screen.CRAFT);
+                });
+                if(end<available.size())add("MORE RECIPES",()->{
+                    pageOffset+=MAX_RECIPES_PER_PAGE;show(Screen.CRAFT);
+                });
+                add("BACK TO PAUSE",()->show(Screen.PAUSE));
+            }
+            case CREW->{
+                add("CREATE CREW",()->beginCrewInput("CREATE"));
+                add("INVITE PLAYER ID",()->beginCrewInput("INVITE"));
+                add("ACCEPT INVITATION",()->crewImmediate("ACCEPT"));
+                add("PROMOTE OFFICER",()->beginCrewInput("PROMOTE"));
+                add("REMOVE MEMBER",()->beginCrewInput("REMOVE"));
+                add("TRANSFER LEADERSHIP",()->beginCrewInput("TRANSFER"));
+                add("LEAVE CREW",()->crewImmediate("LEAVE"));
+                add("DISBAND CREW",()->show(Screen.CONFIRM_DISBAND));
+                add("BACK",()->show(Screen.PAUSE));
+            }
+            case CREW_INPUT->{
+                add("SUBMIT "+crewAction,this::submitCrew);
+                add("CANCEL",()->show(Screen.CREW));
+            }
+            case CONFIRM_DISBAND->{
+                add("NO / KEEP CREW",()->show(Screen.CREW));
+                add("YES / DISBAND CREW",()->crewImmediate("DISBAND"));
+            }
         }
-    }
-    private void vsync(){settings.vsync=!settings.vsync;Gdx.graphics.setVSync(settings.vsync);build();}
-    private void fullscreen(){
-        settings.fullscreen=!settings.fullscreen;
-        if(settings.fullscreen)Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-        else{
-            int[] size=GpuClientSettings.WINDOWS[settings.windowSize];
-            Gdx.graphics.setWindowedMode(size[0],size[1]);
-        }
-        build();
+        selected=Math.min(selected,Math.max(0,items.size()-1));
     }
     private void trigger(int change){
         if(items.isEmpty())return;
@@ -135,46 +236,61 @@ public final class GpuOverlayMenu {
         else if(change>0&&item.next()!=null)item.next().run();
         else item.action().run();
     }
-    /** Return true ONLY when gameplay controls may run. */
+    /** Return true only when world movement/shooting input is permitted. */
     public boolean input(){
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)||
             Gdx.input.isKeyJustPressed(Input.Keys.F11)){
             if(screen==Screen.GAME)show(Screen.PAUSE);
             else if(screen==Screen.PAUSE)show(Screen.GAME);
+            else if(screen==Screen.CREW_INPUT||screen==Screen.CONFIRM_DISBAND)show(Screen.CREW);
             else show(Screen.PAUSE);
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.F10))
             show(screen==Screen.VIDEO?Screen.GAME:Screen.VIDEO);
         if(screen==Screen.GAME)return true;
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
-            selected=Math.floorMod(selected-1,items.size());
+            selected=Math.floorMod(selected-1,Math.max(1,items.size()));
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
-            selected=Math.floorMod(selected+1,items.size());
+            selected=Math.floorMod(selected+1,Math.max(1,items.size()));
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))trigger(0);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))trigger(-1);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))trigger(1);
+        if(screen!=Screen.CREW_INPUT){
+            if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))trigger(-1);
+            if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))trigger(1);
+        }
         if(Gdx.input.justTouched()){
             float px=Gdx.input.getX()*WIDTH/Gdx.graphics.getWidth();
             float py=HEIGHT-Gdx.input.getY()*HEIGHT/Gdx.graphics.getHeight();
-            if(px>=144&&px<=504)for(int i=0;i<items.size();i++){
-                float bottom=297-i*24;
-                if(py>=bottom&&py<bottom+22){selected=i;trigger(0);break;}
-            }
+            if(px>=144&&px<=504)
+                for(int i=0;i<items.size();i++){
+                    float bottom=297-i*24;
+                    if(py>=bottom&&py<bottom+22){selected=i;trigger(0);break;}
+                }
         }
         Gdx.input.setCursorCatched(false);
         return false;
     }
-    /** One source-skinned menu over the exact paused, live 3D world. */
+    /** Draw using the identical licensed source panel/button sprites as launcher. */
     public void draw(SpriteBatch sprites){
         if(screen==Screen.GAME)return;
         skin.frame(sprites,120,30,408,345);
         skin.band(sprites,137,334,375,30);
         skin.font().draw(sprites,"THE MALEFIC VEIL / "+screen,149,354);
+        if(screen==Screen.CREW||screen==Screen.CREW_INPUT){
+            String status=gameplay.gpuCrewStatus();
+            if(status.length()>43)status=status.substring(0,42)+"~";
+            skin.font().draw(sprites,status,147,322);
+        }else if(screen==Screen.CRAFT){
+            skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,322);
+        }else if(screen==Screen.CREW_INPUT){
+            skin.font().draw(sprites,"TYPE NAME OR PLAYER ID",147,322);
+        }
         for(int i=0;i<items.size();i++)
             skin.choice(sprites,items.get(i).label(),143,297-i*24,364,22,selected==i);
+        if(screen==Screen.CREW_INPUT){
+            skin.panel(sprites,143,147,365,34);
+            skin.font().draw(sprites,crewAction+" > "+crewText+"_",152,169);
+        }
         skin.band(sprites,135,39,379,24);
-        skin.font().draw(sprites,notice.isBlank()?
-            "ESC RESUME   ARROWS / ENTER   MOUSE":
-            notice,147,55);
+        skin.font().draw(sprites,notice.isBlank()?"ESC BACK  ARROWS / ENTER  MOUSE":notice,147,55);
     }
 }

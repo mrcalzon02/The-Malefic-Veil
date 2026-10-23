@@ -8,6 +8,10 @@ public final class CrudeStructureIndexTest {
         Map<String,CrudeStructureIndex.Proxy> index=CrudeStructureIndex.entries();
         var facilities=CraftingEraRegistry.facilities();
         check(index.size()==facilities.size()+3,"no missing factory or defense primitive art plan");
+        for(String id:List.of("purification-works","barracks",
+                "wall-gate-system","cold-store","security-grid"))
+            check(facilities.containsKey(id)&&index.containsKey(id),
+                "Previously undefined blueprint needs registry cost and proxy: "+id);
         Set<CrudeStructureIndex.Primitive> forms=
             EnumSet.noneOf(CrudeStructureIndex.Primitive.class);
         for(var facility:facilities.values()){

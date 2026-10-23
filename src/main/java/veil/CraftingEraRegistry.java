@@ -106,6 +106,13 @@ public final class CraftingEraRegistry {
             12,14,1800,0,"TIMBER",30,"FIBER",12,"FIELD_STONE",8);
         facility("materials-recycler",Era.SALVAGE,Faction.ALL,"forge freight-bay",
             12,10,2100,0,"METAL_STOCK",2,"MACHINE_PARTS",3,"TIMBER",10);
+        facility("wall-gate-system",Era.ENCAMPMENT,Faction.ALL,"claim-heart palisade-section",
+            6,10,840,0,"TIMBER",18,"FIELD_STONE",12,"FIBER",8);
+        facility("cold-store",Era.SALVAGE,Faction.ALL,"root-cellar freight-bay",
+            10,12,2400,0,"TIMBER",22,"FIELD_STONE",18,"METAL_STOCK",2);
+        facility("barracks",Era.SALVAGE,Faction.ALL,"watch-post dry-store",
+            12,16,2400,0,"TIMBER",28,"FIBER",16,"FIELD_STONE",20,
+            "METAL_STOCK",1);
         facility("steam-boiler",Era.STEAM,Faction.ALL,"forge rain-catcher",
             12,14,3600,0,"METAL_STOCK",4,"MACHINE_PARTS",2,
             "FIELD_STONE",28,"RAW_ORE",8);
@@ -125,6 +132,8 @@ public final class CraftingEraRegistry {
             8,10,3000,4,"METAL_STOCK",3,"MACHINE_PARTS",5,"FIELD_STONE",12);
         facility("water-works",Era.ELECTRIC,Faction.ALL,"generator rain-catcher",
             10,10,3600,4,"METAL_STOCK",2,"MACHINE_PARTS",2,"FIELD_STONE",18);
+        facility("purification-works",Era.ELECTRIC,Faction.ALL,"water-works charcoal-kiln",
+            12,10,3600,6,"METAL_STOCK",4,"MACHINE_PARTS",3,"FIELD_STONE",24);
         facility("fuel-refinery",Era.ELECTRIC,Faction.ALL,"water-works precision-lathe",
             14,14,4800,10,"METAL_STOCK",5,"MACHINE_PARTS",6,"RAW_ORE",12);
         facility("controlled-greenhouse",Era.ELECTRIC,Faction.ALL,"forager-garden water-works",
@@ -144,6 +153,9 @@ public final class CraftingEraRegistry {
             "TIMBER",16,"MEDICINAL_HERBS",14);
         facility("signal-relay",Era.AUTOMATION,Faction.ALL,"command-hall generator",
             8,12,5400,6,"METAL_STOCK",3,"MACHINE_PARTS",5,"RAW_ORE",8);
+        facility("security-grid",Era.AUTOMATION,Faction.ALL,"signal-relay command-hall",
+            16,14,7200,16,"METAL_STOCK",7,"MACHINE_PARTS",6,
+            "CONDUCTOR_WIRE",8);
         facility("nutrient-digestor",Era.AUTOMATION,Faction.BEGOTTEN,"water-works industrial-workshop",
             14,14,9000,12,"METAL_STOCK",6,"MACHINE_PARTS",6,"EDIBLES",24);
         facility("terror-collector",Era.AUTOMATION,Faction.PENITENT,"research-archive signal-relay",
@@ -258,6 +270,20 @@ public final class CraftingEraRegistry {
         process("field-maintenance",Era.AUTOMATION,Faction.UNRAVELED,"motor-pool",
             "VEHICLE_REPAIR_KIT",1,900,12,"HARDENED_ALLOY",1,
             "FASTENERS",3,"MACHINE_PARTS",2);
+        // Five former "legacy-only" construction entries now have real,
+        // costed/power-gated definitions and meaningful downstream workflows.
+        process("cold-preservation",Era.SALVAGE,Faction.ALL,"cold-store",
+            "PRESERVED_RATIONS",3,900,0,"SMOKED_RATIONS",2,
+            "CLEAN_WATER",1,"CLOTH_ROLL",1);
+        process("guard-provisions",Era.SALVAGE,Faction.ALL,"barracks",
+            "GUARD_PROVISIONS",2,960,0,"RATIONS",3,"CLOTH_ROLL",1);
+        process("treat-contaminated-water",Era.ELECTRIC,Faction.ALL,"purification-works",
+            "STERILE_WATER",4,780,6,"DIRTY_WATER",6,"CHARCOAL",2);
+        process("secure-ammo-cache",Era.AUTOMATION,Faction.UNRAVELED,"security-grid",
+            "DEFENSE_CACHE",2,1440,16,"BALLISTIC_SUPPLY",2,
+            "TRACKING_CIRCUIT",1);
+        process("fortified-rations",Era.AUTOMATION,Faction.ALL,"industrial-workshop",
+            "FIELD_MRE",3,1200,12,"PRESERVED_RATIONS",2,"GUARD_PROVISIONS",2);
         validate();
     }
     private CraftingEraRegistry(){}

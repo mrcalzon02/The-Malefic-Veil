@@ -35,10 +35,8 @@ public final class SettlementAuthority {
             if(!Set.of("camp-stake","claim-heart","monument-graveyard",
                        "palisade-section").contains(id))
                 CATALOG.put(id,Kind.FACILITY);
-        // Legacy design-only services awaiting individual industry descriptors.
-        for(String id:new String[]{"purification-works","barracks",
-            "wall-gate-system","cold-store","security-grid"})
-            CATALOG.putIfAbsent(id,Kind.FACILITY);
+        // No costless ghost blueprints: all normal facility IDs must be
+        // versioned and material-costed in CraftingEraRegistry.
         for(String id:new String[]{"aa-fast","aa-heavy","automated-turret"})
             CATALOG.put(id,Kind.DEFENSE);
         CATALOG.put("production-queue",Kind.QUEUE);

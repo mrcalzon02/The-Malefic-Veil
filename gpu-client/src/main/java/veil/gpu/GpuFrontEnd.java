@@ -37,7 +37,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     private Screen backFromOptions=Screen.HOME;
     private final List<Entry> entries=new ArrayList<>();
     private final List<WorldCreationConfig> saves=new ArrayList<>();
-    private int selected,loadOffset,frames;
+    private int selected,loadOffset,frames,gameFrames;
     private boolean replaceFieldOnType=true;
     private final java.util.concurrent.atomic.AtomicInteger connectionAttempt=
         new java.util.concurrent.atomic.AtomicInteger();
@@ -363,6 +363,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(backdrop!=null){backdrop.dispose();backdrop=null;}
         if(skin!=null){skin.close();skin=null;}
         if(ui!=null){ui.dispose();ui=null;}
+        gameFrames=0; // gameplay begins after variable-duration LAN + GL loading
         gameRenderer=view;
         gameRenderer.onReturnMain(this::returnToMenu);
         gameRenderer.clientSettings(settings);
@@ -539,20 +540,20 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(gameRenderer!=null){
             gameRenderer.render();
             if(flowSmoke){
-                frames++;
-                if(frames==65)gameRenderer.auditPause(true);
-                if(frames==68)capture("gpu-frontend-live-pause");
-                if(frames==70)gameRenderer.auditPanel("craft");
-                if(frames==73)capture("gpu-frontend-live-crafting");
-                if(frames==76)gameRenderer.auditPanel("crew");
-                if(frames==79)capture("gpu-frontend-live-crew");
-                if(frames==82)gameRenderer.auditPanel("crew-input");
-                if(frames==85)capture("gpu-frontend-live-crew-input");
-                if(frames==88)gameRenderer.auditPanel("book");
-                if(frames==91)capture("gpu-frontend-live-recipe-book");
-                if(frames==94)gameRenderer.auditPause(false);
+                gameFrames++;
+                if(gameFrames==65)gameRenderer.auditPause(true);
+                if(gameFrames==68)capture("gpu-frontend-live-pause");
+                if(gameFrames==70)gameRenderer.auditPanel("craft");
+                if(gameFrames==73)capture("gpu-frontend-live-crafting");
+                if(gameFrames==76)gameRenderer.auditPanel("crew");
+                if(gameFrames==79)capture("gpu-frontend-live-crew");
+                if(gameFrames==82)gameRenderer.auditPanel("crew-input");
+                if(gameFrames==85)capture("gpu-frontend-live-crew-input");
+                if(gameFrames==88)gameRenderer.auditPanel("book");
+                if(gameFrames==91)capture("gpu-frontend-live-recipe-book");
+                if(gameFrames==94)gameRenderer.auditPause(false);
             }
-            if(flowSmoke&&frames==110){
+            if(flowSmoke&&gameFrames==110){
                 MaleficVeil.GpuFrame frame=readyGame.gpuFrame();
                 if(frame==null||!frame.connected())
                     throw new IllegalStateException("In-window world launch not connected");

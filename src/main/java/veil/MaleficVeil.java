@@ -152,7 +152,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                         (net.truckCargo.containsKey(car.id())?"-cargo":""),
                         car.x(),car.y(),car.heading(),1.9));
         }else{
-            for(var node:localHarvesting.nearby(px,py,100))
+            for(var node:localHarvesting.nearby(px,py,21))
                 if(node.remaining()>0)
                     actors.add(new UrbanScene.ModelInstance(
                         modelForResource(node.type().name(),node.id()),

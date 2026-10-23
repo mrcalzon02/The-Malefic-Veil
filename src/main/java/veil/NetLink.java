@@ -94,9 +94,13 @@ public final class NetLink implements AutoCloseable {
     public NetLink(String host,int port)throws IOException {
         socket=new Socket();
         socket.connect(new InetSocketAddress(host,port),4000);
+        // A TCP peer can accept and then never send WELCOME. Bound the
+        // handshake too, or cancel/back leaves a stuck background client.
+        socket.setSoTimeout(4000);
         BufferedReader reader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
         String hello=reader.readLine();
+        socket.setSoTimeout(0);
         String[] parts=hello==null?new String[0]:hello.split("\\|");
         if(parts.length!=4||!parts[0].equals("WELCOME")||!parts[3].equals("3"))
             throw new IOException("Unsupported or invalid LAN protocol");

@@ -1,5 +1,6 @@
 # Industrial economy CSV catalog
 
+Recipe and facility quantities are validated against authoritative Java registries by CraftingEconomyCsvTest; do not infer executable factories from their presence in CSV. The Unraveled, Penitent and Begotten facility spines and process ownership are distinct at every era. Shared infrastructure remains labeled ALL. Foreign faction ingredients require explicit trade/cooperation support, not an implicit shared production privilege.
 This directory contains item, recipe, input, facility, construction-cost, storage, and skill tables generated from the current registries and icon index.
 
 Existing authoritative definitions: 26 industrial recipes, 48 facilities, 11 field recipes, ingredients and construction costs. Items include 150 icon-index records. BANDAGE and WORKBENCH were added explicitly with ICON_REQUIRED because their icon entries were absent from the supplied icon index.

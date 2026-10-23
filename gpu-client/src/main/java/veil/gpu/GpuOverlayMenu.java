@@ -286,9 +286,9 @@ public final class GpuOverlayMenu {
         if(screen==Screen.CREW||screen==Screen.CREW_INPUT){
             String status=gameplay.gpuCrewStatus();
             if(status.length()>43)status=status.substring(0,42)+"~";
-            skin.font().draw(sprites,status,147,322);
+            skin.font().draw(sprites,status,147,331);
         }else if(screen==Screen.CRAFT){
-            skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,322);
+            skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
         }
         for(int i=0;i<items.size();i++)
             skin.choice(sprites,items.get(i).label(),143,297-i*24,364,22,selected==i);

@@ -833,9 +833,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             menu.band(sprites,4,5,WIDTH-8,23);
             font.draw(sprites,"WASD FLY  MOUSE LOOK  SPACE UP  CTRL DOWN  F11 PALETTE",12,20);
         }else if(menu.running()&&gameplay!=null){
-            MaleficVeil.GpuFrame live=gameplay.gpuFrame();
-            if(live!=null)drawLiveHud(live);
-            if(gameplayMenu!=null)gameplayMenu.draw(sprites);
+            // While configuring/crafting, avoid drawing a second HUD, map,
+            // toast and controls underneath the real in-game menu.
+            if(gameplayMenu!=null&&!gameplayMenu.active())
+                gameplayMenu.draw(sprites);
+            else{
+                MaleficVeil.GpuFrame live=gameplay.gpuFrame();
+                if(live!=null)drawLiveHud(live);
+            }
         }else if(menu.running()){
             font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),9,391);
             font.draw(sprites,"TILES "+visibleInstances+"  LAND "+visibleTerrain+"  DRAWS "+drawCalls+

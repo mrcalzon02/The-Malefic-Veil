@@ -29,6 +29,13 @@ jobs:
           mkdir -p assets/game/ggbot
           curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
           echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
+      - name: Prepare Maven for GPU build
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: gpu-client/pom.xml
       - name: Compile Java 17
         run: |
           mkdir -p build/classes build/package
@@ -40,13 +47,33 @@ jobs:
           for test in WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest DesktopDiagnosticsTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
             java -Djava.awt.headless=true -cp build/classes "veil.$test"
           done
+      - name: Build the actual playable GPU game with its complete Java engine
+        run: |
+          set -euo pipefail
+          mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
+          cp gpu-client/target/MaleficVeil-GPU.jar build/package/MaleficVeil.jar
+          jar tf build/package/MaleficVeil.jar | grep -qx 'veil/gpu/GpuKenneyPreview.class'
+          jar tf build/package/MaleficVeil.jar | grep -qx 'veil/MaleficVeil.class'
+          unzip -p build/package/MaleficVeil.jar META-INF/MANIFEST.MF |
+            grep -q 'Main-Class: veil.gpu.GpuDesktop'
+      - name: Run real shipped game/render/input in Mesa OpenGL
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0
+          mkdir -p build/test-visuals
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 130s java -Dveil.weather.mute=true \
+            -jar build/package/MaleficVeil.jar --play-smoke |
+            tee build/test-visuals/release-live-gpu.log
+          grep -q 'PASS GPU_LIVE_PLAY_REAL_GAME' build/test-visuals/release-live-gpu.log
+          test -s build/test-visuals/gpu-live-play-shipped-client.png
       - name: Package game and independent updater bootstrap
         run: |
           set -euo pipefail
-          printf 'Main-Class: veil.MaleficVeil\n' > build/manifest.mf
-          jar cfm build/package/MaleficVeil.jar build/manifest.mf -C build/classes .
-          jar uf build/package/MaleficVeil.jar -C assets/game kenney
-          jar uf build/package/MaleficVeil.jar -C assets/game ggbot
           mkdir -p build/bootstrap/veil
           cp build/classes/veil/DesktopUpdater*.class build/bootstrap/veil/
           cp build/classes/veil/ReleaseCatalog*.class build/bootstrap/veil/
@@ -110,6 +137,8 @@ jobs:
             veil.DesktopUpdater "$PWD/build/update-smoke" --install
           grep -q INSTALL_VERIFIED build/update-smoke/logs/updater.log
           test -s build/update-smoke/MaleficVeil.jar
+          unzip -p build/update-smoke/MaleficVeil.jar META-INF/MANIFEST.MF |
+            grep -q 'Main-Class: veil.gpu.GpuDesktop'
           test -s build/update-smoke/updater.jar
           test -s build/update-smoke/lib/shared-psx-weather-java17-v1.jar
           test -d build/update-smoke/assets/game
@@ -144,6 +173,8 @@ jobs:
           AFTER="$(cat build/previous-install/version.txt)"
           test "$AFTER" != "$BEFORE"
           test -s build/previous-install/MaleficVeil.jar
+          unzip -p build/previous-install/MaleficVeil.jar META-INF/MANIFEST.MF |
+            grep -q 'Main-Class: veil.gpu.GpuDesktop'
           test -s build/previous-install/updater.jar
           test -s build/previous-install/lib/shared-psx-weather-java17-v1.jar
           test "$(cat build/previous-install/worlds/older-save/state.txt)" = retain-save-file
@@ -251,7 +282,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           # jpackage's default jlink options strip Java command executables.
           # Our isolated updater needs javaw.exe, so supply an explicit full runtime.
-          & jlink --add-modules java.desktop,java.net.http,java.logging,java.prefs,java.naming,jdk.crypto.ec --output native-runtime --no-header-files --no-man-pages
+          & jlink --add-modules java.desktop,java.net.http,java.logging,java.prefs,java.naming,jdk.crypto.ec,jdk.unsupported,java.management --output native-runtime --no-header-files --no-man-pages
           if ($LASTEXITCODE -ne 0) { throw 'Bundled Java runtime build failed' }
           if (-not (Test-Path native-runtime/bin/javaw.exe)) { throw 'Bundled runtime lacks Java launcher' }
           & jpackage --type app-image --name 'The Malefic Veil' --input native-source --dest native-app --main-jar Launcher.jar --main-class veil.InstalledLauncher --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --runtime-image native-runtime

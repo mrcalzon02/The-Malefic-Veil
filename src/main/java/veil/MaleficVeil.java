@@ -98,9 +98,13 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         boolean fire=world.devices.stream().anyMatch(d->
             d.hp>0&&d.kind==ArenaSystems.FIELD_FIRE&&
             Math.hypot(d.x-px,d.y-py)<=2.2);
+        boolean bench=world.devices.stream().anyMatch(d->
+            d.hp>0&&d.kind==ArenaSystems.FIELD_BENCH&&
+            Math.hypot(d.x-px,d.y-py)<=2.2);
         for(var recipe:SurvivalCrafting.recipes().values()){
-            if(recipe.station()==SurvivalCrafting.Station.WORKBENCH)continue;
-            boolean nearby=recipe.station()==SurvivalCrafting.Station.HAND||fire;
+            boolean nearby=recipe.station()==SurvivalCrafting.Station.HAND||
+                (recipe.station()==SurvivalCrafting.Station.FIRE&&fire)||
+                (recipe.station()==SurvivalCrafting.Station.WORKBENCH&&bench);
             boolean enough=nearby;
             var parts=new java.util.ArrayList<String>();
             for(var item:recipe.requires().entrySet()){
@@ -110,7 +114,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
             java.util.Collections.sort(parts);
             result.add(new GpuCraftRecipe(recipe.id(),recipe.station().name(),
-                String.join("  ",parts)+(nearby?"":"  NEED CAMPFIRE"),enough));
+                String.join("  ",parts)+(nearby?"":recipe.station()==
+                    SurvivalCrafting.Station.WORKBENCH?"  NEED WORKBENCH":
+                    "  NEED CAMPFIRE"),enough));
         }
         result.sort(java.util.Comparator.comparing(GpuCraftRecipe::id));
         return java.util.List.copyOf(result);
@@ -118,15 +124,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     /** GPU UI never manipulates inventory directly; sends existing transactions. */
     public void gpuCraft(String id){
         var recipe=SurvivalCrafting.recipes().get(id);
-        if(recipe==null||recipe.station()==SurvivalCrafting.Station.WORKBENCH)
-            throw new IllegalArgumentException("Unknown field recipe");
+        if(recipe==null)throw new IllegalArgumentException("Unknown field recipe");
         SwingUtilities.invokeLater(()->{
             if(net!=null){
                 if(recipe.station()==SurvivalCrafting.Station.FIRE)net.craftFire(id);
+                else if(recipe.station()==SurvivalCrafting.Station.WORKBENCH)
+                    net.craftWorkbench(id);
                 else net.craftHand(id);
             }else if(localHost!=null)
                 toast(localHost.player(1).survival.craft(id,SurvivalCrafting.Station.HAND)?
                     "CRAFTED "+id:"CRAFT DENIED");
+        });
+    }
+    /** A crafted kit is consumed by the host only after real placement validation. */
+    public void gpuPlaceWorkbench(){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.build(ArenaSystems.FIELD_BENCH);
+            else toast("WORKBENCH PLACEMENT REQUIRES HOSTED WORLD");
         });
     }
     /** Existing NetLink social protocol remains server authoritative. */

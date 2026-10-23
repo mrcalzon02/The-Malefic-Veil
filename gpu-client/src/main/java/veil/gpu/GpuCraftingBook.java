@@ -243,8 +243,7 @@ public final class GpuCraftingBook implements AutoCloseable {
             line(batch,clipped(entry.title(),25),62,y+20);
             if(entry.recipe()!=null){
                 String tag=switch(entry.recipe().availability()){
-                    case PLAYABLE_HAND,PLAYABLE_FIRE->"CRAFT NOW";
-                    case STATION_UNIMPLEMENTED->"STATION";
+                    case PLAYABLE_HAND,PLAYABLE_FIRE,PLAYABLE_WORKBENCH->"CRAFT NOW";
                     case INDUSTRIAL_PLANNED->"PLANNED PROCESS";
                     case FACILITY_PLANNED->"PLANNED FACILITY";
                 };

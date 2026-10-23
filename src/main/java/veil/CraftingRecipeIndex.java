@@ -9,7 +9,7 @@ import java.util.*;
  */
 public final class CraftingRecipeIndex {
     public enum Kind { FIELD, INDUSTRIAL, FACILITY }
-    public enum Availability { PLAYABLE_HAND, PLAYABLE_FIRE, STATION_UNIMPLEMENTED,
+    public enum Availability { PLAYABLE_HAND, PLAYABLE_FIRE, PLAYABLE_WORKBENCH,
                                INDUSTRIAL_PLANNED, FACILITY_PLANNED }
     public record Record(String key,String name,String output,int quantity,
                          Kind kind,Availability availability,String station,
@@ -41,7 +41,7 @@ public final class CraftingRecipeIndex {
                 switch(recipe.station()){
                     case HAND->Availability.PLAYABLE_HAND;
                     case FIRE->Availability.PLAYABLE_FIRE;
-                    case WORKBENCH->Availability.STATION_UNIMPLEMENTED;
+                    case WORKBENCH->Availability.PLAYABLE_WORKBENCH;
                 },recipe.station().name(),"STRANDED","ALL",0,0,ingredients,List.of()));
         }
         for(var job:CraftingEraRegistry.processes().values()){
@@ -98,7 +98,7 @@ public final class CraftingRecipeIndex {
         return switch(r.availability()){
             case PLAYABLE_HAND->"HOST CRAFT: HAND";
             case PLAYABLE_FIRE->"HOST CRAFT: NEAR CAMPFIRE";
-            case STATION_UNIMPLEMENTED->"HOST CRAFT: NEAR WORKBENCH";
+            case PLAYABLE_WORKBENCH->"HOST CRAFT: NEAR WORKBENCH";
             case INDUSTRIAL_PLANNED->"INDUSTRIAL PROCESS: DATA ONLY";
             case FACILITY_PLANNED->"FACILITY PLAN: DATA ONLY";
         };

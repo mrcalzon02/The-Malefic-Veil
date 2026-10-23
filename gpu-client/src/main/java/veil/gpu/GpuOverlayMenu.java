@@ -227,6 +227,10 @@ public final class GpuOverlayMenu {
                     pageOffset+=MAX_RECIPES_PER_PAGE;show(Screen.CRAFT);
                 });
                 add("FULL RECIPE INDEX",this::openBook);
+                add("DEPLOY CRAFTED WORKBENCH",()->{
+                    gameplay.gpuPlaceWorkbench();
+                    show(Screen.GAME);
+                });
                 add("BACK TO PAUSE",()->show(Screen.PAUSE));
             }
             case BOOK->{} // Owns its list and detail navigation; never crafts items.

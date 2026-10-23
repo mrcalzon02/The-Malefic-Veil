@@ -409,6 +409,7 @@ public final class CraftingEraRegistry {
         }
         Map<String,Integer> colors=new HashMap<>();
         for(String facility:FACILITIES.keySet())dfsFacility(facility,colors);
+        validateFacilitySupplyGraph(FACILITIES,PROCESSES);
         // Industrial outputs are produced by distinct, ordered processes;
         // no same-era cycle and no ingredient manufactured in a later era.
         Set<String> available=new HashSet<>(EXTERNAL);
@@ -439,6 +440,55 @@ public final class CraftingEraRegistry {
         require(FACILITIES.get("monument-graveyard").materials().get("METAL_STOCK")==24&&
                 FACILITIES.get("monument-graveyard").materials().get("MACHINE_PARTS")==16,
             "Monument cost bypass");
+    }
+    /**
+     * A construction dependency may come from a manufactured ingredient as
+     * well as a listed parent facility. Check BOTH edges or a factory could
+     * demand its own output before it can be built. Hand-crafted alternatives
+     * remain valid independent sources, not fictional industrial shortcuts.
+     */
+    static void validateFacilitySupplyGraph(Map<String,Facility> facilities,
+                                             Map<String,Process> processes){
+        Map<String,Process> manufactured=new HashMap<>();
+        for(Process p:processes.values()){
+            if(manufactured.putIfAbsent(p.output(),p)!=null)
+                throw new IllegalArgumentException("Duplicate industrial output "+p.output());
+        }
+        Set<String> handProduced=new HashSet<>();
+        for(var hand:SurvivalCrafting.recipes().values())
+            handProduced.add(hand.result().name());
+        Map<String,Set<String>> dependencies=new HashMap<>();
+        for(Facility facility:facilities.values()){
+            Set<String> parents=new LinkedHashSet<>(facility.requires());
+            for(String material:facility.materials().keySet()){
+                if(EXTERNAL.contains(material)||handProduced.contains(material))continue;
+                Process source=manufactured.get(material);
+                require(source!=null,
+                    "Unobtainable construction ingredient "+material+" for "+facility.id());
+                require(source.era().ordinal()<=facility.era().ordinal(),
+                    "Construction requires later-era product "+material+" for "+facility.id());
+                require(source.faction()==Faction.ALL||source.faction()==facility.faction(),
+                    "Uncontracted foreign-faction construction input "+material+
+                    " for "+facility.id());
+                require(facilities.containsKey(source.facility()),
+                    "Construction material has missing producer facility "+source.facility());
+                parents.add(source.facility());
+            }
+            dependencies.put(facility.id(),Set.copyOf(parents));
+        }
+        Map<String,Integer> colors=new HashMap<>();
+        for(String id:dependencies.keySet())
+            dfsSupply(id,dependencies,colors);
+    }
+    private static void dfsSupply(String id,Map<String,Set<String>> deps,
+                                  Map<String,Integer> colors){
+        int mark=colors.getOrDefault(id,0);
+        require(mark!=1,"Facility/material production cycle at "+id);
+        if(mark==2)return;
+        require(deps.containsKey(id),"Missing construction parent "+id);
+        colors.put(id,1);
+        for(String parent:deps.get(id))dfsSupply(parent,deps,colors);
+        colors.put(id,2);
     }
     private static void dfsFacility(String name,Map<String,Integer> colors){
         int mark=colors.getOrDefault(name,0);

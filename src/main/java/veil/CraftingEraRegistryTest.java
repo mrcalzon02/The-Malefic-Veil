@@ -4,8 +4,28 @@ import java.util.*;
 /** Structural data checks: no skipping stage, recipe cycle, missing cargo or faction loophole. */
 public final class CraftingEraRegistryTest {
     private static void check(boolean ok,String why){if(!ok)throw new AssertionError(why);}
+    private static void rejectCost(String facilityId,String item){
+        Map<String,CraftingEraRegistry.Facility> changed=
+            new LinkedHashMap<>(CraftingEraRegistry.facilities());
+        var old=changed.get(facilityId);
+        check(old!=null,"Unknown test facility "+facilityId);
+        changed.put(facilityId,new CraftingEraRegistry.Facility(old.id(),old.era(),
+            old.faction(),old.requires(),Map.of(item,1),old.width(),old.depth(),
+            old.seconds(),old.utilityDemand()));
+        try{
+            CraftingEraRegistry.validateFacilitySupplyGraph(
+                changed,CraftingEraRegistry.processes());
+        }catch(IllegalArgumentException expected){return;}
+        throw new AssertionError("Construction dependency bypass "+facilityId+" -> "+item);
+    }
     public static void main(String[] args){
         CraftingEraRegistry.validate();
+        // Reject omitted facility-material producer edges, not just explicit
+        // parent cycles and process input loops.
+        rejectCost("unraveled-scrap-outpost","VOTIVE_INCENSE"); // foreign Penitent good
+        rejectCost("penitent-votive-altar","CONTROL_BOARD"); // too early
+        rejectCost("unraveled-defense-works","RELAY_BOX"); // its own output
+        rejectCost("hand-workshop","NEVER_SOURCED_ITEM"); // missing producer
         var buildings=CraftingEraRegistry.facilities();
         var recipes=CraftingEraRegistry.processes();
         check(CraftingEraRegistry.SCHEMA_VERSION==2,"Registry expansion must be versioned");

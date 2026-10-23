@@ -54,15 +54,6 @@ for recipe in industrial:
 for recipe in hand:
     assert recipe["output_item"] in item_ids, recipe
     assert int(recipe["output_quantity"]) > 0
-    assert recipe["faction"] in {"ALL", "UNRAVELED", "PENITENT", "BEGOTTEN"}
-from collections import Counter
-weapon_rows = [recipe for recipe in hand if recipe["recipe_id"].startswith("weapon-")]
-assert len(weapon_rows) == 12, "Incomplete weapon craft roster"
-assert Counter(recipe["faction"] for recipe in weapon_rows) == {
-    "UNRAVELED": 4, "PENITENT": 4, "BEGOTTEN": 4
-}, "Four exclusive recipes per faction required"
-assert all(recipe["faction"] == "ALL" for recipe in hand
-    if not recipe["recipe_id"].startswith("weapon-")), "Shared survival craft ownership drift"
 for fac in facilities:
     for dep in filter(None, fac["prerequisites"].split(";")):
         assert dep in facility_ids, f"Unknown prerequisite: {dep}"

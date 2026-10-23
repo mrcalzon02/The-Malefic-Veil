@@ -78,6 +78,14 @@ public final class GpuOverlayMenu {
             case "book-item"->{
                 openBook();book.inspectItem("TIMBER");
             }
+            case "book-penitent"->{
+                openBook();book.auditFactionRecipe("process:penitent-sanctify-shell",
+                    veil.CraftingEraRegistry.Faction.PENITENT);
+            }
+            case "book-begotten"->{
+                openBook();book.auditFactionRecipe("process:begotten-pulse-organ",
+                    veil.CraftingEraRegistry.Faction.BEGOTTEN);
+            }
             case "crew"->openCrew();
             case "crew-input"->beginCrewInput("CREATE");
             default->throw new IllegalArgumentException("Unknown menu proof: "+name);

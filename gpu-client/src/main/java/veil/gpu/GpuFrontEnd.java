@@ -555,7 +555,11 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 if(gameFrames==97)capture("gpu-frontend-live-industrial-book");
                 if(gameFrames==100)gameRenderer.auditPanel("book-item");
                 if(gameFrames==103)capture("gpu-frontend-live-item-index");
-                if(gameFrames==106)gameRenderer.auditPause(false);
+                if(gameFrames==106)gameRenderer.auditPanel("book-penitent");
+                if(gameFrames==109)capture("gpu-frontend-live-penitent-book");
+                if(gameFrames==112)gameRenderer.auditPanel("book-begotten");
+                if(gameFrames==115)capture("gpu-frontend-live-begotten-book");
+                if(gameFrames==117)gameRenderer.auditPause(false);
             }
             if(flowSmoke&&gameFrames==122){
                 MaleficVeil.GpuFrame frame=readyGame.gpuFrame();

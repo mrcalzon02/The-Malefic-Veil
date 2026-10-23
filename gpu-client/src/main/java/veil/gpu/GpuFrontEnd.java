@@ -114,7 +114,9 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             case HOME -> {
                 item("SINGLE PLAYER",()->worldMode("solo"));
                 item("HOST LOCAL / LAN MULTIPLAYER",()->worldMode("multi"));
-                item("JOIN MULTIPLAYER HOST",()->gotoScreen(Screen.JOIN));
+                item("JOIN MULTIPLAYER HOST",()->{
+                    mode="join";chosenWorld=null;gotoScreen(Screen.JOIN);
+                });
                 item("LEVEL EDITOR (DEV)",()->worldMode("editor"));
                 item("OPTIONS",()->{backFromOptions=Screen.HOME;gotoScreen(Screen.VIDEO);});
                 item("CREDITS",()->gotoScreen(Screen.CREDITS));

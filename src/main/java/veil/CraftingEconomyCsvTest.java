@@ -74,6 +74,26 @@ public final class CraftingEconomyCsvTest {
                 "Bad industrial export "+row[0]);
         }
         check(industrialInputs.keySet().equals(allIndustrial),"Unknown industry input rows");
+        var built=rows(root.resolve("economy/facilities.csv"),11);
+        var priced=inputs(root.resolve("economy/facility_costs.csv"));
+        Set<String> seenFacilities=new HashSet<>();
+        for(String[] row:built){
+            check(seenFacilities.add(row[0]),"Duplicate facility ID in catalog");
+            var f=CraftingEraRegistry.facility(row[0]);
+            check(f!=null&&row[1].equals(f.era().name())&&
+                row[2].equals(f.faction().name())&&
+                row[3].equals(String.join(";",f.requires()))&&
+                Integer.parseInt(row[4])==f.width()&&
+                Integer.parseInt(row[5])==f.depth()&&
+                Integer.parseInt(row[6])==f.seconds()&&
+                Integer.parseInt(row[7])==f.utilityDemand()&&
+                f.materials().equals(priced.get(row[0])),
+                "Facility bills/capacity drift: "+row[0]);
+        }
+        check(seenFacilities.equals(CraftingEraRegistry.facilities().keySet()),
+            "Missing or phantom structures in facility catalog");
+        check(priced.keySet().equals(seenFacilities),
+            "A facility lacks authentic cost or has an orphan cost row");
         check("CLEAN_WATER".equals(
             CraftingRecipeIndex.recipe("hand:boil-water").output()),
             "Previous WORKBENCH/boil-water corruption reintroduced");

@@ -65,6 +65,9 @@ jobs:
           java -cp build/package/MaleficVeil.jar veil.CraftingRecipeIndexTest
           java -cp build/package/MaleficVeil.jar veil.FieldWorkbenchRuntimeTest
           java -cp build/package/MaleficVeil.jar veil.CraftingEconomyCsvTest
+          java -cp build/package/MaleficVeil.jar veil.CraftingCatalogExportTest
+          java -cp build/package/MaleficVeil.jar veil.CraftingCatalogExport
+          test -s build/test-visuals/crafting-completion-catalog.csv
           java -Djava.awt.headless=true -cp build/package/MaleficVeil.jar veil.CraftingIconPacksTest
           jar tf build/package/MaleficVeil.jar |
             grep -qx 'crafting/packs/begotten_biology_sprites_only.zip'
@@ -260,6 +263,7 @@ jobs:
             build/test-visuals/gpu-unified-front-end.png
             build/test-visuals/gpu-frontend-live-world.png
             build/test-visuals/gpu-frontend-*.png
+            build/test-visuals/crafting-completion-catalog.csv
             build/test-visuals/release-frontend*.log
             build/test-visuals/release-live-gpu.log
             build/test-visuals/release-editor-kit.log

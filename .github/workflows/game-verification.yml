@@ -92,6 +92,9 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.CraftingEraRegistryTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingRecipeIndexTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingEconomyCsvTest
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingCatalogExportTest
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingCatalogExport
+          test -s build/test-visuals/crafting-completion-catalog.csv
           java -Djava.awt.headless=true -cp build/classes veil.CraftingIconPacksTest
       - name: Industrial work-order cost, 24-7 restart, idempotency and incursion budget
         shell: bash
@@ -162,6 +165,7 @@ jobs:
             build/MaleficVeil.jar
             build/test-visuals/arena-screenshot.png
             build/test-visuals/gameplay-models.png
+            build/test-visuals/crafting-completion-catalog.csv
             build/test-visuals/kenney-assembled-city.png
             build/test-visuals/urban-performance.csv
             build/test-visuals/full-frame-performance.csv

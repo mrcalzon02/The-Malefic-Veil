@@ -1,6 +1,6 @@
 # Items — 157 exported entries
 
-[Home](Home.md) · [Recipes](Recipes.md) · [Structures](Structures.md)
+[Home](Home.md) · [Recipes](Recipes.md) · [Structures](Structures.md) · [Complete item dependencies](Item-Dependencies.md)
 
 These are the full records exported into [economy/items.csv](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/items.csv), not a claim that every specialty item can be obtained in the playable map. The icon `pack` and `entry` identify a sliced sprite in [the five sprite archives](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/assets/game/crafting/README.md), **not** a loose PNG at the listed path. Item prices, stack limits and storage units are **proposed balancing**; the `balance_status` column in the source is authoritative for that caveat. Source-owned `SurvivalCrafting.Item` has a smaller live domain subset.
 
@@ -185,6 +185,8 @@ These are the full records exported into [economy/items.csv](https://github.com/
 | **Bandage** <a id="bandage-bandage"></a> | `BANDAGE` | `/` | [hand:bandage](Recipes.md#handbandage), [hand:field-dressing](Recipes.md#handfield-dressing) | undefined |
 | **Workbench** <a id="workbench-workbench"></a> | `WORKBENCH` | `/` | [hand:workbench](Recipes.md#handworkbench) | undefined |
 | **Defense Cache** <a id="defense-cache-defensecache"></a> | `DEFENSE_CACHE` | `/` | [industrial:secure-ammo-cache](Recipes.md#industrialsecure-ammo-cache) | undefined |
+
+> When a row summarizes numerous consumers with `+N more`, see the [complete item dependency index](Item-Dependencies.md) for every consumer and exact quantities.
 
 ## Acquisition, handling and provenance
 

@@ -3,6 +3,7 @@
 * [Getting Started](Getting-Started.md)
 * [Gameplay](Gameplay.md)
 * [Items](Items.md)
+* [Item Dependencies](Item-Dependencies.md)
 * [Recipes](Recipes.md)
 * [Structures](Structures.md)
 * [Factions](Factions.md)

@@ -25,7 +25,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     public enum Screen { HOME,WORLDS,CREATE,LOAD,JOIN,FACTION,CLASS,VIDEO,AUDIO,CONTROLS,CREDITS,CONNECTING }
     private record Entry(String label,Runnable action,Runnable previous,Runnable next,String textField){}
     private static final int W=640,H=400,START_Y=307,ROW=24;
-    private final boolean smoke;
+    private final boolean smoke,flowSmoke;
     private GpuKenneyPreview backdrop;
     private GpuKenneyPreview gameRenderer;
     private PsxHorrorMenu skin;
@@ -44,10 +44,14 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     private WorldCreationConfig chosenWorld;
     private CharacterRoster.Faction faction=CharacterRoster.Faction.THE_UNRAVELED;
     private volatile MaleficVeil ready;
+    private MaleficVeil readyGame;
     private volatile Throwable failed;
     private String message="Select a mode. One game window; no external setup dialogs.";
-    public GpuFrontEnd(){this(false);}
-    public GpuFrontEnd(boolean smoke){this.smoke=smoke;}
+    public GpuFrontEnd(){this(false,false);}
+    public GpuFrontEnd(boolean smoke){this(smoke,false);}
+    public GpuFrontEnd(boolean smoke,boolean flowSmoke){
+        this.smoke=smoke;this.flowSmoke=flowSmoke;
+    }
     public Screen screen(){return screen;}
 
     @Override public void create(){
@@ -449,9 +453,27 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         ui.end();
     }
     @Override public void render(){
-        if(gameRenderer!=null){gameRenderer.render();return;}
+        if(gameRenderer!=null){
+            gameRenderer.render();
+            if(flowSmoke&&++frames==110){
+                MaleficVeil.GpuFrame frame=readyGame.gpuFrame();
+                if(frame==null||!frame.connected())
+                    throw new IllegalStateException("In-window world launch not connected");
+                Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,
+                    Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+                var out=Gdx.files.absolute(new java.io.File(
+                    "build/test-visuals/gpu-frontend-live-world.png").getAbsolutePath());
+                out.parent().mkdirs();PixmapIO.writePNG(out,pixels);pixels.dispose();
+                System.out.println("PASS GPU_UNIFIED_FRONTEND_FULL_FLOW seed="+
+                    readyGame.gpuWorld().seed+" world="+readyGame.gpuFrame().connected()+
+                    " faction="+faction+" role=WARDEN source=authoritative-lan");
+                Gdx.app.exit();
+            }
+            return;
+        }
         if(ready!=null){
             MaleficVeil session=ready;ready=null;
+            readyGame=session;
             switchView(new GpuKenneyPreview(session,false));
             System.out.println("PASS GPU_UNIFIED_FRONTEND_SESSION seed="+session.gpuWorld().seed);
             gameRenderer.render();return;
@@ -464,6 +486,22 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         input();
         backdrop.render();
         draw();
+        if(flowSmoke){
+            frames++;
+            if(frames==18){
+                worldMode("solo");
+                gotoScreen(Screen.CREATE);
+                worldName="UIFlow"+Long.toUnsignedString(System.nanoTime(),36);
+                seedText="20261020";
+                createWorld();
+                if(screen!=Screen.FACTION)throw new IllegalStateException(
+                    "World create did not advance to faction selection");
+                faction=CharacterRoster.Faction.THE_UNRAVELED;
+                gotoScreen(Screen.CLASS);
+                startGame(FactionClasses.faction(faction).stream().filter(
+                    FactionClasses.Role::playable).findFirst().orElseThrow());
+            }
+        }
         if(smoke&&++frames==65){
             if(skin.sourcedDraws()<150)throw new IllegalStateException("PSX scene menu not drawn");
             Pixmap pix=Pixmap.createFromFrameBuffer(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());

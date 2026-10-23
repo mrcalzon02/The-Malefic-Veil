@@ -208,6 +208,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         addKeyListener(this);addMouseListener(this);addMouseMotionListener(this);
         timer=new javax.swing.Timer(33,this);timer.start();
     }
+    /** CI runs this real gameplay simulation with OpenGL without showing dialogs. */
+    public static MaleficVeil gpuSmokeSession(long seed){
+        if(!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("Gameplay must initialize on Swing EDT");
+        MaleficVeil game=new MaleficVeil(null,seed,0,null);
+        game.gpuPresentation=true;
+        game.publishGpuFrame();
+        return game;
+    }
     /** Compact host-only setup; network clients cannot change population rules. */
     private static HostAiSettings.Rules hostAiDialog(){
         HostAiSettings.Rules initial=HostAiSettings.fromProperties();

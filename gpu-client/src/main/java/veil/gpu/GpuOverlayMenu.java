@@ -15,10 +15,11 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,CREW,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=7;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
+    private final GpuCraftingBook book;
     private final MaleficVeil gameplay;
     private final GpuClientSettings settings;
     private final Runnable goMain,apply;
@@ -45,6 +46,7 @@ public final class GpuOverlayMenu {
             GpuClientSettings settings,GpuAudioBus audio,
             Runnable goMain,Runnable apply){
         this.skin=Objects.requireNonNull(skin);
+        this.book=new GpuCraftingBook(skin);
         this.gameplay=Objects.requireNonNull(game);
         this.settings=Objects.requireNonNull(settings);
         this.audio=audio;this.goMain=goMain;this.apply=apply;
@@ -53,6 +55,7 @@ public final class GpuOverlayMenu {
     public Screen screen(){return screen;}
     public boolean active(){return screen==Screen.GAME;}
     public void openCraft(){pageOffset=0;show(Screen.CRAFT);}
+    public void openBook(){book.reset();show(Screen.BOOK);}
     public void openCrew(){show(Screen.CREW);}
     /** Existing game simulation stays live for clients; only local input pauses. */
     private void show(Screen target){
@@ -65,6 +68,7 @@ public final class GpuOverlayMenu {
     void auditPanel(String name){
         switch(name){
             case "craft"->openCraft();
+            case "book"->openBook();
             case "crew"->openCrew();
             case "crew-input"->beginCrewInput("CREATE");
             default->throw new IllegalArgumentException("Unknown menu proof: "+name);
@@ -156,6 +160,7 @@ public final class GpuOverlayMenu {
                 add("CHARACTER / SKILLS",()->quickPanel(java.awt.event.KeyEvent.VK_K));
                 add("CITY / CONTINENT MAP",()->quickPanel(java.awt.event.KeyEvent.VK_M));
                 add("FIELD CRAFTING",this::openCraft);
+                add("RECIPE / INGREDIENT INDEX",this::openBook);
                 add("FACTION / CREW",this::openCrew);
                 add("VIDEO / GRAPHICS",()->show(Screen.VIDEO));
                 add("SOUND / CONTROLS",()->show(Screen.AUDIO));
@@ -212,8 +217,10 @@ public final class GpuOverlayMenu {
                 if(end<available.size())add("MORE RECIPES",()->{
                     pageOffset+=MAX_RECIPES_PER_PAGE;show(Screen.CRAFT);
                 });
+                add("FULL RECIPE INDEX",this::openBook);
                 add("BACK TO PAUSE",()->show(Screen.PAUSE));
             }
+            case BOOK->{} // Owns its list and detail navigation; never crafts items.
             case CREW->{
                 add("CREATE CREW",()->beginCrewInput("CREATE"));
                 add("INVITE PLAYER ID",()->beginCrewInput("INVITE"));
@@ -246,6 +253,16 @@ public final class GpuOverlayMenu {
     }
     /** Return true only when world movement/shooting input is permitted. */
     public boolean input(){
+        if(screen==Screen.BOOK){
+            if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)||
+               Gdx.input.isKeyJustPressed(Input.Keys.F11)){
+                show(Screen.PAUSE);
+            }else book.input();
+            Gdx.input.setCursorCatched(false);
+            return false;
+        }
+        if(screen==Screen.GAME&&Gdx.input.isKeyJustPressed(Input.Keys.F2))
+            openBook();
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)||
             Gdx.input.isKeyJustPressed(Input.Keys.F11)){
             if(screen==Screen.GAME)show(Screen.PAUSE);
@@ -278,8 +295,13 @@ public final class GpuOverlayMenu {
         return false;
     }
     /** Draw using the identical licensed source panel/button sprites as launcher. */
+    public void dispose(){book.close();}
     public void draw(SpriteBatch sprites){
         if(screen==Screen.GAME)return;
+        if(screen==Screen.BOOK){
+            book.draw(sprites,gameplay.gpuFrame());
+            return;
+        }
         skin.frame(sprites,120,30,408,345);
         skin.band(sprites,137,334,375,30);
         skin.font().draw(sprites,"THE MALEFIC VEIL / "+screen,149,354);
@@ -290,8 +312,18 @@ public final class GpuOverlayMenu {
         }else if(screen==Screen.CRAFT){
             skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
         }
-        for(int i=0;i<items.size();i++)
-            skin.choice(sprites,items.get(i).label(),143,297-i*24,364,22,selected==i);
+        for(int i=0;i<items.size();i++){
+            float row=297-i*24;
+            skin.choice(sprites,items.get(i).label(),143,row,364,22,selected==i);
+            if(screen==Screen.CRAFT){
+                List<MaleficVeil.GpuCraftRecipe> recipes=crafts();
+                int source=pageOffset+i;
+                if(source<recipes.size()&&i<MAX_RECIPES_PER_PAGE)
+                    book.drawIcon(sprites,
+                        veil.SurvivalCrafting.recipes().get(recipes.get(source).id())
+                            .result().name(),146,row+1,19);
+            }
+        }
         if(screen==Screen.CREW_INPUT){
             skin.panel(sprites,143,147,365,34);
             skin.font().draw(sprites,crewAction+" > "+crewText+"_",152,169);

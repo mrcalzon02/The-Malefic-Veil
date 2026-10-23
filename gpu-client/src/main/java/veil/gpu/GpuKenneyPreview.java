@@ -475,6 +475,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private void liveControls(){
         if(gameplayMenu.active()&&Gdx.input.isKeyJustPressed(Input.Keys.J))
             gameplayMenu.openCraft();
+        else if(gameplayMenu.active()&&Gdx.input.isKeyJustPressed(Input.Keys.F2))
+            gameplayMenu.openBook();
         else if(gameplayMenu.active()&&Gdx.input.isKeyJustPressed(Input.Keys.O))
             gameplayMenu.openCrew();
         boolean active=gameplayMenu.input();
@@ -1065,6 +1067,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
 
     @Override public void dispose() {
+        if(gameplayMenu!=null)gameplayMenu.dispose();
         for(List<GpuModel> groups:models.values())for(GpuModel model:groups)model.mesh.dispose();
         models.clear();
         for(Texture texture:materialTextures.values())texture.dispose();

@@ -548,7 +548,9 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 if(frames==79)capture("gpu-frontend-live-crew");
                 if(frames==82)gameRenderer.auditPanel("crew-input");
                 if(frames==85)capture("gpu-frontend-live-crew-input");
-                if(frames==88)gameRenderer.auditPause(false);
+                if(frames==88)gameRenderer.auditPanel("book");
+                if(frames==91)capture("gpu-frontend-live-recipe-book");
+                if(frames==94)gameRenderer.auditPause(false);
             }
             if(flowSmoke&&frames==110){
                 MaleficVeil.GpuFrame frame=readyGame.gpuFrame();

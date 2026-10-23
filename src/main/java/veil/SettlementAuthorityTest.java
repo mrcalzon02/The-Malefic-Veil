@@ -32,6 +32,25 @@ public final class SettlementAuthorityTest {
         refused=base.reviewPlacement("base_one","char_enemy","field-shelter",version);
         check(!refused.accepted()&&refused.reason().equals("FACTION_DENIED"),
             "enemy faction cannot build");
+        for(String foreign:List.of("penitent-votive-altar","begotten-brood-nest")){
+            refused=base.reviewPlacement("base_one","char_founder",foreign,version);
+            check(!refused.accepted()&&refused.reason().equals("BLUEPRINT_FACTION_LOCK"),
+                "Host approved foreign factory "+foreign);
+            refused=base.recordPlaced("base_one","char_founder",
+                "foreign_"+foreign,foreign,version);
+            check(!refused.accepted()&&base.charter("base_one").revision()==version,
+                "Host recorded foreign factory "+foreign);
+            refused=base.setBuilderGrant("base_one","char_founder","char_helper",
+                Set.of(foreign),version);
+            check(!refused.accepted()&&refused.reason().equals("FACTION_BLUEPRINT_GRANT"),
+                "Host granted an unauthorized foreign blueprint "+foreign);
+        }
+        check(base.reviewPlacement("base_one","char_founder",
+            "unraveled-scrap-outpost",version).accepted(),
+            "Owner cannot access its own faction industrial site");
+        check(base.reviewPlacement("base_one","char_founder",
+            "field-shelter",version).accepted(),
+            "Common wilderness infrastructure must remain shared");
         var grant=base.setBuilderGrant("base_one","char_founder","char_helper",
             Set.of("field-shelter"),version);
         check(grant.accepted(),"founder can grant precisely one blueprint");
@@ -75,6 +94,18 @@ public final class SettlementAuthorityTest {
         var saved=base.snapshot();
         SettlementAuthority restored=new SettlementAuthority(directory::get);
         restored.restore(saved);
+        var clean=restored.snapshot();
+        var charter=saved.charters().get(0);
+        Map<String,String> injected=new TreeMap<>(charter.structures());
+        injected.put("foreign_saved_site","penitent-reliquary");
+        var forged=new SettlementAuthority.Charter(charter.id(),
+            charter.founderCharacterId(),charter.founderAccountKey(),
+            charter.faction(),charter.revision(),charter.builderGrants(),injected);
+        try{
+            restored.restore(new SettlementAuthority.Snapshot(List.of(forged)));
+            throw new AssertionError("Foreign factory injected through saved charter");
+        }catch(IllegalArgumentException expected){}
+        check(clean.equals(restored.snapshot()),"Rejected save mutated trusted settlement");
         check(saved.equals(restored.snapshot()),"round-trip charter and builder ACL snapshot");
         directory.put("char_founder",identity("char_founder",'a',unraveled,1));
         var reduced=restored.reviewPlacement("base_one","char_founder","aa-fast",version);

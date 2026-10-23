@@ -130,10 +130,24 @@ public final class SettlementAuthority {
             return result(b,false,"TARGET_NOT_ELIGIBLE");
         if(permitted==null||permitted.size()>BLUEPRINTS.size()||
             !BLUEPRINTS.keySet().containsAll(permitted))return result(b,false,"UNKNOWN_BLUEPRINT");
+        if(permitted.stream().anyMatch(p->!facilityAllowed(p,b.faction)))
+            return result(b,false,"FACTION_BLUEPRINT_GRANT");
         if(permitted.isEmpty())b.grants.remove(target);
         else b.grants.put(target,Set.copyOf(permitted));
         b.revision++;
         return result(b,true,"OK");
+    }
+    /** Only the charter's faction can build its specialized production sites. */
+    private static boolean facilityAllowed(String blueprint,CharacterRoster.Faction faction){
+        CraftingEraRegistry.Facility facility=CraftingEraRegistry.facility(blueprint);
+        if(facility==null)return true; // existing non-facility blueprint rules
+        CraftingEraRegistry.Faction owner=switch(faction){
+            case THE_UNRAVELED -> CraftingEraRegistry.Faction.UNRAVELED;
+            case THE_PENITENT -> CraftingEraRegistry.Faction.PENITENT;
+            case THE_BEGOTTEN -> CraftingEraRegistry.Faction.BEGOTTEN;
+        };
+        return facility.faction()==CraftingEraRegistry.Faction.ALL||
+            facility.faction()==owner;
     }
     private Result review(Mutable b,String actor,String blueprint,long expectedRevision){
         if(b.revision!=expectedRevision)return result(b,false,"STALE_REVISION");
@@ -143,6 +157,8 @@ public final class SettlementAuthority {
         if(founder==null||!founder.accountKey().equals(b.account)||
            founder.faction()!=b.faction)return result(b,false,"OWNER_IDENTITY_UNAVAILABLE");
         if(who==null||who.faction()!=b.faction)return result(b,false,"FACTION_DENIED");
+        if(!facilityAllowed(blueprint,b.faction))
+            return result(b,false,"BLUEPRINT_FACTION_LOCK");
         if(!actor.equals(b.founder) &&
            !b.grants.getOrDefault(actor,Set.of()).contains(blueprint))
             return result(b,false,"BUILD_NOT_AUTHORIZED");
@@ -245,13 +261,15 @@ public final class SettlementAuthority {
                 Identity member=verified(grant.getKey());
                 if(member==null||member.faction()!=m.faction||member.characterId().equals(m.founder)||
                    grant.getValue()==null||grant.getValue().isEmpty()||
-                   !BLUEPRINTS.keySet().containsAll(grant.getValue()))
+                   !BLUEPRINTS.keySet().containsAll(grant.getValue())||
+                   grant.getValue().stream().anyMatch(p->!facilityAllowed(p,m.faction)))
                     throw new IllegalArgumentException("Invalid builder grant");
                 m.grants.put(grant.getKey(),Set.copyOf(grant.getValue()));
             }
             for(var item:source.structures().entrySet()){
                 if(!id(item.getKey())||item.getValue()==null||
-                   !BLUEPRINTS.containsKey(item.getValue()))
+                   !BLUEPRINTS.containsKey(item.getValue())||
+                   !facilityAllowed(item.getValue(),m.faction))
                     throw new IllegalArgumentException("Invalid structure allocation");
                 m.structures.put(item.getKey(),item.getValue());
             }

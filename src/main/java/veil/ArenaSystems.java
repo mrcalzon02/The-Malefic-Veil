@@ -209,16 +209,19 @@ public final class ArenaSystems {
         for(Vehicles.State car:vehicles.states())
             if(car.hp()>0&&Math.hypot(car.x()-x,car.y()-y)<.90)return false;
         for(World.Device d:world.devices)
-            if(d.hp>0&&d.kind==BARRICADE&&Math.hypot(d.x-x,d.y-y)<.52)return false;
+            if(d.hp>0&&(d.kind==BARRICADE||d.kind==FIELD_BENCH)&&
+                Math.hypot(d.x-x,d.y-y)<(d.kind==FIELD_BENCH?.63:.52))
+                return false;
         return true;
     }
     private boolean clear(double x,double y,double tx,double ty){
         if(!world.lineClear(x,y,tx,ty))return false;
         double len=Math.hypot(tx-x,ty-y);
         for(World.Device d:world.devices){
-            if(d.hp<=0||d.kind!=BARRICADE)continue;
+            if(d.hp<=0||(d.kind!=BARRICADE&&d.kind!=FIELD_BENCH))continue;
             double t=clamp(((d.x-x)*(tx-x)+(d.y-y)*(ty-y))/(len*len+1e-9),0,1);
-            if(Math.hypot(x+(tx-x)*t-d.x,y+(ty-y)*t-d.y)<.36)return false;
+            if(Math.hypot(x+(tx-x)*t-d.x,y+(ty-y)*t-d.y)<
+                (d.kind==FIELD_BENCH?.43:.36))return false;
         }
         return true;
     }
@@ -728,7 +731,8 @@ public final class ArenaSystems {
             if(d.hp<=0||d.kind!=FIELD_BENCH||
                !(p.accountKey.equals(d.ownerKey)||factions.allied(p.accountKey,d.ownerKey)))
                 continue;
-            if(Math.hypot(p.x-d.x,p.y-d.y)<=2.2&&clear(p.x,p.y,d.x,d.y)){
+            if(Math.hypot(p.x-d.x,p.y-d.y)<=2.2&&
+                world.lineClear(p.x,p.y,d.x,d.y)){
                 reachable=true;break;
             }
         }

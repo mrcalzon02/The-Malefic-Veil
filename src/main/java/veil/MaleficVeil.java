@@ -55,6 +55,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         int weapon,int frags,boolean dead,boolean connected,boolean inventory,
         boolean skills,boolean map,boolean continent,String notice,
         java.util.Map<String,Integer> inventoryItems,
+        java.util.List<String> skillStats,
         java.util.List<UrbanScene.ModelInstance> dynamic) {}
     private volatile GpuFrame gpuFrame;
     private LanServer gpuHostedServer;
@@ -122,6 +123,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     private void publishGpuFrame(){
         if(!gpuPresentation)return;
+        java.util.List<String> stats=new java.util.ArrayList<>();
+        if(net!=null){
+            NetLink.Rpg rpg=net.rpg();
+            if(rpg!=null){
+                stats.add("LEVEL "+rpg.level()+"  XP "+rpg.experience());
+                stats.add("NEXT "+rpg.next());
+                stats.add("MARKSMAN "+rpg.marksmanship());
+                stats.add("ATHLETICS "+rpg.athletics());
+                stats.add("ENGINEER "+rpg.engineering());
+                stats.add("SCAVENGING "+rpg.scavenging());
+                stats.add("SURVIVAL "+rpg.survival());
+                stats.add("HUNGER "+rpg.hunger()+" WATER "+rpg.hydration());
+                stats.add("LIFE "+rpg.aliveMs()/60000+"m BOOST "+
+                    String.format(java.util.Locale.ROOT,"%.1fx",rpg.streakBonus()));
+                stats.add(net.hardcore()?"HARDCORE RESET ON DEATH":"STREAK RESET ON DEATH");
+            }else stats.add("WAITING FOR HOST STATISTICS");
+        }else stats.add("SOLO LOCAL SIMULATION");
         java.util.List<UrbanScene.ModelInstance> actors=new java.util.ArrayList<>();
         for(World.Npc npc:world.npcs)if(npc.hp>0)
             actors.add(new UrbanScene.ModelInstance("enemy-walker",npc.x,npc.y,
@@ -167,7 +185,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             shellClip,shellReserve,gun,frags,dead,net==null||net.connected(),
             inventoryVisible,skillsVisible,mapVisible,continentVisible,
             noticeTicks>0?notice:"",java.util.Map.copyOf(carried()),
-            java.util.List.copyOf(actors));
+            java.util.List.copyOf(stats),java.util.List.copyOf(actors));
     }
 
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {

@@ -220,6 +220,43 @@ public final class CraftingEraRegistry {
         process("breach-seed",Era.INCURSION,Faction.BEGOTTEN,"incursion-anchor",
             "BREACH_SEED",1,3600,25,"ASSEMBLY_CONTROLLER",3,
             "NUTRIENT_STOCK",8,"METAL_STOCK",4,"MACHINE_PARTS",3);
+        // Supplemental interconnected production chains. These remain
+        // industrial DESCRIPTORS until a host-authoritative machine runner
+        // debits stock/power and applies real facility access controls.
+        process("sort-mineral-feed",Era.SALVAGE,Faction.ALL,"materials-recycler",
+            "SORTED_ORE",2,480,0,"RAW_ORE",4,"CHARCOAL",1);
+        process("temper-alloy",Era.STEAM,Faction.ALL,"forge",
+            "HARDENED_ALLOY",1,780,0,"METAL_BILLET",3,"CHARCOAL",2);
+        process("tracking-electronics",Era.ELECTRIC,Faction.ALL,"precision-lathe",
+            "TRACKING_CIRCUIT",1,720,6,"CONTROL_BOARD",1,"CONDUCTOR_WIRE",2);
+        process("precision-feedlines",Era.AUTOMATION,Faction.ALL,"industrial-workshop",
+            "PRECISION_FEEDLINE",2,780,12,"DRIVE_SHAFT",1,"CONDUCTOR_WIRE",3);
+        process("ballistic-resupply",Era.AUTOMATION,Faction.UNRAVELED,"industrial-workshop",
+            "BALLISTIC_SUPPLY",2,960,12,"HARDENED_ALLOY",2,"FASTENERS",4,
+            "PRECISION_FEEDLINE",1);
+        process("votive-incense",Era.ENCAMPMENT,Faction.PENITENT,"cooking-hearth",
+            "VOTIVE_INCENSE",2,300,0,"MEDICINAL_HERBS",2,"FIREWOOD",2);
+        process("witness-seal",Era.SALVAGE,Faction.PENITENT,"forge",
+            "WITNESS_SEAL",2,840,0,"METAL_BILLET",1,"VOTIVE_INCENSE",2);
+        process("chorus-resonance",Era.AUTOMATION,Faction.PENITENT,"research-archive",
+            "CHORUS_RESONANCE",1,1200,12,"WITNESS_SEAL",2,"CONTROL_BOARD",1);
+        process("bound-liturgy",Era.AUTOMATION,Faction.PENITENT,"terror-collector",
+            "BOUND_LITURGY",1,1440,12,"CHORUS_RESONANCE",1,"DREAD_IMPRINT",1);
+        process("sacred-supply",Era.INCURSION,Faction.PENITENT,"dread-works",
+            "SACRED_SUPPLY",1,2400,25,"BOUND_LITURGY",2,"DREAD_WARD",1);
+        process("growth-feed",Era.ENCAMPMENT,Faction.BEGOTTEN,"cooking-hearth",
+            "GROWTH_FEED",2,360,0,"EDIBLES",3,"CLEAN_WATER",1);
+        process("viable-spores",Era.SALVAGE,Faction.BEGOTTEN,"materials-recycler",
+            "VIABLE_SPORES",2,900,0,"GROWTH_FEED",2,"MEDICINAL_HERBS",2);
+        process("grown-chitin",Era.ELECTRIC,Faction.BEGOTTEN,"controlled-greenhouse",
+            "GROWN_CHITIN",2,1440,8,"VIABLE_SPORES",2,"FIELD_CROPS",3);
+        process("binding-resin",Era.AUTOMATION,Faction.BEGOTTEN,"nutrient-digestor",
+            "BINDING_RESIN",1,1260,12,"GROWN_CHITIN",2,"NUTRIENT_STOCK",1);
+        process("spine-supply",Era.INCURSION,Faction.BEGOTTEN,"incursion-anchor",
+            "SPINE_SUPPLY",1,2400,25,"BINDING_RESIN",2,"BREACH_SEED",1);
+        process("field-maintenance",Era.AUTOMATION,Faction.UNRAVELED,"motor-pool",
+            "VEHICLE_REPAIR_KIT",1,900,12,"HARDENED_ALLOY",1,
+            "FASTENERS",3,"MACHINE_PARTS",2);
         validate();
     }
     private CraftingEraRegistry(){}

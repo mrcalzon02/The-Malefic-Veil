@@ -10,6 +10,8 @@ import java.util.*;
 public final class SurvivalCrafting {
     public enum Item {
         TIMBER, FIELD_STONE, FIBER, EDIBLES, MEDICINAL_HERBS, RAW_ORE,
+        FIREWOOD, RATIONS, CHARCOAL, COMPOST, CLOTH_ROLL, SMOKED_RATIONS,
+        MEAL_SACK, FIELD_CROPS, HERBAL_BUNDLE, FIRED_BRICKS,
         DIRTY_WATER, CLEAN_WATER, BANDAGE, CAMPFIRE, FILTER, WORKBENCH,
         METAL_STOCK, MACHINE_PARTS, SHELTER_KIT, VEHICLE_REPAIR_KIT,
         TENT_KIT, CRATE_KIT, FENCE_SECTION, STAKE_TRAP, NOISE_ALARM
@@ -46,6 +48,27 @@ public final class SurvivalCrafting {
             Item.FIBER,5,Item.METAL_STOCK,1),Item.SHELTER_KIT,1);
         register(r,"vehicle-repair",Station.WORKBENCH,Map.of(Item.METAL_STOCK,1,
             Item.MACHINE_PARTS,1),Item.VEHICLE_REPAIR_KIT,1);
+        // Inefficient, but real, emergency alternatives to later staffed
+        // industry. Each has strictly positive material cost and output mass.
+        register(r,"split-kindling",Station.HAND,Map.of(Item.TIMBER,2),Item.FIREWOOD,2);
+        register(r,"field-dressing",Station.HAND,Map.of(Item.FIBER,3,
+            Item.MEDICINAL_HERBS,2),Item.BANDAGE,2);
+        register(r,"camp-ration",Station.FIRE,Map.of(Item.EDIBLES,3,
+            Item.CLEAN_WATER,1,Item.FIREWOOD,1),Item.RATIONS,1);
+        register(r,"pit-charcoal",Station.FIRE,Map.of(Item.TIMBER,5,
+            Item.FIREWOOD,2),Item.CHARCOAL,1);
+        register(r,"rough-compost",Station.HAND,Map.of(Item.EDIBLES,4,
+            Item.FIBER,3),Item.COMPOST,1);
+        register(r,"hand-woven-cloth",Station.WORKBENCH,Map.of(Item.FIBER,8),
+            Item.CLOTH_ROLL,1);
+        register(r,"smoke-ration",Station.FIRE,Map.of(Item.EDIBLES,5,
+            Item.FIREWOOD,3),Item.SMOKED_RATIONS,1);
+        register(r,"coarse-meal",Station.WORKBENCH,Map.of(Item.FIELD_CROPS,6),
+            Item.MEAL_SACK,1);
+        register(r,"bunch-herbs",Station.WORKBENCH,Map.of(Item.MEDICINAL_HERBS,3,
+            Item.FIBER,2),Item.HERBAL_BUNDLE,1);
+        register(r,"camp-firebrick",Station.FIRE,Map.of(Item.FIELD_STONE,5,
+            Item.FIREWOOD,4),Item.FIRED_BRICKS,1);
         RECIPES=Map.copyOf(r);
     }
     private static void register(Map<String,Recipe> out,String name,Station station,

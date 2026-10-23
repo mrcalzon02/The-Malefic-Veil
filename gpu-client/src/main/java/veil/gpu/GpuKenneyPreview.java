@@ -517,12 +517,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private void drawLiveHud(MaleficVeil.GpuFrame frame){
         menu.panel(sprites,6,348,438,46);
         var equipped=ArsenalCatalog.get(frame.weapon());
-        String weapon=equipped.name().toUpperCase(java.util.Locale.ROOT);
+        String weaponName=equipped.name().toUpperCase(java.util.Locale.ROOT);
         var arsenal=frame.arsenalState();
         String rounds=arsenal==null?"--/--":
             arsenal.clip()[frame.weapon()]+"/"+arsenal.reserve()[frame.weapon()];
         font.draw(sprites,"HP "+frame.health()+"  SAN "+frame.sanity()+
-            "  "+weapon+" "+rounds+"  MED "+frame.medkits(),14,383);
+            "  "+weaponName+" "+rounds+"  MED "+frame.medkits(),14,383);
         menu.progress(sprites,15,355,91,frame.health()/100f);
         menu.progress(sprites,119,355,91,frame.sanity()/100f);
         font.draw(sprites,"CASH "+frame.cash()+"  SCRAP "+frame.scrap()+

@@ -859,6 +859,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         player.x=px;player.y=py;player.angle=angle;
         ArsenalSystems.Shot shot=localHost.arsenal.fire(1,alternate,++arsenalSequence);
         if(shot.fired()){
+            // Compatibility HUD and real-input regression reflect the same
+            // host ammo accounting, never a detached two-gun local counter.
+            ArsenalSystems.View confirmed=localHost.arsenal.view(1);
+            pistolClip=confirmed.clip()[0];pistolReserve=confirmed.reserve()[0];
             attackFlash=.18;
             if(shot.damage()>0)toast("HIT "+shot.damage());
         }else if(!shot.reason().equals("COOLDOWN"))

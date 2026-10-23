@@ -55,6 +55,7 @@ jobs:
           test -s gpu-client/target/MaleficVeil-GPU.jar
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingRecipeIndexTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.FieldWorkbenchRuntimeTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingEconomyCsvTest
           java -Djava.awt.headless=true -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingIconPacksTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuClientSettingsTest

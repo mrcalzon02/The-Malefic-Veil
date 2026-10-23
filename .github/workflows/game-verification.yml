@@ -83,7 +83,9 @@ jobs:
         run: java -Djava.awt.headless=true -cp build/classes veil.SurvivalCraftingTest
       - name: Full early survival camp kit affordability and no-duplication
         shell: bash
-        run: java -Djava.awt.headless=true -cp build/classes veil.EarlyCampCraftingTest
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.EarlyCampCraftingTest
+          java -Djava.awt.headless=true -cp build/classes veil.FieldWorkbenchRuntimeTest
       - name: Seven-era industrial tech DAG and faction endgame recipe validation
         shell: bash
         run: |

@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import veil.*;
 
 import java.util.*;
+import org.beckenburg.editor.EditorHistory;
 import java.awt.event.KeyEvent;
 
 /**
@@ -120,6 +121,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final char focusCity;
     private final MaleficVeil gameplay;
     private final boolean playSmoke;
+    private final boolean editorMode,editorSmoke;
+    private MaleficEditorProject editorProject;
+    private MaleficEditorDock editorDock;
+    private EditorHistory<MaleficEditorProject.Snapshot> editorTestHistory;
+    private String smokeObject;
     private final Set<Integer> liveHeld=new HashSet<>();
     private long firstSmokeFrames;
     private int smokeStartingAmmo=-1;
@@ -158,16 +164,21 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         this(seed,smoke,gallery,'A');
     }
     public GpuKenneyPreview(long seed,boolean smoke,boolean gallery,char site){
-        this(seed,smoke,gallery,site,null,false);
+        this(seed,smoke,gallery,site,null,false,false,false);
     }
     public GpuKenneyPreview(MaleficVeil gameplay,boolean playSmoke){
-        this(gameplay.gpuWorld().seed,false,false,'A',gameplay,playSmoke);
+        this(gameplay.gpuWorld().seed,false,false,'A',gameplay,playSmoke,false,false);
+    }
+    /** Same licensed GPU scene, with project-independent editor library attached. */
+    public GpuKenneyPreview(long seed,boolean editorSmoke){
+        this(seed,false,false,'A',null,false,true,editorSmoke);
     }
     private GpuKenneyPreview(long seed,boolean smoke,boolean gallery,char site,
-            MaleficVeil gameplay,boolean playSmoke){
+            MaleficVeil gameplay,boolean playSmoke,boolean editorMode,boolean editorSmoke){
         if(site<'A'||site>'G')throw new IllegalArgumentException("Unknown city "+site);
         this.seed=seed;this.smoke=smoke;this.gallery=gallery;focusCity=site;
         this.gameplay=gameplay;this.playSmoke=playSmoke;
+        this.editorMode=editorMode;this.editorSmoke=editorSmoke;
     }
     /** Deterministic photography poses: no fabricated scenery or composited backgrounds. */
     private record GalleryView(String name,double x,double z,double elevation,
@@ -229,7 +240,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
 
     /** One real uploaded GPU mesh per original GLB material group. */
     private void uploadGeometry(String id,GlbMesh source,int initialCapacity){
-        int capacity=gameplay==null?initialCapacity:Math.max(512,initialCapacity+512);
+        // Uploaded meshes also support editor-authored overlay instances.
+        int capacity=Math.max(2048,initialCapacity+2048);
 
             Map<String,List<GlbMesh.Surface>> groups=new LinkedHashMap<>();
             for(GlbMesh.Surface surface:source.surfaces())
@@ -302,6 +314,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         vista=continental;
         try{scene=new UrbanScene(world,continental.scenery());}
         catch(Exception ex){throw new IllegalStateException("Kenney source pack unavailable",ex);}
+        if(editorMode||gameplay!=null){
+            try{editorProject=new MaleficEditorProject(world);}
+            catch(java.io.IOException failed){
+                throw new IllegalStateException("Cannot load authored scene layer",failed);
+            }
+        }
         terrain=new GpuContinentTerrain(continental);
         lighting=new UrbanLighting(world);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
@@ -323,7 +341,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         font=new BitmapFont();
         font.getData().setScale(1.16f);
         skybox=new GpuSkybox();
-        menu=new PsxHorrorMenu(smoke||gallery||gameplay!=null);
+        menu=new PsxHorrorMenu(smoke||gallery||gameplay!=null||editorMode);
         font.dispose();
         font=menu.font();
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
@@ -332,6 +350,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(gameplay!=null){
             buildGameplayMaps();
             gameplay.gpuSceneReady();
+        }
+        if(editorMode){
+            x=61.5;y=61.5;cameraHeight=13;heading=.45;cameraPitch=-.38;
+            if(editorSmoke)editorTestHistory=new EditorHistory<>(editorProject,80);
+            else{
+                editorDock=new MaleficEditorDock(editorProject,
+                    ()->new MaleficEditorDock.View(x,y,heading));
+                editorDock.open();
+            }
         }
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
             scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
@@ -521,6 +548,51 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         shader.setUniformf("u_fogFar",visualDistance);
     }
+    /** Editor models are real licensed GLBs from the shared GPU source loader. */
+    private void ensureAuthoringModel(String id){
+        if(models.containsKey(id))return;
+        if(!editorProject.modelIds().contains(id))
+            throw new IllegalStateException("Unapproved editor source model "+id);
+        try{
+            GlbMesh mesh;
+            if(KenneyAssetPack.load().modelNames().contains(id+".glb"))
+                mesh=GlbMesh.asset(id);
+            else mesh=GGBotCarPack.required().model(id);
+            uploadGeometry(id,mesh,2048);
+        }catch(Exception failure){
+            throw new IllegalStateException("Cannot upload editor model "+id,failure);
+        }
+    }
+    /** Ctrl+click projects real authored positions through THIS OpenGL camera. */
+    private void editorPick(){
+        if(editorDock==null||editorProject==null)return;
+        if(!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)||
+           !Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))return;
+        float mouseX=Gdx.input.getX()*(WIDTH/(float)Gdx.graphics.getWidth());
+        float mouseY=(Gdx.graphics.getHeight()-Gdx.input.getY())*
+            (HEIGHT/(float)Gdx.graphics.getHeight());
+        MaleficEditorProject.Placement best=null;
+        float bestPixels=22f*22f;
+        for(MaleficEditorProject.Placement item:editorProject.placements()){
+            Vector3 point=camera.project(new Vector3((float)item.x(),
+                (float)(item.elevation()+.7),(float)item.z()),0,0,WIDTH,HEIGHT);
+            if(point.z<0||point.z>1)continue;
+            float dx=point.x-mouseX,dy=point.y-mouseY;
+            float score=dx*dx+dy*dy;
+            if(score<bestPixels){best=item;bestPixels=score;}
+        }
+        if(best!=null)editorDock.select(best.id());
+    }
+    private void editorControls(){
+        control(); // Same physical OpenGL camera used for every gallery view.
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+            cameraHeight=Math.min(150,cameraHeight+Gdx.graphics.getDeltaTime()*12);
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+            cameraHeight=Math.max(.3,cameraHeight-Gdx.graphics.getDeltaTime()*12);
+        if(editorDock!=null&&Gdx.input.isKeyJustPressed(Input.Keys.F11))
+            editorDock.focus();
+        editorPick();
+    }
     private void control() {
         PsxHorrorMenu.Settings actions=new PsxHorrorMenu.Settings(){
             public void changeView(int delta){
@@ -624,6 +696,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             visible.computeIfAbsent(placement.model(),ignore->new FloatList()).append(placement);
             visibleInstances++;
         }
+        if(editorProject!=null)
+            for(MaleficEditorProject.Placement item:editorProject.placements()){
+                double dx=item.x()-x,dz=item.z()-y;
+                if(dx*dx+dz*dz>visualDistance*visualDistance)continue;
+                ensureAuthoringModel(item.model());
+                visible.computeIfAbsent(item.model(),unused->new FloatList())
+                    .append(item.instance());
+                visibleInstances++;
+            }
         if(gameplay!=null){
             MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
             if(frame!=null)for(UrbanScene.ModelInstance entity:frame.dynamic()){
@@ -676,7 +757,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
         sprites.begin();
-        if(menu.running()&&gameplay!=null){
+        if(menu.running()&&editorMode){
+            font.draw(sprites,"LEVEL EDITOR KIT / CITY A  F11 DOCK  CTRL+CLICK PICK",9,391);
+            font.draw(sprites,"SEED "+seed+"  LAYER "+
+                editorProject.placements().size()+"  MESHES "+visibleInstances,9,370);
+            font.draw(sprites,"WASD FLY  MOUSE LOOK  SPACE UP  CTRL DOWN  F11 PALETTE",9,20);
+        }else if(menu.running()&&gameplay!=null){
             MaleficVeil.GpuFrame live=gameplay.gpuFrame();
             if(live!=null)drawLiveHud(live);
         }else if(menu.running()){
@@ -746,8 +832,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
 
     @Override public void render() {
-        if(gameplay!=null&&!playSmoke)liveControls();
-        else if(gameplay==null&&!smoke&&!gallery)control();
+        if(editorMode&&!editorSmoke)editorControls();
+        else if(gameplay!=null&&!playSmoke)liveControls();
+        else if(gameplay==null&&!smoke&&!gallery&&!editorMode)control();
         framebuffer.begin();
         drawWorld();
         if(gallery){
@@ -773,6 +860,45 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     framebuffer.end();Gdx.app.exit();return;
                 }
                 setGalleryView(galleryViews[galleryIndex]);
+            }
+        }
+        if(editorSmoke){
+            frames++;
+            if(frames==10){
+                var library=editorProject.assets();
+                if(library.isEmpty())throw new IllegalStateException("Shared editor palette empty");
+                String model=library.stream().map(MaleficEditorProject::modelFromAsset)
+                    .filter(id->id.equals("detail-bench")).findFirst()
+                    .orElse(MaleficEditorProject.modelFromAsset(library.get(0)));
+                editorTestHistory.execute(()->{
+                    smokeObject=editorProject.add(model,65.0,62.0,0,1.25,0).id();
+                });
+                editorTestHistory.execute(()->editorProject.transform(
+                    smokeObject,65.5,62.0,.25,1.25,0));
+                if(!editorTestHistory.undo()||
+                   Math.abs(editorProject.get(smokeObject).x()-65.0)>.0001)
+                    throw new IllegalStateException("Portable editor undo failed");
+                if(!editorTestHistory.redo()||
+                   Math.abs(editorProject.get(smokeObject).x()-65.5)>.0001)
+                    throw new IllegalStateException("Portable editor redo failed");
+                try{
+                    editorProject.save();
+                    new MaleficEditorProject(world).get(smokeObject);
+                }catch(java.io.IOException bad){
+                    throw new IllegalStateException("Interchangeable editor save/reload failed",bad);
+                }
+            }
+            if(frames==65){
+                if(!models.containsKey(editorProject.get(smokeObject).model()))
+                    throw new IllegalStateException("Editor-authored mesh never reached OpenGL");
+                saveFrame("gpu-standalone-editor-live-viewport.png");
+                System.out.println("PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT seed="+seed+
+                    " adapter="+editorProject.id()+
+                    " saved="+editorProject.documentPath()+
+                    " nodes="+editorProject.hierarchy().size()+
+                    " palette="+editorProject.assets().size()+
+                    " activeModels="+visibleInstances);
+                framebuffer.end();Gdx.app.exit();return;
             }
         }
         if(playSmoke){
@@ -855,6 +981,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(skybox!=null)skybox.close();
         if(Gdx.input!=null)Gdx.input.setCursorCatched(false);
         if(terrain!=null)terrain.close();
+        if(editorDock!=null)editorDock.close();
         if(cityMapTexture!=null)cityMapTexture.dispose();
         if(continentMapTexture!=null)continentMapTexture.dispose();
         if(gameplay!=null)gameplay.gpuShutdown();

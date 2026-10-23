@@ -75,6 +75,20 @@ jobs:
             tee build/test-visuals/release-live-gpu.log
           grep -q 'PASS GPU_LIVE_PLAY_REAL_GAME' build/test-visuals/release-live-gpu.log
           test -s build/test-visuals/gpu-live-play-shipped-client.png
+      - name: Verify published editor module drives the actual game viewport
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 150s java -jar build/package/MaleficVeil.jar \
+              --editor-smoke --seed=20261020 |
+              tee build/test-visuals/release-editor-kit.log
+          grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' \
+            build/test-visuals/release-editor-kit.log
+          test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
+          test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
       - name: Package game and independent updater bootstrap
         run: |
           set -euo pipefail
@@ -195,6 +209,9 @@ jobs:
             build/package/updater.jar
             build/test-visuals/gpu-live-play-shipped-client.png
             build/test-visuals/release-live-gpu.log
+            build/test-visuals/release-editor-kit.log
+            build/test-visuals/gpu-standalone-editor-live-viewport.png
+            build/test-visuals/editor-kit-smoke/seed-*/city-A.properties
           if-no-files-found: warn
 
   windows-review-installer:

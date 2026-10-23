@@ -79,6 +79,19 @@ jobs:
           test -s build/test-visuals/gpu-ggbot-city-cars.png
           test -s build/test-visuals/gpu-kenney-foliage.png
           file build/test-visuals/gpu-kenney-city.png
+      - name: Reuse published editor module in actual GPU viewport
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 150s java -jar gpu-client/target/MaleficVeil-GPU.jar \
+            --editor-smoke --seed=20261020 | tee build/test-visuals/editor-kit.log
+          grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' build/test-visuals/editor-kit.log
+          test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
+          test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
       - name: Three seeded GPU worlds, ten city and exterior camera poses each
         if: runner.os == 'Linux'
         shell: bash
@@ -111,4 +124,7 @@ jobs:
             build/test-visuals/gpu-kenney-foliage.png
             build/test-visuals/gallery-seed-*.png
             build/test-visuals/gallery-seed-*.log
+            build/test-visuals/gpu-standalone-editor-live-viewport.png
+            build/test-visuals/editor-kit.log
+            build/test-visuals/editor-kit-smoke/seed-*/city-A.properties
           if-no-files-found: warn

@@ -72,3 +72,40 @@ The generated sites **A–G** now use `CityPlateTerrain` to establish one determ
 The existing 132 × 132 City A district remains the detailed playable/source-kit scene, and its Kenney retaining blocks and two open, graded exit ramps take priority over the coarser City A macro-footprint. Generated city surface meshes B–G are **geometric plates/road palettes only**. They are not yet the complete source-kit building/plot instantiation of the future streamed cities, and this pass does not assert that client/server 3D collision or cross-city live streaming has been completed.
 
 `CityPlateTerrainTest` checks every shape and foundation edge for six independent world seeds and checks actual 3D plateau/skirt vertices for B–G on the two seeds used for the GPU screenshot workflow. The screenshot gate also captures elevated and outside approaches to Cities B and C separately from City A. Assertions cover seam grade, plate-foot alignment, generation determinism, and visual renderability; archived images still require human art review.
+
+## Interchangeable Java 17 level editor (authoring layer)
+
+The game's **Level Editor (Dev)** menu option now hosts the **existing** external
+`org.beckenburg.editor` module from *The Beckenburg Project*, published as
+`LevelEditorKit-Java17.jar` in release `beckenburg-v0.1.31`. The pinned
+binary SHA-256 is `5b75ada82ad71d128150b58f0ab74e0f0e18866968b216968c66940209e1252d`.
+`tools/install-editor-kit.sh` fetches the independently published JAR, checks
+its exact bytes, and installs it into Maven's local cache before building the
+shaded GPU game. The Beckenburg editor implementation is **not copied or forked**.
+
+`MaleficEditorProject implements EditorProject<Snapshot>` supplies game asset
+identities, hierarchy, geometry, undo/redo snapshots, atomic save/reload, and
+licensed source mesh validation; `MaleficEditorDock` uses the kit's actual
+`EditorPalettePanel` and `EditorHistory` components, with a compact asset
+filter, transform inspector, transactional Place/Apply/Delete, Undo/Redo,
+Save/Reload and OpenGL viewport selection (Ctrl+click on an authored object).
+The same instanced renderer, camera and seeded city geometry are visible while
+editing. The editor can also launch with `java -jar MaleficVeil.jar --editor
+--seed=20261020`. F11 focuses the editor dock, space/ctrl moves its fly camera,
+and WASD/mouse turns and walks the shared GL viewport.
+
+Authoring data is separate, in
+`worlds/editor/seed-<seed>/city-A.properties`. It is reloaded automatically
+as a **render-only** additional asset layer in ordinary GPU gameplay. This
+document does *not* mutate the deterministic procedural city generator, host
+collision, city protection, settlement construction, player stats, or durable
+host saves. It currently supports City A objects and sourced models only;
+brush-based terrain editing, walls that change collision, full map streaming
+and cooperative authoring are not implemented. Treating editor-only props as
+physical world structures would be a correctness/security defect until their
+collisions are validated on the host.
+
+A real GPU integration test `--editor-smoke` drives the imported history,
+place, transform, undo/redo, atomic save/reload, GPU model upload, and a
+captured framebuffer from the **packaged** game. The release workflow fails
+if that path or the external dependency breaks.

@@ -1,7 +1,7 @@
 # Crafting and construction — implementation ledger
 
 This report is a **live-state classification**, not a promise that every
-indexed blueprint is buildable. The current generated catalog has **273 rows** (22 survival + 47 industry + 54 facilities + 150 illustrated item entries). The machine-readable index is generated from
+indexed blueprint is buildable. The current generated catalog has **303 rows** (22 survival + 62 industry + 69 facilities + 150 original icon entries). The machine-readable index is generated from
 the game code, via `veil.CraftingCatalogExport`, during the host, GPU and
 release tests. Download `build/test-visuals/crafting-completion-catalog.csv`
 from the latest successful test artifact to inspect every producer, input,
@@ -12,14 +12,14 @@ output, prerequisite, station, faction, era, dependency and icon provenance.
 - `SurvivalCrafting.recipes()`: **22 gameplay recipes**; input/output debit
   occurs on host. The hand, fire, and now **workbench** station paths are
   intentionally distinct. Station access is not a clickable client override.
-- `CraftingEraRegistry.processes()`: **47 industrial processes**; each has
+- `CraftingEraRegistry.processes()`: **62 industrial processes**; each has
   positive required input quantities, output yield, processing time,
   electricity/mechanical power demand, and faction-compatible facility.
   `IndustrialWorkstation` actually supports reserving/debiting materials,
   bounded progress, power/service interruption, wear/repair, exactly-once
   completion, replay protection, and cold snapshot restoration. This engine
   component is **not yet attached to physical host-owned base machines**.
-- `CraftingEraRegistry.facilities()`: **54 buildings** with real construction
+- `CraftingEraRegistry.facilities()`: **69 buildings** with real construction
   material requirements, predecessor chains, faction locks, dimensions, time
   and utility demand. `SettlementAuthority` uses these IDs for blueprint
   permissions and capacity. A blueprint's existence **does not create**
@@ -35,6 +35,10 @@ output, prerequisite, station, faction, era, dependency and icon provenance.
   `PLAYABLE_FIRE`, `PLAYABLE_WORKBENCH`,
   `INDUSTRIAL_PLANNED` and `FACILITY_PLANNED`. A decorative
   image-only item is never implicitly craftable.
+
+## Faction-specific chains stay sovereign
+
+The shared catalogue is a **read-only index**, not shared manufacturing rights. The Unraveled, Penitent and Begotten each have five consecutive faction-owned sites across Encampment, Salvage, Steam, Electric and Automation, plus their own intermediate recipes and Incursion facilities. A faction-only intermediate may not enter a competing faction process unless an explicit future trade/contract capability authorizes it. The neutral `ALL` branch contains ordinary survival and shared infrastructure, not pooled faction-owned production. `FactionIndustrySeparationTest` checks faction production visibility and intermediate ownership before a release can pass.
 
 ## Newly completed playable workbench chain
 

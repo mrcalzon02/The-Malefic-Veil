@@ -15,13 +15,14 @@ import com.badlogic.gdx.math.Vector3;
 import veil.*;
 
 import java.util.*;
+import java.awt.event.KeyEvent;
 
 /**
  * Hardware-instanced PSX resolution rendering from the REAL, seed-generated
  * Kenney city, not a second world generator or decorative cube substitutes.
  *
- * This is a GPU environment/walkthrough preview, NOT a replacement for the
- * networked gameplay client until character/HUD input and replication are ported.
+ * Gallery/smoke remain deterministic captures, while the production path
+ * receives authoritative snapshots from MaleficVeil's original game loop.
  */
 public final class GpuKenneyPreview extends ApplicationAdapter {
     static final int WIDTH=640, HEIGHT=400;
@@ -117,6 +118,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final boolean smoke;
     private final boolean gallery;
     private final char focusCity;
+    private final MaleficVeil gameplay;
+    private final boolean playSmoke;
+    private final Set<Integer> liveHeld=new HashSet<>();
+    private long firstSmokeFrames;
+    private int smokeStartingAmmo=-1;
     private GalleryView[] galleryViews;
     private int galleryIndex;
     private int visibleTerrainPatches;
@@ -151,8 +157,16 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         this(seed,smoke,gallery,'A');
     }
     public GpuKenneyPreview(long seed,boolean smoke,boolean gallery,char site){
+        this(seed,smoke,gallery,site,null,false);
+    }
+    public GpuKenneyPreview(MaleficVeil gameplay,boolean playSmoke){
+        this(gameplay.gpuWorld().seed,false,false,'A',gameplay,playSmoke);
+    }
+    private GpuKenneyPreview(long seed,boolean smoke,boolean gallery,char site,
+            MaleficVeil gameplay,boolean playSmoke){
         if(site<'A'||site>'G')throw new IllegalArgumentException("Unknown city "+site);
         this.seed=seed;this.smoke=smoke;this.gallery=gallery;focusCity=site;
+        this.gameplay=gameplay;this.playSmoke=playSmoke;
     }
     /** Deterministic photography poses: no fabricated scenery or composited backgrounds. */
     private record GalleryView(String name,double x,double z,double elevation,
@@ -212,24 +226,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
 
 
-    @Override public void create() {
-        if(Gdx.gl30==null)throw new IllegalStateException("GPU client requires OpenGL 3.3 instancing");
-        world=new World(seed);
-        // Same seed and continent city anchors as the authoritative world
-        // blueprint. Outside-city surfaces are visible, not yet walkable.
-        ContinentVista continental=new ContinentVista(world,focusCity);
-        vista=continental;
-        try{scene=new UrbanScene(world,continental.scenery());}
-        catch(Exception ex){throw new IllegalStateException("Kenney source pack unavailable",ex);}
-        terrain=new GpuContinentTerrain(continental);
-        lighting=new UrbanLighting(world);
-        shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
-        if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
-        // Mesh geometry is uploaded only once per source-material pair. A
-        // typical Kenney wall has two textures; each material keeps one actual
-        // GL30 instanced draw for all its visible wall placements.
-        for(UrbanInstanceBatches.Batch batch:scene.batches().all()){
-            GlbMesh source=batch.mesh();
+    /** One real uploaded GPU mesh per original GLB material group. */
+    private void uploadGeometry(String id,GlbMesh source,int initialCapacity){
+        int capacity=gameplay==null?initialCapacity:Math.max(512,initialCapacity+512);
+
             Map<String,List<GlbMesh.Surface>> groups=new LinkedHashMap<>();
             for(GlbMesh.Surface surface:source.surfaces())
                 groups.computeIfAbsent(surface.texture(),k->new ArrayList<>()).add(surface);
@@ -265,7 +265,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     true,count,0,VertexAttribute.Position(),VertexAttribute.ColorUnpacked(),
                     new VertexAttribute(VertexAttributes.Usage.TextureCoordinates,2,"a_texcoord"));
                 mesh.setVertices(vertexData);
-                mesh.enableInstancedRendering(false,batch.count(),
+                mesh.enableInstancedRendering(false,capacity,
                     new VertexAttribute(VertexAttributes.Usage.Generic,4,"a_instance"),
                     new VertexAttribute(VertexAttributes.Usage.Generic,2,"a_extra"));
                 Texture texture=null;
@@ -284,13 +284,36 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                             materialTextures.put(group.getKey(),texture);
                         }catch(Exception ex){
                             throw new IllegalStateException("Missing licensed source texture "+
-                                group.getKey()+" for "+batch.modelId(),ex);
+                                group.getKey()+" for "+id,ex);
                         }
                     }
                 }
-                geometry.add(new GpuModel(mesh,count,batch.count(),texture));
+                geometry.add(new GpuModel(mesh,count,capacity,texture));
             }
-            models.put(batch.modelId(),List.copyOf(geometry));
+            models.put(id,List.copyOf(geometry));
+    }
+    @Override public void create() {
+        if(Gdx.gl30==null)throw new IllegalStateException("GPU client requires OpenGL 3.3 instancing");
+        world=gameplay==null?new World(seed):gameplay.gpuWorld();
+        // Same seed and continent city anchors as the authoritative world
+        // blueprint. Outside-city surfaces are visible, not yet walkable.
+        ContinentVista continental=new ContinentVista(world,focusCity);
+        vista=continental;
+        try{scene=new UrbanScene(world,continental.scenery());}
+        catch(Exception ex){throw new IllegalStateException("Kenney source pack unavailable",ex);}
+        terrain=new GpuContinentTerrain(continental);
+        lighting=new UrbanLighting(world);
+        shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
+        if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
+        // Mesh geometry is uploaded only once per source-material pair. A
+        // typical Kenney wall has two textures; each material keeps one actual
+        // GL30 instanced draw for all its visible wall placements.
+        for(UrbanInstanceBatches.Batch batch:scene.batches().all())
+            uploadGeometry(batch.modelId(),batch.mesh(),batch.count());
+        if(gameplay!=null){
+            for(var entry:gameplay.gpuDynamicMeshes().entrySet())
+                if(!models.containsKey(entry.getKey()))
+                    uploadGeometry(entry.getKey(),entry.getValue(),512);
         }
         camera=new PerspectiveCamera(72,WIDTH,HEIGHT);
         camera.near=0.08f;camera.far=300f;
@@ -299,16 +322,140 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         font=new BitmapFont();
         font.getData().setScale(1.16f);
         skybox=new GpuSkybox();
-        menu=new PsxHorrorMenu(smoke||gallery);
+        menu=new PsxHorrorMenu(smoke||gallery||gameplay!=null);
         font.dispose();
         font=menu.font();
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
         galleryViews=focusCity=='A'?GALLERY:generatedCityViews();
         if(gallery)setGalleryView(galleryViews[0]);
+        if(gameplay!=null)gameplay.gpuSceneReady();
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
             scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
     }
 
+    private static final int[][] LIVE_BINDINGS={
+        {Input.Keys.W,KeyEvent.VK_W},{Input.Keys.S,KeyEvent.VK_S},
+        {Input.Keys.A,KeyEvent.VK_A},{Input.Keys.D,KeyEvent.VK_D},
+        {Input.Keys.UP,KeyEvent.VK_UP},{Input.Keys.DOWN,KeyEvent.VK_DOWN},
+        {Input.Keys.LEFT,KeyEvent.VK_LEFT},{Input.Keys.RIGHT,KeyEvent.VK_RIGHT},
+        {Input.Keys.SHIFT_LEFT,KeyEvent.VK_SHIFT},{Input.Keys.C,KeyEvent.VK_C},
+        {Input.Keys.SPACE,KeyEvent.VK_SPACE},{Input.Keys.E,KeyEvent.VK_E},
+        {Input.Keys.Q,KeyEvent.VK_Q},{Input.Keys.R,KeyEvent.VK_R},
+        {Input.Keys.F,KeyEvent.VK_F},{Input.Keys.T,KeyEvent.VK_T},
+        {Input.Keys.V,KeyEvent.VK_V},{Input.Keys.B,KeyEvent.VK_B},
+        {Input.Keys.H,KeyEvent.VK_H},{Input.Keys.G,KeyEvent.VK_G},
+        {Input.Keys.L,KeyEvent.VK_L},{Input.Keys.X,KeyEvent.VK_X},
+        {Input.Keys.I,KeyEvent.VK_I},{Input.Keys.K,KeyEvent.VK_K},
+        {Input.Keys.J,KeyEvent.VK_J},{Input.Keys.O,KeyEvent.VK_O},
+        {Input.Keys.P,KeyEvent.VK_P},{Input.Keys.U,KeyEvent.VK_U},
+        {Input.Keys.M,KeyEvent.VK_M},{Input.Keys.N,KeyEvent.VK_N},
+        {Input.Keys.NUM_1,KeyEvent.VK_1},{Input.Keys.NUM_2,KeyEvent.VK_2},
+        {Input.Keys.NUM_3,KeyEvent.VK_3},{Input.Keys.ENTER,KeyEvent.VK_ENTER}
+    };
+    /** Only input adapters live here: movement, shooting, skills, factions,
+     * cargo, crafting and host transactions remain in MaleficVeil. */
+    private void liveControls(){
+        PsxHorrorMenu.Settings settings=new PsxHorrorMenu.Settings(){
+            public void changeView(int delta){
+                visualDistance=Math.max(45,Math.min(240,visualDistance+delta*3));
+            }
+            public void changeLights(int delta){
+                maxLights=Math.max(0,Math.min(8,maxLights+delta));
+            }
+            public void changeTimeSpeed(int ignored){} // server owns world time
+        };
+        boolean active=menu.input(settings);
+        for(int[] binding:LIVE_BINDINGS){
+            boolean pressed=active&&Gdx.input.isKeyPressed(binding[0]);
+            boolean wasDown=liveHeld.contains(binding[1]);
+            if(pressed!=wasDown){
+                if(pressed)liveHeld.add(binding[1]);else liveHeld.remove(binding[1]);
+                gameplay.gpuKey(binding[1],pressed);
+            }
+        }
+        if(!active){
+            Gdx.input.setCursorCatched(false);
+            return;
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F11)){
+            Gdx.input.setCursorCatched(false);
+            gameplay.gpuManagement();
+        }
+        if(!Gdx.input.isCursorCatched()){
+            Gdx.input.setCursorCatched(true);
+            Gdx.input.getDeltaX();Gdx.input.getDeltaY();
+        }else{
+            gameplay.gpuLook(Gdx.input.getDeltaX(),Gdx.input.getDeltaY());
+        }
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))gameplay.gpuFire();
+        MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
+        if(frame!=null){
+            x=frame.x();y=frame.z();heading=frame.yaw();
+            cameraPitch=frame.pitch();cameraHeight=1.65;
+            worldTimeMs=(long)(WorldDayNight.DAY_MS*frame.hour()/24.0);
+        }
+    }
+    private void drawLiveHud(MaleficVeil.GpuFrame frame){
+        String weapon=frame.weapon()==0?"PISTOL":"SHOTGUN";
+        String rounds=frame.weapon()==0?
+            frame.pistolClip()+"/"+frame.pistolReserve():
+            frame.shellClip()+"/"+frame.shellReserve();
+        font.draw(sprites,"HP "+frame.health()+"  SAN "+frame.sanity()+
+            "  "+weapon+" "+rounds+"  MED "+frame.medkits(),9,391);
+        font.draw(sprites,"CASH "+frame.cash()+"  SCRAP "+frame.scrap()+
+            "  KILLS "+frame.frags()+"  GPU / LIVE WORLD",9,369);
+        font.draw(sprites,"+",WIDTH/2f-4,HEIGHT/2f+5);
+        if(!frame.notice().isBlank())
+            font.draw(sprites,frame.notice(),12,HEIGHT/2f+50);
+        if(!frame.connected())
+            font.draw(sprites,"HOST CONNECTION LOST",WIDTH/2f-112,HEIGHT/2f+28);
+        if(frame.dead())
+            font.draw(sprites,"YOU HAVE FALLEN  1/2/3 RESPAWN LOCATION  ENTER DEPLOY",
+                17,HEIGHT/2f);
+        if(frame.inventory()){
+            font.draw(sprites,"INVENTORY",WIDTH-205,HEIGHT-35);
+            int row=0;
+            for(var item:frame.inventoryItems().entrySet()){
+                if(row>=12)break;
+                font.draw(sprites,item.getKey()+" x"+item.getValue(),
+                    WIDTH-210,HEIGHT-57-row*18);
+                row++;
+            }
+            if(row==0)font.draw(sprites,"EMPTY",WIDTH-210,HEIGHT-57);
+        }else if(frame.skills()){
+            font.draw(sprites,"SKILLS / HOST AUTHORITATIVE  K CLOSE",WIDTH-345,HEIGHT-35);
+        }
+        if(frame.map()||frame.continent()){
+            font.draw(sprites,frame.map()?"CITY MAP (M CLOSE)":
+                "CONTINENT (N CLOSE)",WIDTH-275,HEIGHT-35);
+        }
+        font.draw(sprites,"WASD MOVE  MOUSE AIM/FIRE  E USE  R RELOAD  I INVENTORY  "+
+            "K SKILLS  F11 MORE  ESC MENU",9,20);
+    }
+    /** Foreground sourced weapon mesh, drawn as a camera-relative 3D object. */
+    private void renderLiveWeapon(MaleficVeil.GpuFrame frame){
+        if(frame.dead()||!menu.running())return;
+        String key=GameplayMeshes.WEAPON[frame.weapon()==0?0:1];
+        List<GpuModel> weapons=models.get(key);
+        if(weapons==null)throw new IllegalStateException("Missing GPU weapon mesh "+key);
+        double facing=heading;
+        UrbanScene.ModelInstance held=new UrbanScene.ModelInstance(key,
+            x+Math.cos(facing)*.65-Math.sin(facing)*.30,
+            y+Math.sin(facing)*.65+Math.cos(facing)*.30,
+            facing-Math.PI/2,.82,1,cameraHeight-.66);
+        FloatList one=new FloatList();
+        one.append(held);
+        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+        shader.bind();
+        shader.setUniformf("u_fogFar",280f);
+        for(GpuModel weapon:weapons){
+            weapon.mesh.setInstanceData(one.values,0,one.size);
+            shader.setUniformi("u_textured",weapon.texture==null?0:1);
+            if(weapon.texture!=null)weapon.texture.bind(0);
+            weapon.mesh.render(shader,GL20.GL_TRIANGLES,0,weapon.vertexCount);
+        }
+        shader.setUniformf("u_fogFar",visualDistance);
+    }
     private void control() {
         PsxHorrorMenu.Settings actions=new PsxHorrorMenu.Settings(){
             public void changeView(int delta){
@@ -368,6 +515,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthMask(true);
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
+        if(gameplay!=null){
+            MaleficVeil.GpuFrame f=gameplay.gpuFrame();
+            if(f!=null){
+                x=f.x();y=f.z();heading=f.yaw();cameraPitch=f.pitch();
+                cameraHeight=1.65;
+                worldTimeMs=(long)(WorldDayNight.DAY_MS*f.hour()/24.0);
+            }
+        }
         environment=WorldDayNight.atElapsedMs(worldTimeMs);
         Gdx.gl.glClearColor(environment.hazeRed(),environment.hazeGreen(),environment.hazeBlue(),1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
@@ -403,6 +558,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             if(!models.containsKey(placement.model()))continue;
             visible.computeIfAbsent(placement.model(),ignore->new FloatList()).append(placement);
             visibleInstances++;
+        }
+        if(gameplay!=null){
+            MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
+            if(frame!=null)for(UrbanScene.ModelInstance entity:frame.dynamic()){
+                if(Math.hypot(entity.x()-x,entity.y()-y)>visualDistance)continue;
+                if(!models.containsKey(entity.model()))
+                    throw new IllegalStateException("Missing live GPU actor model "+entity.model());
+                visible.computeIfAbsent(entity.model(),unused->new FloatList()).append(entity);
+            }
         }
         shader.bind();
         shader.setUniformMatrix("u_projView",camera.combined);
@@ -440,10 +604,17 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 drawCalls++;
             }
         }
+        if(gameplay!=null){
+            MaleficVeil.GpuFrame live=gameplay.gpuFrame();
+            if(live!=null)renderLiveWeapon(live);
+        }
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
         sprites.begin();
-        if(menu.running()){
+        if(menu.running()&&gameplay!=null){
+            MaleficVeil.GpuFrame live=gameplay.gpuFrame();
+            if(live!=null)drawLiveHud(live);
+        }else if(menu.running()){
             font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),9,391);
             font.draw(sprites,"TILES "+visibleInstances+"  LAND "+visibleTerrain+"  DRAWS "+drawCalls+
                 "  LAMPS "+activeLights+"  VIEW "+(int)visualDistance,9,367);
@@ -510,7 +681,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
 
     @Override public void render() {
-        if(!smoke&&!gallery)control();
+        if(gameplay!=null&&!playSmoke)liveControls();
+        else if(gameplay==null&&!smoke&&!gallery)control();
         framebuffer.begin();
         drawWorld();
         if(gallery){
@@ -536,6 +708,30 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     framebuffer.end();Gdx.app.exit();return;
                 }
                 setGalleryView(galleryViews[galleryIndex]);
+            }
+        }
+        if(playSmoke){
+            frames++;
+            if(frames==4){
+                MaleficVeil.GpuFrame f=gameplay.gpuFrame();
+                if(f==null)throw new IllegalStateException("Game never published authoritative snapshot");
+                smokeStartingAmmo=f.pistolClip();
+                gameplay.gpuKey(KeyEvent.VK_W,true);
+            }
+            if(frames==26){
+                gameplay.gpuKey(KeyEvent.VK_W,false);
+                gameplay.gpuFire();
+            }
+            if(frames==60){
+                saveFrame("gpu-live-play-shipped-client.png");
+                MaleficVeil.GpuFrame f=gameplay.gpuFrame();
+                if(f==null||f.pistolClip()>=smokeStartingAmmo)
+                    throw new IllegalStateException("GPU live input did not fire authoritative weapon");
+                System.out.println("PASS GPU_LIVE_PLAY_REAL_GAME seed="+seed+
+                    " hp="+f.health()+" ammo="+f.pistolClip()+
+                    " initialAmmo="+smokeStartingAmmo+" pos="+f.x()+","+f.z()+
+                    " entities="+f.dynamic().size());
+                framebuffer.end();Gdx.app.exit();return;
             }
         }
         if(smoke){
@@ -594,5 +790,6 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(skybox!=null)skybox.close();
         if(Gdx.input!=null)Gdx.input.setCursorCatched(false);
         if(terrain!=null)terrain.close();
+        if(gameplay!=null)gameplay.gpuShutdown();
     }
 }

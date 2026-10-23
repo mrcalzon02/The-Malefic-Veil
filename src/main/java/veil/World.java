@@ -37,7 +37,7 @@ public final class World {
     }
     public static final class Pickup {
         public final double x,y;
-        public final int kind; // health, sanity, pistol, shotgun, cash, material, medkit
+        public final int kind; // 0..6 existing supplies, 7..14 physical weapons
         public boolean taken;
         Pickup(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }
@@ -67,6 +67,24 @@ public final class World {
                 kind==2||kind==3||kind==4||kind==5?CityLayout.Category.RESOURCE:null;
             double[] p=randomOpen(r,preferred);
             pickups.add(new Pickup(p[0],p[1],kind));
+        }
+        // Append-only: old pickup slots 0..169 retain their original identity.
+        for(WeaponEconomy.Weapon weapon:WeaponEconomy.worldWeapons()){
+            boolean placed=false;
+            for(int attempt=0;attempt<200;attempt++){
+                double[] pos=randomOpen(r,CityLayout.Category.RESOURCE);
+                boolean nearSpawn=false,overlap=false;
+                for(double[] spawn:spawns)
+                    if(Math.hypot(pos[0]-spawn[0],pos[1]-spawn[1])<8)nearSpawn=true;
+                for(Pickup earlier:pickups)
+                    if(earlier.kind>=WeaponEconomy.FIRST_WORLD_PICKUP&&
+                       Math.hypot(pos[0]-earlier.x,pos[1]-earlier.y)<3)overlap=true;
+                if(!nearSpawn&&!overlap){
+                    pickups.add(new Pickup(pos[0],pos[1],weapon.pickupKind()));
+                    placed=true;break;
+                }
+            }
+            if(!placed)throw new IllegalStateException("Cannot place weapon "+weapon.item());
         }
         // Every initial hostile Lost NPC now belongs to a concrete ruin site.
         // Site-local caps, persistent slot identity and cooldowns govern respawns.

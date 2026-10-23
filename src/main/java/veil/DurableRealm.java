@@ -131,9 +131,11 @@ public final class DurableRealm {
                 cars.add(new CarSave(id,x,y,heading,fuel,hp));
             }
             int pickupCount=count(in,10000);
-            if(pickupCount!=target.world.pickups.size())throw new IOException("Pickup catalog changed");
-            boolean[] picked=new boolean[pickupCount];
-            for(int i=0;i<picked.length;i++)picked[i]=in.readBoolean();
+            int legacy=target.world.pickups.size()-WeaponEconomy.worldWeapons().size();
+            if(pickupCount!=target.world.pickups.size()&&pickupCount!=legacy)
+                throw new IOException("Pickup catalog changed");
+            boolean[] picked=new boolean[target.world.pickups.size()];
+            for(int i=0;i<pickupCount;i++)picked[i]=in.readBoolean();
             int npcCount=count(in,5000);
             if(npcCount!=target.world.npcs.size())throw new IOException("NPC catalog changed");
             List<NpcSave> npcs=new ArrayList<>();

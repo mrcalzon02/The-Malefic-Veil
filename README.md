@@ -1,8 +1,12 @@
 # The Malefic Veil
 
+## Physical weapon economy
+
+[Weapon inventory, map pickups and manufacturing](wiki/Weapons.md) now register eight physical city-scavenged weapons and twelve craftable weapons in the existing weighted item economy. World pickup kinds are appended after the original 170 supply drops, with host-side capacity checks and old realm pickup-flag migration; eight distinct original low-poly proxy meshes mark the spawned items. **Only the pre-existing handgun and shotgun currently fire**: new weapon equip, ammunition, combat execution, full character-inventory persistence and final art remain separate release gates.
+
 ## Repository wiki: systems, inventories, recipes and the Lost
 
-Browse the [source-driven wiki](wiki/Home.md) for a navigable reference covering 157 exported items, 22 field recipes, 62 industrial processes, 69 facility blueprints, three factions, nine class definitions, current gameplay systems and world generation. [The Lost](wiki/The-Lost.md) now have a detailed five-family bestiary and [25 proposed weapon profiles](wiki/Lost-Arsenal.md) with distinct tactics, windups, counterplay and encounter roles, backed by the [LostArsenal design registry](src/main/java/veil/LostArsenal.java) and a self-test. **The roster is descriptive data, not live NPC weapon logic**; current host monsters still use the basic attack in `ArenaSystems`.
+Browse the [source-driven wiki](wiki/Home.md) for a navigable reference covering 177 exported items, 34 field recipes, 62 industrial processes, 69 facility blueprints, three factions, nine class definitions, current gameplay systems and world generation. [The Lost](wiki/The-Lost.md) now have a detailed five-family bestiary and [25 proposed weapon profiles](wiki/Lost-Arsenal.md) with distinct tactics, windups, counterplay and encounter roles, backed by the [LostArsenal design registry](src/main/java/veil/LostArsenal.java) and a self-test. **The roster is descriptive data, not live NPC weapon logic**; current host monsters still use the basic attack in `ArenaSystems`.
 
 
 A Java 17, PSX-inspired urban horror arena shooter: fast Doom/Unreal Tournament-style combat overlaid with health, sanity, stealth, resources, equipment, character abilities and deployable infrastructure.

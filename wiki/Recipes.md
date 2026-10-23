@@ -1,41 +1,51 @@
-# Recipes — 22 field + 62 industrial
+# Recipes — 34 field + 62 industrial
 
-[Home](Home.md) · [Items](Items.md) · [Structures](Structures.md)
+[Home](Home.md) · [Items](Items.md) · [Structures](Structures.md) · [Weapons](Weapons.md)
 
-The CSV exports come from the Java registry; [field recipe definitions](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/src/main/java/veil/SurvivalCrafting.java), [industrial registry](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/src/main/java/veil/CraftingEraRegistry.java), [field inputs](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/hand_recipe_inputs.csv), [industrial inputs](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/industrial_recipe_inputs.csv).
+This index is derived from [field recipes](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/hand_recipes.csv), [hand inputs](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/hand_recipe_inputs.csv), [industrial recipes](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/industrial_recipes.csv) and [industrial inputs](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/industrial_recipe_inputs.csv). A registered field recipe has real atomic resource logic, but workbench access and weapon combat must be separately integrated. Industrial processes remain design/partial runtime systems.
 
-**Runtime boundary:** field crafting is implemented as validated domain logic and inventory transactions, but not every workflow is connected to authenticated character saves or the in-game/GPU recipe UI. Industrial processes are registered descriptors for later host/structure integration. Industrial durations and utility demands below are registry values, not promises of working machinery. Skill minimums in exports are proposed.
+## Field recipes
 
-## Field / hand / fire / workbench
-
-| Recipe | Ingredients | Makes | Station | Status |
+| Recipe | Inputs | Output | Station | Status |
 |---|---|---|---|---|
-| **bandage** <a id="handbandage"></a> | 2× [Fiber](Items.md#fiber-fiber), 1× [Medicinal Herbs](Items.md#medicinal-herbs-medicinalherbs) | 1× [Bandage](Items.md#bandage-bandage) | `HAND` | Domain logic; client integration gated |
-| **campfire** <a id="handcampfire"></a> | 3× [Timber](Items.md#timber-timber), 2× [Field Stone](Items.md#field-stone-fieldstone) | 1× [Campfire](Items.md#campfire-campfire) | `HAND` | Domain logic; client integration gated |
-| **water-filter** <a id="handwater-filter"></a> | 3× [Fiber](Items.md#fiber-fiber), 2× [Field Stone](Items.md#field-stone-fieldstone) | 1× [Filter](Items.md#filter-filter) | `HAND` | Domain logic; client integration gated |
-| **tent** <a id="handtent"></a> | 4× [Fiber](Items.md#fiber-fiber), 2× [Timber](Items.md#timber-timber) | 1× [Tent Kit](Items.md#tent-kit-tentkit) | `HAND` | Domain logic; client integration gated |
-| **crate** <a id="handcrate"></a> | 5× [Timber](Items.md#timber-timber), 2× [Fiber](Items.md#fiber-fiber) | 1× [Crate Kit](Items.md#crate-kit-cratekit) | `HAND` | Domain logic; client integration gated |
-| **fence** <a id="handfence"></a> | 3× [Timber](Items.md#timber-timber), 1× [Fiber](Items.md#fiber-fiber) | 2× [Fence Section](Items.md#fence-section-fencesection) | `HAND` | Domain logic; client integration gated |
-| **stake-trap** <a id="handstake-trap"></a> | 2× [Timber](Items.md#timber-timber), 1× [Fiber](Items.md#fiber-fiber) | 1× [Stake Trap](Items.md#stake-trap-staketrap) | `HAND` | Domain logic; client integration gated |
-| **noise-alarm** <a id="handnoise-alarm"></a> | 1× [Timber](Items.md#timber-timber), 2× [Fiber](Items.md#fiber-fiber) | 1× [Noise Alarm](Items.md#noise-alarm-noisealarm) | `HAND` | Domain logic; client integration gated |
-| **boil-water** <a id="handboil-water"></a> | 1× [Dirty Water](Items.md#dirty-water-dirtywater) | 1× [Clean Water](Items.md#clean-water-cleanwater) | `FIRE` | Domain logic; client integration gated |
-| **workbench** <a id="handworkbench"></a> | 6× [Timber](Items.md#timber-timber), 4× [Field Stone](Items.md#field-stone-fieldstone), 2× [Fiber](Items.md#fiber-fiber) | 1× [Workbench](Items.md#workbench-workbench) | `HAND` | Domain logic; client integration gated |
-| **shelter-kit** <a id="handshelter-kit"></a> | 8× [Timber](Items.md#timber-timber), 5× [Fiber](Items.md#fiber-fiber), 1× [Metal Stock](Items.md#metal-stock-metalstock) | 1× [Shelter Kit](Items.md#shelter-kit-shelterkit) | `WORKBENCH` | Domain logic; client integration gated |
-| **vehicle-repair** <a id="handvehicle-repair"></a> | 1× [Metal Stock](Items.md#metal-stock-metalstock), 1× [Machine Parts](Items.md#machine-parts-machineparts) | 1× [Vehicle Repair Kit](Items.md#vehicle-repair-kit-vehiclerepairkit) | `WORKBENCH` | Domain logic; client integration gated |
-| **split-kindling** <a id="handsplit-kindling"></a> | 2× [Timber](Items.md#timber-timber) | 2× [Firewood](Items.md#firewood-firewood) | `HAND` | Domain logic; client integration gated |
-| **field-dressing** <a id="handfield-dressing"></a> | 3× [Fiber](Items.md#fiber-fiber), 2× [Medicinal Herbs](Items.md#medicinal-herbs-medicinalherbs) | 2× [Bandage](Items.md#bandage-bandage) | `HAND` | Domain logic; client integration gated |
-| **camp-ration** <a id="handcamp-ration"></a> | 3× [Edibles](Items.md#edibles-edibles), 1× [Clean Water](Items.md#clean-water-cleanwater), 1× [Firewood](Items.md#firewood-firewood) | 1× [Rations](Items.md#rations-rations) | `FIRE` | Domain logic; client integration gated |
-| **pit-charcoal** <a id="handpit-charcoal"></a> | 5× [Timber](Items.md#timber-timber), 2× [Firewood](Items.md#firewood-firewood) | 1× [Charcoal](Items.md#charcoal-charcoal) | `FIRE` | Domain logic; client integration gated |
-| **rough-compost** <a id="handrough-compost"></a> | 4× [Edibles](Items.md#edibles-edibles), 3× [Fiber](Items.md#fiber-fiber) | 1× [Compost](Items.md#compost-compost) | `HAND` | Domain logic; client integration gated |
-| **hand-woven-cloth** <a id="handhand-woven-cloth"></a> | 8× [Fiber](Items.md#fiber-fiber) | 1× [Cloth Roll](Items.md#cloth-roll-clothroll) | `WORKBENCH` | Domain logic; client integration gated |
-| **smoke-ration** <a id="handsmoke-ration"></a> | 5× [Edibles](Items.md#edibles-edibles), 3× [Firewood](Items.md#firewood-firewood) | 1× [Smoked Rations](Items.md#smoked-rations-smokedrations) | `FIRE` | Domain logic; client integration gated |
-| **coarse-meal** <a id="handcoarse-meal"></a> | 6× [Field Crops](Items.md#field-crops-fieldcrops) | 1× [Meal Sack](Items.md#meal-sack-mealsack) | `WORKBENCH` | Domain logic; client integration gated |
-| **bunch-herbs** <a id="handbunch-herbs"></a> | 3× [Medicinal Herbs](Items.md#medicinal-herbs-medicinalherbs), 2× [Fiber](Items.md#fiber-fiber) | 1× [Herbal Bundle](Items.md#herbal-bundle-herbalbundle) | `WORKBENCH` | Domain logic; client integration gated |
-| **camp-firebrick** <a id="handcamp-firebrick"></a> | 5× [Field Stone](Items.md#field-stone-fieldstone), 4× [Firewood](Items.md#firewood-firewood) | 1× [Fired Bricks](Items.md#fired-bricks-firedbricks) | `FIRE` | Domain logic; client integration gated |
+| **bandage** <a id="handbandage"></a> | 2× [Fiber](Items.md#fiber-fiber), 1× [Medicinal Herbs](Items.md#medicinal-herbs-medicinalherbs) | 1× [Bandage](Items.md#bandage-bandage) | `HAND` | Host-domain recipe |
+| **campfire** <a id="handcampfire"></a> | 3× [Timber](Items.md#timber-timber), 2× [Field Stone](Items.md#field-stone-fieldstone) | 1× [Campfire](Items.md#campfire-campfire) | `HAND` | Host-domain recipe |
+| **water-filter** <a id="handwater-filter"></a> | 3× [Fiber](Items.md#fiber-fiber), 2× [Field Stone](Items.md#field-stone-fieldstone) | 1× [Filter](Items.md#filter-filter) | `HAND` | Host-domain recipe |
+| **tent** <a id="handtent"></a> | 4× [Fiber](Items.md#fiber-fiber), 2× [Timber](Items.md#timber-timber) | 1× [Tent Kit](Items.md#tent-kit-tentkit) | `HAND` | Host-domain recipe |
+| **crate** <a id="handcrate"></a> | 5× [Timber](Items.md#timber-timber), 2× [Fiber](Items.md#fiber-fiber) | 1× [Crate Kit](Items.md#crate-kit-cratekit) | `HAND` | Host-domain recipe |
+| **fence** <a id="handfence"></a> | 3× [Timber](Items.md#timber-timber), 1× [Fiber](Items.md#fiber-fiber) | 2× [Fence Section](Items.md#fence-section-fencesection) | `HAND` | Host-domain recipe |
+| **stake-trap** <a id="handstake-trap"></a> | 2× [Timber](Items.md#timber-timber), 1× [Fiber](Items.md#fiber-fiber) | 1× [Stake Trap](Items.md#stake-trap-staketrap) | `HAND` | Host-domain recipe |
+| **noise-alarm** <a id="handnoise-alarm"></a> | 1× [Timber](Items.md#timber-timber), 2× [Fiber](Items.md#fiber-fiber) | 1× [Noise Alarm](Items.md#noise-alarm-noisealarm) | `HAND` | Host-domain recipe |
+| **boil-water** <a id="handboil-water"></a> | 1× [Dirty Water](Items.md#dirty-water-dirtywater) | 1× [Clean Water](Items.md#clean-water-cleanwater) | `FIRE` | Host-domain recipe |
+| **workbench** <a id="handworkbench"></a> | 6× [Timber](Items.md#timber-timber), 4× [Field Stone](Items.md#field-stone-fieldstone), 2× [Fiber](Items.md#fiber-fiber) | 1× [Workbench](Items.md#workbench-workbench) | `HAND` | Host-domain recipe |
+| **shelter-kit** <a id="handshelter-kit"></a> | 8× [Timber](Items.md#timber-timber), 5× [Fiber](Items.md#fiber-fiber), 1× [Metal Stock](Items.md#metal-stock-metalstock) | 1× [Shelter Kit](Items.md#shelter-kit-shelterkit) | `WORKBENCH` | Host-domain recipe |
+| **vehicle-repair** <a id="handvehicle-repair"></a> | 1× [Metal Stock](Items.md#metal-stock-metalstock), 1× [Machine Parts](Items.md#machine-parts-machineparts) | 1× [Vehicle Repair Kit](Items.md#vehicle-repair-kit-vehiclerepairkit) | `WORKBENCH` | Host-domain recipe |
+| **split-kindling** <a id="handsplit-kindling"></a> | 2× [Timber](Items.md#timber-timber) | 2× [Firewood](Items.md#firewood-firewood) | `HAND` | Host-domain recipe |
+| **field-dressing** <a id="handfield-dressing"></a> | 3× [Fiber](Items.md#fiber-fiber), 2× [Medicinal Herbs](Items.md#medicinal-herbs-medicinalherbs) | 2× [Bandage](Items.md#bandage-bandage) | `HAND` | Host-domain recipe |
+| **camp-ration** <a id="handcamp-ration"></a> | 3× [Edibles](Items.md#edibles-edibles), 1× [Clean Water](Items.md#clean-water-cleanwater), 1× [Firewood](Items.md#firewood-firewood) | 1× [Rations](Items.md#rations-rations) | `FIRE` | Host-domain recipe |
+| **pit-charcoal** <a id="handpit-charcoal"></a> | 5× [Timber](Items.md#timber-timber), 2× [Firewood](Items.md#firewood-firewood) | 1× [Charcoal](Items.md#charcoal-charcoal) | `FIRE` | Host-domain recipe |
+| **rough-compost** <a id="handrough-compost"></a> | 4× [Edibles](Items.md#edibles-edibles), 3× [Fiber](Items.md#fiber-fiber) | 1× [Compost](Items.md#compost-compost) | `HAND` | Host-domain recipe |
+| **hand-woven-cloth** <a id="handhand-woven-cloth"></a> | 8× [Fiber](Items.md#fiber-fiber) | 1× [Cloth Roll](Items.md#cloth-roll-clothroll) | `WORKBENCH` | Host-domain recipe |
+| **smoke-ration** <a id="handsmoke-ration"></a> | 5× [Edibles](Items.md#edibles-edibles), 3× [Firewood](Items.md#firewood-firewood) | 1× [Smoked Rations](Items.md#smoked-rations-smokedrations) | `FIRE` | Host-domain recipe |
+| **coarse-meal** <a id="handcoarse-meal"></a> | 6× [Field Crops](Items.md#field-crops-fieldcrops) | 1× [Meal Sack](Items.md#meal-sack-mealsack) | `WORKBENCH` | Host-domain recipe |
+| **bunch-herbs** <a id="handbunch-herbs"></a> | 3× [Medicinal Herbs](Items.md#medicinal-herbs-medicinalherbs), 2× [Fiber](Items.md#fiber-fiber) | 1× [Herbal Bundle](Items.md#herbal-bundle-herbalbundle) | `WORKBENCH` | Host-domain recipe |
+| **camp-firebrick** <a id="handcamp-firebrick"></a> | 5× [Field Stone](Items.md#field-stone-fieldstone), 4× [Firewood](Items.md#firewood-firewood) | 1× [Fired Bricks](Items.md#fired-bricks-firedbricks) | `FIRE` | Host-domain recipe |
+| **weapon-wooden-club** <a id="handweapon-wooden-club"></a> | 2× [Timber](Items.md#timber-timber), 1× [Fiber](Items.md#fiber-fiber) | 1× [Wooden Club](Items.md#wooden-club-woodenclub) | `HAND` | Host-domain recipe |
+| **weapon-stone-shiv** <a id="handweapon-stone-shiv"></a> | 2× [Field Stone](Items.md#field-stone-fieldstone), 1× [Fiber](Items.md#fiber-fiber) | 1× [Stone Shiv](Items.md#stone-shiv-stoneshiv) | `HAND` | Host-domain recipe |
+| **weapon-stone-hatchet** <a id="handweapon-stone-hatchet"></a> | 3× [Field Stone](Items.md#field-stone-fieldstone), 2× [Timber](Items.md#timber-timber), 2× [Fiber](Items.md#fiber-fiber) | 1× [Stone Hatchet](Items.md#stone-hatchet-stonehatchet) | `HAND` | Host-domain recipe |
+| **weapon-wooden-spear** <a id="handweapon-wooden-spear"></a> | 3× [Timber](Items.md#timber-timber), 2× [Fiber](Items.md#fiber-fiber), 1× [Field Stone](Items.md#field-stone-fieldstone) | 1× [Wooden Spear](Items.md#wooden-spear-woodenspear) | `HAND` | Host-domain recipe |
+| **weapon-short-bow** <a id="handweapon-short-bow"></a> | 3× [Timber](Items.md#timber-timber), 4× [Fiber](Items.md#fiber-fiber) | 1× [Short Bow](Items.md#short-bow-shortbow) | `HAND` | Host-domain recipe |
+| **weapon-spiked-club** <a id="handweapon-spiked-club"></a> | 3× [Timber](Items.md#timber-timber), 2× [Raw Ore](Items.md#raw-ore-rawore), 2× [Fiber](Items.md#fiber-fiber) | 1× [Spiked Club](Items.md#spiked-club-spikedclub) | `WORKBENCH` | Host-domain recipe |
+| **weapon-reinforced-spear** <a id="handweapon-reinforced-spear"></a> | 5× [Timber](Items.md#timber-timber), 3× [Raw Ore](Items.md#raw-ore-rawore), 3× [Fiber](Items.md#fiber-fiber) | 1× [Reinforced Spear](Items.md#reinforced-spear-reinforcedspear) | `WORKBENCH` | Host-domain recipe |
+| **weapon-salvage-machete** <a id="handweapon-salvage-machete"></a> | 5× [Raw Ore](Items.md#raw-ore-rawore), 2× [Timber](Items.md#timber-timber), 1× [Fiber](Items.md#fiber-fiber) | 1× [Salvage Machete](Items.md#salvage-machete-salvagemachete) | `WORKBENCH` | Host-domain recipe |
+| **weapon-hand-crossbow** <a id="handweapon-hand-crossbow"></a> | 4× [Timber](Items.md#timber-timber), 4× [Fiber](Items.md#fiber-fiber), 2× [Raw Ore](Items.md#raw-ore-rawore) | 1× [Hand Crossbow](Items.md#hand-crossbow-handcrossbow) | `WORKBENCH` | Host-domain recipe |
+| **weapon-pipe-pistol** <a id="handweapon-pipe-pistol"></a> | 6× [Raw Ore](Items.md#raw-ore-rawore), 1× [Machine Parts](Items.md#machine-parts-machineparts) | 1× [Pipe Pistol](Items.md#pipe-pistol-pipepistol) | `WORKBENCH` | Host-domain recipe |
+| **weapon-bolt-rifle** <a id="handweapon-bolt-rifle"></a> | 8× [Raw Ore](Items.md#raw-ore-rawore), 2× [Machine Parts](Items.md#machine-parts-machineparts) | 1× [Bolt Rifle](Items.md#bolt-rifle-boltrifle) | `WORKBENCH` | Host-domain recipe |
+| **weapon-scrap-shotgun** <a id="handweapon-scrap-shotgun"></a> | 7× [Raw Ore](Items.md#raw-ore-rawore), 1× [Metal Stock](Items.md#metal-stock-metalstock) | 1× [Scrap Shotgun](Items.md#scrap-shotgun-scrapshotgun) | `WORKBENCH` | Host-domain recipe |
 
 ## ENCAMPMENT industry
 
-| Recipe | Ingredients | Makes | Workstation | Faction | Duration / utility |
+| Recipe | Inputs | Makes | Workstation | Faction | Seconds / utility |
 |---|---|---|---|---|---|
 | **split-firewood** <a id="industrialsplit-firewood"></a> | 2× [Timber](Items.md#timber-timber) | 3× [Firewood](Items.md#firewood-firewood) | [cooking-hearth](Structures.md#cooking-hearth) | ALL | 60s / 0 |
 | **boil-water** <a id="industrialboil-water"></a> | 1× [Dirty Water](Items.md#dirty-water-dirtywater), 1× [Firewood](Items.md#firewood-firewood) | 1× [Clean Water](Items.md#clean-water-cleanwater) | [cooking-hearth](Structures.md#cooking-hearth) | ALL | 90s / 0 |
@@ -54,7 +64,7 @@ The CSV exports come from the Java registry; [field recipe definitions](https://
 
 ## SALVAGE industry
 
-| Recipe | Ingredients | Makes | Workstation | Faction | Duration / utility |
+| Recipe | Inputs | Makes | Workstation | Faction | Seconds / utility |
 |---|---|---|---|---|---|
 | **mill-crops** <a id="industrialmill-crops"></a> | 4× [Field Crops](Items.md#field-crops-fieldcrops), 1× [Field Stone](Items.md#field-stone-fieldstone) | 2× [Meal Sack](Items.md#meal-sack-mealsack) | [grain-mill](Structures.md#grain-mill) | ALL | 600s / 0 |
 | **charcoal-burn** <a id="industrialcharcoal-burn"></a> | 4× [Timber](Items.md#timber-timber), 1× [Firewood](Items.md#firewood-firewood) | 2× [Charcoal](Items.md#charcoal-charcoal) | [charcoal-kiln](Structures.md#charcoal-kiln) | ALL | 420s / 0 |
@@ -73,7 +83,7 @@ The CSV exports come from the Java registry; [field recipe definitions](https://
 
 ## STEAM industry
 
-| Recipe | Ingredients | Makes | Workstation | Faction | Duration / utility |
+| Recipe | Inputs | Makes | Workstation | Faction | Seconds / utility |
 |---|---|---|---|---|---|
 | **driveshaft** <a id="industrialdriveshaft"></a> | 3× [Metal Billet](Items.md#metal-billet-metalbillet), 2× [Fasteners](Items.md#fasteners-fasteners) | 1× [Drive Shaft](Items.md#drive-shaft-driveshaft) | [metal-press](Structures.md#metal-press) | ALL | 420s / 2 |
 | **gear-train** <a id="industrialgear-train"></a> | 2× [Metal Billet](Items.md#metal-billet-metalbillet), 2× [Fasteners](Items.md#fasteners-fasteners) | 1× [Gear Assembly](Items.md#gear-assembly-gearassembly) | [metal-press](Structures.md#metal-press) | ALL | 420s / 2 |
@@ -85,7 +95,7 @@ The CSV exports come from the Java registry; [field recipe definitions](https://
 
 ## ELECTRIC industry
 
-| Recipe | Ingredients | Makes | Workstation | Faction | Duration / utility |
+| Recipe | Inputs | Makes | Workstation | Faction | Seconds / utility |
 |---|---|---|---|---|---|
 | **copper-wire** <a id="industrialcopper-wire"></a> | 3× [Raw Ore](Items.md#raw-ore-rawore), 1× [Metal Billet](Items.md#metal-billet-metalbillet) | 2× [Conductor Wire](Items.md#conductor-wire-conductorwire) | [precision-lathe](Structures.md#precision-lathe) | ALL | 300s / 6 |
 | **controller-board** <a id="industrialcontroller-board"></a> | 3× [Conductor Wire](Items.md#conductor-wire-conductorwire), 1× [Machine Parts](Items.md#machine-parts-machineparts) | 1× [Control Board](Items.md#control-board-controlboard) | [precision-lathe](Structures.md#precision-lathe) | ALL | 480s / 6 |
@@ -99,7 +109,7 @@ The CSV exports come from the Java registry; [field recipe definitions](https://
 
 ## AUTOMATION industry
 
-| Recipe | Ingredients | Makes | Workstation | Faction | Duration / utility |
+| Recipe | Inputs | Makes | Workstation | Faction | Seconds / utility |
 |---|---|---|---|---|---|
 | **production-controller** <a id="industrialproduction-controller"></a> | 2× [Control Board](Items.md#control-board-controlboard), 2× [Precision Module](Items.md#precision-module-precisionmodule), 2× [Machine Parts](Items.md#machine-parts-machineparts) | 1× [Assembly Controller](Items.md#assembly-controller-assemblycontroller) | [assembly-line](Structures.md#assembly-line) | ALL | 900s / 18 |
 | **biomass-feed** <a id="industrialbiomass-feed"></a> | 5× [Edibles](Items.md#edibles-edibles), 3× [Clean Water](Items.md#clean-water-cleanwater) | 1× [Nutrient Stock](Items.md#nutrient-stock-nutrientstock) | [nutrient-digestor](Structures.md#nutrient-digestor) | BEGOTTEN | 900s / 12 |
@@ -117,7 +127,7 @@ The CSV exports come from the Java registry; [field recipe definitions](https://
 
 ## INCURSION industry
 
-| Recipe | Ingredients | Makes | Workstation | Faction | Duration / utility |
+| Recipe | Inputs | Makes | Workstation | Faction | Seconds / utility |
 |---|---|---|---|---|---|
 | **resilience-core** <a id="industrialresilience-core"></a> | 2× [Assembly Controller](Items.md#assembly-controller-assemblycontroller), 2× [Metal Stock](Items.md#metal-stock-metalstock), 2× [Machine Parts](Items.md#machine-parts-machineparts) | 1× [Resilience Core](Items.md#resilience-core-resiliencecore) | [resilience-grid](Structures.md#resilience-grid) | UNRAVELED | 2400s / 25 |
 | **dread-ward** <a id="industrialdread-ward"></a> | 2× [Assembly Controller](Items.md#assembly-controller-assemblycontroller), 3× [Dread Imprint](Items.md#dread-imprint-dreadimprint), 2× [Metal Stock](Items.md#metal-stock-metalstock) | 1× [Dread Ward](Items.md#dread-ward-dreadward) | [dread-works](Structures.md#dread-works) | PENITENT | 2400s / 25 |
@@ -125,8 +135,4 @@ The CSV exports come from the Java registry; [field recipe definitions](https://
 | **sacred-supply** <a id="industrialsacred-supply"></a> | 2× [Bound Liturgy](Items.md#bound-liturgy-boundliturgy), 1× [Dread Ward](Items.md#dread-ward-dreadward) | 1× [Sacred Supply](Items.md#sacred-supply-sacredsupply) | [dread-works](Structures.md#dread-works) | PENITENT | 2400s / 25 |
 | **spine-supply** <a id="industrialspine-supply"></a> | 2× [Binding Resin](Items.md#binding-resin-bindingresin), 1× [Breach Seed](Items.md#breach-seed-breachseed) | 1× [Spine Supply](Items.md#spine-supply-spinesupply) | [incursion-anchor](Structures.md#incursion-anchor) | BEGOTTEN | 2400s / 25 |
 
-## Dependency rules
-
-Crafting must atomically validate permissions, resources, faction, station readiness, utility demand and storage capacity **before** deducting inputs and minting outputs. A recipe can share a name across field and industrial registries (e.g. `boil-water`); use the explicit `hand:`/`industrial:` prefix to disambiguate. Do not equate an industrial design row with an in-game interactable station.
-
-Reference: [crafting index audit](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/docs/CRAFTING_RECIPE_INDEX_AUDIT.md) · [progression design](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/docs/CRAFTING_INDUSTRY_INCURSION_PROGRESSION.md).
+No recipe may mint items without validating all ingredients, station requirements and capacity before debiting resources. Faction-specific industrial processes must also validate faction, power and labor constraints.

@@ -242,10 +242,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         for(World.Npc npc:world.npcs)if(npc.hp>0)
             actors.add(new UrbanScene.ModelInstance("enemy-walker",npc.x,npc.y,
                 Math.atan2(py-npc.y,px-npc.x)-Math.PI/2,1));
-        for(World.Pickup pickup:world.pickups)
-            if(!pickup.taken&&pickup.kind>=0&&pickup.kind<GameplayMeshes.PICKUP.length)
-                actors.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[pickup.kind],
-                    pickup.x,pickup.y,ticks*.018,1.15,1,.86+.10*Math.sin(ticks*.11+pickup.kind)));
+        for(World.Pickup pickup:world.pickups){
+            String model=GameplayMeshes.pickupModel(pickup.kind);
+            if(!pickup.taken&&model!=null)
+                actors.add(new UrbanScene.ModelInstance(model,pickup.x,pickup.y,
+                    ticks*.018,1.15,1,.86+.10*Math.sin(ticks*.11+pickup.kind)));
+        }
         for(World.Device device:world.devices)
             if(device.hp>0&&device.kind>=0&&device.kind<GameplayMeshes.DEVICE.length)
                 actors.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[device.kind],
@@ -1081,6 +1083,13 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 else{
                     World.Pickup item=world.pickups.get(t.id());
                     if(item.taken)return;
+                    if(item.kind>=WeaponEconomy.FIRST_WORLD_PICKUP){
+                        WeaponEconomy.Weapon weapon=WeaponEconomy.forPickupKind(item.kind);
+                        if(weapon==null||localHost==null||
+                            !localHost.player(1).survival.acquire(weapon.item(),1,false)){
+                            toast("NO INVENTORY SPACE FOR WEAPON");return;
+                        }
+                    }
                     item.taken=true;
                     switch(item.kind){
                         case 0 -> {health=Math.min(100,health+30);toast("+30 HEALTH");}
@@ -1090,6 +1099,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                         case 4 -> {cash+=50;toast("+$50");}
                         case 5 -> {scrap+=2;toast("+2 SUPPLIES");}
                         case 6 -> {medkits++;toast("+1 MEDKIT");}
+                        default -> {
+                            WeaponEconomy.Weapon weapon=WeaponEconomy.forPickupKind(item.kind);
+                            if(weapon!=null)toast("FOUND "+weapon.label().toUpperCase(java.util.Locale.ROOT));
+                        }
                     }
                 }
             }
@@ -1183,9 +1196,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
         urbanRenderer.draw(g,urban.models(),cargoMeshes,px,py,angle,depth,RW,RH);
         java.util.List<UrbanScene.ModelInstance> gameplay=new java.util.ArrayList<>();
-        for(World.Pickup p:world.pickups)if(!p.taken&&p.kind>=0&&p.kind<GameplayMeshes.PICKUP.length)
-            gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,
-                ticks*.018+p.kind,1.15,1.0,.86+.10*Math.sin(ticks*.11+p.kind)));
+        for(World.Pickup p:world.pickups){
+            String model=GameplayMeshes.pickupModel(p.kind);
+            if(!p.taken&&model!=null)
+                gameplay.add(new UrbanScene.ModelInstance(model,p.x,p.y,
+                    ticks*.018+p.kind,1.15,1.0,.86+.10*Math.sin(ticks*.11+p.kind)));
+        }
         for(World.Device d:world.devices)if(d.hp>0&&d.kind>=0&&d.kind<GameplayMeshes.DEVICE.length)
             gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[d.kind],d.x,d.y,0,1.0));
         for(World.Npc n:world.npcs)if(n.hp>0)

@@ -537,7 +537,11 @@ public final class LanServer implements AutoCloseable {
                             if(s.length!=2)continue;
                             int index=Integer.parseInt(s[1]);
                             changed=match.interactPickup(peer.id,index);
-                            if(changed)broadcast("PICKUP|"+index,-1);
+                            if(changed){
+                                broadcast("PICKUP|"+index,-1);
+                                ArenaSystems.Player collector=match.player(peer.id);
+                                if(collector!=null)peer.send(inventoryPacket(collector));
+                            }
                         }
                         case "MEDKIT" -> changed=match.useMedkit(peer.id);
                         case "RELOAD" -> {

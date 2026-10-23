@@ -284,6 +284,10 @@ public final class ArenaSystems {
         if(p==null||p.dead||itemIndex<0||itemIndex>=world.pickups.size())return false;
         World.Pickup item=world.pickups.get(itemIndex);
         if(item.taken||Math.hypot(item.x-p.x,item.y-p.y)>.63)return false;
+        if(item.kind>=WeaponEconomy.FIRST_WORLD_PICKUP){
+            var weapon=WeaponEconomy.forPickupKind(item.kind);
+            if(weapon==null||!p.survival.acquire(weapon.item(),1,false))return false;
+        }
         item.taken=true;
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.SCAVENGING,8,clock,3000);
@@ -295,7 +299,10 @@ public final class ArenaSystems {
             case 4 -> p.cash+=50;
             case 5 -> p.scrap+=2;
             case 6 -> p.medkits++;
-            default -> throw new IllegalStateException("Invalid pickup kind");
+            default -> {
+                if(WeaponEconomy.forPickupKind(item.kind)==null)
+                    throw new IllegalStateException("Invalid pickup kind");
+            }
         }
         return true;
     }

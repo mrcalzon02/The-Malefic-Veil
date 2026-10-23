@@ -15,6 +15,10 @@ public final class GameplayMeshes {
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
     public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire","device-field-workbench"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
+    /** Pickup identity is separate from weapon viewmodel, preserving 0..6 IDs. */
+    public static String pickupModel(int kind){
+        return kind>=0&&kind<PICKUP.length?PICKUP[kind]:WeaponEconomy.pickupMesh(kind);
+    }
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
         final List<GlbMesh.Triangle> tris=new ArrayList<>();
@@ -118,6 +122,26 @@ public final class GameplayMeshes {
         shotgun.barrel(0,.23,-.60,.087,.73,0x636970);
         shotgun.box(0,-.07,.37,.14,.21,.22,0x45382D);
         meshes.put(WEAPON[1],shotgun.done());
+
+        // Eight distinct original proxy silhouettes. Final source art remains gated.
+        int[] metals={0x6B7077,0x9B5551,0x676A71,0xB6B6A5,
+            0x7D7570,0x7D8485,0x5A6669,0x737C67};
+        for(int i=0;i<WeaponEconomy.worldWeapons().size();i++){
+            Model proxy=new Model();int tint=metals[i];
+            if(i<4){
+                proxy.box(0,.21,0,.10,.10,.84,0x795A3A);
+                proxy.box(0,.25,-.23,i==1?.42:.27,.14,.22,tint);
+                if(i==2)for(int t=0;t<3;t++)
+                    proxy.box(-.11+t*.11,.35,-.25,.035,.19,.035,0xD0C3A7);
+            }else{
+                proxy.box(0,.27,.10,.30,.19,.55,tint);
+                proxy.box(0,.13,.23,.14,.26,.19,0x4A3632);
+                proxy.barrel(0,.30,-.33,i==5?.115:.066,i==6?.98:.48,0x858B8D);
+                if(i==7)proxy.box(0,.14,-.03,.20,.20,.20,0x626A73);
+            }
+            meshes.put(WeaponEconomy.pickupMesh(i+WeaponEconomy.FIRST_WORLD_PICKUP),
+                proxy.done());
+        }
 
         Model hp=new Model();hp.box(0,.25,0,.46,.47,.28,0xCFD2C5);
         hp.box(0,.26,-.155,.12,.35,.024,0xB54947);

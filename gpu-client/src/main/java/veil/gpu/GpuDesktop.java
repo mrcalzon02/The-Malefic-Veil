@@ -46,7 +46,7 @@ public final class GpuDesktop {
     }
     public static void main(String[] args)throws Exception{
         boolean smoke=false,gallery=false,playSmoke=false,editor=false,editorSmoke=false;
-        boolean frontendSmoke=false;
+        boolean frontendSmoke=false,frontendFlowSmoke=false;
         long seed=20261020L;
         char city='A';
         for(String arg:args){
@@ -54,6 +54,7 @@ public final class GpuDesktop {
             else if("--gallery".equals(arg))gallery=true;
             else if("--play-smoke".equals(arg))playSmoke=true;
             else if("--frontend-smoke".equals(arg))frontendSmoke=true;
+            else if("--frontend-flow-smoke".equals(arg))frontendFlowSmoke=true;
             else if("--editor".equals(arg))editor=true;
             else if("--editor-smoke".equals(arg))editorSmoke=true;
             else if(arg.startsWith("--seed="))seed=Long.parseLong(arg.substring(7));
@@ -63,10 +64,10 @@ public final class GpuDesktop {
             }else throw new IllegalArgumentException("Unknown argument: "+arg);
         }
         if((smoke?1:0)+(gallery?1:0)+(playSmoke?1:0)+(editor?1:0)+
-            (editorSmoke?1:0)+(frontendSmoke?1:0)>1)
+            (editorSmoke?1:0)+(frontendSmoke?1:0)+(frontendFlowSmoke?1:0)>1)
             throw new IllegalArgumentException("Choose one smoke/gallery/play-smoke/editor mode");
-        if(frontendSmoke){
-            new Lwjgl3Application(new GpuFrontEnd(true),config());
+        if(frontendSmoke||frontendFlowSmoke){
+            new Lwjgl3Application(new GpuFrontEnd(frontendSmoke,frontendFlowSmoke),config());
         }else if(editor||editorSmoke){
             if(city!='A')throw new IllegalArgumentException("Editor document currently targets City A");
             if(editorSmoke)

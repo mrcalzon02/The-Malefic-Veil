@@ -354,7 +354,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         gameRenderer.clientSettings(settings);
         gameRenderer.audioBus(audio);
         gameRenderer.create();
-        Gdx.input.setInputProcessor(null);
+        Gdx.input.setInputProcessor(gameRenderer.worldInputProcessor());
         Gdx.input.setCursorCatched(false);
     }
     /** Returning from live play destroys that session, not the launcher. */

@@ -173,6 +173,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(gameplayMenu==null)throw new IllegalStateException("No live gameplay overlay");
         gameplayMenu.auditPause(paused);
     }
+    public com.badlogic.gdx.InputProcessor worldInputProcessor(){
+        return gameplayMenu==null?null:gameplayMenu.inputProcessor();
+    }
     private float menuTime;
 
     private double cameraHeight=1.65, cameraPitch=-.04;
@@ -456,7 +459,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         {Input.Keys.H,KeyEvent.VK_H},{Input.Keys.G,KeyEvent.VK_G},
         {Input.Keys.L,KeyEvent.VK_L},{Input.Keys.X,KeyEvent.VK_X},
         {Input.Keys.I,KeyEvent.VK_I},{Input.Keys.K,KeyEvent.VK_K},
-        {Input.Keys.J,KeyEvent.VK_J},{Input.Keys.O,KeyEvent.VK_O},
+        // J/O open in-world crafting/crew menus, never legacy Swing popups.
         {Input.Keys.P,KeyEvent.VK_P},{Input.Keys.U,KeyEvent.VK_U},
         {Input.Keys.M,KeyEvent.VK_M},{Input.Keys.N,KeyEvent.VK_N},
         {Input.Keys.F9,KeyEvent.VK_F9},
@@ -466,6 +469,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     /** Only input adapters live here: movement, shooting, skills, factions,
      * cargo, crafting and host transactions remain in MaleficVeil. */
     private void liveControls(){
+        if(gameplayMenu.active()&&Gdx.input.isKeyJustPressed(Input.Keys.J))
+            gameplayMenu.openCraft();
+        else if(gameplayMenu.active()&&Gdx.input.isKeyJustPressed(Input.Keys.O))
+            gameplayMenu.openCrew();
         boolean active=gameplayMenu.input();
         for(int[] binding:LIVE_BINDINGS){
             boolean pressed=active&&Gdx.input.isKeyPressed(binding[0]);

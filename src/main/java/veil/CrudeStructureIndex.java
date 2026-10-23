@@ -14,7 +14,8 @@ public final class CrudeStructureIndex {
         STAKE_WALL, WATER_CISTERN, STONE_HEARTH, WATCH_PLATFORM,
         SMOKESTACK, MACHINE_FRAME, PIPE_ARRAY, TRANSPORT_SHED,
         FOUNDRY_SHED, RITUAL_ALTAR, LIVING_NEST, MONUMENT,
-        ROTARY_TOWER, HEAVY_AA_PEDESTAL, GROUND_TURRET
+        ROTARY_TOWER, HEAVY_AA_PEDESTAL, GROUND_TURRET,
+        GATEHOUSE, COLD_STORAGE, GUARD_HALL, FILTER_PLANT, SECURITY_ARRAY
     }
     public record Proxy(String id,Primitive primitive,int width,int depth,
                         CraftingEraRegistry.Era minimumEra,
@@ -47,6 +48,11 @@ public final class CrudeStructureIndex {
     public static Proxy get(String id){return INDEX.get(id);}
     private static Primitive guess(String name){
         if(name.equals("monument-graveyard"))return Primitive.MONUMENT;
+        if(name.equals("wall-gate-system"))return Primitive.GATEHOUSE;
+        if(name.equals("cold-store"))return Primitive.COLD_STORAGE;
+        if(name.equals("barracks"))return Primitive.GUARD_HALL;
+        if(name.equals("purification-works"))return Primitive.FILTER_PLANT;
+        if(name.equals("security-grid"))return Primitive.SECURITY_ARRAY;
         if(name.contains("nutrient")||name.contains("incursion")||
            name.contains("greenhouse"))return Primitive.LIVING_NEST;
         if(name.contains("dread")||name.contains("terror"))

@@ -33,6 +33,13 @@ public final class CrudeStructureIndexTest {
         check(index.get("aa-heavy").primitive()==CrudeStructureIndex.Primitive.HEAVY_AA_PEDESTAL,
             "heavy anti-air must have a distinct silhouette");
         check(index.get("automated-turret")!=null,"ground defense index preserved");
+        for(var row:Map.of("wall-gate-system",CrudeStructureIndex.Primitive.GATEHOUSE,
+                "cold-store",CrudeStructureIndex.Primitive.COLD_STORAGE,
+                "barracks",CrudeStructureIndex.Primitive.GUARD_HALL,
+                "purification-works",CrudeStructureIndex.Primitive.FILTER_PLANT,
+                "security-grid",CrudeStructureIndex.Primitive.SECURITY_ARRAY).entrySet())
+            check(index.get(row.getKey()).primitive()==row.getValue(),
+                "Unfinished facility has wrong functional silhouette: "+row.getKey());
         check(index.get("forager-garden").primitive()==
               CrudeStructureIndex.Primitive.RAISED_BEDS,"gardens not generic huts");
         check(index.get("palisade-section").primitive()==

@@ -54,6 +54,8 @@ jobs:
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'org/beckenburg/editor/EditorProject.class'
           test -s gpu-client/target/MaleficVeil-GPU.jar
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuClientSettingsTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuAudioBus
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'kenney/retro-urban-kit-2.0.zip'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'ggbot/psx-style-cars.zip'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'psx-ui/psx-horror-ui-free-assets.zip'
@@ -94,6 +96,24 @@ jobs:
           test -s build/test-visuals/gpu-ggbot-city-cars.png
           test -s build/test-visuals/gpu-kenney-foliage.png
           file build/test-visuals/gpu-kenney-city.png
+      - name: Unified in-engine main menu and real world/session flow
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 140s java -jar gpu-client/target/MaleficVeil-GPU.jar \
+              --frontend-smoke | tee build/test-visuals/unified-menu.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/unified-menu.log
+          test -s build/test-visuals/gpu-unified-front-end.png
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 180s java -Dveil.weather.mute=true \
+              -jar gpu-client/target/MaleficVeil-GPU.jar --frontend-flow-smoke |
+              tee build/test-visuals/unified-live-session.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_FULL_FLOW' build/test-visuals/unified-live-session.log
+          test -s build/test-visuals/gpu-frontend-live-world.png
       - name: Reuse published editor module in actual GPU viewport
         if: runner.os == 'Linux'
         shell: bash
@@ -144,5 +164,9 @@ jobs:
             build/test-visuals/editor-kit.log
             build/test-visuals/psx-source-audit.log
             build/test-visuals/gpu-psx-ui-menu.log
+            build/test-visuals/unified-menu.log
+            build/test-visuals/unified-live-session.log
+            build/test-visuals/gpu-unified-front-end.png
+            build/test-visuals/gpu-frontend-live-world.png
             build/test-visuals/editor-kit-smoke/seed-*/city-A.properties
           if-no-files-found: warn

@@ -60,11 +60,36 @@ jobs:
           jar tf build/package/MaleficVeil.jar | grep -qx 'veil/MaleficVeil.class'
           jar tf build/package/MaleficVeil.jar |
             grep -qx 'psx-ui/psx-horror-ui-free-assets.zip'
+          jar tf build/package/MaleficVeil.jar |
+            grep -qx 'audio/cold-unresolved-drone.mp3.part07'
+          java -cp build/package/MaleficVeil.jar veil.gpu.GpuAudioBus
+          java -cp build/package/MaleficVeil.jar veil.gpu.GpuClientSettingsTest
           java -cp build/package/MaleficVeil.jar veil.gpu.PsxHorrorUiSource
           java -Djava.awt.headless=true -cp build/package/MaleficVeil.jar \
             veil.gpu.PsxHorrorSwingSkin
           unzip -p build/package/MaleficVeil.jar META-INF/MANIFEST.MF |
             grep -q 'Main-Class: veil.gpu.GpuDesktop'
+      - name: Verify the shipped entry menu and same-window world creation
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0
+          mkdir -p build/test-visuals
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 140s java -jar build/package/MaleficVeil.jar --frontend-smoke |
+              tee build/test-visuals/release-frontend.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/release-frontend.log
+          test -s build/test-visuals/gpu-unified-front-end.png
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 180s java -Dveil.weather.mute=true \
+              -jar build/package/MaleficVeil.jar --frontend-flow-smoke |
+              tee build/test-visuals/release-frontend-session.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_FULL_FLOW' \
+            build/test-visuals/release-frontend-session.log
+          test -s build/test-visuals/gpu-frontend-live-world.png
       - name: Run real shipped game/render/input in Mesa OpenGL
         shell: bash
         env:
@@ -216,6 +241,9 @@ jobs:
             build/package/update.properties
             build/package/updater.jar
             build/test-visuals/gpu-live-play-shipped-client.png
+            build/test-visuals/gpu-unified-front-end.png
+            build/test-visuals/gpu-frontend-live-world.png
+            build/test-visuals/release-frontend*.log
             build/test-visuals/release-live-gpu.log
             build/test-visuals/release-editor-kit.log
             build/test-visuals/gpu-standalone-editor-live-viewport.png

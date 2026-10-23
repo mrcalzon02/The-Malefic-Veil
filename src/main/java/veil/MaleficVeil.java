@@ -23,6 +23,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final PerformanceSettings performance=new PerformanceSettings();
     private final GameplayMeshes actorModels=new GameplayMeshes();
     private final WeaponViewRenderer weaponRenderer=new WeaponViewRenderer();
+    private final ArsenalMeshes arsenalMeshes=new ArsenalMeshes();
+    private long arsenalSequence;
+    private boolean arsenalMenuVisible,primaryHeld,secondaryHeld;
+    private int arsenalMenuChoice;
     private final NetLink net;
     private final Vehicles localVehicles;
     private final CargoHaulage localCargo;
@@ -57,7 +61,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.Map<String,Integer> inventoryItems,
         java.util.List<String> skillStats,
         java.util.List<GpuCraftRecipe> crafts,
-        java.util.List<UrbanScene.ModelInstance> dynamic) {}
+        java.util.List<UrbanScene.ModelInstance> dynamic,
+        ArsenalSystems.View arsenalState,boolean arsenalMenu,int arsenalChoice) {}
     public record GpuCraftRecipe(String id,String station,String description,
                                  boolean affordable) {}
     private volatile GpuFrame gpuFrame;
@@ -66,7 +71,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     /** The same World used by LAN messages, combat and CityLayout collision. */
     public World gpuWorld(){return world;}
     /** Authoritative actor, pickup, item, resource and weather model identities. */
-    public java.util.Map<String,GlbMesh> gpuDynamicMeshes(){return actorModels.meshes();}
+    public java.util.Map<String,GlbMesh> gpuDynamicMeshes(){
+        java.util.Map<String,GlbMesh> combined=new java.util.LinkedHashMap<>(actorModels.meshes());
+        for(int i=0;i<32;i++)arsenalMeshes.worldId(i);
+        combined.putAll(arsenalMeshes.worldModels());
+        return java.util.Collections.unmodifiableMap(combined);
+    }
     /** Only immutable snapshots cross the Swing simulation / OpenGL threads. */
     public GpuFrame gpuFrame(){return gpuFrame;}
     /** Synthetic GPU events use original gameplay input handlers on Swing EDT. */
@@ -86,7 +96,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 cameraPitch-Math.max(-120,Math.min(120,deltaY))*.004));
         });
     }
-    public void gpuFire(){SwingUtilities.invokeLater(()->{if(!dead)shoot();});}
+    public void gpuFire(){SwingUtilities.invokeLater(()->{if(!dead)shoot(false);});}
     public void gpuSceneReady(){SwingUtilities.invokeLater(()->{
         if(net!=null)net.sceneReady();
         DesktopDiagnostics.note("GPU_PLAY_SESSION_READY");
@@ -102,7 +112,6 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             d.hp>0&&d.kind==ArenaSystems.FIELD_BENCH&&
             Math.hypot(d.x-px,d.y-py)<=2.2);
         for(var recipe:SurvivalCrafting.recipes().values()){
-            if(!WeaponEconomy.canCraft(recipe,gpuCraftFaction()))continue;
             boolean nearby=recipe.station()==SurvivalCrafting.Station.HAND||
                 (recipe.station()==SurvivalCrafting.Station.FIRE&&fire)||
                 (recipe.station()==SurvivalCrafting.Station.WORKBENCH&&bench);
@@ -240,15 +249,17 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }else stats.add("WAITING FOR HOST STATISTICS");
         }else stats.add("SOLO LOCAL SIMULATION");
         java.util.List<UrbanScene.ModelInstance> actors=new java.util.ArrayList<>();
+        for(var loot:(localHost!=null?localHost.arsenal.loot:arsenalLootVisuals()))
+            if(!loot.taken&&loot.type==0)
+                actors.add(new UrbanScene.ModelInstance(arsenalMeshes.worldId(loot.value),
+                    loot.x,loot.y,ticks*.018,1.0,1.0,.85));
         for(World.Npc npc:world.npcs)if(npc.hp>0)
             actors.add(new UrbanScene.ModelInstance("enemy-walker",npc.x,npc.y,
                 Math.atan2(py-npc.y,px-npc.x)-Math.PI/2,1));
-        for(World.Pickup pickup:world.pickups){
-            String model=GameplayMeshes.pickupModel(pickup.kind);
-            if(!pickup.taken&&model!=null)
-                actors.add(new UrbanScene.ModelInstance(model,pickup.x,pickup.y,
-                    ticks*.018,1.15,1,.86+.10*Math.sin(ticks*.11+pickup.kind)));
-        }
+        for(World.Pickup pickup:world.pickups)
+            if(!pickup.taken&&pickup.kind>=0&&pickup.kind<GameplayMeshes.PICKUP.length)
+                actors.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[pickup.kind],
+                    pickup.x,pickup.y,ticks*.018,1.15,1,.86+.10*Math.sin(ticks*.11+pickup.kind)));
         for(World.Device device:world.devices)
             if(device.hp>0&&device.kind>=0&&device.kind<GameplayMeshes.DEVICE.length)
                 actors.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[device.kind],
@@ -281,23 +292,34 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 actors.add(new UrbanScene.ModelInstance(localVehicles.cargo(car.id()).model(),
                     car.x(),car.y(),car.heading(),1.9));
         }
+        ArsenalSystems.View equipped=arsenalView();
+        int selected=equipped==null?0:equipped.selected();
+        int[] rounds=equipped==null?new int[32]:equipped.clip();
+        int[] reserves=equipped==null?new int[32]:equipped.reserve();
         gpuFrame=new GpuFrame(px,py,angle,cameraPitch,weather.timeOfDay()*24,
-            health,sanity,cash,scrap,medkits,pistolClip,pistolReserve,
-            shellClip,shellReserve,gun,frags,dead,net==null||net.connected(),
+            health,sanity,cash,scrap,medkits,rounds[0],reserves[0],
+            rounds[6],reserves[6],selected,frags,dead,net==null||net.connected(),
             inventoryVisible,skillsVisible,mapVisible,continentVisible,
             noticeTicks>0?notice:"",java.util.Map.copyOf(carried()),
             java.util.List.copyOf(stats),gpuCraftingSnapshot(),
-            java.util.List.copyOf(actors));
+            java.util.List.copyOf(actors),equipped,arsenalMenuVisible,arsenalMenuChoice);
     }
 
+    private java.util.List<ArsenalSystems.Loot> arsenalLootVisuals(){
+        // Client and host use the same deterministic loot schedule.
+        return arsenalVisualHost.arsenal.loot;
+    }
+    private ArenaSystems arsenalVisualHost;
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {
         this.window=window;this.net=net;this.archetype=archetype;
-        world=new World(seed);
-        vista=new ContinentVista(world);
-        localVehicles=new Vehicles(world);
-        localCargo=new CargoHaulage(world,localVehicles);
         localHost=net==null?new ArenaSystems(seed):null;
+        // Never simulate a different solo map than the authoritative host map.
+        world=localHost==null?new World(seed):localHost.world;
+        vista=new ContinentVista(world);
+        localVehicles=localHost==null?new Vehicles(world):localHost.vehicles;
+        localCargo=localHost==null?new CargoHaulage(world,localVehicles):localHost.cargo;
         if(localHost!=null)localHost.join(1);
+        arsenalVisualHost=localHost==null?new ArenaSystems(seed):localHost;
         localHarvesting=net==null?new WorldHarvesting(world):null;
         try{weather=new VeilWeather(seed,java.nio.file.Path.of("."));}
         catch(java.io.IOException ex){throw new IllegalStateException("Pinned shared weather library missing",ex);}
@@ -670,6 +692,17 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             net.looseItems.values().removeIf(item->
                 System.currentTimeMillis()>=item.expiry());
             String craftMessage;
+            String arsenalMessage;
+            while((arsenalMessage=net.arsenalResults.poll())!=null)
+                if(!arsenalMessage.equals("FIRED"))
+                    toast(arsenalMessage.replace('_',' '));
+            Integer takenArsenal;
+            while((takenArsenal=net.arsenalPicked.poll())!=null)
+                if(takenArsenal>=0&&takenArsenal<arsenalVisualHost.arsenal.loot.size())
+                    arsenalVisualHost.arsenal.loot.get(takenArsenal).taken=true;
+            for(var tier:net.benchTiers.entrySet())
+                if(tier.getKey()>=0&&tier.getKey()<world.devices.size())
+                    world.devices.get(tier.getKey()).tier=tier.getValue();
             while((craftMessage=net.craftResults.poll())!=null)
                 toast(craftMessage.endsWith("|OK")?
                     "CRAFTED "+craftMessage.substring(0,craftMessage.indexOf('|')):
@@ -740,7 +773,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
             if(ticks%90==0)net.ping();
         }
-        if(net==null){localVehicles.advance(33);localCargo.advance(33);}
+        if(net==null){
+            ArenaSystems.Player p=localHost.player(1);
+            p.x=px;p.y=py;p.angle=angle;
+            localHost.advance(33);
+        }
+        if(!dead&&ticks%2==0&&(primaryHeld||secondaryHeld))shoot(secondaryHeld);
         if(!dead){
             int carId=net==null?localVehicles.carDrivenBy(1):net.drivenCar();
             if(carId>=0){
@@ -810,7 +848,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         health=Math.max(0,health-h);sanity=Math.max(0,sanity-s);
         if(health==0){dead=true;toast("YOU HAVE FALLEN — 1/2/3 CHOOSE RESPAWN");}
     }
-    private void shoot(){
+    private ArsenalSystems.View arsenalView(){
+        return net==null?localHost.arsenal.view(1):net.arsenal();
+    }
+    private void shoot(){shoot(false);}
+    private void shoot(boolean alternate){
+        if(dead||arsenalMenuVisible)return;
+        if(net!=null){net.arsenalFire(alternate);return;}
+        ArenaSystems.Player player=localHost.player(1);
+        player.x=px;player.y=py;player.angle=angle;
+        ArsenalSystems.Shot shot=localHost.arsenal.fire(1,alternate,++arsenalSequence);
+        if(shot.fired()){
+            attackFlash=.18;
+            if(shot.damage()>0)toast("HIT "+shot.damage());
+        }else if(!shot.reason().equals("COOLDOWN"))
+            toast(shot.reason().replace('_',' '));
+    }
+    private void legacyShoot(){
         if(dead||fireCooldown>0)return;
         int clip=gun==0?pistolClip:shellClip;
         if(clip<=0){toast("EMPTY — R TO RELOAD");return;}
@@ -833,6 +887,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
     }
     private void reload(){
+        if(dead)return;
+        if(net!=null){net.arsenalReload();return;}
+        var result=localHost.arsenal.reload(1);
+        toast(result.reason().replace('_',' '));
+    }
+    private void legacyReload(){
         if(dead)return;
         if(net!=null){net.reload(gun);return;}
         if(gun==0){
@@ -1084,13 +1144,6 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 else{
                     World.Pickup item=world.pickups.get(t.id());
                     if(item.taken)return;
-                    if(item.kind>=WeaponEconomy.FIRST_WORLD_PICKUP){
-                        WeaponEconomy.Weapon weapon=WeaponEconomy.forPickupKind(item.kind);
-                        if(weapon==null||localHost==null||
-                            !localHost.player(1).survival.acquire(weapon.item(),1,false)){
-                            toast("NO INVENTORY SPACE FOR WEAPON");return;
-                        }
-                    }
                     item.taken=true;
                     switch(item.kind){
                         case 0 -> {health=Math.min(100,health+30);toast("+30 HEALTH");}
@@ -1100,10 +1153,6 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                         case 4 -> {cash+=50;toast("+$50");}
                         case 5 -> {scrap+=2;toast("+2 SUPPLIES");}
                         case 6 -> {medkits++;toast("+1 MEDKIT");}
-                        default -> {
-                            WeaponEconomy.Weapon weapon=WeaponEconomy.forPickupKind(item.kind);
-                            if(weapon!=null)toast("FOUND "+weapon.label().toUpperCase(java.util.Locale.ROOT));
-                        }
                     }
                 }
             }
@@ -1197,12 +1246,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         }
         urbanRenderer.draw(g,urban.models(),cargoMeshes,px,py,angle,depth,RW,RH);
         java.util.List<UrbanScene.ModelInstance> gameplay=new java.util.ArrayList<>();
-        for(World.Pickup p:world.pickups){
-            String model=GameplayMeshes.pickupModel(p.kind);
-            if(!p.taken&&model!=null)
-                gameplay.add(new UrbanScene.ModelInstance(model,p.x,p.y,
-                    ticks*.018+p.kind,1.15,1.0,.86+.10*Math.sin(ticks*.11+p.kind)));
-        }
+        for(World.Pickup p:world.pickups)if(!p.taken&&p.kind>=0&&p.kind<GameplayMeshes.PICKUP.length)
+            gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,
+                ticks*.018+p.kind,1.15,1.0,.86+.10*Math.sin(ticks*.11+p.kind)));
         for(World.Device d:world.devices)if(d.hp>0&&d.kind>=0&&d.kind<GameplayMeshes.DEVICE.length)
             gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[d.kind],d.x,d.y,0,1.0));
         for(World.Npc n:world.npcs)if(n.hp>0)
@@ -1231,12 +1277,24 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     node.type()==WildernessResources.Type.TIMBER?.39:1.05));
         }
         urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
+        java.util.List<UrbanScene.ModelInstance> arsenalLoot=new java.util.ArrayList<>();
+        for(var loot:arsenalVisualHost.arsenal.loot)
+            if(!loot.taken&&loot.type==0)
+                arsenalLoot.add(new UrbanScene.ModelInstance(
+                    arsenalMeshes.worldId(loot.value),loot.x,loot.y,ticks*.018,1.0));
+        urbanRenderer.draw(g,arsenalMeshes.worldModels(),arsenalLoot,px,py,angle,depth,RW,RH);
+        ArsenalEffects.draw(g,net==null?localHost.arsenal.effects():net.arsenalEffects(),
+            world,px,py,angle,RW,RH);
         renderWeatherEffects(g);
         drawMonsterThreats(g);
         g.setColor(new Color(187,176,149));
         g.fillRect(RW/2-5,RH/2,11,1);g.fillRect(RW/2,RH/2-5,1,11);
         int bob=(int)(Math.sin(ticks*.15)*(down(KeyEvent.VK_W)?2:0));
-        weaponRenderer.draw(g,actorModels.meshes().get(GameplayMeshes.WEAPON[gun]),RW,RH,bob);
+        ArsenalSystems.View current=arsenalView();
+        int selected=current==null?0:current.selected();
+        long elapsed=current==null?0:
+            (net==null?localHost.time():System.nanoTime()/1_000_000)-current.actionAt();
+        arsenalMeshes.draw(g,selected,current,elapsed,RW,RH,bob);
         InteractionFocus.draw(g,RW,RH,focusTarget());
         if(attackFlash>0){
             g.setColor(new Color(255,207,85));
@@ -1344,7 +1402,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.setColor(new Color(10,11,16,225));g.fillRect(0,h-70,w,70);
         g.setColor(new Color(215,215,207));
         g.drawString("HP "+health+"   SAN "+sanity+"   CASH $"+cash+"   SUP "+scrap+"   MED "+medkits+"   KILLS "+frags,105,h-44);
-        g.drawString((gun==0?"HANDGUN ":"SHOTGUN ")+(gun==0?pistolClip:shellClip)+"/"+(gun==0?pistolReserve:shellReserve)+
+        ArsenalSystems.View arsenal=arsenalView();int selected=arsenal==null?0:arsenal.selected();
+        g.drawString(ArsenalCatalog.get(selected).name()+" "+
+            (arsenal==null?0:arsenal.clip()[selected])+"/"+
+            (arsenal==null?0:arsenal.reserve()[selected])+
             "     "+names[archetype]+"  F "+(abilityCooldown==0?"READY":String.format("%.0fs",abilityCooldown)),105,h-17);
         double gem=net!=null&&net.self()!=null?net.self().visibility():visibility();
         drawGem(g,gem,31,h-35);
@@ -1353,6 +1414,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         g.drawString("THE MALEFIC VEIL",15,22);
         g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
         g.drawString("SEED "+world.seed+"  "+(net==null?"SOLO":"LAN PLAYERS "+(net.others.size()+1)),w-218,22);
+        drawArsenalMenu(g,w,h);
         if(net!=null){
             g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
             String diagnostic=net.connected()?
@@ -1489,6 +1551,60 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.drawString(String.valueOf(city.id()),left+city.x()*tile-4,top+city.y()*tile+5);
         }
     }
+    private void selectArsenal(int id){
+        if(net!=null)net.arsenalSelect(id);
+        else toast(localHost.arsenal.select(1,id).reason().replace('_',' '));
+    }
+    private void cycleArsenal(int delta){
+        var view=arsenalView();if(view==null)return;
+        for(int offset=1;offset<=32;offset++){
+            int index=Math.floorMod(view.selected()+delta*offset,32);
+            if((view.owned()&(1L<<index))!=0){selectArsenal(index);return;}
+        }
+    }
+    private void arsenalCraft(int id){
+        if(net!=null)net.arsenalCraft(id);
+        else toast(localHost.arsenal.craft(1,id).reason().replace('_',' '));
+    }
+    private void arsenalUpgrade(){
+        if(net!=null)net.arsenalUpgrade();
+        else toast(localHost.arsenal.upgrade(1).reason().replace('_',' '));
+    }
+    private void drawArsenalMenu(Graphics2D g,int w,int h){
+        if(!arsenalMenuVisible)return;
+        var state=arsenalView();
+        int x=Math.max(16,(w-650)/2),y=Math.max(35,(h-450)/2);
+        g.setColor(new Color(8,10,16,243));g.fillRoundRect(x,y,650,450,12,12);
+        g.setColor(new Color(224,218,201));g.setFont(new Font(Font.MONOSPACED,Font.BOLD,17));
+        g.drawString("ARSENAL / FIELD FABRICATION",x+15,y+29);
+        int owner=state==null?-1:state.faction();
+        String name=owner<0?"UNENROLLED":ArsenalCatalog.FACTIONS[owner];
+        g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
+        g.drawString(name+" / Bench "+(state==null?0:state.benchTier())+
+            " / UP-DOWN SELECT  ENTER FABRICATE  E EQUIP  U UPGRADE  ESC CLOSE",
+            x+15,y+52);
+        int start=(arsenalMenuChoice/10)*10;
+        for(int i=start;i<Math.min(start+10,32);i++){
+            var item=ArsenalCatalog.get(i);
+            boolean owned=state!=null&&(state.owned()&(1L<<i))!=0;
+            boolean foreign=item.faction()>=0&&item.faction()!=owner;
+            int row=y+83+(i-start)*31;
+            if(i==arsenalMenuChoice){
+                g.setColor(new Color(50,57,71));g.fillRect(x+12,row-18,625,26);
+            }
+            g.setColor(foreign?new Color(156,110,108):
+                owned?new Color(118,209,179):new Color(224,218,201));
+            g.drawString(String.format(java.util.Locale.ROOT,"%02d %-24s %s T%d %s",
+                i+1,item.name(),item.mapSpawn()?"SCAVENGE":"FABRICATE",item.tier(),
+                foreign?"FOREIGN":owned?"OWNED":"AVAILABLE"),x+21,row);
+        }
+        var item=ArsenalCatalog.get(arsenalMenuChoice);
+        g.setColor(new Color(219,206,177));
+        g.drawString(item.name()+" / "+(item.faction()<0?"SHARED":ArsenalCatalog.FACTIONS[item.faction()])+
+            " / Primary "+item.primary().kind()+" / Alternate "+item.alternate().kind(),
+            x+15,y+405);
+        g.drawString("Cost: "+java.util.Arrays.toString(item.cost())+"  J: PLACE BENCH",x+15,y+426);
+    }
     @Override public void keyPressed(KeyEvent e){
         int k=e.getKeyCode();
         boolean fresh=held.add(k);
@@ -1518,14 +1634,27 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             repaint();
             return;
         }
+        if(arsenalMenuVisible){
+            if(k==KeyEvent.VK_K||k==KeyEvent.VK_ESCAPE)arsenalMenuVisible=false;
+            else if(k==KeyEvent.VK_UP)arsenalMenuChoice=Math.floorMod(arsenalMenuChoice-1,32);
+            else if(k==KeyEvent.VK_DOWN)arsenalMenuChoice=(arsenalMenuChoice+1)%32;
+            else if(k==KeyEvent.VK_ENTER)arsenalCraft(arsenalMenuChoice);
+            else if(k==KeyEvent.VK_E)selectArsenal(arsenalMenuChoice);
+            else if(k==KeyEvent.VK_U)arsenalUpgrade();
+            else if(k==KeyEvent.VK_J)gpuPlaceWorkbench();
+            return;
+        }
         if(dead){
             if(k>=KeyEvent.VK_1&&k<=KeyEvent.VK_3)spawn=k-KeyEvent.VK_1;
             if(k==KeyEvent.VK_ENTER)respawnAt(spawn);
             return;
         }
         switch(k){
-            case KeyEvent.VK_1 -> gun=0;
-            case KeyEvent.VK_2 -> gun=1;
+            case KeyEvent.VK_1,KeyEvent.VK_2,KeyEvent.VK_3,KeyEvent.VK_4,
+                 KeyEvent.VK_5,KeyEvent.VK_6,KeyEvent.VK_7,KeyEvent.VK_8 ->
+                selectArsenal(k-KeyEvent.VK_1);
+            case KeyEvent.VK_OPEN_BRACKET -> cycleArsenal(-1);
+            case KeyEvent.VK_CLOSE_BRACKET -> cycleArsenal(1);
             case KeyEvent.VK_R -> reload();
             case KeyEvent.VK_L -> loadNearestCargo();
             case KeyEvent.VK_G -> recoverNearestCargo();
@@ -1544,7 +1673,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_M -> {mapVisible=!mapVisible;continentVisible=false;}
             case KeyEvent.VK_N -> {continentVisible=!continentVisible;mapVisible=false;}
             case KeyEvent.VK_I -> {inventoryVisible=!inventoryVisible;skillsVisible=false;}
-            case KeyEvent.VK_K -> {skillsVisible=!skillsVisible;inventoryVisible=false;}
+            case KeyEvent.VK_K -> {arsenalMenuVisible=!arsenalMenuVisible;inventoryVisible=false;}
             case KeyEvent.VK_O -> crewDialog();
             case KeyEvent.VK_J -> handCraftDialog();
             case KeyEvent.VK_P -> scavengeNearby();
@@ -1614,7 +1743,6 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             d.hp>0&&d.kind==ArenaSystems.FIELD_FIRE&&
             Math.hypot(d.x-px,d.y-py)<=2.2);
         for(var recipe:SurvivalCrafting.recipes().values()){
-            if(!WeaponEconomy.canCraft(recipe,gpuCraftFaction()))continue;
             if(recipe.station()!=SurvivalCrafting.Station.HAND&&
                !(recipe.station()==SurvivalCrafting.Station.FIRE&&nearFire))continue;
             boolean affordable=true;
@@ -1943,7 +2071,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     @Override public void keyTyped(KeyEvent e){}
     @Override public void mousePressed(MouseEvent e){
         requestFocusInWindow();
-        if(e.getButton()!=MouseEvent.BUTTON1)return;
+        if(e.getButton()==MouseEvent.BUTTON1)primaryHeld=true;
+        if(e.getButton()==MouseEvent.BUTTON3)secondaryHeld=true;
+        if(e.getButton()!=MouseEvent.BUTTON1&&e.getButton()!=MouseEvent.BUTTON3)return;
         if(dead){
             int top=Math.max(46,(getHeight()-282)/2);
             int left=(getWidth()-Math.min(590,getWidth()-30))/2;
@@ -1955,9 +2085,16 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
             return;
         }
-        shoot();
+        shoot(e.getButton()==MouseEvent.BUTTON3);
     }
-    @Override public void mouseReleased(MouseEvent e){}
+    @Override public void mouseReleased(MouseEvent e){
+        if(e.getButton()==MouseEvent.BUTTON1)primaryHeld=false;
+        if(e.getButton()==MouseEvent.BUTTON3)secondaryHeld=false;
+        if(!primaryHeld&&!secondaryHeld){
+            if(net!=null)net.arsenalRelease();
+            else localHost.arsenal.release(1);
+        }
+    }
     @Override public void mouseClicked(MouseEvent e){}
     @Override public void mouseEntered(MouseEvent e){previousMouse=-1;previousMouseY=-1;}
     @Override public void mouseExited(MouseEvent e){previousMouse=-1;previousMouseY=-1;}

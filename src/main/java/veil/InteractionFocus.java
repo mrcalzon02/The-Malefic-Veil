@@ -26,10 +26,7 @@ public final class InteractionFocus {
             case 4 -> "CASH";
             case 5 -> "SUPPLIES";
             case 6 -> "MEDKIT";
-            default -> {
-                WeaponEconomy.Weapon item=WeaponEconomy.forPickupKind(kind);
-                yield item==null?"UNKNOWN":item.label().toUpperCase(java.util.Locale.ROOT);
-            }
+            default -> "UNKNOWN";
         };
     }
     private InteractionFocus(){}

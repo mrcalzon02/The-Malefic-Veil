@@ -28,6 +28,6 @@ Sources: [ArenaSystems](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main
 
 [EquipmentUpgrades.java](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/src/main/java/veil/EquipmentUpgrades.java) contains **one-level-at-a-time** design plans for facilities, defenses and vehicles, with an independent cap of **50**. The visible stages are CRUDE (levels 1–9), REINFORCED (10–19), MECHANIZED (20–29), ELECTRIFIED (30–39), INDUSTRIAL (40–49) and ENDGAME_SPECIALIZED (50). They are upgrade planning data, **not** an operational in-world upgrade transaction or functional turret/vehicle stat upgrade system. Applying them requires a host-owned work order, materials, power or fuel and durable save-state change.
 
-## Physical weapon acquisition
+## Working Arsenal
 
-The eight deterministic city weapon pickup kinds and twelve player-made weapon items are now cataloged in [Weapons](Weapons.md) and [the item tables](Items.md). They use actual weighted inventory and debit-before-mint crafting, but remain **equipment without weapon-specific attack execution**. The pre-existing handgun and shotgun still supply the only firing animations/ammunition paths. Host combat and persistence for the expanded equipment must be implemented before the full roster is called playable.
+Eight [player weapons](Weapons.md) are map loot; the other 24 have faction-owned tiered fabrication. The older pistol/shotgun command remains a compatibility path. The 32-weapon host-authoritative player arsenal now defines equipment selection, ammunition, reloads, alternate modes, projectiles, environmental effects and original animated textured models. The Lost's NPC weapons are an unrelated, design-only combat expansion.

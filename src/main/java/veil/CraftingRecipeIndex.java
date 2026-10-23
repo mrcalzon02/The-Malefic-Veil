@@ -42,8 +42,7 @@ public final class CraftingRecipeIndex {
                     case HAND->Availability.PLAYABLE_HAND;
                     case FIRE->Availability.PLAYABLE_FIRE;
                     case WORKBENCH->Availability.PLAYABLE_WORKBENCH;
-                },recipe.station().name(),"STRANDED",
-                WeaponEconomy.recipeFaction(recipe).name(),0,0,ingredients,List.of()));
+                },recipe.station().name(),"STRANDED","ALL",0,0,ingredients,List.of()));
         }
         for(var job:CraftingEraRegistry.processes().values()){
             rows.add(new Record("process:"+job.id(),label(job.id()),job.output(),

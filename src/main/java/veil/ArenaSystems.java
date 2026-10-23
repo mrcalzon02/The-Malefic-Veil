@@ -10,6 +10,7 @@ public final class ArenaSystems {
     public final World world;
     public final Vehicles vehicles;
     public final CargoHaulage cargo;
+    public final ArsenalSystems arsenal;
     public final boolean hardcore;
     public final FactionGroups factions=new FactionGroups();
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
@@ -119,15 +120,18 @@ public final class ArenaSystems {
         this.hardcore=hardcore;
         world=new World(seed);vehicles=new Vehicles(world);
         cargo=new CargoHaulage(world,vehicles);
+        arsenal=new ArsenalSystems(this);
     }
     public synchronized Player join(int id){
         if(players.containsKey(id))throw new IllegalArgumentException("duplicate peer");
         Player p=new Player(id,world.spawns[0][0],world.spawns[0][1],clock);
         players.put(id,p);
+        arsenal.join(id);
         // Disposable guest peers have no durable property claim; only authenticated accounts do.
         refreshVisibility(p);return p;
     }
     public synchronized void leave(int id){
+        arsenal.leave(id);
         vehicles.disconnect(id);
         Player departing=players.remove(id);
         if(departing!=null){
@@ -149,6 +153,7 @@ public final class ArenaSystems {
         String prior=p.accountKey;
         raidProtection.logout(prior,System.currentTimeMillis());
         p.accountKey=key;
+        arsenal.bind(id,key);
         raidProtection.login(key,System.currentTimeMillis());
         for(World.Device d:world.devices)if(d.ownerId==id&&prior.equals(d.ownerKey))
             d.ownerKey=key;
@@ -214,7 +219,7 @@ public final class ArenaSystems {
                 return false;
         return true;
     }
-    private boolean clear(double x,double y,double tx,double ty){
+    boolean clear(double x,double y,double tx,double ty){
         if(!world.lineClear(x,y,tx,ty))return false;
         double len=Math.hypot(tx-x,ty-y);
         for(World.Device d:world.devices){
@@ -230,7 +235,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
         long elapsed=Math.max(0,clock-p.moveAt);
-        double max=((flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85)*p.progression.movementMultiplier();
+        double max=((flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85)*p.progression.movementMultiplier()*arsenal.speed(p);
         double permitted=.33+Math.min(elapsed,500)*max/1000;
         double distance=Math.hypot(x-p.x,y-p.y);
         if(distance>permitted)return false;
@@ -284,10 +289,6 @@ public final class ArenaSystems {
         if(p==null||p.dead||itemIndex<0||itemIndex>=world.pickups.size())return false;
         World.Pickup item=world.pickups.get(itemIndex);
         if(item.taken||Math.hypot(item.x-p.x,item.y-p.y)>.63)return false;
-        if(item.kind>=WeaponEconomy.FIRST_WORLD_PICKUP){
-            var weapon=WeaponEconomy.forPickupKind(item.kind);
-            if(weapon==null||!p.survival.acquire(weapon.item(),1,false))return false;
-        }
         item.taken=true;
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.SCAVENGING,8,clock,3000);
@@ -299,10 +300,7 @@ public final class ArenaSystems {
             case 4 -> p.cash+=50;
             case 5 -> p.scrap+=2;
             case 6 -> p.medkits++;
-            default -> {
-                if(WeaponEconomy.forPickupKind(item.kind)==null)
-                    throw new IllegalStateException("Invalid pickup kind");
-            }
+            default -> throw new IllegalStateException("Invalid pickup kind");
         }
         return true;
     }
@@ -703,16 +701,6 @@ public final class ArenaSystems {
         if(hit)cargo.advance(0);
         return hit;
     }
-    /** Resolve manufacturer permission from the authenticated host-owned faction. */
-    private CraftingEraRegistry.Faction craftingFaction(Player p){
-        CharacterRoster.Faction selected=factions.faction(p.accountKey);
-        if(selected==null)return CraftingEraRegistry.Faction.ALL;
-        return switch(selected){
-            case THE_UNRAVELED -> CraftingEraRegistry.Faction.UNRAVELED;
-            case THE_PENITENT -> CraftingEraRegistry.Faction.PENITENT;
-            case THE_BEGOTTEN -> CraftingEraRegistry.Faction.BEGOTTEN;
-        };
-    }
     /** A FIRE recipe requires an adjacent, living and allied physical workstation. */
     public synchronized boolean craftStation(int id,String recipe){
         Player p=players.get(id);
@@ -729,7 +717,7 @@ public final class ArenaSystems {
                 nearFire=true;break;
             }
         }
-        if(!nearFire||!p.survival.craft(recipe,SurvivalCrafting.Station.FIRE,craftingFaction(p)))return false;
+        if(!nearFire||!p.survival.craft(recipe,SurvivalCrafting.Station.FIRE))return false;
         p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.ENGINEERING,9,clock,3500);
@@ -753,7 +741,7 @@ public final class ArenaSystems {
                 reachable=true;break;
             }
         }
-        if(!reachable||!p.survival.craft(recipe,SurvivalCrafting.Station.WORKBENCH,craftingFaction(p)))
+        if(!reachable||!p.survival.craft(recipe,SurvivalCrafting.Station.WORKBENCH))
             return false;
         p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
         breakGrace(p);
@@ -767,7 +755,7 @@ public final class ArenaSystems {
            vehicles.carDrivenBy(id)>=0)return false;
         SurvivalCrafting.Recipe record=SurvivalCrafting.recipes().get(recipe);
         if(record==null||record.station()!=SurvivalCrafting.Station.HAND||
-           !p.survival.craft(recipe,SurvivalCrafting.Station.HAND,craftingFaction(p)))return false;
+           !p.survival.craft(recipe,SurvivalCrafting.Station.HAND))return false;
         p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.ENGINEERING,9,clock,3500);
@@ -777,6 +765,7 @@ public final class ArenaSystems {
     public synchronized void advance(long ms){
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
         clock+=ms;
+        arsenal.advance(ms);
         vehicles.advance(ms);
         cargo.advance(ms);
         // Server-owned Lost spawning: fixed ruin ownership, local caps,
@@ -865,8 +854,8 @@ public final class ArenaSystems {
             }
             if(nearest==null)continue;
             if(best>.85){
-                double nx=n.x+(nearest.x-n.x)/best*.55*ms/1000;
-                double ny=n.y+(nearest.y-n.y)/best*.55*ms/1000;
+                double nx=n.x+(nearest.x-n.x)/best*.55*arsenal.speed(n)*ms/1000;
+                double ny=n.y+(nearest.y-n.y)/best*.55*arsenal.speed(n)*ms/1000;
                 if(free(nx,n.y))n.x=nx;if(free(n.x,ny))n.y=ny;
             } else if(n.cooldown<=0){
                 damage(nearest,8,8);n.cooldown=1.2;

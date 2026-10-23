@@ -11,20 +11,20 @@ import java.util.zip.CRC32;
  * Corrupt snapshots fail closed and may recover from an independently validated .bak.
  */
 public final class DurableRealm {
-    private static final int MAGIC=0x5645494c, VERSION=2, LIMIT=2_000_000;
+    private static final int MAGIC=0x5645494c, VERSION=3, LIMIT=2_000_000;
     private DurableRealm(){}
-    private record DeviceSave(int kind,double x,double y,int hp,String owner){}
+    private record DeviceSave(int kind,double x,double y,int hp,String owner,int tier){}
     private record CarSave(int id,double x,double y,double heading,double fuel,int hp){}
     private record NpcSave(double x,double y,int hp){}
     private record Snapshot(long seed,long timestamp,List<DeviceSave> devices,List<CarSave> cars,
         boolean[] picked,List<NpcSave> npcs,List<RaidProtection.Presence> owners,
-        CargoHaulage.Snapshot cargo){}
+        CargoHaulage.Snapshot cargo,byte[] arsenal){}
     public static Path file(Path root){return root.resolve("realm.dat");}
-    private static Snapshot capture(ArenaSystems game){
+    private static Snapshot capture(ArenaSystems game)throws IOException{
         List<DeviceSave> devices=new ArrayList<>();
         for(World.Device d:game.world.devices)
             devices.add(new DeviceSave(d.kind,d.x,d.y,d.hp,
-                d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:""));
+                d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:"",d.tier));
         List<CarSave> cars=new ArrayList<>();
         for(Vehicles.State c:game.vehicles.states())
             cars.add(new CarSave(c.id(),c.x(),c.y(),c.heading(),c.fuel(),c.hp()));
@@ -34,7 +34,7 @@ public final class DurableRealm {
         for(World.Npc n:game.world.npcs)npcs.add(new NpcSave(n.x,n.y,n.hp));
         return new Snapshot(game.world.seed,System.currentTimeMillis(),List.copyOf(devices),
             List.copyOf(cars),picked,List.copyOf(npcs),game.raidProtection.snapshot(),
-            game.cargo.snapshot());
+            game.cargo.snapshot(),game.arsenal.save());
     }
     private static byte[] serialize(Snapshot snap)throws IOException{
         ByteArrayOutputStream payload=new ByteArrayOutputStream();
@@ -44,7 +44,7 @@ public final class DurableRealm {
             out.writeInt(snap.devices.size());
             for(DeviceSave d:snap.devices){
                 out.writeInt(d.kind);out.writeDouble(d.x);out.writeDouble(d.y);
-                out.writeInt(d.hp);out.writeUTF(d.owner);
+                out.writeInt(d.hp);out.writeUTF(d.owner);out.writeInt(d.tier);
             }
             out.writeInt(snap.cars.size());
             for(CarSave c:snap.cars){
@@ -77,6 +77,9 @@ public final class DurableRealm {
                 out.writeInt(drop.id());out.writeDouble(drop.x());out.writeDouble(drop.y());
                 out.writeUTF(drop.resource());out.writeLong(drop.createdAt());
             }
+            // V3 extension: arsenal account inventory, special materials and
+            // collected weapon loot are checksummed with the realm snapshot.
+            out.writeInt(snap.arsenal.length);out.write(snap.arsenal);
         }
         byte[] bytes=payload.toByteArray();
         if(bytes.length>LIMIT-8)throw new IOException("Snapshot exceeds storage cap");
@@ -101,22 +104,22 @@ public final class DurableRealm {
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes,0,bytes.length-8))){
             if(in.readInt()!=MAGIC)throw new IOException("Wrong save magic");
             int version=in.readInt();
-            if(version!=1&&version!=VERSION)throw new IOException("Unsupported snapshot version");
+            if(version!=1&&version!=2&&version!=VERSION)throw new IOException("Unsupported snapshot version");
             long seed=in.readLong(),timestamp=in.readLong(),now=System.currentTimeMillis();
             if(seed!=target.world.seed)throw new IOException("Save seed mismatch: no world reset allowed");
             if(timestamp<0||timestamp>now+300000)throw new IOException("Unreasonable snapshot timestamp");
             List<DeviceSave> devices=new ArrayList<>();
             for(int i=count(in,500);i>0;i--){
                 int kind=in.readInt();double x=in.readDouble(),y=in.readDouble();
-                int hp=in.readInt();String owner=in.readUTF();
+                int hp=in.readInt();String owner=in.readUTF();int tier=version>=3?in.readInt():1;
                 // Parse structurally valid legacy devices even when they sit in
                 // newly protected city plots. load() will archive and quarantine
                 // them; active city placement is never restored.
                 if(kind<0||kind>ArenaSystems.FIELD_BENCH||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
                    !target.world.continent().inBounds(target.world.parcelX(x),target.world.parcelY(y))||
-                   (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}")))
+                   (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}"))||tier<1||tier>3)
                     throw new IOException("Invalid persisted device");
-                devices.add(new DeviceSave(kind,x,y,hp,owner));
+                devices.add(new DeviceSave(kind,x,y,hp,owner,tier));
             }
             List<CarSave> cars=new ArrayList<>();
             int carCount=count(in,64);
@@ -131,11 +134,17 @@ public final class DurableRealm {
                 cars.add(new CarSave(id,x,y,heading,fuel,hp));
             }
             int pickupCount=count(in,10000);
-            int legacy=target.world.pickups.size()-WeaponEconomy.worldWeapons().size();
-            if(pickupCount!=target.world.pickups.size()&&pickupCount!=legacy)
+            // Migration from the briefly-published 178-slot substitute
+            // catalog: first 170 original pickups stay stable, invented
+            // weapon slots are discarded rather than pretending to be arsenal.
+            int legacy=target.world.pickups.size();
+            if(pickupCount!=legacy&&pickupCount!=legacy+8)
                 throw new IOException("Pickup catalog changed");
-            boolean[] picked=new boolean[target.world.pickups.size()];
-            for(int i=0;i<pickupCount;i++)picked[i]=in.readBoolean();
+            boolean[] picked=new boolean[legacy];
+            for(int i=0;i<pickupCount;i++){
+                boolean flag=in.readBoolean();
+                if(i<legacy)picked[i]=flag;
+            }
             int npcCount=count(in,5000);
             if(npcCount!=target.world.npcs.size())throw new IOException("NPC catalog changed");
             List<NpcSave> npcs=new ArrayList<>();
@@ -191,8 +200,15 @@ public final class DurableRealm {
                         throw new IOException("Invalid persistent loaded vehicle");
                 }
             }
+            byte[] arsenal=new byte[0];
+            if(version>=3){
+                int length=count(in,1_000_000);
+                if(length>in.available())throw new IOException("Truncated arsenal state");
+                arsenal=in.readNBytes(length);
+                target.arsenal.restore(arsenal,false); // inspect before mutation
+            }
             if(in.available()!=0)throw new IOException("Unexpected snapshot trailing data");
-            return new Snapshot(seed,timestamp,devices,cars,picked,npcs,owners,cargo);
+            return new Snapshot(seed,timestamp,devices,cars,picked,npcs,owners,cargo,arsenal);
         }catch(EOFException e){throw new IOException("Incomplete world snapshot",e);}
     }
     /** Only call before accepting connections. Refuse corrupt data when no valid backup exists. */
@@ -235,7 +251,7 @@ public final class DurableRealm {
             for(DeviceSave d:snapshot.devices){
                 if(game.world.worldStructureAt(d.x,d.y,.55))continue;
                 World.Device device=new World.Device(d.x,d.y,d.kind);
-                device.hp=d.hp;device.ownerKey=d.owner.isEmpty()?null:d.owner;
+                device.hp=d.hp;device.tier=d.tier;device.ownerKey=d.owner.isEmpty()?null:d.owner;
                 game.world.devices.add(device);
             }
             for(CarSave car:snapshot.cars){
@@ -256,6 +272,7 @@ public final class DurableRealm {
                     throw new IOException("Corrupt cargo overlay",invalid);
                 }
             }
+            game.arsenal.restore(snapshot.arsenal(),true);
         }
         return true;
     }

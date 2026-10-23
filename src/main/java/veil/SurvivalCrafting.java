@@ -15,8 +15,7 @@ public final class SurvivalCrafting {
         TENT_KIT, CRATE_KIT, FENCE_SECTION, STAKE_TRAP, NOISE_ALARM,
         // Always append: original item ordinals are retained for saves/network.
         FIREWOOD, RATIONS, CHARCOAL, COMPOST, CLOTH_ROLL, SMOKED_RATIONS,
-        MEAL_SACK, FIELD_CROPS, HERBAL_BUNDLE, FIRED_BRICKS,
-        RUSTED_CROWBAR, FIRE_AXE, NAIL_BAT, SURVIVAL_KNIFE, OLD_REVOLVER, PUMP_SHOTGUN, HUNTING_RIFLE, COMPACT_SMG, WOODEN_CLUB, STONE_SHIV, STONE_HATCHET, WOODEN_SPEAR, SHORT_BOW, SPIKED_CLUB, REINFORCED_SPEAR, SALVAGE_MACHETE, HAND_CROSSBOW, PIPE_PISTOL, BOLT_RIFLE, SCRAP_SHOTGUN
+        MEAL_SACK, FIELD_CROPS, HERBAL_BUNDLE, FIRED_BRICKS
     }
     public enum Station { HAND, FIRE, WORKBENCH }
     public record Recipe(String id,Station station,Map<Item,Integer> requires,
@@ -71,30 +70,6 @@ public final class SurvivalCrafting {
             Item.FIBER,2),Item.HERBAL_BUNDLE,1);
         register(r,"camp-firebrick",Station.FIRE,Map.of(Item.FIELD_STONE,5,
             Item.FIREWOOD,4),Item.FIRED_BRICKS,1);
-        register(r,"weapon-wooden-club",Station.HAND,
-            Map.of(Item.TIMBER,2,Item.FIBER,1),Item.WOODEN_CLUB,1);
-        register(r,"weapon-stone-shiv",Station.HAND,
-            Map.of(Item.FIELD_STONE,2,Item.FIBER,1),Item.STONE_SHIV,1);
-        register(r,"weapon-stone-hatchet",Station.HAND,
-            Map.of(Item.FIELD_STONE,3,Item.TIMBER,2,Item.FIBER,2),Item.STONE_HATCHET,1);
-        register(r,"weapon-wooden-spear",Station.HAND,
-            Map.of(Item.TIMBER,3,Item.FIBER,2,Item.FIELD_STONE,1),Item.WOODEN_SPEAR,1);
-        register(r,"weapon-short-bow",Station.HAND,
-            Map.of(Item.TIMBER,3,Item.FIBER,4),Item.SHORT_BOW,1);
-        register(r,"weapon-spiked-club",Station.WORKBENCH,
-            Map.of(Item.TIMBER,3,Item.RAW_ORE,2,Item.FIBER,2),Item.SPIKED_CLUB,1);
-        register(r,"weapon-reinforced-spear",Station.WORKBENCH,
-            Map.of(Item.TIMBER,5,Item.RAW_ORE,3,Item.FIBER,3),Item.REINFORCED_SPEAR,1);
-        register(r,"weapon-salvage-machete",Station.WORKBENCH,
-            Map.of(Item.RAW_ORE,5,Item.TIMBER,2,Item.FIBER,1),Item.SALVAGE_MACHETE,1);
-        register(r,"weapon-hand-crossbow",Station.WORKBENCH,
-            Map.of(Item.TIMBER,4,Item.FIBER,4,Item.RAW_ORE,2),Item.HAND_CROSSBOW,1);
-        register(r,"weapon-pipe-pistol",Station.WORKBENCH,
-            Map.of(Item.RAW_ORE,6,Item.MACHINE_PARTS,1),Item.PIPE_PISTOL,1);
-        register(r,"weapon-bolt-rifle",Station.WORKBENCH,
-            Map.of(Item.RAW_ORE,8,Item.MACHINE_PARTS,2),Item.BOLT_RIFLE,1);
-        register(r,"weapon-scrap-shotgun",Station.WORKBENCH,
-            Map.of(Item.RAW_ORE,7,Item.METAL_STOCK,1),Item.SCRAP_SHOTGUN,1);
         RECIPES=Map.copyOf(r);
     }
     private static void register(Map<String,Recipe> out,String name,Station station,
@@ -138,13 +113,6 @@ public final class SurvivalCrafting {
         case FIELD_STONE,RAW_ORE,CAMPFIRE,CRATE_KIT,FIRED_BRICKS -> 4;
         case TENT_KIT -> 3;
         case FENCE_SECTION,STAKE_TRAP -> 2;
-        case SURVIVAL_KNIFE,STONE_SHIV -> 2;
-        case WOODEN_CLUB -> 3;
-        case RUSTED_CROWBAR,NAIL_BAT,STONE_HATCHET,WOODEN_SPEAR,SHORT_BOW -> 4;
-        case FIRE_AXE,OLD_REVOLVER,SPIKED_CLUB,REINFORCED_SPEAR,SALVAGE_MACHETE,HAND_CROSSBOW,PIPE_PISTOL -> 5;
-        case COMPACT_SMG -> 7;
-        case HUNTING_RIFLE,BOLT_RIFLE -> 8;
-        case PUMP_SHOTGUN,SCRAP_SHOTGUN -> 9;
         default -> 1;
     };}
     public synchronized int mass(){
@@ -162,16 +130,9 @@ public final class SurvivalCrafting {
         if(!canAcquire(kind,amount,atBase))return false;
         items.merge(kind,amount,Integer::sum);return true;
     }
-    /** Neutral callers may only manufacture shared survival goods. */
     public synchronized boolean craft(String recipeId,Station station){
-        return craft(recipeId,station,CraftingEraRegistry.Faction.ALL);
-    }
-    /** The faction argument must be supplied by trusted host enrollment. */
-    public synchronized boolean craft(String recipeId,Station station,
-                                       CraftingEraRegistry.Faction faction){
         Recipe recipe=RECIPES.get(recipeId);
-        if(recipe==null||station==null||station.ordinal()<recipe.station().ordinal()||
-           !WeaponEconomy.canCraft(recipe,faction))return false;
+        if(recipe==null||station==null||station.ordinal()<recipe.station().ordinal())return false;
         for(var part:recipe.requires().entrySet())
             if(count(part.getKey())<part.getValue())return false;
         int newMass=mass()+weight(recipe.result())*recipe.quantity();

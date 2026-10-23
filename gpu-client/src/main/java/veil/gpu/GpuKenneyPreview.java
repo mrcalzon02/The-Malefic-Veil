@@ -516,10 +516,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
      * The data still comes only from the authoritative host snapshot. */
     private void drawLiveHud(MaleficVeil.GpuFrame frame){
         menu.panel(sprites,6,348,438,46);
-        String weapon=frame.weapon()==0?"PISTOL":"SHOTGUN";
-        String rounds=frame.weapon()==0?
-            frame.pistolClip()+"/"+frame.pistolReserve():
-            frame.shellClip()+"/"+frame.shellReserve();
+        var equipped=ArsenalCatalog.get(frame.weapon());
+        String weapon=equipped.name().toUpperCase(java.util.Locale.ROOT);
+        var arsenal=frame.arsenalState();
+        String rounds=arsenal==null?"--/--":
+            arsenal.clip()[frame.weapon()]+"/"+arsenal.reserve()[frame.weapon()];
         font.draw(sprites,"HP "+frame.health()+"  SAN "+frame.sanity()+
             "  "+weapon+" "+rounds+"  MED "+frame.medkits(),14,383);
         menu.progress(sprites,15,355,91,frame.health()/100f);
@@ -557,7 +558,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             if(row==0)font.draw(sprites,"EMPTY",WIDTH-226,HEIGHT-115);
         }else if(frame.skills()){
             menu.frame(sprites,WIDTH-311,69,304,277);
-            font.draw(sprites,"CHARACTER / SKILLS  K CLOSE",WIDTH-294,HEIGHT-77);
+            font.draw(sprites,"CHARACTER / SKILLS",WIDTH-294,HEIGHT-77);
             menu.separator(sprites,WIDTH-294,HEIGHT-88,275);
             int row=0;
             for(String line:frame.skillStats()){
@@ -565,6 +566,29 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 font.draw(sprites,line,WIDTH-294,HEIGHT-111-row*20);
                 row++;
             }
+        }
+        if(frame.arsenalMenu()){
+            menu.frame(sprites,39,33,560,316);
+            var player=frame.arsenalState();
+            String faction=player==null||player.faction()<0?"UNENROLLED":
+                ArsenalCatalog.FACTIONS[player.faction()];
+            font.draw(sprites,"ARSENAL / "+faction+" / BENCH "+(player==null?0:player.benchTier()),
+                53,325);
+            int first=(frame.arsenalChoice()/9)*9;
+            for(int i=first;i<Math.min(32,first+9);i++){
+                var weapon=ArsenalCatalog.get(i);
+                boolean owned=player!=null&&(player.owned()&(1L<<i))!=0;
+                String label=(i==frame.arsenalChoice()?"> ":"  ")+
+                    weapon.name()+" / "+(weapon.mapSpawn()?"SCAVENGED":
+                        weapon.faction()==(player==null?-1:player.faction())?
+                        "T"+weapon.tier()+" OWN FACTION":"FOREIGN")+
+                    (owned?" [OWNED]":"");
+                font.draw(sprites,label,57,294-(i-first)*25);
+            }
+            var current=ArsenalCatalog.get(frame.arsenalChoice());
+            font.draw(sprites,"PRIMARY "+current.primary().kind()+" / ALT "+current.alternate().kind(),
+                53,63);
+            font.draw(sprites,"UP/DOWN CHOOSE  ENTER MAKE  E EQUIP  U BENCH  K CLOSE",53,47);
         }
         if(frame.map()||frame.continent()){
             Texture source=frame.map()?cityMapTexture:continentMapTexture;
@@ -589,12 +613,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         menu.band(sprites,4,5,WIDTH-8,23);
         font.draw(sprites,"WASD MOVE  MOUSE AIM/FIRE  E USE  R RELOAD  I INVENTORY  "+
-            "K SKILLS  F11 MENU  ESC PAUSE",12,20);
+            "K ARSENAL  F11 MENU  ESC PAUSE",12,20);
     }
     /** Foreground sourced weapon mesh, drawn as a camera-relative 3D object. */
     private void renderLiveWeapon(MaleficVeil.GpuFrame frame){
         if(frame.dead()||!menu.running())return;
-        String key=GameplayMeshes.WEAPON[frame.weapon()==0?0:1];
+        String key=ArsenalCatalog.get(frame.weapon()).id();
         List<GpuModel> weapons=models.get(key);
         if(weapons==null)throw new IllegalStateException("Missing GPU weapon mesh "+key);
         double facing=heading;

@@ -1,6 +1,6 @@
 # The Three Playable Factions
 
-[Home](Home.md) · [Classes](Classes.md) · [Structures](Structures.md) · [Faction Weapons](Weapons.md)
+[Home](Home.md) · [Classes](Classes.md) · [Structures](Structures.md)
 
 **The Lost are not a fourth playable faction.** They are hostile world NPCs with site-owned lifetimes and an independent proposed weapons ecosystem: [The Lost](The-Lost.md).
 
@@ -15,12 +15,6 @@ Penitent survivors interpret the Veil as an ordeal of revelation. **Visual ident
 ## The Begotten — altered bodies and alien adaptation
 
 The Begotten include transformed humans and intruding organisms, bound in unstable broods rather than a single empire. **Visual identity:** split chrysalis, dark violet, pearlescent tissue, asymmetric silhouettes. **Combat:** Harrower / Devourer / Mourner. **Economy:** nutrient cultivation, organo-mechanical production, brood dens, biological processing and living fortifications. **Strength:** biological resilience, predatory movement and territory corruption. **Trade dependency:** requires distinctive biology/technology interfaces and contested inputs, not cheap rebranded Unraveled smelters.
-
-## Faction-exclusive weapons
-
-Each faction has four proprietary manufactured weapons in the [Weapons](Weapons.md) catalog. **Unraveled:** Wooden Club, Pipe Pistol, Bolt Rifle, Scrap Shotgun. **Penitent:** Stone Shiv, Spiked Club, Reinforced Spear, Hand Crossbow. **Begotten:** Stone Hatchet, Wooden Spear, Short Bow, Salvage Machete. Craft permissions are checked by the host using the authenticated account's permanent faction, and the recipe index and client menus use the same owner. The eight city-scavenged weapons are available to all factions. Existing manufactured weapons may be carried or traded outside their origin faction; owning an item never grants permission to manufacture it.
-
-These are the first source-backed exclusive weapons; authentic ritual and organic component supply lines and distinct final silhouettes remain to be integrated.
 
 ## Hard faction rules
 
@@ -111,3 +105,7 @@ These entries are **not interchangeable reskins**. They are the separate faction
 | [begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) | `ORGAN_CORE` × 1 | AUTOMATION | [begotten-organ-lattice](Structures.md#begotten-organ-lattice) |
 
 Distinct production is constrained by [the faction industry and trade specification](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/docs/CITY_MIASMA_SETTLEMENT_ECONOMY_AND_TRADE.md); no faction can skip staged cooperation by exploiting a universal factory recipe.
+
+## Working Arsenal Manufacturers
+
+The recovered 32-weapon implementation provides eight shared city weapons plus **24 advanced bench-only weapons**. Their actual manufacturers are **10 Unraveled, 9 Penitent, and 5 Begotten**; see the [complete tiered roster](Weapons.md). The old development labels Foundry, Lumen and Veil are removed from runtime faction labels; host manufacturing checks the registered Unraveled/Penitent/Begotten faction. The distinct component finishes match mechanical salvage, ritual energy and living anomalous weapon identities. Trade and possession do not transfer manufacture rights.

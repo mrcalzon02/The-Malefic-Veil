@@ -3,7 +3,6 @@
 * [Getting Started](Getting-Started.md)
 * [Gameplay](Gameplay.md)
 * [Items](Items.md)
-* [Weapons](Weapons.md)
 * [Item Dependencies](Item-Dependencies.md)
 * [Recipes](Recipes.md)
 * [Structures](Structures.md)
@@ -13,3 +12,5 @@
 * [Lost Arsenal](Lost-Arsenal.md)
 * [World](World.md)
 * [Source & Status](Source-and-Status.md)
+
+* [Working 32-Weapon Arsenal](Weapons.md)

@@ -1,1068 +1,950 @@
-# Item Production and Consumption Index
+# Complete Item Production and Consumption Index
 
 [Home](Home.md) · [Items](Items.md) · [Recipes](Recipes.md) · [Structures](Structures.md)
 
-All 177 exported item IDs, with *every* recipe producer and resource-consuming recipe/facility cost. These entries describe production graphs, not an assertion that every corresponding physical factory can be built.
+This page gives **every** direct producer and every direct ingredient/structure-cost consumer of the 157 item IDs currently exported from the registry. Nothing is hidden after a "+more" summary. Ingredient quantities are per batch, output quantities per completed recipe, and structure quantities per built blueprint. These are *declared formulas*; see [Source and Status](Source-and-Status.md) before assuming that industrial outputs or full physical construction are playable.
+
+Compiled from [item IDs](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/items.csv), [hand recipes](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/hand_recipes.csv), [industrial recipes](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/industrial_recipes.csv), [recipe inputs](https://github.com/mrcalzon02/The-Malefic-Veil/tree/main/economy) and [facility costs](https://github.com/mrcalzon02/The-Malefic-Veil/blob/main/economy/facility_costs.csv). The exported CSVs follow the Java registry.
 
 ## Timber (`TIMBER`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (55):** [hand:campfire](Recipes.md#handcampfire) requires 3 (produces `CAMPFIRE`); [hand:tent](Recipes.md#handtent) requires 2 (produces `TENT_KIT`); [hand:crate](Recipes.md#handcrate) requires 5 (produces `CRATE_KIT`); [hand:fence](Recipes.md#handfence) requires 3 (produces `FENCE_SECTION`); [hand:stake-trap](Recipes.md#handstake-trap) requires 2 (produces `STAKE_TRAP`); [hand:noise-alarm](Recipes.md#handnoise-alarm) requires 1 (produces `NOISE_ALARM`); [hand:workbench](Recipes.md#handworkbench) requires 6 (produces `WORKBENCH`); [hand:shelter-kit](Recipes.md#handshelter-kit) requires 8 (produces `SHELTER_KIT`); [hand:split-kindling](Recipes.md#handsplit-kindling) requires 2 (produces `FIREWOOD`); [hand:pit-charcoal](Recipes.md#handpit-charcoal) requires 5 (produces `CHARCOAL`); [hand:weapon-wooden-club](Recipes.md#handweapon-wooden-club) requires 2 (produces `WOODEN_CLUB`); [hand:weapon-stone-hatchet](Recipes.md#handweapon-stone-hatchet) requires 2 (produces `STONE_HATCHET`); [hand:weapon-wooden-spear](Recipes.md#handweapon-wooden-spear) requires 3 (produces `WOODEN_SPEAR`); [hand:weapon-short-bow](Recipes.md#handweapon-short-bow) requires 3 (produces `SHORT_BOW`); [hand:weapon-spiked-club](Recipes.md#handweapon-spiked-club) requires 3 (produces `SPIKED_CLUB`); [hand:weapon-reinforced-spear](Recipes.md#handweapon-reinforced-spear) requires 5 (produces `REINFORCED_SPEAR`); [hand:weapon-salvage-machete](Recipes.md#handweapon-salvage-machete) requires 2 (produces `SALVAGE_MACHETE`); [hand:weapon-hand-crossbow](Recipes.md#handweapon-hand-crossbow) requires 4 (produces `HAND_CROSSBOW`); [industrial:split-firewood](Recipes.md#industrialsplit-firewood) requires 2 (produces `FIREWOOD`); [industrial:charcoal-burn](Recipes.md#industrialcharcoal-burn) requires 4 (produces `CHARCOAL`); [camp-stake](Structures.md#camp-stake) build requires 1 (STRANDED); [claim-heart](Structures.md#claim-heart) build requires 12 (ENCAMPMENT); [hand-workshop](Structures.md#hand-workshop) build requires 10 (ENCAMPMENT); [dry-store](Structures.md#dry-store) build requires 12 (ENCAMPMENT); [cooking-hearth](Structures.md#cooking-hearth) build requires 10 (ENCAMPMENT); [rain-catcher](Structures.md#rain-catcher) build requires 8 (ENCAMPMENT); [cargo-laydown](Structures.md#cargo-laydown) build requires 12 (ENCAMPMENT); [field-shelter](Structures.md#field-shelter) build requires 10 (ENCAMPMENT); [forager-garden](Structures.md#forager-garden) build requires 12 (ENCAMPMENT); [seed-nursery](Structures.md#seed-nursery) build requires 12 (ENCAMPMENT); [compost-yard](Structures.md#compost-yard) build requires 10 (ENCAMPMENT); [herb-plot](Structures.md#herb-plot) build requires 8 (ENCAMPMENT); [root-cellar](Structures.md#root-cellar) build requires 18 (ENCAMPMENT); [smokehouse](Structures.md#smokehouse) build requires 16 (ENCAMPMENT); [fiber-loom](Structures.md#fiber-loom) build requires 14 (ENCAMPMENT); [watch-post](Structures.md#watch-post) build requires 14 (ENCAMPMENT); [palisade-section](Structures.md#palisade-section) build requires 12 (ENCAMPMENT); [charcoal-kiln](Structures.md#charcoal-kiln) build requires 14 (SALVAGE); [stone-furnace](Structures.md#stone-furnace) build requires 12 (SALVAGE); [freight-bay](Structures.md#freight-bay) build requires 16 (SALVAGE); [grain-mill](Structures.md#grain-mill) build requires 18 (SALVAGE); [animal-pen](Structures.md#animal-pen) build requires 30 (SALVAGE); [materials-recycler](Structures.md#materials-recycler) build requires 10 (SALVAGE); [mechanical-shaft](Structures.md#mechanical-shaft) build requires 14 (STEAM); [conveyor-line](Structures.md#conveyor-line) build requires 12 (STEAM); [controlled-greenhouse](Structures.md#controlled-greenhouse) build requires 18 (ELECTRIC); [command-hall](Structures.md#command-hall) build requires 24 (AUTOMATION); [infirmary](Structures.md#infirmary) build requires 16 (AUTOMATION); [wall-gate-system](Structures.md#wall-gate-system) build requires 18 (ENCAMPMENT); [cold-store](Structures.md#cold-store) build requires 22 (SALVAGE); [barracks](Structures.md#barracks) build requires 28 (SALVAGE); [monument-graveyard](Structures.md#monument-graveyard) build requires 90 (INCURSION); [unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) build requires 12 (ENCAMPMENT); [penitent-votive-altar](Structures.md#penitent-votive-altar) build requires 10 (ENCAMPMENT); [begotten-brood-nest](Structures.md#begotten-brood-nest) build requires 12 (ENCAMPMENT)
+**Consumed by (47):** [hand:campfire](Recipes.md#handcampfire) — needs 3, makes 1 × `CAMPFIRE`; [hand:tent](Recipes.md#handtent) — needs 2, makes 1 × `TENT_KIT`; [hand:crate](Recipes.md#handcrate) — needs 5, makes 1 × `CRATE_KIT`; [hand:fence](Recipes.md#handfence) — needs 3, makes 2 × `FENCE_SECTION`; [hand:stake-trap](Recipes.md#handstake-trap) — needs 2, makes 1 × `STAKE_TRAP`; [hand:noise-alarm](Recipes.md#handnoise-alarm) — needs 1, makes 1 × `NOISE_ALARM`; [hand:workbench](Recipes.md#handworkbench) — needs 6, makes 1 × `WORKBENCH`; [hand:shelter-kit](Recipes.md#handshelter-kit) — needs 8, makes 1 × `SHELTER_KIT`; [hand:split-kindling](Recipes.md#handsplit-kindling) — needs 2, makes 2 × `FIREWOOD`; [hand:pit-charcoal](Recipes.md#handpit-charcoal) — needs 5, makes 1 × `CHARCOAL`; [industry:split-firewood](Recipes.md#industrialsplit-firewood) — needs 2, makes 3 × `FIREWOOD`; [industry:charcoal-burn](Recipes.md#industrialcharcoal-burn) — needs 4, makes 2 × `CHARCOAL`; [facility:camp-stake](Structures.md#camp-stake) — build cost 1 (STRANDED, ALL); [facility:claim-heart](Structures.md#claim-heart) — build cost 12 (ENCAMPMENT, ALL); [facility:hand-workshop](Structures.md#hand-workshop) — build cost 10 (ENCAMPMENT, ALL); [facility:dry-store](Structures.md#dry-store) — build cost 12 (ENCAMPMENT, ALL); [facility:cooking-hearth](Structures.md#cooking-hearth) — build cost 10 (ENCAMPMENT, ALL); [facility:rain-catcher](Structures.md#rain-catcher) — build cost 8 (ENCAMPMENT, ALL); [facility:cargo-laydown](Structures.md#cargo-laydown) — build cost 12 (ENCAMPMENT, ALL); [facility:field-shelter](Structures.md#field-shelter) — build cost 10 (ENCAMPMENT, ALL); [facility:forager-garden](Structures.md#forager-garden) — build cost 12 (ENCAMPMENT, ALL); [facility:seed-nursery](Structures.md#seed-nursery) — build cost 12 (ENCAMPMENT, ALL); [facility:compost-yard](Structures.md#compost-yard) — build cost 10 (ENCAMPMENT, ALL); [facility:herb-plot](Structures.md#herb-plot) — build cost 8 (ENCAMPMENT, ALL); [facility:root-cellar](Structures.md#root-cellar) — build cost 18 (ENCAMPMENT, ALL); [facility:smokehouse](Structures.md#smokehouse) — build cost 16 (ENCAMPMENT, ALL); [facility:fiber-loom](Structures.md#fiber-loom) — build cost 14 (ENCAMPMENT, ALL); [facility:watch-post](Structures.md#watch-post) — build cost 14 (ENCAMPMENT, ALL); [facility:palisade-section](Structures.md#palisade-section) — build cost 12 (ENCAMPMENT, ALL); [facility:charcoal-kiln](Structures.md#charcoal-kiln) — build cost 14 (SALVAGE, ALL); [facility:stone-furnace](Structures.md#stone-furnace) — build cost 12 (SALVAGE, ALL); [facility:freight-bay](Structures.md#freight-bay) — build cost 16 (SALVAGE, ALL); [facility:grain-mill](Structures.md#grain-mill) — build cost 18 (SALVAGE, ALL); [facility:animal-pen](Structures.md#animal-pen) — build cost 30 (SALVAGE, ALL); [facility:materials-recycler](Structures.md#materials-recycler) — build cost 10 (SALVAGE, ALL); [facility:mechanical-shaft](Structures.md#mechanical-shaft) — build cost 14 (STEAM, ALL); [facility:conveyor-line](Structures.md#conveyor-line) — build cost 12 (STEAM, ALL); [facility:controlled-greenhouse](Structures.md#controlled-greenhouse) — build cost 18 (ELECTRIC, ALL); [facility:command-hall](Structures.md#command-hall) — build cost 24 (AUTOMATION, ALL); [facility:infirmary](Structures.md#infirmary) — build cost 16 (AUTOMATION, ALL); [facility:wall-gate-system](Structures.md#wall-gate-system) — build cost 18 (ENCAMPMENT, ALL); [facility:cold-store](Structures.md#cold-store) — build cost 22 (SALVAGE, ALL); [facility:barracks](Structures.md#barracks) — build cost 28 (SALVAGE, ALL); [facility:monument-graveyard](Structures.md#monument-graveyard) — build cost 90 (INCURSION, ALL); [facility:unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) — build cost 12 (ENCAMPMENT, UNRAVELED); [facility:penitent-votive-altar](Structures.md#penitent-votive-altar) — build cost 10 (ENCAMPMENT, PENITENT); [facility:begotten-brood-nest](Structures.md#begotten-brood-nest) — build cost 12 (ENCAMPMENT, BEGOTTEN)
 
 ## Field Stone (`FIELD_STONE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (55):** [hand:campfire](Recipes.md#handcampfire) requires 2 (produces `CAMPFIRE`); [hand:water-filter](Recipes.md#handwater-filter) requires 2 (produces `FILTER`); [hand:workbench](Recipes.md#handworkbench) requires 4 (produces `WORKBENCH`); [hand:camp-firebrick](Recipes.md#handcamp-firebrick) requires 5 (produces `FIRED_BRICKS`); [hand:weapon-stone-shiv](Recipes.md#handweapon-stone-shiv) requires 2 (produces `STONE_SHIV`); [hand:weapon-stone-hatchet](Recipes.md#handweapon-stone-hatchet) requires 3 (produces `STONE_HATCHET`); [hand:weapon-wooden-spear](Recipes.md#handweapon-wooden-spear) requires 1 (produces `WOODEN_SPEAR`); [industrial:mill-crops](Recipes.md#industrialmill-crops) requires 1 (produces `MEAL_SACK`); [industrial:firebrick-batch](Recipes.md#industrialfirebrick-batch) requires 4 (produces `FIRED_BRICKS`); [claim-heart](Structures.md#claim-heart) build requires 12 (ENCAMPMENT); [hand-workshop](Structures.md#hand-workshop) build requires 6 (ENCAMPMENT); [dry-store](Structures.md#dry-store) build requires 8 (ENCAMPMENT); [cooking-hearth](Structures.md#cooking-hearth) build requires 12 (ENCAMPMENT); [rain-catcher](Structures.md#rain-catcher) build requires 6 (ENCAMPMENT); [cargo-laydown](Structures.md#cargo-laydown) build requires 10 (ENCAMPMENT); [field-shelter](Structures.md#field-shelter) build requires 4 (ENCAMPMENT); [forager-garden](Structures.md#forager-garden) build requires 6 (ENCAMPMENT); [seed-nursery](Structures.md#seed-nursery) build requires 5 (ENCAMPMENT); [compost-yard](Structures.md#compost-yard) build requires 7 (ENCAMPMENT); [herb-plot](Structures.md#herb-plot) build requires 5 (ENCAMPMENT); [root-cellar](Structures.md#root-cellar) build requires 12 (ENCAMPMENT); [smokehouse](Structures.md#smokehouse) build requires 10 (ENCAMPMENT); [watch-post](Structures.md#watch-post) build requires 8 (ENCAMPMENT); [palisade-section](Structures.md#palisade-section) build requires 3 (ENCAMPMENT); [charcoal-kiln](Structures.md#charcoal-kiln) build requires 16 (SALVAGE); [stone-furnace](Structures.md#stone-furnace) build requires 30 (SALVAGE); [forge](Structures.md#forge) build requires 20 (SALVAGE); [freight-bay](Structures.md#freight-bay) build requires 24 (SALVAGE); [grain-mill](Structures.md#grain-mill) build requires 16 (SALVAGE); [irrigation-works](Structures.md#irrigation-works) build requires 16 (SALVAGE); [animal-pen](Structures.md#animal-pen) build requires 8 (SALVAGE); [steam-boiler](Structures.md#steam-boiler) build requires 28 (STEAM); [metal-press](Structures.md#metal-press) build requires 16 (STEAM); [electric-bus](Structures.md#electric-bus) build requires 12 (ELECTRIC); [automatic-sorter](Structures.md#automatic-sorter) build requires 12 (ELECTRIC); [water-works](Structures.md#water-works) build requires 18 (ELECTRIC); [industrial-workshop](Structures.md#industrial-workshop) build requires 28 (AUTOMATION); [motor-pool](Structures.md#motor-pool) build requires 30 (AUTOMATION); [assembly-line](Structures.md#assembly-line) build requires 35 (AUTOMATION); [resilience-grid](Structures.md#resilience-grid) build requires 60 (INCURSION); [dread-works](Structures.md#dread-works) build requires 60 (INCURSION); [incursion-anchor](Structures.md#incursion-anchor) build requires 60 (INCURSION); [wall-gate-system](Structures.md#wall-gate-system) build requires 12 (ENCAMPMENT); [cold-store](Structures.md#cold-store) build requires 18 (SALVAGE); [barracks](Structures.md#barracks) build requires 20 (SALVAGE); [purification-works](Structures.md#purification-works) build requires 24 (ELECTRIC); [monument-graveyard](Structures.md#monument-graveyard) build requires 140 (INCURSION); [unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) build requires 8 (ENCAMPMENT); [unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) build requires 12 (SALVAGE); [penitent-votive-altar](Structures.md#penitent-votive-altar) build requires 10 (ENCAMPMENT); [penitent-reliquary](Structures.md#penitent-reliquary) build requires 16 (SALVAGE); [penitent-cantor-dais](Structures.md#penitent-cantor-dais) build requires 18 (STEAM); [penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) build requires 24 (AUTOMATION); [begotten-spore-basin](Structures.md#begotten-spore-basin) build requires 16 (SALVAGE); [begotten-chitin-vat](Structures.md#begotten-chitin-vat) build requires 18 (STEAM)
+**Consumed by (52):** [hand:campfire](Recipes.md#handcampfire) — needs 2, makes 1 × `CAMPFIRE`; [hand:water-filter](Recipes.md#handwater-filter) — needs 2, makes 1 × `FILTER`; [hand:workbench](Recipes.md#handworkbench) — needs 4, makes 1 × `WORKBENCH`; [hand:camp-firebrick](Recipes.md#handcamp-firebrick) — needs 5, makes 1 × `FIRED_BRICKS`; [industry:mill-crops](Recipes.md#industrialmill-crops) — needs 1, makes 2 × `MEAL_SACK`; [industry:firebrick-batch](Recipes.md#industrialfirebrick-batch) — needs 4, makes 2 × `FIRED_BRICKS`; [facility:claim-heart](Structures.md#claim-heart) — build cost 12 (ENCAMPMENT, ALL); [facility:hand-workshop](Structures.md#hand-workshop) — build cost 6 (ENCAMPMENT, ALL); [facility:dry-store](Structures.md#dry-store) — build cost 8 (ENCAMPMENT, ALL); [facility:cooking-hearth](Structures.md#cooking-hearth) — build cost 12 (ENCAMPMENT, ALL); [facility:rain-catcher](Structures.md#rain-catcher) — build cost 6 (ENCAMPMENT, ALL); [facility:cargo-laydown](Structures.md#cargo-laydown) — build cost 10 (ENCAMPMENT, ALL); [facility:field-shelter](Structures.md#field-shelter) — build cost 4 (ENCAMPMENT, ALL); [facility:forager-garden](Structures.md#forager-garden) — build cost 6 (ENCAMPMENT, ALL); [facility:seed-nursery](Structures.md#seed-nursery) — build cost 5 (ENCAMPMENT, ALL); [facility:compost-yard](Structures.md#compost-yard) — build cost 7 (ENCAMPMENT, ALL); [facility:herb-plot](Structures.md#herb-plot) — build cost 5 (ENCAMPMENT, ALL); [facility:root-cellar](Structures.md#root-cellar) — build cost 12 (ENCAMPMENT, ALL); [facility:smokehouse](Structures.md#smokehouse) — build cost 10 (ENCAMPMENT, ALL); [facility:watch-post](Structures.md#watch-post) — build cost 8 (ENCAMPMENT, ALL); [facility:palisade-section](Structures.md#palisade-section) — build cost 3 (ENCAMPMENT, ALL); [facility:charcoal-kiln](Structures.md#charcoal-kiln) — build cost 16 (SALVAGE, ALL); [facility:stone-furnace](Structures.md#stone-furnace) — build cost 30 (SALVAGE, ALL); [facility:forge](Structures.md#forge) — build cost 20 (SALVAGE, ALL); [facility:freight-bay](Structures.md#freight-bay) — build cost 24 (SALVAGE, ALL); [facility:grain-mill](Structures.md#grain-mill) — build cost 16 (SALVAGE, ALL); [facility:irrigation-works](Structures.md#irrigation-works) — build cost 16 (SALVAGE, ALL); [facility:animal-pen](Structures.md#animal-pen) — build cost 8 (SALVAGE, ALL); [facility:steam-boiler](Structures.md#steam-boiler) — build cost 28 (STEAM, ALL); [facility:metal-press](Structures.md#metal-press) — build cost 16 (STEAM, ALL); [facility:electric-bus](Structures.md#electric-bus) — build cost 12 (ELECTRIC, ALL); [facility:automatic-sorter](Structures.md#automatic-sorter) — build cost 12 (ELECTRIC, ALL); [facility:water-works](Structures.md#water-works) — build cost 18 (ELECTRIC, ALL); [facility:industrial-workshop](Structures.md#industrial-workshop) — build cost 28 (AUTOMATION, ALL); [facility:motor-pool](Structures.md#motor-pool) — build cost 30 (AUTOMATION, ALL); [facility:assembly-line](Structures.md#assembly-line) — build cost 35 (AUTOMATION, ALL); [facility:resilience-grid](Structures.md#resilience-grid) — build cost 60 (INCURSION, UNRAVELED); [facility:dread-works](Structures.md#dread-works) — build cost 60 (INCURSION, PENITENT); [facility:incursion-anchor](Structures.md#incursion-anchor) — build cost 60 (INCURSION, BEGOTTEN); [facility:wall-gate-system](Structures.md#wall-gate-system) — build cost 12 (ENCAMPMENT, ALL); [facility:cold-store](Structures.md#cold-store) — build cost 18 (SALVAGE, ALL); [facility:barracks](Structures.md#barracks) — build cost 20 (SALVAGE, ALL); [facility:purification-works](Structures.md#purification-works) — build cost 24 (ELECTRIC, ALL); [facility:monument-graveyard](Structures.md#monument-graveyard) — build cost 140 (INCURSION, ALL); [facility:unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) — build cost 8 (ENCAMPMENT, UNRAVELED); [facility:unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) — build cost 12 (SALVAGE, UNRAVELED); [facility:penitent-votive-altar](Structures.md#penitent-votive-altar) — build cost 10 (ENCAMPMENT, PENITENT); [facility:penitent-reliquary](Structures.md#penitent-reliquary) — build cost 16 (SALVAGE, PENITENT); [facility:penitent-cantor-dais](Structures.md#penitent-cantor-dais) — build cost 18 (STEAM, PENITENT); [facility:penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) — build cost 24 (AUTOMATION, PENITENT); [facility:begotten-spore-basin](Structures.md#begotten-spore-basin) — build cost 16 (SALVAGE, BEGOTTEN); [facility:begotten-chitin-vat](Structures.md#begotten-chitin-vat) — build cost 18 (STEAM, BEGOTTEN)
 
 ## Fiber (`FIBER`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (50):** [hand:bandage](Recipes.md#handbandage) requires 2 (produces `BANDAGE`); [hand:water-filter](Recipes.md#handwater-filter) requires 3 (produces `FILTER`); [hand:tent](Recipes.md#handtent) requires 4 (produces `TENT_KIT`); [hand:crate](Recipes.md#handcrate) requires 2 (produces `CRATE_KIT`); [hand:fence](Recipes.md#handfence) requires 1 (produces `FENCE_SECTION`); [hand:stake-trap](Recipes.md#handstake-trap) requires 1 (produces `STAKE_TRAP`); [hand:noise-alarm](Recipes.md#handnoise-alarm) requires 2 (produces `NOISE_ALARM`); [hand:workbench](Recipes.md#handworkbench) requires 2 (produces `WORKBENCH`); [hand:shelter-kit](Recipes.md#handshelter-kit) requires 5 (produces `SHELTER_KIT`); [hand:field-dressing](Recipes.md#handfield-dressing) requires 3 (produces `BANDAGE`); [hand:rough-compost](Recipes.md#handrough-compost) requires 3 (produces `COMPOST`); [hand:hand-woven-cloth](Recipes.md#handhand-woven-cloth) requires 8 (produces `CLOTH_ROLL`); [hand:bunch-herbs](Recipes.md#handbunch-herbs) requires 2 (produces `HERBAL_BUNDLE`); [hand:weapon-wooden-club](Recipes.md#handweapon-wooden-club) requires 1 (produces `WOODEN_CLUB`); [hand:weapon-stone-shiv](Recipes.md#handweapon-stone-shiv) requires 1 (produces `STONE_SHIV`); [hand:weapon-stone-hatchet](Recipes.md#handweapon-stone-hatchet) requires 2 (produces `STONE_HATCHET`); [hand:weapon-wooden-spear](Recipes.md#handweapon-wooden-spear) requires 2 (produces `WOODEN_SPEAR`); [hand:weapon-short-bow](Recipes.md#handweapon-short-bow) requires 4 (produces `SHORT_BOW`); [hand:weapon-spiked-club](Recipes.md#handweapon-spiked-club) requires 2 (produces `SPIKED_CLUB`); [hand:weapon-reinforced-spear](Recipes.md#handweapon-reinforced-spear) requires 3 (produces `REINFORCED_SPEAR`); [hand:weapon-salvage-machete](Recipes.md#handweapon-salvage-machete) requires 1 (produces `SALVAGE_MACHETE`); [hand:weapon-hand-crossbow](Recipes.md#handweapon-hand-crossbow) requires 4 (produces `HAND_CROSSBOW`); [industrial:compost-ferment](Recipes.md#industrialcompost-ferment) requires 2 (produces `COMPOST`); [industrial:weave-cloth](Recipes.md#industrialweave-cloth) requires 4 (produces `CLOTH_ROLL`); [industrial:cellar-vegetables](Recipes.md#industrialcellar-vegetables) requires 1 (produces `CELLARED_CROPS`); [claim-heart](Structures.md#claim-heart) build requires 6 (ENCAMPMENT); [hand-workshop](Structures.md#hand-workshop) build requires 4 (ENCAMPMENT); [dry-store](Structures.md#dry-store) build requires 6 (ENCAMPMENT); [cooking-hearth](Structures.md#cooking-hearth) build requires 3 (ENCAMPMENT); [rain-catcher](Structures.md#rain-catcher) build requires 8 (ENCAMPMENT); [cargo-laydown](Structures.md#cargo-laydown) build requires 6 (ENCAMPMENT); [field-shelter](Structures.md#field-shelter) build requires 8 (ENCAMPMENT); [forager-garden](Structures.md#forager-garden) build requires 6 (ENCAMPMENT); [seed-nursery](Structures.md#seed-nursery) build requires 8 (ENCAMPMENT); [compost-yard](Structures.md#compost-yard) build requires 5 (ENCAMPMENT); [herb-plot](Structures.md#herb-plot) build requires 6 (ENCAMPMENT); [root-cellar](Structures.md#root-cellar) build requires 4 (ENCAMPMENT); [smokehouse](Structures.md#smokehouse) build requires 5 (ENCAMPMENT); [fiber-loom](Structures.md#fiber-loom) build requires 12 (ENCAMPMENT); [watch-post](Structures.md#watch-post) build requires 6 (ENCAMPMENT); [palisade-section](Structures.md#palisade-section) build requires 3 (ENCAMPMENT); [charcoal-kiln](Structures.md#charcoal-kiln) build requires 3 (SALVAGE); [grain-mill](Structures.md#grain-mill) build requires 6 (SALVAGE); [animal-pen](Structures.md#animal-pen) build requires 12 (SALVAGE); [wall-gate-system](Structures.md#wall-gate-system) build requires 8 (ENCAMPMENT); [barracks](Structures.md#barracks) build requires 16 (SALVAGE); [monument-graveyard](Structures.md#monument-graveyard) build requires 60 (INCURSION); [unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) build requires 4 (ENCAMPMENT); [penitent-votive-altar](Structures.md#penitent-votive-altar) build requires 8 (ENCAMPMENT); [begotten-brood-nest](Structures.md#begotten-brood-nest) build requires 9 (ENCAMPMENT)
+**Consumed by (41):** [hand:bandage](Recipes.md#handbandage) — needs 2, makes 1 × `BANDAGE`; [hand:water-filter](Recipes.md#handwater-filter) — needs 3, makes 1 × `FILTER`; [hand:tent](Recipes.md#handtent) — needs 4, makes 1 × `TENT_KIT`; [hand:crate](Recipes.md#handcrate) — needs 2, makes 1 × `CRATE_KIT`; [hand:fence](Recipes.md#handfence) — needs 1, makes 2 × `FENCE_SECTION`; [hand:stake-trap](Recipes.md#handstake-trap) — needs 1, makes 1 × `STAKE_TRAP`; [hand:noise-alarm](Recipes.md#handnoise-alarm) — needs 2, makes 1 × `NOISE_ALARM`; [hand:workbench](Recipes.md#handworkbench) — needs 2, makes 1 × `WORKBENCH`; [hand:shelter-kit](Recipes.md#handshelter-kit) — needs 5, makes 1 × `SHELTER_KIT`; [hand:field-dressing](Recipes.md#handfield-dressing) — needs 3, makes 2 × `BANDAGE`; [hand:rough-compost](Recipes.md#handrough-compost) — needs 3, makes 1 × `COMPOST`; [hand:hand-woven-cloth](Recipes.md#handhand-woven-cloth) — needs 8, makes 1 × `CLOTH_ROLL`; [hand:bunch-herbs](Recipes.md#handbunch-herbs) — needs 2, makes 1 × `HERBAL_BUNDLE`; [industry:compost-ferment](Recipes.md#industrialcompost-ferment) — needs 2, makes 2 × `COMPOST`; [industry:weave-cloth](Recipes.md#industrialweave-cloth) — needs 4, makes 2 × `CLOTH_ROLL`; [industry:cellar-vegetables](Recipes.md#industrialcellar-vegetables) — needs 1, makes 2 × `CELLARED_CROPS`; [facility:claim-heart](Structures.md#claim-heart) — build cost 6 (ENCAMPMENT, ALL); [facility:hand-workshop](Structures.md#hand-workshop) — build cost 4 (ENCAMPMENT, ALL); [facility:dry-store](Structures.md#dry-store) — build cost 6 (ENCAMPMENT, ALL); [facility:cooking-hearth](Structures.md#cooking-hearth) — build cost 3 (ENCAMPMENT, ALL); [facility:rain-catcher](Structures.md#rain-catcher) — build cost 8 (ENCAMPMENT, ALL); [facility:cargo-laydown](Structures.md#cargo-laydown) — build cost 6 (ENCAMPMENT, ALL); [facility:field-shelter](Structures.md#field-shelter) — build cost 8 (ENCAMPMENT, ALL); [facility:forager-garden](Structures.md#forager-garden) — build cost 6 (ENCAMPMENT, ALL); [facility:seed-nursery](Structures.md#seed-nursery) — build cost 8 (ENCAMPMENT, ALL); [facility:compost-yard](Structures.md#compost-yard) — build cost 5 (ENCAMPMENT, ALL); [facility:herb-plot](Structures.md#herb-plot) — build cost 6 (ENCAMPMENT, ALL); [facility:root-cellar](Structures.md#root-cellar) — build cost 4 (ENCAMPMENT, ALL); [facility:smokehouse](Structures.md#smokehouse) — build cost 5 (ENCAMPMENT, ALL); [facility:fiber-loom](Structures.md#fiber-loom) — build cost 12 (ENCAMPMENT, ALL); [facility:watch-post](Structures.md#watch-post) — build cost 6 (ENCAMPMENT, ALL); [facility:palisade-section](Structures.md#palisade-section) — build cost 3 (ENCAMPMENT, ALL); [facility:charcoal-kiln](Structures.md#charcoal-kiln) — build cost 3 (SALVAGE, ALL); [facility:grain-mill](Structures.md#grain-mill) — build cost 6 (SALVAGE, ALL); [facility:animal-pen](Structures.md#animal-pen) — build cost 12 (SALVAGE, ALL); [facility:wall-gate-system](Structures.md#wall-gate-system) — build cost 8 (ENCAMPMENT, ALL); [facility:barracks](Structures.md#barracks) — build cost 16 (SALVAGE, ALL); [facility:monument-graveyard](Structures.md#monument-graveyard) — build cost 60 (INCURSION, ALL); [facility:unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) — build cost 4 (ENCAMPMENT, UNRAVELED); [facility:penitent-votive-altar](Structures.md#penitent-votive-altar) — build cost 8 (ENCAMPMENT, PENITENT); [facility:begotten-brood-nest](Structures.md#begotten-brood-nest) — build cost 9 (ENCAMPMENT, BEGOTTEN)
 
 ## Edibles (`EDIBLES`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (16):** [hand:camp-ration](Recipes.md#handcamp-ration) requires 3 (produces `RATIONS`); [hand:rough-compost](Recipes.md#handrough-compost) requires 4 (produces `COMPOST`); [hand:smoke-ration](Recipes.md#handsmoke-ration) requires 5 (produces `SMOKED_RATIONS`); [industrial:preserve-rations](Recipes.md#industrialpreserve-rations) requires 3 (produces `RATIONS`); [industrial:compost-ferment](Recipes.md#industrialcompost-ferment) requires 2 (produces `COMPOST`); [industrial:grow-field-crops](Recipes.md#industrialgrow-field-crops) requires 2 (produces `FIELD_CROPS`); [industrial:smoke-rations](Recipes.md#industrialsmoke-rations) requires 4 (produces `SMOKED_RATIONS`); [industrial:biomass-feed](Recipes.md#industrialbiomass-feed) requires 5 (produces `NUTRIENT_STOCK`); [industrial:growth-feed](Recipes.md#industrialgrowth-feed) requires 3 (produces `GROWTH_FEED`); [industrial:begotten-mix-slurry](Recipes.md#industrialbegotten-mix-slurry) requires 4 (produces `NUTRIENT_SLURRY`); [nutrient-digestor](Structures.md#nutrient-digestor) build requires 24 (AUTOMATION); [begotten-brood-nest](Structures.md#begotten-brood-nest) build requires 12 (ENCAMPMENT); [begotten-spore-basin](Structures.md#begotten-spore-basin) build requires 18 (SALVAGE); [begotten-chitin-vat](Structures.md#begotten-chitin-vat) build requires 25 (STEAM); [begotten-membrane-lab](Structures.md#begotten-membrane-lab) build requires 30 (ELECTRIC); [begotten-organ-lattice](Structures.md#begotten-organ-lattice) build requires 40 (AUTOMATION)
+**Consumed by (16):** [hand:camp-ration](Recipes.md#handcamp-ration) — needs 3, makes 1 × `RATIONS`; [hand:rough-compost](Recipes.md#handrough-compost) — needs 4, makes 1 × `COMPOST`; [hand:smoke-ration](Recipes.md#handsmoke-ration) — needs 5, makes 1 × `SMOKED_RATIONS`; [industry:preserve-rations](Recipes.md#industrialpreserve-rations) — needs 3, makes 2 × `RATIONS`; [industry:compost-ferment](Recipes.md#industrialcompost-ferment) — needs 2, makes 2 × `COMPOST`; [industry:grow-field-crops](Recipes.md#industrialgrow-field-crops) — needs 2, makes 4 × `FIELD_CROPS`; [industry:smoke-rations](Recipes.md#industrialsmoke-rations) — needs 4, makes 2 × `SMOKED_RATIONS`; [industry:biomass-feed](Recipes.md#industrialbiomass-feed) — needs 5, makes 1 × `NUTRIENT_STOCK`; [industry:growth-feed](Recipes.md#industrialgrowth-feed) — needs 3, makes 2 × `GROWTH_FEED`; [industry:begotten-mix-slurry](Recipes.md#industrialbegotten-mix-slurry) — needs 4, makes 2 × `NUTRIENT_SLURRY`; [facility:nutrient-digestor](Structures.md#nutrient-digestor) — build cost 24 (AUTOMATION, BEGOTTEN); [facility:begotten-brood-nest](Structures.md#begotten-brood-nest) — build cost 12 (ENCAMPMENT, BEGOTTEN); [facility:begotten-spore-basin](Structures.md#begotten-spore-basin) — build cost 18 (SALVAGE, BEGOTTEN); [facility:begotten-chitin-vat](Structures.md#begotten-chitin-vat) — build cost 25 (STEAM, BEGOTTEN); [facility:begotten-membrane-lab](Structures.md#begotten-membrane-lab) — build cost 30 (ELECTRIC, BEGOTTEN); [facility:begotten-organ-lattice](Structures.md#begotten-organ-lattice) — build cost 40 (AUTOMATION, BEGOTTEN)
 
 ## Medicinal Herbs (`MEDICINAL_HERBS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (16):** [hand:bandage](Recipes.md#handbandage) requires 1 (produces `BANDAGE`); [hand:field-dressing](Recipes.md#handfield-dressing) requires 2 (produces `BANDAGE`); [hand:bunch-herbs](Recipes.md#handbunch-herbs) requires 3 (produces `HERBAL_BUNDLE`); [industrial:grow-medicinals](Recipes.md#industrialgrow-medicinals) requires 1 (produces `HERBAL_BUNDLE`); [industrial:votive-incense](Recipes.md#industrialvotive-incense) requires 2 (produces `VOTIVE_INCENSE`); [industrial:viable-spores](Recipes.md#industrialviable-spores) requires 2 (produces `VIABLE_SPORES`); [industrial:penitent-weave-ritual](Recipes.md#industrialpenitent-weave-ritual) requires 1 (produces `RITUAL_CLOTH`); [industrial:begotten-culture-spores](Recipes.md#industrialbegotten-culture-spores) requires 2 (produces `SPORE_POD`); [research-archive](Structures.md#research-archive) build requires 20 (AUTOMATION); [infirmary](Structures.md#infirmary) build requires 14 (AUTOMATION); [terror-collector](Structures.md#terror-collector) build requires 24 (AUTOMATION); [monument-graveyard](Structures.md#monument-graveyard) build requires 30 (INCURSION); [penitent-reliquary](Structures.md#penitent-reliquary) build requires 10 (SALVAGE); [penitent-choir-relay](Structures.md#penitent-choir-relay) build requires 16 (ELECTRIC); [begotten-spore-basin](Structures.md#begotten-spore-basin) build requires 8 (SALVAGE); [begotten-membrane-lab](Structures.md#begotten-membrane-lab) build requires 12 (ELECTRIC)
+**Consumed by (16):** [hand:bandage](Recipes.md#handbandage) — needs 1, makes 1 × `BANDAGE`; [hand:field-dressing](Recipes.md#handfield-dressing) — needs 2, makes 2 × `BANDAGE`; [hand:bunch-herbs](Recipes.md#handbunch-herbs) — needs 3, makes 1 × `HERBAL_BUNDLE`; [industry:grow-medicinals](Recipes.md#industrialgrow-medicinals) — needs 1, makes 2 × `HERBAL_BUNDLE`; [industry:votive-incense](Recipes.md#industrialvotive-incense) — needs 2, makes 2 × `VOTIVE_INCENSE`; [industry:viable-spores](Recipes.md#industrialviable-spores) — needs 2, makes 2 × `VIABLE_SPORES`; [industry:penitent-weave-ritual](Recipes.md#industrialpenitent-weave-ritual) — needs 1, makes 2 × `RITUAL_CLOTH`; [industry:begotten-culture-spores](Recipes.md#industrialbegotten-culture-spores) — needs 2, makes 2 × `SPORE_POD`; [facility:research-archive](Structures.md#research-archive) — build cost 20 (AUTOMATION, ALL); [facility:infirmary](Structures.md#infirmary) — build cost 14 (AUTOMATION, ALL); [facility:terror-collector](Structures.md#terror-collector) — build cost 24 (AUTOMATION, PENITENT); [facility:monument-graveyard](Structures.md#monument-graveyard) — build cost 30 (INCURSION, ALL); [facility:penitent-reliquary](Structures.md#penitent-reliquary) — build cost 10 (SALVAGE, PENITENT); [facility:penitent-choir-relay](Structures.md#penitent-choir-relay) — build cost 16 (ELECTRIC, PENITENT); [facility:begotten-spore-basin](Structures.md#begotten-spore-basin) — build cost 8 (SALVAGE, BEGOTTEN); [facility:begotten-membrane-lab](Structures.md#begotten-membrane-lab) — build cost 12 (ELECTRIC, BEGOTTEN)
 
 ## Raw Ore (`RAW_ORE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (21):** [hand:weapon-spiked-club](Recipes.md#handweapon-spiked-club) requires 2 (produces `SPIKED_CLUB`); [hand:weapon-reinforced-spear](Recipes.md#handweapon-reinforced-spear) requires 3 (produces `REINFORCED_SPEAR`); [hand:weapon-salvage-machete](Recipes.md#handweapon-salvage-machete) requires 5 (produces `SALVAGE_MACHETE`); [hand:weapon-hand-crossbow](Recipes.md#handweapon-hand-crossbow) requires 2 (produces `HAND_CROSSBOW`); [hand:weapon-pipe-pistol](Recipes.md#handweapon-pipe-pistol) requires 6 (produces `PIPE_PISTOL`); [hand:weapon-bolt-rifle](Recipes.md#handweapon-bolt-rifle) requires 8 (produces `BOLT_RIFLE`); [hand:weapon-scrap-shotgun](Recipes.md#handweapon-scrap-shotgun) requires 7 (produces `SCRAP_SHOTGUN`); [industrial:iron-bloom](Recipes.md#industrialiron-bloom) requires 4 (produces `IRON_BLOOM`); [industrial:copper-wire](Recipes.md#industrialcopper-wire) requires 3 (produces `CONDUCTOR_WIRE`); [industrial:sort-mineral-feed](Recipes.md#industrialsort-mineral-feed) requires 4 (produces `SORTED_ORE`); [industrial:unraveled-recover-scrap](Recipes.md#industrialunraveled-recover-scrap) requires 2 (produces `SCRAP_METAL`); [industrial:begotten-harden-chitin](Recipes.md#industrialbegotten-harden-chitin) requires 1 (produces `CHITIN_SHARDS`); [stone-furnace](Structures.md#stone-furnace) build requires 4 (SALVAGE); [forge](Structures.md#forge) build requires 8 (SALVAGE); [steam-boiler](Structures.md#steam-boiler) build requires 8 (STEAM); [generator](Structures.md#generator) build requires 10 (ELECTRIC); [precision-lathe](Structures.md#precision-lathe) build requires 8 (ELECTRIC); [fuel-refinery](Structures.md#fuel-refinery) build requires 12 (ELECTRIC); [signal-relay](Structures.md#signal-relay) build requires 8 (AUTOMATION); [monument-graveyard](Structures.md#monument-graveyard) build requires 24 (INCURSION); [unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) build requires 8 (STEAM)
+**Consumed by (14):** [industry:iron-bloom](Recipes.md#industrialiron-bloom) — needs 4, makes 1 × `IRON_BLOOM`; [industry:copper-wire](Recipes.md#industrialcopper-wire) — needs 3, makes 2 × `CONDUCTOR_WIRE`; [industry:sort-mineral-feed](Recipes.md#industrialsort-mineral-feed) — needs 4, makes 2 × `SORTED_ORE`; [industry:unraveled-recover-scrap](Recipes.md#industrialunraveled-recover-scrap) — needs 2, makes 2 × `SCRAP_METAL`; [industry:begotten-harden-chitin](Recipes.md#industrialbegotten-harden-chitin) — needs 1, makes 2 × `CHITIN_SHARDS`; [facility:stone-furnace](Structures.md#stone-furnace) — build cost 4 (SALVAGE, ALL); [facility:forge](Structures.md#forge) — build cost 8 (SALVAGE, ALL); [facility:steam-boiler](Structures.md#steam-boiler) — build cost 8 (STEAM, ALL); [facility:generator](Structures.md#generator) — build cost 10 (ELECTRIC, ALL); [facility:precision-lathe](Structures.md#precision-lathe) — build cost 8 (ELECTRIC, ALL); [facility:fuel-refinery](Structures.md#fuel-refinery) — build cost 12 (ELECTRIC, ALL); [facility:signal-relay](Structures.md#signal-relay) — build cost 8 (AUTOMATION, ALL); [facility:monument-graveyard](Structures.md#monument-graveyard) — build cost 24 (INCURSION, ALL); [facility:unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) — build cost 8 (STEAM, UNRAVELED)
 
 ## Dirty Water (`DIRTY_WATER`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (4):** [hand:boil-water](Recipes.md#handboil-water) requires 1 (produces `CLEAN_WATER`); [industrial:boil-water](Recipes.md#industrialboil-water) requires 1 (produces `CLEAN_WATER`); [industrial:treat-contaminated-water](Recipes.md#industrialtreat-contaminated-water) requires 6 (produces `STERILE_WATER`); [industrial:begotten-mix-slurry](Recipes.md#industrialbegotten-mix-slurry) requires 2 (produces `NUTRIENT_SLURRY`)
+**Consumed by (4):** [hand:boil-water](Recipes.md#handboil-water) — needs 1, makes 1 × `CLEAN_WATER`; [industry:boil-water](Recipes.md#industrialboil-water) — needs 1, makes 1 × `CLEAN_WATER`; [industry:treat-contaminated-water](Recipes.md#industrialtreat-contaminated-water) — needs 6, makes 4 × `STERILE_WATER`; [industry:begotten-mix-slurry](Recipes.md#industrialbegotten-mix-slurry) — needs 2, makes 2 × `NUTRIENT_SLURRY`
 
 ## Clean Water (`CLEAN_WATER`)
 
-**Made by:** [hand:boil-water](Recipes.md#handboil-water) → 1× at FIRE; [industrial:boil-water](Recipes.md#industrialboil-water) → 1× at [cooking-hearth](Structures.md#cooking-hearth) (ALL)
+**Produced by:** [hand:boil-water](Recipes.md#handboil-water) — 1 × per craft at FIRE; [industry:boil-water](Recipes.md#industrialboil-water) — 1 × at [cooking-hearth](Structures.md#cooking-hearth) (ALL)
 
-**Consumed by (8):** [hand:camp-ration](Recipes.md#handcamp-ration) requires 1 (produces `RATIONS`); [industrial:preserve-rations](Recipes.md#industrialpreserve-rations) requires 1 (produces `RATIONS`); [industrial:grow-field-crops](Recipes.md#industrialgrow-field-crops) requires 3 (produces `FIELD_CROPS`); [industrial:grow-medicinals](Recipes.md#industrialgrow-medicinals) requires 2 (produces `HERBAL_BUNDLE`); [industrial:biomass-feed](Recipes.md#industrialbiomass-feed) requires 3 (produces `NUTRIENT_STOCK`); [industrial:growth-feed](Recipes.md#industrialgrowth-feed) requires 1 (produces `GROWTH_FEED`); [industrial:cold-preservation](Recipes.md#industrialcold-preservation) requires 1 (produces `PRESERVED_RATIONS`); [industrial:begotten-grow-membrane](Recipes.md#industrialbegotten-grow-membrane) requires 2 (produces `LIVING_MEMBRANE`)
+**Consumed by (8):** [hand:camp-ration](Recipes.md#handcamp-ration) — needs 1, makes 1 × `RATIONS`; [industry:preserve-rations](Recipes.md#industrialpreserve-rations) — needs 1, makes 2 × `RATIONS`; [industry:grow-field-crops](Recipes.md#industrialgrow-field-crops) — needs 3, makes 4 × `FIELD_CROPS`; [industry:grow-medicinals](Recipes.md#industrialgrow-medicinals) — needs 2, makes 2 × `HERBAL_BUNDLE`; [industry:biomass-feed](Recipes.md#industrialbiomass-feed) — needs 3, makes 1 × `NUTRIENT_STOCK`; [industry:growth-feed](Recipes.md#industrialgrowth-feed) — needs 1, makes 2 × `GROWTH_FEED`; [industry:cold-preservation](Recipes.md#industrialcold-preservation) — needs 1, makes 3 × `PRESERVED_RATIONS`; [industry:begotten-grow-membrane](Recipes.md#industrialbegotten-grow-membrane) — needs 2, makes 1 × `LIVING_MEMBRANE`
 
 ## Firewood (`FIREWOOD`)
 
-**Made by:** [hand:split-kindling](Recipes.md#handsplit-kindling) → 2× at HAND; [industrial:split-firewood](Recipes.md#industrialsplit-firewood) → 3× at [cooking-hearth](Structures.md#cooking-hearth) (ALL)
+**Produced by:** [hand:split-kindling](Recipes.md#handsplit-kindling) — 2 × per craft at HAND; [industry:split-firewood](Recipes.md#industrialsplit-firewood) — 3 × at [cooking-hearth](Structures.md#cooking-hearth) (ALL)
 
-**Consumed by (9):** [hand:camp-ration](Recipes.md#handcamp-ration) requires 1 (produces `RATIONS`); [hand:pit-charcoal](Recipes.md#handpit-charcoal) requires 2 (produces `CHARCOAL`); [hand:smoke-ration](Recipes.md#handsmoke-ration) requires 3 (produces `SMOKED_RATIONS`); [hand:camp-firebrick](Recipes.md#handcamp-firebrick) requires 4 (produces `FIRED_BRICKS`); [industrial:boil-water](Recipes.md#industrialboil-water) requires 1 (produces `CLEAN_WATER`); [industrial:smoke-rations](Recipes.md#industrialsmoke-rations) requires 2 (produces `SMOKED_RATIONS`); [industrial:charcoal-burn](Recipes.md#industrialcharcoal-burn) requires 1 (produces `CHARCOAL`); [industrial:votive-incense](Recipes.md#industrialvotive-incense) requires 2 (produces `VOTIVE_INCENSE`); [industrial:unraveled-recover-scrap](Recipes.md#industrialunraveled-recover-scrap) requires 1 (produces `SCRAP_METAL`)
+**Consumed by (9):** [hand:camp-ration](Recipes.md#handcamp-ration) — needs 1, makes 1 × `RATIONS`; [hand:pit-charcoal](Recipes.md#handpit-charcoal) — needs 2, makes 1 × `CHARCOAL`; [hand:smoke-ration](Recipes.md#handsmoke-ration) — needs 3, makes 1 × `SMOKED_RATIONS`; [hand:camp-firebrick](Recipes.md#handcamp-firebrick) — needs 4, makes 1 × `FIRED_BRICKS`; [industry:boil-water](Recipes.md#industrialboil-water) — needs 1, makes 1 × `CLEAN_WATER`; [industry:smoke-rations](Recipes.md#industrialsmoke-rations) — needs 2, makes 2 × `SMOKED_RATIONS`; [industry:charcoal-burn](Recipes.md#industrialcharcoal-burn) — needs 1, makes 2 × `CHARCOAL`; [industry:votive-incense](Recipes.md#industrialvotive-incense) — needs 2, makes 2 × `VOTIVE_INCENSE`; [industry:unraveled-recover-scrap](Recipes.md#industrialunraveled-recover-scrap) — needs 1, makes 2 × `SCRAP_METAL`
 
 ## Charcoal (`CHARCOAL`)
 
-**Made by:** [hand:pit-charcoal](Recipes.md#handpit-charcoal) → 1× at FIRE; [industrial:charcoal-burn](Recipes.md#industrialcharcoal-burn) → 2× at [charcoal-kiln](Structures.md#charcoal-kiln) (ALL)
+**Produced by:** [hand:pit-charcoal](Recipes.md#handpit-charcoal) — 1 × per craft at FIRE; [industry:charcoal-burn](Recipes.md#industrialcharcoal-burn) — 2 × at [charcoal-kiln](Structures.md#charcoal-kiln) (ALL)
 
-**Consumed by (6):** [industrial:firebrick-batch](Recipes.md#industrialfirebrick-batch) requires 1 (produces `FIRED_BRICKS`); [industrial:iron-bloom](Recipes.md#industrialiron-bloom) requires 3 (produces `IRON_BLOOM`); [industrial:steel-billet](Recipes.md#industrialsteel-billet) requires 1 (produces `METAL_BILLET`); [industrial:sort-mineral-feed](Recipes.md#industrialsort-mineral-feed) requires 1 (produces `SORTED_ORE`); [industrial:temper-alloy](Recipes.md#industrialtemper-alloy) requires 2 (produces `HARDENED_ALLOY`); [industrial:treat-contaminated-water](Recipes.md#industrialtreat-contaminated-water) requires 2 (produces `STERILE_WATER`)
+**Consumed by (6):** [industry:firebrick-batch](Recipes.md#industrialfirebrick-batch) — needs 1, makes 2 × `FIRED_BRICKS`; [industry:iron-bloom](Recipes.md#industrialiron-bloom) — needs 3, makes 1 × `IRON_BLOOM`; [industry:steel-billet](Recipes.md#industrialsteel-billet) — needs 1, makes 1 × `METAL_BILLET`; [industry:sort-mineral-feed](Recipes.md#industrialsort-mineral-feed) — needs 1, makes 2 × `SORTED_ORE`; [industry:temper-alloy](Recipes.md#industrialtemper-alloy) — needs 2, makes 1 × `HARDENED_ALLOY`; [industry:treat-contaminated-water](Recipes.md#industrialtreat-contaminated-water) — needs 2, makes 4 × `STERILE_WATER`
 
 ## Fired Bricks (`FIRED_BRICKS`)
 
-**Made by:** [hand:camp-firebrick](Recipes.md#handcamp-firebrick) → 1× at FIRE; [industrial:firebrick-batch](Recipes.md#industrialfirebrick-batch) → 2× at [stone-furnace](Structures.md#stone-furnace) (ALL)
+**Produced by:** [hand:camp-firebrick](Recipes.md#handcamp-firebrick) — 1 × per craft at FIRE; [industry:firebrick-batch](Recipes.md#industrialfirebrick-batch) — 2 × at [stone-furnace](Structures.md#stone-furnace) (ALL)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Iron Bloom (`IRON_BLOOM`)
 
-**Made by:** [industrial:iron-bloom](Recipes.md#industrialiron-bloom) → 1× at [forge](Structures.md#forge) (ALL)
+**Produced by:** [industry:iron-bloom](Recipes.md#industrialiron-bloom) — 1 × at [forge](Structures.md#forge) (ALL)
 
-**Consumed by (1):** [industrial:steel-billet](Recipes.md#industrialsteel-billet) requires 2 (produces `METAL_BILLET`)
+**Consumed by (1):** [industry:steel-billet](Recipes.md#industrialsteel-billet) — needs 2, makes 1 × `METAL_BILLET`
 
 ## Metal Billet (`METAL_BILLET`)
 
-**Made by:** [industrial:steel-billet](Recipes.md#industrialsteel-billet) → 1× at [forge](Structures.md#forge) (ALL)
+**Produced by:** [industry:steel-billet](Recipes.md#industrialsteel-billet) — 1 × at [forge](Structures.md#forge) (ALL)
 
-**Consumed by (9):** [industrial:fasteners](Recipes.md#industrialfasteners) requires 1 (produces `FASTENERS`); [industrial:driveshaft](Recipes.md#industrialdriveshaft) requires 3 (produces `DRIVE_SHAFT`); [industrial:gear-train](Recipes.md#industrialgear-train) requires 2 (produces `GEAR_ASSEMBLY`); [industrial:copper-wire](Recipes.md#industrialcopper-wire) requires 1 (produces `CONDUCTOR_WIRE`); [industrial:precision-fit](Recipes.md#industrialprecision-fit) requires 3 (produces `PRECISION_MODULE`); [industrial:temper-alloy](Recipes.md#industrialtemper-alloy) requires 3 (produces `HARDENED_ALLOY`); [industrial:witness-seal](Recipes.md#industrialwitness-seal) requires 1 (produces `WITNESS_SEAL`); [industrial:unraveled-pressure-vessel](Recipes.md#industrialunraveled-pressure-vessel) requires 2 (produces `PRESSURE_TANK`); [industrial:penitent-engrave-reliquary](Recipes.md#industrialpenitent-engrave-reliquary) requires 2 (produces `RELIQUARY_PLATE`)
+**Consumed by (9):** [industry:fasteners](Recipes.md#industrialfasteners) — needs 1, makes 4 × `FASTENERS`; [industry:driveshaft](Recipes.md#industrialdriveshaft) — needs 3, makes 1 × `DRIVE_SHAFT`; [industry:gear-train](Recipes.md#industrialgear-train) — needs 2, makes 1 × `GEAR_ASSEMBLY`; [industry:copper-wire](Recipes.md#industrialcopper-wire) — needs 1, makes 2 × `CONDUCTOR_WIRE`; [industry:precision-fit](Recipes.md#industrialprecision-fit) — needs 3, makes 1 × `PRECISION_MODULE`; [industry:temper-alloy](Recipes.md#industrialtemper-alloy) — needs 3, makes 1 × `HARDENED_ALLOY`; [industry:witness-seal](Recipes.md#industrialwitness-seal) — needs 1, makes 2 × `WITNESS_SEAL`; [industry:unraveled-pressure-vessel](Recipes.md#industrialunraveled-pressure-vessel) — needs 2, makes 1 × `PRESSURE_TANK`; [industry:penitent-engrave-reliquary](Recipes.md#industrialpenitent-engrave-reliquary) — needs 2, makes 1 × `RELIQUARY_PLATE`
 
 ## Fasteners (`FASTENERS`)
 
-**Made by:** [industrial:fasteners](Recipes.md#industrialfasteners) → 4× at [forge](Structures.md#forge) (ALL)
+**Produced by:** [industry:fasteners](Recipes.md#industrialfasteners) — 4 × at [forge](Structures.md#forge) (ALL)
 
-**Consumed by (5):** [industrial:driveshaft](Recipes.md#industrialdriveshaft) requires 2 (produces `DRIVE_SHAFT`); [industrial:gear-train](Recipes.md#industrialgear-train) requires 2 (produces `GEAR_ASSEMBLY`); [industrial:ballistic-resupply](Recipes.md#industrialballistic-resupply) requires 4 (produces `BALLISTIC_SUPPLY`); [industrial:field-maintenance](Recipes.md#industrialfield-maintenance) requires 3 (produces `VEHICLE_REPAIR_KIT`); [industrial:unraveled-make-bearings](Recipes.md#industrialunraveled-make-bearings) requires 1 (produces `BEARING_SET`)
+**Consumed by (5):** [industry:driveshaft](Recipes.md#industrialdriveshaft) — needs 2, makes 1 × `DRIVE_SHAFT`; [industry:gear-train](Recipes.md#industrialgear-train) — needs 2, makes 1 × `GEAR_ASSEMBLY`; [industry:ballistic-resupply](Recipes.md#industrialballistic-resupply) — needs 4, makes 2 × `BALLISTIC_SUPPLY`; [industry:field-maintenance](Recipes.md#industrialfield-maintenance) — needs 3, makes 1 × `VEHICLE_REPAIR_KIT`; [industry:unraveled-make-bearings](Recipes.md#industrialunraveled-make-bearings) — needs 1, makes 2 × `BEARING_SET`
 
 ## Drive Shaft (`DRIVE_SHAFT`)
 
-**Made by:** [industrial:driveshaft](Recipes.md#industrialdriveshaft) → 1× at [metal-press](Structures.md#metal-press) (ALL)
+**Produced by:** [industry:driveshaft](Recipes.md#industrialdriveshaft) — 1 × at [metal-press](Structures.md#metal-press) (ALL)
 
-**Consumed by (2):** [industrial:steam-pump-head](Recipes.md#industrialsteam-pump-head) requires 1 (produces `PUMP_HEAD`); [industrial:precision-feedlines](Recipes.md#industrialprecision-feedlines) requires 1 (produces `PRECISION_FEEDLINE`)
+**Consumed by (2):** [industry:steam-pump-head](Recipes.md#industrialsteam-pump-head) — needs 1, makes 1 × `PUMP_HEAD`; [industry:precision-feedlines](Recipes.md#industrialprecision-feedlines) — needs 1, makes 2 × `PRECISION_FEEDLINE`
 
 ## Gear Assembly (`GEAR_ASSEMBLY`)
 
-**Made by:** [industrial:gear-train](Recipes.md#industrialgear-train) → 1× at [metal-press](Structures.md#metal-press) (ALL)
+**Produced by:** [industry:gear-train](Recipes.md#industrialgear-train) — 1 × at [metal-press](Structures.md#metal-press) (ALL)
 
-**Consumed by (2):** [industrial:steam-pump-head](Recipes.md#industrialsteam-pump-head) requires 1 (produces `PUMP_HEAD`); [industrial:precision-fit](Recipes.md#industrialprecision-fit) requires 2 (produces `PRECISION_MODULE`)
+**Consumed by (2):** [industry:steam-pump-head](Recipes.md#industrialsteam-pump-head) — needs 1, makes 1 × `PUMP_HEAD`; [industry:precision-fit](Recipes.md#industrialprecision-fit) — needs 2, makes 1 × `PRECISION_MODULE`
 
 ## Pump Head (`PUMP_HEAD`)
 
-**Made by:** [industrial:steam-pump-head](Recipes.md#industrialsteam-pump-head) → 1× at [metal-press](Structures.md#metal-press) (ALL)
+**Produced by:** [industry:steam-pump-head](Recipes.md#industrialsteam-pump-head) — 1 × at [metal-press](Structures.md#metal-press) (ALL)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Conductor Wire (`CONDUCTOR_WIRE`)
 
-**Made by:** [industrial:copper-wire](Recipes.md#industrialcopper-wire) → 2× at [precision-lathe](Structures.md#precision-lathe) (ALL)
+**Produced by:** [industry:copper-wire](Recipes.md#industrialcopper-wire) — 2 × at [precision-lathe](Structures.md#precision-lathe) (ALL)
 
-**Consumed by (6):** [industrial:controller-board](Recipes.md#industrialcontroller-board) requires 3 (produces `CONTROL_BOARD`); [industrial:tracking-electronics](Recipes.md#industrialtracking-electronics) requires 2 (produces `TRACKING_CIRCUIT`); [industrial:precision-feedlines](Recipes.md#industrialprecision-feedlines) requires 3 (produces `PRECISION_FEEDLINE`); [industrial:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) requires 3 (produces `SENSOR_HEAD`); [security-grid](Structures.md#security-grid) build requires 8 (AUTOMATION); [unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) build requires 4 (ELECTRIC)
+**Consumed by (6):** [industry:controller-board](Recipes.md#industrialcontroller-board) — needs 3, makes 1 × `CONTROL_BOARD`; [industry:tracking-electronics](Recipes.md#industrialtracking-electronics) — needs 2, makes 1 × `TRACKING_CIRCUIT`; [industry:precision-feedlines](Recipes.md#industrialprecision-feedlines) — needs 3, makes 2 × `PRECISION_FEEDLINE`; [industry:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) — needs 3, makes 2 × `SENSOR_HEAD`; [facility:security-grid](Structures.md#security-grid) — build cost 8 (AUTOMATION, ALL); [facility:unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) — build cost 4 (ELECTRIC, UNRAVELED)
 
 ## Control Board (`CONTROL_BOARD`)
 
-**Made by:** [industrial:controller-board](Recipes.md#industrialcontroller-board) → 1× at [precision-lathe](Structures.md#precision-lathe) (ALL)
+**Produced by:** [industry:controller-board](Recipes.md#industrialcontroller-board) — 1 × at [precision-lathe](Structures.md#precision-lathe) (ALL)
 
-**Consumed by (6):** [industrial:production-controller](Recipes.md#industrialproduction-controller) requires 2 (produces `ASSEMBLY_CONTROLLER`); [industrial:tracking-electronics](Recipes.md#industrialtracking-electronics) requires 1 (produces `TRACKING_CIRCUIT`); [industrial:chorus-resonance](Recipes.md#industrialchorus-resonance) requires 1 (produces `CHORUS_RESONANCE`); [industrial:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) requires 2 (produces `SENSOR_HEAD`); [industrial:penitent-score-hymn](Recipes.md#industrialpenitent-score-hymn) requires 1 (produces `CHOIR_SCORE`); [unraveled-defense-works](Structures.md#unraveled-defense-works) build requires 3 (AUTOMATION)
+**Consumed by (6):** [industry:production-controller](Recipes.md#industrialproduction-controller) — needs 2, makes 1 × `ASSEMBLY_CONTROLLER`; [industry:tracking-electronics](Recipes.md#industrialtracking-electronics) — needs 1, makes 1 × `TRACKING_CIRCUIT`; [industry:chorus-resonance](Recipes.md#industrialchorus-resonance) — needs 1, makes 1 × `CHORUS_RESONANCE`; [industry:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) — needs 2, makes 2 × `SENSOR_HEAD`; [industry:penitent-score-hymn](Recipes.md#industrialpenitent-score-hymn) — needs 1, makes 1 × `CHOIR_SCORE`; [facility:unraveled-defense-works](Structures.md#unraveled-defense-works) — build cost 3 (AUTOMATION, UNRAVELED)
 
 ## Precision Module (`PRECISION_MODULE`)
 
-**Made by:** [industrial:precision-fit](Recipes.md#industrialprecision-fit) → 1× at [precision-lathe](Structures.md#precision-lathe) (ALL)
+**Produced by:** [industry:precision-fit](Recipes.md#industrialprecision-fit) — 1 × at [precision-lathe](Structures.md#precision-lathe) (ALL)
 
-**Consumed by (1):** [industrial:production-controller](Recipes.md#industrialproduction-controller) requires 2 (produces `ASSEMBLY_CONTROLLER`)
+**Consumed by (1):** [industry:production-controller](Recipes.md#industrialproduction-controller) — needs 2, makes 1 × `ASSEMBLY_CONTROLLER`
 
 ## Assembly Controller (`ASSEMBLY_CONTROLLER`)
 
-**Made by:** [industrial:production-controller](Recipes.md#industrialproduction-controller) → 1× at [assembly-line](Structures.md#assembly-line) (ALL)
+**Produced by:** [industry:production-controller](Recipes.md#industrialproduction-controller) — 1 × at [assembly-line](Structures.md#assembly-line) (ALL)
 
-**Consumed by (3):** [industrial:resilience-core](Recipes.md#industrialresilience-core) requires 2 (produces `RESILIENCE_CORE`); [industrial:dread-ward](Recipes.md#industrialdread-ward) requires 2 (produces `DREAD_WARD`); [industrial:breach-seed](Recipes.md#industrialbreach-seed) requires 3 (produces `BREACH_SEED`)
+**Consumed by (3):** [industry:resilience-core](Recipes.md#industrialresilience-core) — needs 2, makes 1 × `RESILIENCE_CORE`; [industry:dread-ward](Recipes.md#industrialdread-ward) — needs 2, makes 1 × `DREAD_WARD`; [industry:breach-seed](Recipes.md#industrialbreach-seed) — needs 3, makes 1 × `BREACH_SEED`
 
 ## Compost (`COMPOST`)
 
-**Made by:** [hand:rough-compost](Recipes.md#handrough-compost) → 1× at HAND; [industrial:compost-ferment](Recipes.md#industrialcompost-ferment) → 2× at [compost-yard](Structures.md#compost-yard) (ALL)
+**Produced by:** [hand:rough-compost](Recipes.md#handrough-compost) — 1 × per craft at HAND; [industry:compost-ferment](Recipes.md#industrialcompost-ferment) — 2 × at [compost-yard](Structures.md#compost-yard) (ALL)
 
-**Consumed by (2):** [industrial:grow-field-crops](Recipes.md#industrialgrow-field-crops) requires 1 (produces `FIELD_CROPS`); [industrial:grow-medicinals](Recipes.md#industrialgrow-medicinals) requires 1 (produces `HERBAL_BUNDLE`)
+**Consumed by (2):** [industry:grow-field-crops](Recipes.md#industrialgrow-field-crops) — needs 1, makes 4 × `FIELD_CROPS`; [industry:grow-medicinals](Recipes.md#industrialgrow-medicinals) — needs 1, makes 2 × `HERBAL_BUNDLE`
 
 ## Field Crops (`FIELD_CROPS`)
 
-**Made by:** [industrial:grow-field-crops](Recipes.md#industrialgrow-field-crops) → 4× at [forager-garden](Structures.md#forager-garden) (ALL)
+**Produced by:** [industry:grow-field-crops](Recipes.md#industrialgrow-field-crops) — 4 × at [forager-garden](Structures.md#forager-garden) (ALL)
 
-**Consumed by (4):** [hand:coarse-meal](Recipes.md#handcoarse-meal) requires 6 (produces `MEAL_SACK`); [industrial:cellar-vegetables](Recipes.md#industrialcellar-vegetables) requires 3 (produces `CELLARED_CROPS`); [industrial:mill-crops](Recipes.md#industrialmill-crops) requires 4 (produces `MEAL_SACK`); [industrial:grown-chitin](Recipes.md#industrialgrown-chitin) requires 3 (produces `GROWN_CHITIN`)
+**Consumed by (4):** [hand:coarse-meal](Recipes.md#handcoarse-meal) — needs 6, makes 1 × `MEAL_SACK`; [industry:cellar-vegetables](Recipes.md#industrialcellar-vegetables) — needs 3, makes 2 × `CELLARED_CROPS`; [industry:mill-crops](Recipes.md#industrialmill-crops) — needs 4, makes 2 × `MEAL_SACK`; [industry:grown-chitin](Recipes.md#industrialgrown-chitin) — needs 3, makes 2 × `GROWN_CHITIN`
 
 ## Herbal Bundle (`HERBAL_BUNDLE`)
 
-**Made by:** [hand:bunch-herbs](Recipes.md#handbunch-herbs) → 1× at WORKBENCH; [industrial:grow-medicinals](Recipes.md#industrialgrow-medicinals) → 2× at [herb-plot](Structures.md#herb-plot) (ALL)
+**Produced by:** [hand:bunch-herbs](Recipes.md#handbunch-herbs) — 1 × per craft at WORKBENCH; [industry:grow-medicinals](Recipes.md#industrialgrow-medicinals) — 2 × at [herb-plot](Structures.md#herb-plot) (ALL)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Cloth Roll (`CLOTH_ROLL`)
 
-**Made by:** [hand:hand-woven-cloth](Recipes.md#handhand-woven-cloth) → 1× at WORKBENCH; [industrial:weave-cloth](Recipes.md#industrialweave-cloth) → 2× at [fiber-loom](Structures.md#fiber-loom) (ALL)
+**Produced by:** [hand:hand-woven-cloth](Recipes.md#handhand-woven-cloth) — 1 × per craft at WORKBENCH; [industry:weave-cloth](Recipes.md#industrialweave-cloth) — 2 × at [fiber-loom](Structures.md#fiber-loom) (ALL)
 
-**Consumed by (3):** [industrial:cold-preservation](Recipes.md#industrialcold-preservation) requires 1 (produces `PRESERVED_RATIONS`); [industrial:guard-provisions](Recipes.md#industrialguard-provisions) requires 1 (produces `GUARD_PROVISIONS`); [industrial:penitent-weave-ritual](Recipes.md#industrialpenitent-weave-ritual) requires 1 (produces `RITUAL_CLOTH`)
+**Consumed by (3):** [industry:cold-preservation](Recipes.md#industrialcold-preservation) — needs 1, makes 3 × `PRESERVED_RATIONS`; [industry:guard-provisions](Recipes.md#industrialguard-provisions) — needs 1, makes 2 × `GUARD_PROVISIONS`; [industry:penitent-weave-ritual](Recipes.md#industrialpenitent-weave-ritual) — needs 1, makes 2 × `RITUAL_CLOTH`
 
 ## Smoked Rations (`SMOKED_RATIONS`)
 
-**Made by:** [hand:smoke-ration](Recipes.md#handsmoke-ration) → 1× at FIRE; [industrial:smoke-rations](Recipes.md#industrialsmoke-rations) → 2× at [smokehouse](Structures.md#smokehouse) (ALL)
+**Produced by:** [hand:smoke-ration](Recipes.md#handsmoke-ration) — 1 × per craft at FIRE; [industry:smoke-rations](Recipes.md#industrialsmoke-rations) — 2 × at [smokehouse](Structures.md#smokehouse) (ALL)
 
-**Consumed by (1):** [industrial:cold-preservation](Recipes.md#industrialcold-preservation) requires 2 (produces `PRESERVED_RATIONS`)
+**Consumed by (1):** [industry:cold-preservation](Recipes.md#industrialcold-preservation) — needs 2, makes 3 × `PRESERVED_RATIONS`
 
 ## Cellared Crops (`CELLARED_CROPS`)
 
-**Made by:** [industrial:cellar-vegetables](Recipes.md#industrialcellar-vegetables) → 2× at [root-cellar](Structures.md#root-cellar) (ALL)
+**Produced by:** [industry:cellar-vegetables](Recipes.md#industrialcellar-vegetables) — 2 × at [root-cellar](Structures.md#root-cellar) (ALL)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Meal Sack (`MEAL_SACK`)
 
-**Made by:** [hand:coarse-meal](Recipes.md#handcoarse-meal) → 1× at WORKBENCH; [industrial:mill-crops](Recipes.md#industrialmill-crops) → 2× at [grain-mill](Structures.md#grain-mill) (ALL)
+**Produced by:** [hand:coarse-meal](Recipes.md#handcoarse-meal) — 1 × per craft at WORKBENCH; [industry:mill-crops](Recipes.md#industrialmill-crops) — 2 × at [grain-mill](Structures.md#grain-mill) (ALL)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Rations (`RATIONS`)
 
-**Made by:** [hand:camp-ration](Recipes.md#handcamp-ration) → 1× at FIRE; [industrial:preserve-rations](Recipes.md#industrialpreserve-rations) → 2× at [cooking-hearth](Structures.md#cooking-hearth) (ALL)
+**Produced by:** [hand:camp-ration](Recipes.md#handcamp-ration) — 1 × per craft at FIRE; [industry:preserve-rations](Recipes.md#industrialpreserve-rations) — 2 × at [cooking-hearth](Structures.md#cooking-hearth) (ALL)
 
-**Consumed by (1):** [industrial:guard-provisions](Recipes.md#industrialguard-provisions) requires 3 (produces `GUARD_PROVISIONS`)
+**Consumed by (1):** [industry:guard-provisions](Recipes.md#industrialguard-provisions) — needs 3, makes 2 × `GUARD_PROVISIONS`
 
 ## Nutrient Stock (`NUTRIENT_STOCK`)
 
-**Made by:** [industrial:biomass-feed](Recipes.md#industrialbiomass-feed) → 1× at [nutrient-digestor](Structures.md#nutrient-digestor) (BEGOTTEN)
+**Produced by:** [industry:biomass-feed](Recipes.md#industrialbiomass-feed) — 1 × at [nutrient-digestor](Structures.md#nutrient-digestor) (BEGOTTEN)
 
-**Consumed by (3):** [industrial:breach-seed](Recipes.md#industrialbreach-seed) requires 8 (produces `BREACH_SEED`); [industrial:binding-resin](Recipes.md#industrialbinding-resin) requires 1 (produces `BINDING_RESIN`); [industrial:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) requires 2 (produces `ORGAN_CORE`)
+**Consumed by (3):** [industry:breach-seed](Recipes.md#industrialbreach-seed) — needs 8, makes 1 × `BREACH_SEED`; [industry:binding-resin](Recipes.md#industrialbinding-resin) — needs 1, makes 1 × `BINDING_RESIN`; [industry:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) — needs 2, makes 1 × `ORGAN_CORE`
 
 ## Metal Stock (`METAL_STOCK`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (48):** [hand:shelter-kit](Recipes.md#handshelter-kit) requires 1 (produces `SHELTER_KIT`); [hand:vehicle-repair](Recipes.md#handvehicle-repair) requires 1 (produces `VEHICLE_REPAIR_KIT`); [hand:weapon-scrap-shotgun](Recipes.md#handweapon-scrap-shotgun) requires 1 (produces `SCRAP_SHOTGUN`); [industrial:resilience-core](Recipes.md#industrialresilience-core) requires 2 (produces `RESILIENCE_CORE`); [industrial:dread-ward](Recipes.md#industrialdread-ward) requires 2 (produces `DREAD_WARD`); [industrial:breach-seed](Recipes.md#industrialbreach-seed) requires 4 (produces `BREACH_SEED`); [forge](Structures.md#forge) build requires 3 (SALVAGE); [freight-bay](Structures.md#freight-bay) build requires 4 (SALVAGE); [irrigation-works](Structures.md#irrigation-works) build requires 1 (SALVAGE); [materials-recycler](Structures.md#materials-recycler) build requires 2 (SALVAGE); [steam-boiler](Structures.md#steam-boiler) build requires 4 (STEAM); [mechanical-shaft](Structures.md#mechanical-shaft) build requires 2 (STEAM); [metal-press](Structures.md#metal-press) build requires 3 (STEAM); [conveyor-line](Structures.md#conveyor-line) build requires 2 (STEAM); [generator](Structures.md#generator) build requires 4 (ELECTRIC); [electric-bus](Structures.md#electric-bus) build requires 3 (ELECTRIC); [precision-lathe](Structures.md#precision-lathe) build requires 5 (ELECTRIC); [automatic-sorter](Structures.md#automatic-sorter) build requires 3 (ELECTRIC); [water-works](Structures.md#water-works) build requires 2 (ELECTRIC); [fuel-refinery](Structures.md#fuel-refinery) build requires 5 (ELECTRIC); [controlled-greenhouse](Structures.md#controlled-greenhouse) build requires 3 (ELECTRIC); [industrial-workshop](Structures.md#industrial-workshop) build requires 6 (AUTOMATION); [motor-pool](Structures.md#motor-pool) build requires 6 (AUTOMATION); [assembly-line](Structures.md#assembly-line) build requires 10 (AUTOMATION); [command-hall](Structures.md#command-hall) build requires 8 (AUTOMATION); [research-archive](Structures.md#research-archive) build requires 8 (AUTOMATION); [infirmary](Structures.md#infirmary) build requires 2 (AUTOMATION); [signal-relay](Structures.md#signal-relay) build requires 3 (AUTOMATION); [nutrient-digestor](Structures.md#nutrient-digestor) build requires 6 (AUTOMATION); [terror-collector](Structures.md#terror-collector) build requires 6 (AUTOMATION); [resilience-grid](Structures.md#resilience-grid) build requires 16 (INCURSION); [dread-works](Structures.md#dread-works) build requires 16 (INCURSION); [incursion-anchor](Structures.md#incursion-anchor) build requires 16 (INCURSION); [cold-store](Structures.md#cold-store) build requires 2 (SALVAGE); [barracks](Structures.md#barracks) build requires 1 (SALVAGE); [purification-works](Structures.md#purification-works) build requires 4 (ELECTRIC); [security-grid](Structures.md#security-grid) build requires 7 (AUTOMATION); [monument-graveyard](Structures.md#monument-graveyard) build requires 24 (INCURSION); [unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) build requires 2 (SALVAGE); [unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) build requires 4 (STEAM); [unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) build requires 4 (ELECTRIC); [unraveled-defense-works](Structures.md#unraveled-defense-works) build requires 8 (AUTOMATION); [penitent-reliquary](Structures.md#penitent-reliquary) build requires 2 (SALVAGE); [penitent-cantor-dais](Structures.md#penitent-cantor-dais) build requires 3 (STEAM); [penitent-choir-relay](Structures.md#penitent-choir-relay) build requires 5 (ELECTRIC); [penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) build requires 8 (AUTOMATION); [begotten-chitin-vat](Structures.md#begotten-chitin-vat) build requires 2 (STEAM); [begotten-organ-lattice](Structures.md#begotten-organ-lattice) build requires 6 (AUTOMATION)
+**Consumed by (47):** [hand:shelter-kit](Recipes.md#handshelter-kit) — needs 1, makes 1 × `SHELTER_KIT`; [hand:vehicle-repair](Recipes.md#handvehicle-repair) — needs 1, makes 1 × `VEHICLE_REPAIR_KIT`; [industry:resilience-core](Recipes.md#industrialresilience-core) — needs 2, makes 1 × `RESILIENCE_CORE`; [industry:dread-ward](Recipes.md#industrialdread-ward) — needs 2, makes 1 × `DREAD_WARD`; [industry:breach-seed](Recipes.md#industrialbreach-seed) — needs 4, makes 1 × `BREACH_SEED`; [facility:forge](Structures.md#forge) — build cost 3 (SALVAGE, ALL); [facility:freight-bay](Structures.md#freight-bay) — build cost 4 (SALVAGE, ALL); [facility:irrigation-works](Structures.md#irrigation-works) — build cost 1 (SALVAGE, ALL); [facility:materials-recycler](Structures.md#materials-recycler) — build cost 2 (SALVAGE, ALL); [facility:steam-boiler](Structures.md#steam-boiler) — build cost 4 (STEAM, ALL); [facility:mechanical-shaft](Structures.md#mechanical-shaft) — build cost 2 (STEAM, ALL); [facility:metal-press](Structures.md#metal-press) — build cost 3 (STEAM, ALL); [facility:conveyor-line](Structures.md#conveyor-line) — build cost 2 (STEAM, ALL); [facility:generator](Structures.md#generator) — build cost 4 (ELECTRIC, ALL); [facility:electric-bus](Structures.md#electric-bus) — build cost 3 (ELECTRIC, ALL); [facility:precision-lathe](Structures.md#precision-lathe) — build cost 5 (ELECTRIC, ALL); [facility:automatic-sorter](Structures.md#automatic-sorter) — build cost 3 (ELECTRIC, ALL); [facility:water-works](Structures.md#water-works) — build cost 2 (ELECTRIC, ALL); [facility:fuel-refinery](Structures.md#fuel-refinery) — build cost 5 (ELECTRIC, ALL); [facility:controlled-greenhouse](Structures.md#controlled-greenhouse) — build cost 3 (ELECTRIC, ALL); [facility:industrial-workshop](Structures.md#industrial-workshop) — build cost 6 (AUTOMATION, ALL); [facility:motor-pool](Structures.md#motor-pool) — build cost 6 (AUTOMATION, ALL); [facility:assembly-line](Structures.md#assembly-line) — build cost 10 (AUTOMATION, ALL); [facility:command-hall](Structures.md#command-hall) — build cost 8 (AUTOMATION, ALL); [facility:research-archive](Structures.md#research-archive) — build cost 8 (AUTOMATION, ALL); [facility:infirmary](Structures.md#infirmary) — build cost 2 (AUTOMATION, ALL); [facility:signal-relay](Structures.md#signal-relay) — build cost 3 (AUTOMATION, ALL); [facility:nutrient-digestor](Structures.md#nutrient-digestor) — build cost 6 (AUTOMATION, BEGOTTEN); [facility:terror-collector](Structures.md#terror-collector) — build cost 6 (AUTOMATION, PENITENT); [facility:resilience-grid](Structures.md#resilience-grid) — build cost 16 (INCURSION, UNRAVELED); [facility:dread-works](Structures.md#dread-works) — build cost 16 (INCURSION, PENITENT); [facility:incursion-anchor](Structures.md#incursion-anchor) — build cost 16 (INCURSION, BEGOTTEN); [facility:cold-store](Structures.md#cold-store) — build cost 2 (SALVAGE, ALL); [facility:barracks](Structures.md#barracks) — build cost 1 (SALVAGE, ALL); [facility:purification-works](Structures.md#purification-works) — build cost 4 (ELECTRIC, ALL); [facility:security-grid](Structures.md#security-grid) — build cost 7 (AUTOMATION, ALL); [facility:monument-graveyard](Structures.md#monument-graveyard) — build cost 24 (INCURSION, ALL); [facility:unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) — build cost 2 (SALVAGE, UNRAVELED); [facility:unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) — build cost 4 (STEAM, UNRAVELED); [facility:unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) — build cost 4 (ELECTRIC, UNRAVELED); [facility:unraveled-defense-works](Structures.md#unraveled-defense-works) — build cost 8 (AUTOMATION, UNRAVELED); [facility:penitent-reliquary](Structures.md#penitent-reliquary) — build cost 2 (SALVAGE, PENITENT); [facility:penitent-cantor-dais](Structures.md#penitent-cantor-dais) — build cost 3 (STEAM, PENITENT); [facility:penitent-choir-relay](Structures.md#penitent-choir-relay) — build cost 5 (ELECTRIC, PENITENT); [facility:penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) — build cost 8 (AUTOMATION, PENITENT); [facility:begotten-chitin-vat](Structures.md#begotten-chitin-vat) — build cost 2 (STEAM, BEGOTTEN); [facility:begotten-organ-lattice](Structures.md#begotten-organ-lattice) — build cost 6 (AUTOMATION, BEGOTTEN)
 
 ## Machine Parts (`MACHINE_PARTS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (50):** [hand:vehicle-repair](Recipes.md#handvehicle-repair) requires 1 (produces `VEHICLE_REPAIR_KIT`); [hand:weapon-pipe-pistol](Recipes.md#handweapon-pipe-pistol) requires 1 (produces `PIPE_PISTOL`); [hand:weapon-bolt-rifle](Recipes.md#handweapon-bolt-rifle) requires 2 (produces `BOLT_RIFLE`); [industrial:steam-pump-head](Recipes.md#industrialsteam-pump-head) requires 1 (produces `PUMP_HEAD`); [industrial:controller-board](Recipes.md#industrialcontroller-board) requires 1 (produces `CONTROL_BOARD`); [industrial:precision-fit](Recipes.md#industrialprecision-fit) requires 1 (produces `PRECISION_MODULE`); [industrial:production-controller](Recipes.md#industrialproduction-controller) requires 2 (produces `ASSEMBLY_CONTROLLER`); [industrial:resilience-core](Recipes.md#industrialresilience-core) requires 2 (produces `RESILIENCE_CORE`); [industrial:breach-seed](Recipes.md#industrialbreach-seed) requires 3 (produces `BREACH_SEED`); [industrial:field-maintenance](Recipes.md#industrialfield-maintenance) requires 2 (produces `VEHICLE_REPAIR_KIT`); [industrial:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) requires 3 (produces `RELAY_BOX`); [forge](Structures.md#forge) build requires 1 (SALVAGE); [freight-bay](Structures.md#freight-bay) build requires 3 (SALVAGE); [irrigation-works](Structures.md#irrigation-works) build requires 1 (SALVAGE); [materials-recycler](Structures.md#materials-recycler) build requires 3 (SALVAGE); [steam-boiler](Structures.md#steam-boiler) build requires 2 (STEAM); [mechanical-shaft](Structures.md#mechanical-shaft) build requires 1 (STEAM); [metal-press](Structures.md#metal-press) build requires 2 (STEAM); [conveyor-line](Structures.md#conveyor-line) build requires 3 (STEAM); [generator](Structures.md#generator) build requires 5 (ELECTRIC); [electric-bus](Structures.md#electric-bus) build requires 3 (ELECTRIC); [precision-lathe](Structures.md#precision-lathe) build requires 4 (ELECTRIC); [automatic-sorter](Structures.md#automatic-sorter) build requires 5 (ELECTRIC); [water-works](Structures.md#water-works) build requires 2 (ELECTRIC); [fuel-refinery](Structures.md#fuel-refinery) build requires 6 (ELECTRIC); [controlled-greenhouse](Structures.md#controlled-greenhouse) build requires 2 (ELECTRIC); [industrial-workshop](Structures.md#industrial-workshop) build requires 6 (AUTOMATION); [motor-pool](Structures.md#motor-pool) build requires 5 (AUTOMATION); [assembly-line](Structures.md#assembly-line) build requires 9 (AUTOMATION); [command-hall](Structures.md#command-hall) build requires 6 (AUTOMATION); [research-archive](Structures.md#research-archive) build requires 8 (AUTOMATION); [infirmary](Structures.md#infirmary) build requires 2 (AUTOMATION); [signal-relay](Structures.md#signal-relay) build requires 5 (AUTOMATION); [nutrient-digestor](Structures.md#nutrient-digestor) build requires 6 (AUTOMATION); [terror-collector](Structures.md#terror-collector) build requires 6 (AUTOMATION); [resilience-grid](Structures.md#resilience-grid) build requires 12 (INCURSION); [dread-works](Structures.md#dread-works) build requires 12 (INCURSION); [incursion-anchor](Structures.md#incursion-anchor) build requires 12 (INCURSION); [purification-works](Structures.md#purification-works) build requires 3 (ELECTRIC); [security-grid](Structures.md#security-grid) build requires 6 (AUTOMATION); [monument-graveyard](Structures.md#monument-graveyard) build requires 16 (INCURSION); [unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) build requires 2 (SALVAGE); [unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) build requires 3 (STEAM); [unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) build requires 5 (ELECTRIC); [unraveled-defense-works](Structures.md#unraveled-defense-works) build requires 8 (AUTOMATION); [penitent-cantor-dais](Structures.md#penitent-cantor-dais) build requires 2 (STEAM); [penitent-choir-relay](Structures.md#penitent-choir-relay) build requires 4 (ELECTRIC); [penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) build requires 7 (AUTOMATION); [begotten-membrane-lab](Structures.md#begotten-membrane-lab) build requires 4 (ELECTRIC); [begotten-organ-lattice](Structures.md#begotten-organ-lattice) build requires 6 (AUTOMATION)
+**Consumed by (48):** [hand:vehicle-repair](Recipes.md#handvehicle-repair) — needs 1, makes 1 × `VEHICLE_REPAIR_KIT`; [industry:steam-pump-head](Recipes.md#industrialsteam-pump-head) — needs 1, makes 1 × `PUMP_HEAD`; [industry:controller-board](Recipes.md#industrialcontroller-board) — needs 1, makes 1 × `CONTROL_BOARD`; [industry:precision-fit](Recipes.md#industrialprecision-fit) — needs 1, makes 1 × `PRECISION_MODULE`; [industry:production-controller](Recipes.md#industrialproduction-controller) — needs 2, makes 1 × `ASSEMBLY_CONTROLLER`; [industry:resilience-core](Recipes.md#industrialresilience-core) — needs 2, makes 1 × `RESILIENCE_CORE`; [industry:breach-seed](Recipes.md#industrialbreach-seed) — needs 3, makes 1 × `BREACH_SEED`; [industry:field-maintenance](Recipes.md#industrialfield-maintenance) — needs 2, makes 1 × `VEHICLE_REPAIR_KIT`; [industry:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) — needs 3, makes 1 × `RELAY_BOX`; [facility:forge](Structures.md#forge) — build cost 1 (SALVAGE, ALL); [facility:freight-bay](Structures.md#freight-bay) — build cost 3 (SALVAGE, ALL); [facility:irrigation-works](Structures.md#irrigation-works) — build cost 1 (SALVAGE, ALL); [facility:materials-recycler](Structures.md#materials-recycler) — build cost 3 (SALVAGE, ALL); [facility:steam-boiler](Structures.md#steam-boiler) — build cost 2 (STEAM, ALL); [facility:mechanical-shaft](Structures.md#mechanical-shaft) — build cost 1 (STEAM, ALL); [facility:metal-press](Structures.md#metal-press) — build cost 2 (STEAM, ALL); [facility:conveyor-line](Structures.md#conveyor-line) — build cost 3 (STEAM, ALL); [facility:generator](Structures.md#generator) — build cost 5 (ELECTRIC, ALL); [facility:electric-bus](Structures.md#electric-bus) — build cost 3 (ELECTRIC, ALL); [facility:precision-lathe](Structures.md#precision-lathe) — build cost 4 (ELECTRIC, ALL); [facility:automatic-sorter](Structures.md#automatic-sorter) — build cost 5 (ELECTRIC, ALL); [facility:water-works](Structures.md#water-works) — build cost 2 (ELECTRIC, ALL); [facility:fuel-refinery](Structures.md#fuel-refinery) — build cost 6 (ELECTRIC, ALL); [facility:controlled-greenhouse](Structures.md#controlled-greenhouse) — build cost 2 (ELECTRIC, ALL); [facility:industrial-workshop](Structures.md#industrial-workshop) — build cost 6 (AUTOMATION, ALL); [facility:motor-pool](Structures.md#motor-pool) — build cost 5 (AUTOMATION, ALL); [facility:assembly-line](Structures.md#assembly-line) — build cost 9 (AUTOMATION, ALL); [facility:command-hall](Structures.md#command-hall) — build cost 6 (AUTOMATION, ALL); [facility:research-archive](Structures.md#research-archive) — build cost 8 (AUTOMATION, ALL); [facility:infirmary](Structures.md#infirmary) — build cost 2 (AUTOMATION, ALL); [facility:signal-relay](Structures.md#signal-relay) — build cost 5 (AUTOMATION, ALL); [facility:nutrient-digestor](Structures.md#nutrient-digestor) — build cost 6 (AUTOMATION, BEGOTTEN); [facility:terror-collector](Structures.md#terror-collector) — build cost 6 (AUTOMATION, PENITENT); [facility:resilience-grid](Structures.md#resilience-grid) — build cost 12 (INCURSION, UNRAVELED); [facility:dread-works](Structures.md#dread-works) — build cost 12 (INCURSION, PENITENT); [facility:incursion-anchor](Structures.md#incursion-anchor) — build cost 12 (INCURSION, BEGOTTEN); [facility:purification-works](Structures.md#purification-works) — build cost 3 (ELECTRIC, ALL); [facility:security-grid](Structures.md#security-grid) — build cost 6 (AUTOMATION, ALL); [facility:monument-graveyard](Structures.md#monument-graveyard) — build cost 16 (INCURSION, ALL); [facility:unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) — build cost 2 (SALVAGE, UNRAVELED); [facility:unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) — build cost 3 (STEAM, UNRAVELED); [facility:unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) — build cost 5 (ELECTRIC, UNRAVELED); [facility:unraveled-defense-works](Structures.md#unraveled-defense-works) — build cost 8 (AUTOMATION, UNRAVELED); [facility:penitent-cantor-dais](Structures.md#penitent-cantor-dais) — build cost 2 (STEAM, PENITENT); [facility:penitent-choir-relay](Structures.md#penitent-choir-relay) — build cost 4 (ELECTRIC, PENITENT); [facility:penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) — build cost 7 (AUTOMATION, PENITENT); [facility:begotten-membrane-lab](Structures.md#begotten-membrane-lab) — build cost 4 (ELECTRIC, BEGOTTEN); [facility:begotten-organ-lattice](Structures.md#begotten-organ-lattice) — build cost 6 (AUTOMATION, BEGOTTEN)
 
 ## Shelter Kit (`SHELTER_KIT`)
 
-**Made by:** [hand:shelter-kit](Recipes.md#handshelter-kit) → 1× at WORKBENCH
+**Produced by:** [hand:shelter-kit](Recipes.md#handshelter-kit) — 1 × per craft at WORKBENCH
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Vehicle Repair Kit (`VEHICLE_REPAIR_KIT`)
 
-**Made by:** [hand:vehicle-repair](Recipes.md#handvehicle-repair) → 1× at WORKBENCH; [industrial:field-maintenance](Recipes.md#industrialfield-maintenance) → 1× at [motor-pool](Structures.md#motor-pool) (UNRAVELED)
+**Produced by:** [hand:vehicle-repair](Recipes.md#handvehicle-repair) — 1 × per craft at WORKBENCH; [industry:field-maintenance](Recipes.md#industrialfield-maintenance) — 1 × at [motor-pool](Structures.md#motor-pool) (UNRAVELED)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Tent Kit (`TENT_KIT`)
 
-**Made by:** [hand:tent](Recipes.md#handtent) → 1× at HAND
+**Produced by:** [hand:tent](Recipes.md#handtent) — 1 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Crate Kit (`CRATE_KIT`)
 
-**Made by:** [hand:crate](Recipes.md#handcrate) → 1× at HAND
+**Produced by:** [hand:crate](Recipes.md#handcrate) — 1 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Fence Section (`FENCE_SECTION`)
 
-**Made by:** [hand:fence](Recipes.md#handfence) → 2× at HAND
+**Produced by:** [hand:fence](Recipes.md#handfence) — 2 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Stake Trap (`STAKE_TRAP`)
 
-**Made by:** [hand:stake-trap](Recipes.md#handstake-trap) → 1× at HAND
+**Produced by:** [hand:stake-trap](Recipes.md#handstake-trap) — 1 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Noise Alarm (`NOISE_ALARM`)
 
-**Made by:** [hand:noise-alarm](Recipes.md#handnoise-alarm) → 1× at HAND
+**Produced by:** [hand:noise-alarm](Recipes.md#handnoise-alarm) — 1 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Campfire (`CAMPFIRE`)
 
-**Made by:** [hand:campfire](Recipes.md#handcampfire) → 1× at HAND
+**Produced by:** [hand:campfire](Recipes.md#handcampfire) — 1 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Filter (`FILTER`)
 
-**Made by:** [hand:water-filter](Recipes.md#handwater-filter) → 1× at HAND
+**Produced by:** [hand:water-filter](Recipes.md#handwater-filter) — 1 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Dread Imprint (`DREAD_IMPRINT`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (3):** [industrial:dread-ward](Recipes.md#industrialdread-ward) requires 3 (produces `DREAD_WARD`); [industrial:bound-liturgy](Recipes.md#industrialbound-liturgy) requires 1 (produces `BOUND_LITURGY`); [industrial:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) requires 3 (produces `CONSECRATED_SHELL`)
+**Consumed by (3):** [industry:dread-ward](Recipes.md#industrialdread-ward) — needs 3, makes 1 × `DREAD_WARD`; [industry:bound-liturgy](Recipes.md#industrialbound-liturgy) — needs 1, makes 1 × `BOUND_LITURGY`; [industry:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) — needs 3, makes 1 × `CONSECRATED_SHELL`
 
 ## Resilience Core (`RESILIENCE_CORE`)
 
-**Made by:** [industrial:resilience-core](Recipes.md#industrialresilience-core) → 1× at [resilience-grid](Structures.md#resilience-grid) (UNRAVELED)
+**Produced by:** [industry:resilience-core](Recipes.md#industrialresilience-core) — 1 × at [resilience-grid](Structures.md#resilience-grid) (UNRAVELED)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Dread Ward (`DREAD_WARD`)
 
-**Made by:** [industrial:dread-ward](Recipes.md#industrialdread-ward) → 1× at [dread-works](Structures.md#dread-works) (PENITENT)
+**Produced by:** [industry:dread-ward](Recipes.md#industrialdread-ward) — 1 × at [dread-works](Structures.md#dread-works) (PENITENT)
 
-**Consumed by (1):** [industrial:sacred-supply](Recipes.md#industrialsacred-supply) requires 1 (produces `SACRED_SUPPLY`)
+**Consumed by (1):** [industry:sacred-supply](Recipes.md#industrialsacred-supply) — needs 1, makes 1 × `SACRED_SUPPLY`
 
 ## Breach Seed (`BREACH_SEED`)
 
-**Made by:** [industrial:breach-seed](Recipes.md#industrialbreach-seed) → 1× at [incursion-anchor](Structures.md#incursion-anchor) (BEGOTTEN)
+**Produced by:** [industry:breach-seed](Recipes.md#industrialbreach-seed) — 1 × at [incursion-anchor](Structures.md#incursion-anchor) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:spine-supply](Recipes.md#industrialspine-supply) requires 1 (produces `SPINE_SUPPLY`)
+**Consumed by (1):** [industry:spine-supply](Recipes.md#industrialspine-supply) — needs 1, makes 1 × `SPINE_SUPPLY`
 
 ## Sorted Ore (`SORTED_ORE`)
 
-**Made by:** [industrial:sort-mineral-feed](Recipes.md#industrialsort-mineral-feed) → 2× at [materials-recycler](Structures.md#materials-recycler) (ALL)
+**Produced by:** [industry:sort-mineral-feed](Recipes.md#industrialsort-mineral-feed) — 2 × at [materials-recycler](Structures.md#materials-recycler) (ALL)
 
-**Consumed by (1):** [industrial:tracking-electronics](Recipes.md#industrialtracking-electronics) requires 1 (produces `TRACKING_CIRCUIT`)
+**Consumed by (1):** [industry:tracking-electronics](Recipes.md#industrialtracking-electronics) — needs 1, makes 1 × `TRACKING_CIRCUIT`
 
 ## Hardened Alloy (`HARDENED_ALLOY`)
 
-**Made by:** [industrial:temper-alloy](Recipes.md#industrialtemper-alloy) → 1× at [forge](Structures.md#forge) (ALL)
+**Produced by:** [industry:temper-alloy](Recipes.md#industrialtemper-alloy) — 1 × at [forge](Structures.md#forge) (ALL)
 
-**Consumed by (2):** [industrial:ballistic-resupply](Recipes.md#industrialballistic-resupply) requires 2 (produces `BALLISTIC_SUPPLY`); [industrial:field-maintenance](Recipes.md#industrialfield-maintenance) requires 1 (produces `VEHICLE_REPAIR_KIT`)
+**Consumed by (2):** [industry:ballistic-resupply](Recipes.md#industrialballistic-resupply) — needs 2, makes 2 × `BALLISTIC_SUPPLY`; [industry:field-maintenance](Recipes.md#industrialfield-maintenance) — needs 1, makes 1 × `VEHICLE_REPAIR_KIT`
 
 ## Tracking Circuit (`TRACKING_CIRCUIT`)
 
-**Made by:** [industrial:tracking-electronics](Recipes.md#industrialtracking-electronics) → 1× at [precision-lathe](Structures.md#precision-lathe) (ALL)
+**Produced by:** [industry:tracking-electronics](Recipes.md#industrialtracking-electronics) — 1 × at [precision-lathe](Structures.md#precision-lathe) (ALL)
 
-**Consumed by (3):** [industrial:ballistic-resupply](Recipes.md#industrialballistic-resupply) requires 1 (produces `BALLISTIC_SUPPLY`); [industrial:secure-ammo-cache](Recipes.md#industrialsecure-ammo-cache) requires 1 (produces `DEFENSE_CACHE`); [industrial:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) requires 1 (produces `RELAY_BOX`)
+**Consumed by (3):** [industry:ballistic-resupply](Recipes.md#industrialballistic-resupply) — needs 1, makes 2 × `BALLISTIC_SUPPLY`; [industry:secure-ammo-cache](Recipes.md#industrialsecure-ammo-cache) — needs 1, makes 2 × `DEFENSE_CACHE`; [industry:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) — needs 1, makes 1 × `RELAY_BOX`
 
 ## Precision Feedline (`PRECISION_FEEDLINE`)
 
-**Made by:** [industrial:precision-feedlines](Recipes.md#industrialprecision-feedlines) → 2× at [industrial-workshop](Structures.md#industrial-workshop) (ALL)
+**Produced by:** [industry:precision-feedlines](Recipes.md#industrialprecision-feedlines) — 2 × at [industrial-workshop](Structures.md#industrial-workshop) (ALL)
 
-**Consumed by (1):** [industrial:ballistic-resupply](Recipes.md#industrialballistic-resupply) requires 1 (produces `BALLISTIC_SUPPLY`)
+**Consumed by (1):** [industry:ballistic-resupply](Recipes.md#industrialballistic-resupply) — needs 1, makes 2 × `BALLISTIC_SUPPLY`
 
 ## Ballistic Supply (`BALLISTIC_SUPPLY`)
 
-**Made by:** [industrial:ballistic-resupply](Recipes.md#industrialballistic-resupply) → 2× at [industrial-workshop](Structures.md#industrial-workshop) (UNRAVELED)
+**Produced by:** [industry:ballistic-resupply](Recipes.md#industrialballistic-resupply) — 2 × at [industrial-workshop](Structures.md#industrial-workshop) (UNRAVELED)
 
-**Consumed by (1):** [industrial:secure-ammo-cache](Recipes.md#industrialsecure-ammo-cache) requires 2 (produces `DEFENSE_CACHE`)
+**Consumed by (1):** [industry:secure-ammo-cache](Recipes.md#industrialsecure-ammo-cache) — needs 2, makes 2 × `DEFENSE_CACHE`
 
 ## Votive Incense (`VOTIVE_INCENSE`)
 
-**Made by:** [industrial:votive-incense](Recipes.md#industrialvotive-incense) → 2× at [cooking-hearth](Structures.md#cooking-hearth) (PENITENT)
+**Produced by:** [industry:votive-incense](Recipes.md#industrialvotive-incense) — 2 × at [cooking-hearth](Structures.md#cooking-hearth) (PENITENT)
 
-**Consumed by (1):** [industrial:witness-seal](Recipes.md#industrialwitness-seal) requires 2 (produces `WITNESS_SEAL`)
+**Consumed by (1):** [industry:witness-seal](Recipes.md#industrialwitness-seal) — needs 2, makes 2 × `WITNESS_SEAL`
 
 ## Witness Seal (`WITNESS_SEAL`)
 
-**Made by:** [industrial:witness-seal](Recipes.md#industrialwitness-seal) → 2× at [forge](Structures.md#forge) (PENITENT)
+**Produced by:** [industry:witness-seal](Recipes.md#industrialwitness-seal) — 2 × at [forge](Structures.md#forge) (PENITENT)
 
-**Consumed by (2):** [industrial:chorus-resonance](Recipes.md#industrialchorus-resonance) requires 2 (produces `CHORUS_RESONANCE`); [industrial:penitent-cast-censer](Recipes.md#industrialpenitent-cast-censer) requires 1 (produces `BRONZE_CENSER`)
+**Consumed by (2):** [industry:chorus-resonance](Recipes.md#industrialchorus-resonance) — needs 2, makes 1 × `CHORUS_RESONANCE`; [industry:penitent-cast-censer](Recipes.md#industrialpenitent-cast-censer) — needs 1, makes 1 × `BRONZE_CENSER`
 
 ## Chorus Resonance (`CHORUS_RESONANCE`)
 
-**Made by:** [industrial:chorus-resonance](Recipes.md#industrialchorus-resonance) → 1× at [research-archive](Structures.md#research-archive) (PENITENT)
+**Produced by:** [industry:chorus-resonance](Recipes.md#industrialchorus-resonance) — 1 × at [research-archive](Structures.md#research-archive) (PENITENT)
 
-**Consumed by (1):** [industrial:bound-liturgy](Recipes.md#industrialbound-liturgy) requires 1 (produces `BOUND_LITURGY`)
+**Consumed by (1):** [industry:bound-liturgy](Recipes.md#industrialbound-liturgy) — needs 1, makes 1 × `BOUND_LITURGY`
 
 ## Bound Liturgy (`BOUND_LITURGY`)
 
-**Made by:** [industrial:bound-liturgy](Recipes.md#industrialbound-liturgy) → 1× at [terror-collector](Structures.md#terror-collector) (PENITENT)
+**Produced by:** [industry:bound-liturgy](Recipes.md#industrialbound-liturgy) — 1 × at [terror-collector](Structures.md#terror-collector) (PENITENT)
 
-**Consumed by (2):** [industrial:sacred-supply](Recipes.md#industrialsacred-supply) requires 2 (produces `SACRED_SUPPLY`); [industrial:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) requires 1 (produces `CONSECRATED_SHELL`)
+**Consumed by (2):** [industry:sacred-supply](Recipes.md#industrialsacred-supply) — needs 2, makes 1 × `SACRED_SUPPLY`; [industry:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) — needs 1, makes 1 × `CONSECRATED_SHELL`
 
 ## Sacred Supply (`SACRED_SUPPLY`)
 
-**Made by:** [industrial:sacred-supply](Recipes.md#industrialsacred-supply) → 1× at [dread-works](Structures.md#dread-works) (PENITENT)
+**Produced by:** [industry:sacred-supply](Recipes.md#industrialsacred-supply) — 1 × at [dread-works](Structures.md#dread-works) (PENITENT)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Growth Feed (`GROWTH_FEED`)
 
-**Made by:** [industrial:growth-feed](Recipes.md#industrialgrowth-feed) → 2× at [cooking-hearth](Structures.md#cooking-hearth) (BEGOTTEN)
+**Produced by:** [industry:growth-feed](Recipes.md#industrialgrowth-feed) — 2 × at [cooking-hearth](Structures.md#cooking-hearth) (BEGOTTEN)
 
-**Consumed by (2):** [industrial:viable-spores](Recipes.md#industrialviable-spores) requires 2 (produces `VIABLE_SPORES`); [industrial:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) requires 2 (produces `ORGAN_CORE`)
+**Consumed by (2):** [industry:viable-spores](Recipes.md#industrialviable-spores) — needs 2, makes 2 × `VIABLE_SPORES`; [industry:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) — needs 2, makes 1 × `ORGAN_CORE`
 
 ## Viable Spores (`VIABLE_SPORES`)
 
-**Made by:** [industrial:viable-spores](Recipes.md#industrialviable-spores) → 2× at [materials-recycler](Structures.md#materials-recycler) (BEGOTTEN)
+**Produced by:** [industry:viable-spores](Recipes.md#industrialviable-spores) — 2 × at [materials-recycler](Structures.md#materials-recycler) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:grown-chitin](Recipes.md#industrialgrown-chitin) requires 2 (produces `GROWN_CHITIN`)
+**Consumed by (1):** [industry:grown-chitin](Recipes.md#industrialgrown-chitin) — needs 2, makes 2 × `GROWN_CHITIN`
 
 ## Grown Chitin (`GROWN_CHITIN`)
 
-**Made by:** [industrial:grown-chitin](Recipes.md#industrialgrown-chitin) → 2× at [controlled-greenhouse](Structures.md#controlled-greenhouse) (BEGOTTEN)
+**Produced by:** [industry:grown-chitin](Recipes.md#industrialgrown-chitin) — 2 × at [controlled-greenhouse](Structures.md#controlled-greenhouse) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:binding-resin](Recipes.md#industrialbinding-resin) requires 2 (produces `BINDING_RESIN`)
+**Consumed by (1):** [industry:binding-resin](Recipes.md#industrialbinding-resin) — needs 2, makes 1 × `BINDING_RESIN`
 
 ## Binding Resin (`BINDING_RESIN`)
 
-**Made by:** [industrial:binding-resin](Recipes.md#industrialbinding-resin) → 1× at [nutrient-digestor](Structures.md#nutrient-digestor) (BEGOTTEN)
+**Produced by:** [industry:binding-resin](Recipes.md#industrialbinding-resin) — 1 × at [nutrient-digestor](Structures.md#nutrient-digestor) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:spine-supply](Recipes.md#industrialspine-supply) requires 2 (produces `SPINE_SUPPLY`)
+**Consumed by (1):** [industry:spine-supply](Recipes.md#industrialspine-supply) — needs 2, makes 1 × `SPINE_SUPPLY`
 
 ## Spine Supply (`SPINE_SUPPLY`)
 
-**Made by:** [industrial:spine-supply](Recipes.md#industrialspine-supply) → 1× at [incursion-anchor](Structures.md#incursion-anchor) (BEGOTTEN)
+**Produced by:** [industry:spine-supply](Recipes.md#industrialspine-supply) — 1 × at [incursion-anchor](Structures.md#incursion-anchor) (BEGOTTEN)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Scrap Metal (`SCRAP_METAL`)
 
-**Made by:** [industrial:unraveled-recover-scrap](Recipes.md#industrialunraveled-recover-scrap) → 2× at [unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) (UNRAVELED)
+**Produced by:** [industry:unraveled-recover-scrap](Recipes.md#industrialunraveled-recover-scrap) — 2 × at [unraveled-scrap-outpost](Structures.md#unraveled-scrap-outpost) (UNRAVELED)
 
-**Consumed by (1):** [industrial:unraveled-make-bearings](Recipes.md#industrialunraveled-make-bearings) requires 3 (produces `BEARING_SET`)
+**Consumed by (1):** [industry:unraveled-make-bearings](Recipes.md#industrialunraveled-make-bearings) — needs 3, makes 2 × `BEARING_SET`
 
 ## Salvaged Wire (`SALVAGED_WIRE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Bearing Set (`BEARING_SET`)
 
-**Made by:** [industrial:unraveled-make-bearings](Recipes.md#industrialunraveled-make-bearings) → 2× at [unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) (UNRAVELED)
+**Produced by:** [industry:unraveled-make-bearings](Recipes.md#industrialunraveled-make-bearings) — 2 × at [unraveled-machinist-bay](Structures.md#unraveled-machinist-bay) (UNRAVELED)
 
-**Consumed by (1):** [industrial:unraveled-pressure-vessel](Recipes.md#industrialunraveled-pressure-vessel) requires 2 (produces `PRESSURE_TANK`)
+**Consumed by (1):** [industry:unraveled-pressure-vessel](Recipes.md#industrialunraveled-pressure-vessel) — needs 2, makes 1 × `PRESSURE_TANK`
 
 ## Valve Body (`VALVE_BODY`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Piston Head (`PISTON_HEAD`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Rubber Seals (`RUBBER_SEALS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Fuel Can (`FUEL_CAN`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Lubricant (`LUBRICANT`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Pressure Tank (`PRESSURE_TANK`)
 
-**Made by:** [industrial:unraveled-pressure-vessel](Recipes.md#industrialunraveled-pressure-vessel) → 1× at [unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) (UNRAVELED)
+**Produced by:** [industry:unraveled-pressure-vessel](Recipes.md#industrialunraveled-pressure-vessel) — 1 × at [unraveled-pressure-shop](Structures.md#unraveled-pressure-shop) (UNRAVELED)
 
-**Consumed by (1):** [industrial:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) requires 1 (produces `SENSOR_HEAD`)
+**Consumed by (1):** [industry:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) — needs 1, makes 2 × `SENSOR_HEAD`
 
 ## Sheet Metal (`SHEET_METAL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Welded Frame (`WELDED_FRAME`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Coil Spring (`COIL_SPRING`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Pulley Set (`PULLEY_SET`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Tool Roll (`TOOL_ROLL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Power Cell (`POWER_CELL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Sensor Head (`SENSOR_HEAD`)
 
-**Made by:** [industrial:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) → 2× at [unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) (UNRAVELED)
+**Produced by:** [industry:unraveled-calibrate-sensors](Recipes.md#industrialunraveled-calibrate-sensors) — 2 × at [unraveled-sensor-lab](Structures.md#unraveled-sensor-lab) (UNRAVELED)
 
-**Consumed by (1):** [industrial:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) requires 2 (produces `RELAY_BOX`)
+**Consumed by (1):** [industry:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) — needs 2, makes 1 × `RELAY_BOX`
 
 ## Relay Box (`RELAY_BOX`)
 
-**Made by:** [industrial:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) → 1× at [unraveled-defense-works](Structures.md#unraveled-defense-works) (UNRAVELED)
+**Produced by:** [industry:unraveled-defense-scanner](Recipes.md#industrialunraveled-defense-scanner) — 1 × at [unraveled-defense-works](Structures.md#unraveled-defense-works) (UNRAVELED)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Actuator (`ACTUATOR`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Filter Media (`FILTER_MEDIA`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Coolant Jug (`COOLANT_JUG`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Drive Chain (`DRIVE_CHAIN`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Circuit Housing (`CIRCUIT_HOUSING`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Composite Panel (`COMPOSITE_PANEL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Cargo Net (`CARGO_NET`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Fastener Box (`FASTENER_BOX`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Processed Fuel (`PROCESSED_FUEL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Repair Compound (`REPAIR_COMPOUND`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Precision Lens (`PRECISION_LENS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Calibration Kit (`CALIBRATION_KIT`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Industrial Solvent (`INDUSTRIAL_SOLVENT`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Ritual Cloth (`RITUAL_CLOTH`)
 
-**Made by:** [industrial:penitent-weave-ritual](Recipes.md#industrialpenitent-weave-ritual) → 2× at [penitent-votive-altar](Structures.md#penitent-votive-altar) (PENITENT)
+**Produced by:** [industry:penitent-weave-ritual](Recipes.md#industrialpenitent-weave-ritual) — 2 × at [penitent-votive-altar](Structures.md#penitent-votive-altar) (PENITENT)
 
-**Consumed by (1):** [industrial:penitent-engrave-reliquary](Recipes.md#industrialpenitent-engrave-reliquary) requires 1 (produces `RELIQUARY_PLATE`)
+**Consumed by (1):** [industry:penitent-engrave-reliquary](Recipes.md#industrialpenitent-engrave-reliquary) — needs 1, makes 1 × `RELIQUARY_PLATE`
 
 ## Wax Candles (`WAX_CANDLES`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Ash Salt (`ASH_SALT`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Sacred Oil (`SACRED_OIL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Offering Bowl (`OFFERING_BOWL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Prayer Beads (`PRAYER_BEADS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Ceremonial Ink (`CEREMONIAL_INK`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Bone Tokens (`BONE_TOKENS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Blessed Thread (`BLESSED_THREAD`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Seal Wax (`SEAL_WAX`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Bronze Censer (`BRONZE_CENSER`)
 
-**Made by:** [industrial:penitent-cast-censer](Recipes.md#industrialpenitent-cast-censer) → 1× at [penitent-cantor-dais](Structures.md#penitent-cantor-dais) (PENITENT)
+**Produced by:** [industry:penitent-cast-censer](Recipes.md#industrialpenitent-cast-censer) — 1 × at [penitent-cantor-dais](Structures.md#penitent-cantor-dais) (PENITENT)
 
-**Consumed by (1):** [industrial:penitent-score-hymn](Recipes.md#industrialpenitent-score-hymn) requires 1 (produces `CHOIR_SCORE`)
+**Consumed by (1):** [industry:penitent-score-hymn](Recipes.md#industrialpenitent-score-hymn) — needs 1, makes 1 × `CHOIR_SCORE`
 
 ## Ritual Ash (`RITUAL_ASH`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Votive Powder (`VOTIVE_POWDER`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Sanctified Water (`SANCTIFIED_WATER`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Reliquary Plate (`RELIQUARY_PLATE`)
 
-**Made by:** [industrial:penitent-engrave-reliquary](Recipes.md#industrialpenitent-engrave-reliquary) → 1× at [penitent-reliquary](Structures.md#penitent-reliquary) (PENITENT)
+**Produced by:** [industry:penitent-engrave-reliquary](Recipes.md#industrialpenitent-engrave-reliquary) — 1 × at [penitent-reliquary](Structures.md#penitent-reliquary) (PENITENT)
 
-**Consumed by (1):** [industrial:penitent-cast-censer](Recipes.md#industrialpenitent-cast-censer) requires 2 (produces `BRONZE_CENSER`)
+**Consumed by (1):** [industry:penitent-cast-censer](Recipes.md#industrialpenitent-cast-censer) — needs 2, makes 1 × `BRONZE_CENSER`
 
 ## Scripture Leaf (`SCRIPTURE_LEAF`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Copper Chimes (`COPPER_CHIMES`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Chorus Mask (`CHORUS_MASK`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Oath Ribbon (`OATH_RIBBON`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Consecrated Resin (`CONSECRATED_RESIN`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Ember Charms (`EMBER_CHARMS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Ward Nails (`WARD_NAILS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Processional Chain (`PROCESSIONAL_CHAIN`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Hallowed Sand (`HALLOWED_SAND`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Choir Score (`CHOIR_SCORE`)
 
-**Made by:** [industrial:penitent-score-hymn](Recipes.md#industrialpenitent-score-hymn) → 1× at [penitent-choir-relay](Structures.md#penitent-choir-relay) (PENITENT)
+**Produced by:** [industry:penitent-score-hymn](Recipes.md#industrialpenitent-score-hymn) — 1 × at [penitent-choir-relay](Structures.md#penitent-choir-relay) (PENITENT)
 
-**Consumed by (1):** [industrial:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) requires 2 (produces `CONSECRATED_SHELL`)
+**Consumed by (1):** [industry:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) — needs 2, makes 1 × `CONSECRATED_SHELL`
 
 ## Shrine Stone (`SHRINE_STONE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Pilgrim Pack (`PILGRIM_PACK`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Purity Salve (`PURITY_SALVE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Binding Cord (`BINDING_CORD`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Consecrated Shell (`CONSECRATED_SHELL`)
 
-**Made by:** [industrial:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) → 1× at [penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) (PENITENT)
+**Produced by:** [industry:penitent-sanctify-shell](Recipes.md#industrialpenitent-sanctify-shell) — 1 × at [penitent-ward-sanctum](Structures.md#penitent-ward-sanctum) (PENITENT)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Nutrient Slurry (`NUTRIENT_SLURRY`)
 
-**Made by:** [industrial:begotten-mix-slurry](Recipes.md#industrialbegotten-mix-slurry) → 2× at [begotten-brood-nest](Structures.md#begotten-brood-nest) (BEGOTTEN)
+**Produced by:** [industry:begotten-mix-slurry](Recipes.md#industrialbegotten-mix-slurry) — 2 × at [begotten-brood-nest](Structures.md#begotten-brood-nest) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:begotten-culture-spores](Recipes.md#industrialbegotten-culture-spores) requires 2 (produces `SPORE_POD`)
+**Consumed by (1):** [industry:begotten-culture-spores](Recipes.md#industrialbegotten-culture-spores) — needs 2, makes 2 × `SPORE_POD`
 
 ## Spore Pod (`SPORE_POD`)
 
-**Made by:** [industrial:begotten-culture-spores](Recipes.md#industrialbegotten-culture-spores) → 2× at [begotten-spore-basin](Structures.md#begotten-spore-basin) (BEGOTTEN)
+**Produced by:** [industry:begotten-culture-spores](Recipes.md#industrialbegotten-culture-spores) — 2 × at [begotten-spore-basin](Structures.md#begotten-spore-basin) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:begotten-harden-chitin](Recipes.md#industrialbegotten-harden-chitin) requires 2 (produces `CHITIN_SHARDS`)
+**Consumed by (1):** [industry:begotten-harden-chitin](Recipes.md#industrialbegotten-harden-chitin) — needs 2, makes 2 × `CHITIN_SHARDS`
 
 ## Chitin Shards (`CHITIN_SHARDS`)
 
-**Made by:** [industrial:begotten-harden-chitin](Recipes.md#industrialbegotten-harden-chitin) → 2× at [begotten-chitin-vat](Structures.md#begotten-chitin-vat) (BEGOTTEN)
+**Produced by:** [industry:begotten-harden-chitin](Recipes.md#industrialbegotten-harden-chitin) — 2 × at [begotten-chitin-vat](Structures.md#begotten-chitin-vat) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:begotten-grow-membrane](Recipes.md#industrialbegotten-grow-membrane) requires 3 (produces `LIVING_MEMBRANE`)
+**Consumed by (1):** [industry:begotten-grow-membrane](Recipes.md#industrialbegotten-grow-membrane) — needs 3, makes 1 × `LIVING_MEMBRANE`
 
 ## Tendon Fiber (`TENDON_FIBER`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Resin Glob (`RESIN_GLOB`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Bone Meal (`BONE_MEAL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Growth Medium (`GROWTH_MEDIUM`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Brood Gel (`BROOD_GEL`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Carapace Plate (`CARAPACE_PLATE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Maw Seeds (`MAW_SEEDS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Pale Marrow (`PALE_MARROW`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Mutagen Sap (`MUTAGEN_SAP`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Spine Cluster (`SPINE_CLUSTER`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Incubator Slime (`INCUBATOR_SLIME`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Fungal Mat (`FUNGAL_MAT`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Living Membrane (`LIVING_MEMBRANE`)
 
-**Made by:** [industrial:begotten-grow-membrane](Recipes.md#industrialbegotten-grow-membrane) → 1× at [begotten-membrane-lab](Structures.md#begotten-membrane-lab) (BEGOTTEN)
+**Produced by:** [industry:begotten-grow-membrane](Recipes.md#industrialbegotten-grow-membrane) — 1 × at [begotten-membrane-lab](Structures.md#begotten-membrane-lab) (BEGOTTEN)
 
-**Consumed by (1):** [industrial:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) requires 2 (produces `ORGAN_CORE`)
+**Consumed by (1):** [industry:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) — needs 2, makes 1 × `ORGAN_CORE`
 
 ## Root Bulb (`ROOT_BULB`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Vein Tubing (`VEIN_TUBING`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Scent Gland (`SCENT_GLAND`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Larval Feed (`LARVAL_FEED`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Husk Fragments (`HUSK_FRAGMENTS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Mycelial Mass (`MYCELIAL_MASS`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Biolume Fluid (`BIOLUME_FLUID`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Organ Core (`ORGAN_CORE`)
 
-**Made by:** [industrial:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) → 1× at [begotten-organ-lattice](Structures.md#begotten-organ-lattice) (BEGOTTEN)
+**Produced by:** [industry:begotten-pulse-organ](Recipes.md#industrialbegotten-pulse-organ) — 1 × at [begotten-organ-lattice](Structures.md#begotten-organ-lattice) (BEGOTTEN)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Tangle Vine (`TANGLE_VINE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Bile Sac (`BILE_SAC`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Calcified Nodules (`CALCIFIED_NODULES`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Stem Bundle (`STEM_BUNDLE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Thorn Bundle (`THORN_BUNDLE`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Pulse Organ (`PULSE_ORGAN`)
 
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
+**Produced by:** No recipe in the exported registries; source acquisition/trade or later implementation required.
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Bandage (`BANDAGE`)
 
-**Made by:** [hand:bandage](Recipes.md#handbandage) → 1× at HAND; [hand:field-dressing](Recipes.md#handfield-dressing) → 2× at HAND
+**Produced by:** [hand:bandage](Recipes.md#handbandage) — 1 × per craft at HAND; [hand:field-dressing](Recipes.md#handfield-dressing) — 2 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Workbench (`WORKBENCH`)
 
-**Made by:** [hand:workbench](Recipes.md#handworkbench) → 1× at HAND
+**Produced by:** [hand:workbench](Recipes.md#handworkbench) — 1 × per craft at HAND
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Preserved Rations (`PRESERVED_RATIONS`)
 
-**Made by:** [industrial:cold-preservation](Recipes.md#industrialcold-preservation) → 3× at [cold-store](Structures.md#cold-store) (ALL)
+**Produced by:** [industry:cold-preservation](Recipes.md#industrialcold-preservation) — 3 × at [cold-store](Structures.md#cold-store) (ALL)
 
-**Consumed by (1):** [industrial:fortified-rations](Recipes.md#industrialfortified-rations) requires 2 (produces `FIELD_MRE`)
+**Consumed by (1):** [industry:fortified-rations](Recipes.md#industrialfortified-rations) — needs 2, makes 3 × `FIELD_MRE`
 
 ## Guard Provisions (`GUARD_PROVISIONS`)
 
-**Made by:** [industrial:guard-provisions](Recipes.md#industrialguard-provisions) → 2× at [barracks](Structures.md#barracks) (ALL)
+**Produced by:** [industry:guard-provisions](Recipes.md#industrialguard-provisions) — 2 × at [barracks](Structures.md#barracks) (ALL)
 
-**Consumed by (1):** [industrial:fortified-rations](Recipes.md#industrialfortified-rations) requires 2 (produces `FIELD_MRE`)
+**Consumed by (1):** [industry:fortified-rations](Recipes.md#industrialfortified-rations) — needs 2, makes 3 × `FIELD_MRE`
 
 ## Sterile Water (`STERILE_WATER`)
 
-**Made by:** [industrial:treat-contaminated-water](Recipes.md#industrialtreat-contaminated-water) → 4× at [purification-works](Structures.md#purification-works) (ALL)
+**Produced by:** [industry:treat-contaminated-water](Recipes.md#industrialtreat-contaminated-water) — 4 × at [purification-works](Structures.md#purification-works) (ALL)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Defense Cache (`DEFENSE_CACHE`)
 
-**Made by:** [industrial:secure-ammo-cache](Recipes.md#industrialsecure-ammo-cache) → 2× at [security-grid](Structures.md#security-grid) (UNRAVELED)
+**Produced by:** [industry:secure-ammo-cache](Recipes.md#industrialsecure-ammo-cache) — 2 × at [security-grid](Structures.md#security-grid) (UNRAVELED)
 
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 
 ## Field Mre (`FIELD_MRE`)
 
-**Made by:** [industrial:fortified-rations](Recipes.md#industrialfortified-rations) → 3× at [industrial-workshop](Structures.md#industrial-workshop) (ALL)
+**Produced by:** [industry:fortified-rations](Recipes.md#industrialfortified-rations) — 3 × at [industrial-workshop](Structures.md#industrial-workshop) (ALL)
 
-**Consumed by (0):** No registered consumer.
-
-## Rusted Crowbar (`RUSTED_CROWBAR`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Fire Axe (`FIRE_AXE`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Nail Bat (`NAIL_BAT`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Survival Knife (`SURVIVAL_KNIFE`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Old Revolver (`OLD_REVOLVER`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Pump Shotgun (`PUMP_SHOTGUN`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Hunting Rifle (`HUNTING_RIFLE`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Compact SMG (`COMPACT_SMG`)
-
-**Made by:** No declared manufacturing recipe; ground resource/loot or future gate.
-
-**Consumed by (0):** No registered consumer.
-
-## Wooden Club (`WOODEN_CLUB`)
-
-**Made by:** [hand:weapon-wooden-club](Recipes.md#handweapon-wooden-club) → 1× at HAND
-
-**Consumed by (0):** No registered consumer.
-
-## Stone Shiv (`STONE_SHIV`)
-
-**Made by:** [hand:weapon-stone-shiv](Recipes.md#handweapon-stone-shiv) → 1× at HAND
-
-**Consumed by (0):** No registered consumer.
-
-## Stone Hatchet (`STONE_HATCHET`)
-
-**Made by:** [hand:weapon-stone-hatchet](Recipes.md#handweapon-stone-hatchet) → 1× at HAND
-
-**Consumed by (0):** No registered consumer.
-
-## Wooden Spear (`WOODEN_SPEAR`)
-
-**Made by:** [hand:weapon-wooden-spear](Recipes.md#handweapon-wooden-spear) → 1× at HAND
-
-**Consumed by (0):** No registered consumer.
-
-## Short Bow (`SHORT_BOW`)
-
-**Made by:** [hand:weapon-short-bow](Recipes.md#handweapon-short-bow) → 1× at HAND
-
-**Consumed by (0):** No registered consumer.
-
-## Spiked Club (`SPIKED_CLUB`)
-
-**Made by:** [hand:weapon-spiked-club](Recipes.md#handweapon-spiked-club) → 1× at WORKBENCH
-
-**Consumed by (0):** No registered consumer.
-
-## Reinforced Spear (`REINFORCED_SPEAR`)
-
-**Made by:** [hand:weapon-reinforced-spear](Recipes.md#handweapon-reinforced-spear) → 1× at WORKBENCH
-
-**Consumed by (0):** No registered consumer.
-
-## Salvage Machete (`SALVAGE_MACHETE`)
-
-**Made by:** [hand:weapon-salvage-machete](Recipes.md#handweapon-salvage-machete) → 1× at WORKBENCH
-
-**Consumed by (0):** No registered consumer.
-
-## Hand Crossbow (`HAND_CROSSBOW`)
-
-**Made by:** [hand:weapon-hand-crossbow](Recipes.md#handweapon-hand-crossbow) → 1× at WORKBENCH
-
-**Consumed by (0):** No registered consumer.
-
-## Pipe Pistol (`PIPE_PISTOL`)
-
-**Made by:** [hand:weapon-pipe-pistol](Recipes.md#handweapon-pipe-pistol) → 1× at WORKBENCH
-
-**Consumed by (0):** No registered consumer.
-
-## Bolt Rifle (`BOLT_RIFLE`)
-
-**Made by:** [hand:weapon-bolt-rifle](Recipes.md#handweapon-bolt-rifle) → 1× at WORKBENCH
-
-**Consumed by (0):** No registered consumer.
-
-## Scrap Shotgun (`SCRAP_SHOTGUN`)
-
-**Made by:** [hand:weapon-scrap-shotgun](Recipes.md#handweapon-scrap-shotgun) → 1× at WORKBENCH
-
-**Consumed by (0):** No registered consumer.
+**Consumed by (0):** No current declared recipe or build cost.
 

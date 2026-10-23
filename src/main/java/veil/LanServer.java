@@ -102,6 +102,8 @@ public final class LanServer implements AutoCloseable {
                     ArenaSystems.Player self=match.player(p.id);
                     if(self!=null){
                         p.send(selfPacket(self));
+                        ArsenalSystems.View arsenal=match.arsenal.view(p.id);
+                        if(arsenal!=null)p.send(ArsenalWire.state(arsenal,match.time()));
                         if(!Double.isFinite(p.lastResourceX)||
                            Math.hypot(self.x-p.lastResourceX,self.y-p.lastResourceY)>12||
                            match.time()%5000==0)syncResources(p,self);
@@ -112,6 +114,7 @@ public final class LanServer implements AutoCloseable {
                         }
                     }
                 }
+                broadcast(ArsenalWire.effects(match.arsenal.effects()),-1);
                 for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
                 if(match.time()%2000==0)
                     for(var bot:ai.views())broadcast(aiPacket(bot),-1);
@@ -128,6 +131,8 @@ public final class LanServer implements AutoCloseable {
                 if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++){
                     World.Device d=match.world.devices.get(i);
                     broadcast("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
+                    if(d.kind==ArenaSystems.FIELD_BENCH)
+                        broadcast("ARS_BENCH|"+i+"|"+d.tier,-1);
                 }
                 for(int i=0;i<match.world.npcs.size();i++){
                     World.Npc n=match.world.npcs.get(i);
@@ -263,6 +268,8 @@ public final class LanServer implements AutoCloseable {
     private void sendWorld(Peer peer){
         for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
         for(var bot:ai.views())peer.send(aiPacket(bot));
+        for(int i=0;i<match.arsenal.loot.size();i++)
+            if(match.arsenal.loot.get(i).taken)peer.send("ARS_PICKED|"+i);
         for(int i=0;i<match.world.pickups.size();i++)
             if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
         for(int i=0;i<match.world.npcs.size();i++){
@@ -300,6 +307,7 @@ public final class LanServer implements AutoCloseable {
             for(var g:loot.ground(System.currentTimeMillis()))
                 peer.send("GROUND_ITEM|"+g.id()+"|"+g.x()+"|"+g.y()+"|"+g.item()+"|"+g.quantity()+"|"+g.expiresAtMs());
             peer.send(progressionPacket(actor));peer.send(inventoryPacket(actor));
+            peer.send(ArsenalWire.state(match.arsenal.view(actor.id),match.time()));
             factionStateTo(actor,peer);
             broadcast(peerPacket(actor),peer.id);
             String line;
@@ -322,7 +330,9 @@ public final class LanServer implements AutoCloseable {
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
                            "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
-                           "HARVEST","SCAVENGE","DROP_ITEM","GET_DROP","TRADE_ITEM").contains(s[0])){
+                           "HARVEST","SCAVENGE","DROP_ITEM","GET_DROP","TRADE_ITEM",
+                           "ARS_FIRE","ARS_SELECT","ARS_RELOAD","ARS_PICKUP","ARS_CRAFT",
+                           "ARS_UPGRADE").contains(s[0])){
                         peer.send("FACTION_RESULT|REQUIRED");continue;
                     }
                     switch(s[0]){
@@ -524,6 +534,48 @@ public final class LanServer implements AutoCloseable {
                         case "CHOOSE" -> {
                             if(s.length!=2)continue;
                             match.choose(peer.id,Integer.parseInt(s[1]));changed=true;
+                        }
+                        case "ARS_FIRE" -> {
+                            if(s.length!=3)continue;
+                            ArsenalSystems.Shot shot=match.arsenal.fire(peer.id,
+                                Integer.parseInt(s[2])!=0,Long.parseLong(s[1]));
+                            peer.send("ARS_SHOT|"+shot.fired()+"|"+shot.reason()+"|"+
+                                shot.damage()+"|"+shot.ammo());
+                            changed=shot.fired();
+                        }
+                        case "ARS_SELECT" -> {
+                            if(s.length!=2)continue;
+                            var result=match.arsenal.select(peer.id,Integer.parseInt(s[1]));
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        case "ARS_RELOAD" -> {
+                            if(s.length!=1)continue;
+                            var result=match.arsenal.reload(peer.id);
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        case "ARS_RELEASE" -> match.arsenal.release(peer.id);
+                        case "ARS_PICKUP" -> {
+                            if(s.length!=2)continue;
+                            int lootId=Integer.parseInt(s[1]);
+                            var result=match.arsenal.pickup(peer.id,lootId);
+                            peer.send("ARS_RESULT|"+result.reason());
+                            if(result.ok()){broadcast("ARS_PICKED|"+lootId,-1);changed=true;}
+                        }
+                        case "ARS_CRAFT" -> {
+                            if(s.length!=2)continue;
+                            var result=match.arsenal.craft(peer.id,Integer.parseInt(s[1]));
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        case "ARS_UPGRADE" -> {
+                            if(s.length!=1)continue;
+                            var result=match.arsenal.upgrade(peer.id);
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        // Legacy ARS_FACTION never changes the server's permanent faction.
+                        case "ARS_FACTION" -> {
+                            if(s.length!=2)continue;
+                            var result=match.arsenal.faction(peer.id,Integer.parseInt(s[1]));
+                            peer.send("ARS_RESULT|"+result.reason());
                         }
                         case "FIRE" -> {
                             if(s.length!=3)continue;

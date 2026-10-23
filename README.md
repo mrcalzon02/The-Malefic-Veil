@@ -1,12 +1,8 @@
 # The Malefic Veil
 
-## Physical weapon economy
-
-[Weapon inventory, map pickups and manufacturing](wiki/Weapons.md) now register eight physical city-scavenged weapons and twelve craftable weapons in the existing weighted item economy. World pickup kinds are appended after the original 170 supply drops, with host-side capacity checks and old realm pickup-flag migration; eight distinct original low-poly proxy meshes mark the spawned items. **Only the pre-existing handgun and shotgun currently fire**: new weapon equip, ammunition, combat execution, full character-inventory persistence and final art remain separate release gates.
-
 ## Repository wiki: systems, inventories, recipes and the Lost
 
-Browse the [source-driven wiki](wiki/Home.md) for a navigable reference covering 177 exported items, 34 field recipes, 62 industrial processes, 69 facility blueprints, three factions, nine class definitions, current gameplay systems and world generation. [The Lost](wiki/The-Lost.md) now have a detailed five-family bestiary and [25 proposed weapon profiles](wiki/Lost-Arsenal.md) with distinct tactics, windups, counterplay and encounter roles, backed by the [LostArsenal design registry](src/main/java/veil/LostArsenal.java) and a self-test. **The roster is descriptive data, not live NPC weapon logic**; current host monsters still use the basic attack in `ArenaSystems`.
+Browse the [source-driven wiki](wiki/Home.md) for a navigable reference covering 157 exported items, 22 field recipes, 62 industrial processes, 69 facility blueprints, three factions, nine class definitions, current gameplay systems and world generation. [The Lost](wiki/The-Lost.md) now have a detailed five-family bestiary and [25 proposed weapon profiles](wiki/Lost-Arsenal.md) with distinct tactics, windups, counterplay and encounter roles, backed by the [LostArsenal design registry](src/main/java/veil/LostArsenal.java) and a self-test. **The roster is descriptive data, not live NPC weapon logic**; current host monsters still use the basic attack in `ArenaSystems`.
 
 
 A Java 17, PSX-inspired urban horror arena shooter: fast Doom/Unreal Tournament-style combat overlaid with health, sanity, stealth, resources, equipment, character abilities and deployable infrastructure.
@@ -89,3 +85,7 @@ Google Drive remains the archival source of truth. See [assets/SOURCES.md](asset
 [Design contract](docs/DESIGN.md) · [Development and QA gates](docs/ROADMAP.md) · **[Player QoL must-haves and external shooter research](docs/PLAYER_QOL_MUST_HAVES.md)**
 
 Project-authorized GitHub Actions compile and test on Windows/Linux; other repositories retain their separate workflow policies. A remote commit is only claimed after acceptance and read-back. Existing shared Beckenburg library and its original archives must not be deleted or reorganized.
+
+## Original 32-weapon arsenal — integration
+
+Restored from [arsenal-prototypes](https://github.com/mrcalzon02/The-Malefic-Veil/tree/arsenal-prototypes): eight shared loot guns (Vesper through Furnace Organ), 24 tiered faction-fabricated weapons (Hailstorm through Veilbreaker), complete authored working meshes/GLBs, timed primary and alternate host combat, component/bench progression, and runtime faction material palettes. Manufacturers use the game's permanent Unraveled/Penitent/Begotten enrollment rather than the old Foundry/Lumen/Veil fabrication picker. [Full weapon wiki](wiki/Weapons.md). Model reshaping and final sound remain future work.

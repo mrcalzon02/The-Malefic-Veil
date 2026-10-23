@@ -39,7 +39,7 @@ public final class CraftingEconomyCsvTest {
     }
     public static void main(String[] args)throws Exception{
         Path root=args.length==0?Path.of(""):Path.of(args[0]);
-        List<String[]> hand=rows(root.resolve("economy/hand_recipes.csv"),6);
+        List<String[]> hand=rows(root.resolve("economy/hand_recipes.csv"),5);
         List<String[]> industrial=rows(root.resolve("economy/industrial_recipes.csv"),12);
         var handInputs=inputs(root.resolve("economy/hand_recipe_inputs.csv"));
         var industrialInputs=inputs(root.resolve("economy/industrial_recipe_inputs.csv"));
@@ -52,9 +52,7 @@ public final class CraftingEconomyCsvTest {
             check(source!=null&&row[1].equals(source.station().name())&&
                 row[2].equals(source.result().name())&&
                 Integer.parseInt(row[3])==source.quantity()&&
-                row[4].equals("CANONICAL_CODE")&&
-                row[5].equals(WeaponEconomy.recipeFaction(source).name()),
-                "Bad hand export or owner "+row[0]);
+                row[4].equals("CANONICAL_CODE"),"Bad hand export "+row[0]);
             Map<String,Integer> expected=new TreeMap<>();
             source.requires().forEach((item,qty)->expected.put(item.name(),qty));
             check(expected.equals(handInputs.get(row[0])),"Hand ingredients drift "+row[0]);

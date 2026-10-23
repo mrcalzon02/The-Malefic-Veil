@@ -17,18 +17,7 @@ public final class WorldSelfTest {
                 if(a.tile(x,y)==0)open++;
             }
             check(open>World.SIZE*World.SIZE/2,"too few playable tiles");
-            check(a.npcs.size()==45&&
-                a.pickups.size()==170+WeaponEconomy.worldWeapons().size(),
-                "incorrect legacy + physical weapon spawn populations");
-            for(int i=170;i<a.pickups.size();i++){
-                World.Pickup added=a.pickups.get(i),again=b.pickups.get(i);
-                check(added.kind==WeaponEconomy.FIRST_WORLD_PICKUP+i-170,
-                    "weapon pickup kind is not append-only");
-                check(added.kind==again.kind&&added.x==again.x&&added.y==again.y,
-                    "nondeterministic weapon spawn position");
-                check(a.city.categoryAt((int)added.x,(int)added.y)==
-                    CityLayout.Category.RESOURCE,"weapon pickup not placed at resource site");
-            }
+            check(a.npcs.size()==45&&a.pickups.size()==170,"incorrect spawn populations");
             boolean[][] seen=new boolean[World.SIZE][World.SIZE];
             ArrayDeque<int[]> q=new ArrayDeque<>();
             int sx=(int)a.spawns[0][0],sy=(int)a.spawns[0][1];

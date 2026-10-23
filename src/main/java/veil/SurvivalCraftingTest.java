@@ -45,7 +45,7 @@ public final class SurvivalCraftingTest {
         check(!a.acquire(SurvivalCrafting.Item.FIELD_STONE,1000,false),
             "Inventory capacity must be bounded");
         check(SurvivalCrafting.recipes().size()>=6,"Crafting chain missing");
-        WeaponEconomyTest.main(args);
+        try{ArsenalIntegrationTest.main(args);}catch(Exception failed){throw new AssertionError("Arsenal integration regression",failed);}
         System.out.println("PASS SurvivalCraftingTest: source gathering, bulk-gated base crafting and survival");
     }
 }

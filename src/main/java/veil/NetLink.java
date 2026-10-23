@@ -53,6 +53,13 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentHashMap<Integer,SalvageNode> salvageNodes=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Long,LooseItem> looseItems=new ConcurrentHashMap<>();
     public final ConcurrentLinkedQueue<String> itemResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> arsenalResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<Integer> arsenalPicked=new ConcurrentLinkedQueue<>();
+    public final ConcurrentHashMap<Integer,Integer> benchTiers=new ConcurrentHashMap<>();
+    private volatile ArsenalSystems.View arsenalView;
+    private volatile java.util.List<ArsenalSystems.Effect> arsenalEffects=java.util.List.of();
+    public ArsenalSystems.View arsenal(){return arsenalView;}
+    public java.util.List<ArsenalSystems.Effect> arsenalEffects(){return arsenalEffects;}
     private volatile WeatherSnapshot authoritativeWeather;
     public WeatherSnapshot weather(){return authoritativeWeather;}
     private volatile Rpg rpg;
@@ -144,6 +151,14 @@ public final class NetLink implements AutoCloseable {
                                         s[4],s[5],bases,s[7]));
                                 }
                             }
+                            case "ARS_STATE" -> arsenalView=ArsenalWire.state(s);
+                            case "ARS_FX" -> arsenalEffects=ArsenalWire.effects(s.length==2?s[1]:"");
+                            case "ARS_PICKED" -> {if(s.length==2)arsenalPicked.add(Integer.parseInt(s[1]));}
+                            case "ARS_BENCH" -> {if(s.length==3)benchTiers.put(Integer.parseInt(s[1]),Integer.parseInt(s[2]));}
+                            case "ARS_RESULT" -> {if(s.length==2&&arsenalResults.size()<64)arsenalResults.add(s[1]);}
+                            case "ARS_SHOT" -> {if(s.length==5&&arsenalResults.size()<64)
+                                arsenalResults.add(Boolean.parseBoolean(s[1])?
+                                    (Integer.parseInt(s[3])>0?"HIT_"+s[3]:"FIRED"):s[2]);}
                             case "PICKUP" -> {if(s.length==2)pickedUp.add(Integer.parseInt(s[1]));}
                             case "RESOURCE_RESET" -> resourceNodes.clear();
                             case "RESOURCE_NODE" -> {
@@ -358,6 +373,13 @@ public final class NetLink implements AutoCloseable {
         send("FIRE|"+sequence+"|"+gun);
         return sequence;
     }
+    public void arsenalFire(boolean alt){send("ARS_FIRE|"+shotIds.incrementAndGet()+"|"+(alt?1:0));}
+    public void arsenalSelect(int weapon){send("ARS_SELECT|"+weapon);}
+    public void arsenalReload(){send("ARS_RELOAD");}
+    public void arsenalRelease(){send("ARS_RELEASE");}
+    public void arsenalPickup(int index){send("ARS_PICKUP|"+index);}
+    public void arsenalCraft(int recipe){send("ARS_CRAFT|"+recipe);}
+    public void arsenalUpgrade(){send("ARS_UPGRADE");}
     public void pickup(int index){send("PICKUP|"+index);}
     public void useMedkit(){send("MEDKIT");}
     public void reload(int weapon){send("RELOAD|"+weapon);}

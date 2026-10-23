@@ -8,8 +8,7 @@ This wiki is stored in the **main repository's `wiki/` folder** so changes are v
 |---|---|
 | [Getting Started](Getting-Started.md) | Run modes, what works and what is provisional |
 | [Gameplay](Gameplay.md) | Combat, PvP, survival, death, crafting, vehicles, deployment |
-| [Weapons](Weapons.md) | Eight world-scavenged weapon pickups and twelve physical weapon recipes, plus unfinished firing systems |
-| [Items](Items.md) | All 177 exported item records, icon provenance, recipes that produce and consume them |
+| [Items](Items.md) | All 157 exported item records, icon provenance, recipes that produce and consume them |
 | [Item Dependencies](Item-Dependencies.md) | Full reverse index of every item producer and consumer, including quantities |
 | [Recipes](Recipes.md) | All 22 hand and 62 industrial formulas with input amounts, output, workstation, era and faction |
 | [Structures](Structures.md) | All 69 facility definitions, dependencies, costs, footprint, utilities, and production connections |
@@ -23,3 +22,7 @@ This wiki is stored in the **main repository's `wiki/` folder** so changes are v
 **Reading convention.** `Runtime`: directly exercised by existing server/client code. `Registered`: a real Java/data registry that is not yet fully used by live gameplay. `Design`: approved intention or new proposed content not operating in the game. Balancing columns in `economy/*.csv` are proposals unless adopted by the host.
 
 **Keeping this accurate.** The item, recipe and facility tables below were rendered from committed CSV exports corresponding to `SurvivalCrafting` and `CraftingEraRegistry`. When those change, regenerate the affected tables from the same source, run `CraftingEconomyCsvTest` and `tools/validate_economy_csv.py`, and update this wiki in the same commit. Never present a designed feature as shipping.
+
+## Working player arsenal
+
+[32 verified player weapons with eight shared city pickups and 24 faction-specific base recipes](Weapons.md). The Lost NPC arsenal is separate.

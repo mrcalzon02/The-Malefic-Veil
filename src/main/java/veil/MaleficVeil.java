@@ -48,6 +48,127 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private String notice="THE VEIL HAS THINNED";
     private int noticeTicks=120;
     private final JFrame window;
+    /** OpenGL presents this authoritative, immutable-at-publication simulation view. */
+    public record GpuFrame(double x,double z,double yaw,double pitch,double hour,
+        int health,int sanity,int cash,int scrap,int medkits,
+        int pistolClip,int pistolReserve,int shellClip,int shellReserve,
+        int weapon,int frags,boolean dead,boolean connected,boolean inventory,
+        boolean skills,boolean map,boolean continent,String notice,
+        java.util.Map<String,Integer> inventoryItems,
+        java.util.List<UrbanScene.ModelInstance> dynamic) {}
+    private volatile GpuFrame gpuFrame;
+    private LanServer gpuHostedServer;
+    private boolean gpuPresentation;
+    /** The same World used by LAN messages, combat and CityLayout collision. */
+    public World gpuWorld(){return world;}
+    /** Authoritative actor, pickup, item, resource and weather model identities. */
+    public java.util.Map<String,GlbMesh> gpuDynamicMeshes(){return actorModels.meshes();}
+    /** Only immutable snapshots cross the Swing simulation / OpenGL threads. */
+    public GpuFrame gpuFrame(){return gpuFrame;}
+    /** Synthetic GPU events use original gameplay input handlers on Swing EDT. */
+    public void gpuKey(int key,boolean pressed){
+        SwingUtilities.invokeLater(()->{
+            KeyEvent event=new KeyEvent(this,pressed?KeyEvent.KEY_PRESSED:KeyEvent.KEY_RELEASED,
+                System.currentTimeMillis(),0,key,KeyEvent.CHAR_UNDEFINED);
+            if(pressed)keyPressed(event);else keyReleased(event);
+        });
+    }
+    public void gpuLook(double deltaX,double deltaY){
+        if(!Double.isFinite(deltaX)||!Double.isFinite(deltaY))return;
+        SwingUtilities.invokeLater(()->{
+            if(dead)return;
+            angle+=Math.max(-120,Math.min(120,deltaX))*.004;
+            cameraPitch=Math.max(-1.52,Math.min(1.52,
+                cameraPitch-Math.max(-120,Math.min(120,deltaY))*.004));
+        });
+    }
+    public void gpuFire(){SwingUtilities.invokeLater(()->{if(!dead)shoot();});}
+    public void gpuSceneReady(){SwingUtilities.invokeLater(()->{
+        if(net!=null)net.sceneReady();
+        DesktopDiagnostics.note("GPU_PLAY_SESSION_READY");
+    });}
+    /** Close the real host and flush persistent world saves before JVM exit. */
+    public void gpuShutdown(){
+        SwingUtilities.invokeLater(()->{
+            timer.stop();
+            try{
+                if(net!=null)net.close();
+                if(gpuHostedServer!=null)gpuHostedServer.close();
+                weather.close();
+                DesktopDiagnostics.note("GPU_SESSION_STOPPED");
+            }catch(IOException failure){
+                DesktopDiagnostics.note("GPU_SHUTDOWN_SAVE_ERROR "+failure);
+            }
+        });
+    }
+    /** Optional compact gateway to the existing validated transaction dialogs. */
+    public void gpuManagement(){
+        SwingUtilities.invokeLater(()->{
+            String[] choices={"Drop item","Give item","Vehicle inspection",
+                "Industrial recipes","Crafting","Crew","Cancel"};
+            Object action=JOptionPane.showInputDialog(null,"Management",
+                "The Malefic Veil",JOptionPane.PLAIN_MESSAGE,null,choices,choices[0]);
+            if(action==null)return;
+            switch(action.toString()){
+                case "Drop item"->inventoryAction(false);
+                case "Give item"->inventoryAction(true);
+                case "Vehicle inspection"->vehicleInspection();
+                case "Industrial recipes"->productionCatalog();
+                case "Crafting"->handCraftDialog();
+                case "Crew"->crewDialog();
+                default->{}
+            }
+        });
+    }
+    private void publishGpuFrame(){
+        if(!gpuPresentation)return;
+        java.util.List<UrbanScene.ModelInstance> actors=new java.util.ArrayList<>();
+        for(World.Npc npc:world.npcs)if(npc.hp>0)
+            actors.add(new UrbanScene.ModelInstance("enemy-walker",npc.x,npc.y,
+                Math.atan2(py-npc.y,px-npc.x)-Math.PI/2,1));
+        for(World.Pickup pickup:world.pickups)
+            if(!pickup.taken&&pickup.kind>=0&&pickup.kind<GameplayMeshes.PICKUP.length)
+                actors.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[pickup.kind],
+                    pickup.x,pickup.y,ticks*.018,1.15,1,.86+.10*Math.sin(ticks*.11+pickup.kind)));
+        for(World.Device device:world.devices)
+            if(device.hp>0&&device.kind>=0&&device.kind<GameplayMeshes.DEVICE.length)
+                actors.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[device.kind],
+                    device.x,device.y,0,1));
+        if(net!=null){
+            for(var entry:net.others.entrySet()){
+                var other=entry.getValue();
+                if(other.hp>0)actors.add(new UrbanScene.ModelInstance(
+                    actorMesh(entry.getKey(),other.classId),other.x,other.y,
+                    other.angle-Math.PI/2,1,other.opacity));
+            }
+            for(var node:net.resourceNodes.values())
+                if(node.remaining()>0&&Math.hypot(node.x()-px,node.y()-py)<180)
+                    actors.add(new UrbanScene.ModelInstance(modelForResource(node.type(),node.id()),
+                        node.x(),node.y(),0,node.type().equals("TIMBER")?.39:1.05));
+            for(var car:net.cars.values())
+                if(car.hp()>0&&car.driverId()!=net.id)
+                    actors.add(new UrbanScene.ModelInstance(
+                        (car.id()%2==0?"truck-green":"truck-grey")+
+                        (net.truckCargo.containsKey(car.id())?"-cargo":""),
+                        car.x(),car.y(),car.heading(),1.9));
+        }else{
+            for(var node:localHarvesting.nearby(px,py,100))
+                if(node.remaining()>0)
+                    actors.add(new UrbanScene.ModelInstance(
+                        modelForResource(node.type().name(),node.id()),
+                        localHarvesting.nodeX(node),localHarvesting.nodeY(node),0,
+                        node.type()==WildernessResources.Type.TIMBER?.39:1.05));
+            for(var car:localVehicles.states())if(car.hp()>0&&car.driverId()!=1)
+                actors.add(new UrbanScene.ModelInstance(localVehicles.cargo(car.id()).model(),
+                    car.x(),car.y(),car.heading(),1.9));
+        }
+        gpuFrame=new GpuFrame(px,py,angle,cameraPitch,weather.timeOfDay()*24,
+            health,sanity,cash,scrap,medkits,pistolClip,pistolReserve,
+            shellClip,shellReserve,gun,frags,dead,net==null||net.connected(),
+            inventoryVisible,skillsVisible,mapVisible,continentVisible,
+            noticeTicks>0?notice:"",java.util.Map.copyOf(carried()),
+            java.util.List.copyOf(actors));
+    }
 
     private MaleficVeil(JFrame window,long seed,int archetype,NetLink net) {
         this.window=window;this.net=net;this.archetype=archetype;
@@ -220,6 +341,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             int character=role.existingAbilityId();
             long seed=config==null?20261020L:config.seed();
             NetLink link=null;
+            LanServer hostedServer=null;
             try {
                 DesktopDiagnostics.note("SESSION_CONNECT_BEGIN");
                 if(mode!=2){
@@ -229,9 +351,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     // Every solo and hosted world uses the same host-side
                     // transactions, durable realm snapshots, and faction rules.
                     int port=mode==0?0:7777;
-                    LanServer server=new LanServer(port,seed,config.directory(),
+                    hostedServer=new LanServer(port,seed,config.directory(),
                         config.hardcore(),bots);
-                    link=new NetLink("127.0.0.1",server.port());
+                    link=new NetLink("127.0.0.1",hostedServer.port());
                 } else {
                     String host=JOptionPane.showInputDialog(null,
                         "Host IP / hostname and port (default 7777)","127.0.0.1:7777");
@@ -251,17 +373,37 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 return;
             }
             if(link!=null)seed=link.seed;
-            JFrame frame=new JFrame("THE MALEFIC VEIL — "+(link==null?"SOLO":"LAN"));
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             DesktopDiagnostics.note("WORLD_SCENE_CONSTRUCTION_BEGIN");
-            MaleficVeil game=new MaleficVeil(frame,seed,character,link);
-            frame.setContentPane(game);frame.setJMenuBar(game.managementMenu());
-            frame.pack();frame.setLocationRelativeTo(null);frame.setVisible(true);
-            game.requestFocusInWindow();
-            DesktopDiagnostics.note("WORLD_SCENE_VISIBLE");
-            if(link!=null){
-                link.selectFaction(faction);
-                link.sceneReady(); // scene and source model assets are now constructed
+            if(link!=null)link.selectFaction(faction);
+            // GPU is the real desktop default. Software is a deliberately
+            // selected fallback only, never an invisible renderer downgrade.
+            if(!"software".equals(System.getProperty("veil.renderer"))){
+                MaleficVeil game=null;
+                try{
+                    game=new MaleficVeil(null,seed,character,link);
+                    game.gpuPresentation=true;
+                    game.gpuHostedServer=hostedServer;
+                    game.publishGpuFrame();
+                    Class<?> desktop=Class.forName("veil.gpu.GpuDesktop");
+                    desktop.getMethod("launchGame",MaleficVeil.class).invoke(null,game);
+                    DesktopDiagnostics.note("GPU_WORLD_SCENE_LAUNCH_REQUESTED");
+                }catch(Exception problem){
+                    if(game!=null)game.gpuShutdown();
+                    DesktopDiagnostics.note("GPU_WORLD_SCENE_FAILURE "+problem);
+                    JOptionPane.showMessageDialog(null,
+                        "OpenGL gameplay cannot launch: "+problem.getMessage()+
+                        "\nThe software renderer is only available with -Dveil.renderer=software.",
+                        "GPU startup failure",JOptionPane.ERROR_MESSAGE);
+                }
+            }else{
+                JFrame frame=new JFrame("THE MALEFIC VEIL — SOFTWARE");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                MaleficVeil game=new MaleficVeil(frame,seed,character,link);
+                frame.setContentPane(game);frame.setJMenuBar(game.managementMenu());
+                frame.pack();frame.setLocationRelativeTo(null);frame.setVisible(true);
+                game.requestFocusInWindow();
+                DesktopDiagnostics.note("SOFTWARE_WORLD_SCENE_VISIBLE");
+                if(link!=null)link.sceneReady();
             }
             DesktopDiagnostics.note("PLAY_SESSION_READY");
         });
@@ -438,7 +580,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(sanity<25&&ticks%33==0)health=Math.max(1,health-1);
             }
         }
-        if(performance.frameCap>=30 || ticks%2==0)repaint();
+        publishGpuFrame();
+        if(!gpuPresentation&&(performance.frameCap>=30 || ticks%2==0))repaint();
     }
     private void simulateNpc(double dt){
         for(World.Npc n:world.npcs) {

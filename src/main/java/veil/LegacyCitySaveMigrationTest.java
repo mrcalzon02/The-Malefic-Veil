@@ -49,7 +49,11 @@ public final class LegacyCitySaveMigrationTest {
             check(original.assignAccount(1,owner),"Authenticated owner prepared");
             DurableRealm.save(original,root);
             byte[] clean=Files.readAllBytes(DurableRealm.file(root));
-            byte[] legacy=oneHistoricalCityDevice(clean,21.5,24.5,owner);
+            // Build an actual VERSION 1 fixture before inserting the historic city
+            // device; a current V3 header also includes bench tiers, cargo and
+            // arsenal payloads and cannot be mislabeled as V1.
+            byte[] actualV1=V1RealmCompatibilityTest.downgradeForTest(clean);
+            byte[] legacy=oneHistoricalCityDevice(actualV1,21.5,24.5,owner);
             Files.write(DurableRealm.file(root),legacy);
             ArenaSystems restored=new ArenaSystems(seed);
             check(DurableRealm.load(restored,root),"Genuine legacy snapshot parsed and loaded");

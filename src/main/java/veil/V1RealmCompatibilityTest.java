@@ -8,7 +8,7 @@ import java.util.zip.CRC32;
 /** Actual V1 -> V3 read and re-save, without silent world or NPC catalog reset. */
 public final class V1RealmCompatibilityTest {
     private static void check(boolean ok,String why){if(!ok)throw new AssertionError(why);}
-    private static byte[] downgradeForTest(byte[] current)throws Exception{
+    static byte[] downgradeForTest(byte[] current)throws Exception{
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(current,0,current.length-8))){
             check(in.readInt()==0x5645494c&&in.readInt()==3,"Fixture is V3");
             in.readLong();in.readLong();

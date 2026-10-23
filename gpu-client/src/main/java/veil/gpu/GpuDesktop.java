@@ -46,12 +46,14 @@ public final class GpuDesktop {
     }
     public static void main(String[] args)throws Exception{
         boolean smoke=false,gallery=false,playSmoke=false,editor=false,editorSmoke=false;
+        boolean frontendSmoke=false;
         long seed=20261020L;
         char city='A';
         for(String arg:args){
             if("--smoke".equals(arg))smoke=true;
             else if("--gallery".equals(arg))gallery=true;
             else if("--play-smoke".equals(arg))playSmoke=true;
+            else if("--frontend-smoke".equals(arg))frontendSmoke=true;
             else if("--editor".equals(arg))editor=true;
             else if("--editor-smoke".equals(arg))editorSmoke=true;
             else if(arg.startsWith("--seed="))seed=Long.parseLong(arg.substring(7));
@@ -60,9 +62,12 @@ public final class GpuDesktop {
                 if(city<'A'||city>'G')throw new IllegalArgumentException("Unknown city "+city);
             }else throw new IllegalArgumentException("Unknown argument: "+arg);
         }
-        if((smoke?1:0)+(gallery?1:0)+(playSmoke?1:0)+(editor?1:0)+(editorSmoke?1:0)>1)
+        if((smoke?1:0)+(gallery?1:0)+(playSmoke?1:0)+(editor?1:0)+
+            (editorSmoke?1:0)+(frontendSmoke?1:0)>1)
             throw new IllegalArgumentException("Choose one smoke/gallery/play-smoke/editor mode");
-        if(editor||editorSmoke){
+        if(frontendSmoke){
+            new Lwjgl3Application(new GpuFrontEnd(true),config());
+        }else if(editor||editorSmoke){
             if(city!='A')throw new IllegalArgumentException("Editor document currently targets City A");
             if(editorSmoke)
                 System.setProperty("veil.editor.dir","build/test-visuals/editor-kit-smoke");
@@ -77,8 +82,9 @@ public final class GpuDesktop {
             new Lwjgl3Application(new GpuKenneyPreview(seed,smoke,gallery,city),config());
         }else{
             if(city!='A')throw new IllegalArgumentException("--city applies only to gallery");
-            // Reuse every original setup / joining / authority validation path.
-            MaleficVeil.main(new String[0]);
+            // The first visible window is the actual OpenGL city and native
+            // in-engine mode/world/class/options menu, never a Swing dialog.
+            new Lwjgl3Application(new GpuFrontEnd(),config());
         }
     }
 }

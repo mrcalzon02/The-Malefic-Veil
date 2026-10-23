@@ -31,6 +31,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     private PsxHorrorMenu skin;
     private SpriteBatch ui;
     private GpuClientSettings settings;
+    private GpuAudioBus audio;
     private Screen screen=Screen.HOME;
     private Screen backFromOptions=Screen.HOME;
     private final List<Entry> entries=new ArrayList<>();
@@ -58,6 +59,8 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         backdrop=GpuKenneyPreview.menuBackdrop(20261020);
         backdrop.clientSettings(settings);
         backdrop.create();
+        audio=new GpuAudioBus(settings);
+        audio.open();
         applyVideo();
         Gdx.input.setInputProcessor(new InputAdapter(){
             @Override public boolean keyTyped(char character){
@@ -293,11 +296,13 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         switchView(GpuKenneyPreview.editableWorld(seed,false));
     }
     private void switchView(GpuKenneyPreview view){
+        if(audio!=null)audio.inGame();
         if(backdrop!=null){backdrop.dispose();backdrop=null;}
         if(skin!=null){skin.close();skin=null;}
         if(ui!=null){ui.dispose();ui=null;}
         gameRenderer=view;
         gameRenderer.clientSettings(settings);
+        gameRenderer.audioBus(audio);
         gameRenderer.create();
         Gdx.input.setInputProcessor(null);
         Gdx.input.setCursorCatched(false);
@@ -354,6 +359,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             case "effects"->settings.effects=value;case "ambience"->settings.ambience=value;
             case "ui"->settings.ui=value;case "voice"->settings.voice=value;
         }
+        if(audio!=null)audio.apply(settings);
         rebuild(false);
     }
     private void saveSettings(){
@@ -379,6 +385,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     }
     private void activate(int direction){
         if(entries.isEmpty())return;
+        if(audio!=null)audio.click();
         Entry entry=entries.get(selected);
         if(direction<0&&entry.previous()!=null)entry.previous().run();
         else if(direction>0&&entry.next()!=null)entry.next().run();
@@ -472,5 +479,6 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(backdrop!=null)backdrop.dispose();
         if(skin!=null)skin.close();
         if(ui!=null)ui.dispose();
+        if(audio!=null)audio.close();
     }
 }

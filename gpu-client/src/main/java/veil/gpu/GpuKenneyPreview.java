@@ -158,6 +158,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private boolean shownFailure;
     private boolean menuBackdrop;
     private GpuClientSettings clientSettings=GpuClientSettings.load();
+    private GpuAudioBus audioBus;
+    public void audioBus(GpuAudioBus bus){this.audioBus=bus;}
     private float menuTime;
 
     private double cameraHeight=1.65, cameraPitch=-.04;
@@ -481,7 +483,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 Gdx.input.getDeltaY()*clientSettings.sensitivity/100.0*
                 (clientSettings.invertY?-1:1));
         }
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))gameplay.gpuFire();
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            gameplay.gpuFire();
+            if(audioBus!=null)audioBus.shoot();
+        }
         MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
         if(frame!=null){
             x=frame.x();y=frame.z();heading=frame.yaw();

@@ -45,8 +45,11 @@ public final class WeaponEconomyTest {
         var kit=new SurvivalCrafting();
         check(kit.acquire(SurvivalCrafting.Item.TIMBER,2,false)&&
               kit.acquire(SurvivalCrafting.Item.FIBER,1,false),"Gather weapon ingredients");
-        check(kit.craft("weapon-wooden-club",SurvivalCrafting.Station.HAND),
-            "Craftable early weapon not produced");
+        check(!kit.craft("weapon-wooden-club",SurvivalCrafting.Station.HAND),
+            "Neutral/legacy craft bypassed faction ownership");
+        check(kit.craft("weapon-wooden-club",SurvivalCrafting.Station.HAND,
+            CraftingEraRegistry.Faction.UNRAVELED),
+            "Correctly enrolled Unraveled character cannot craft first weapon");
         check(kit.count(SurvivalCrafting.Item.WOODEN_CLUB)==1&&
               kit.count(SurvivalCrafting.Item.TIMBER)==0&&
               kit.count(SurvivalCrafting.Item.FIBER)==0,
@@ -55,6 +58,71 @@ public final class WeaponEconomyTest {
             "Duplicated weapon without ingredients");
         check(!kit.craft("weapon-pipe-pistol",SurvivalCrafting.Station.HAND),
             "Workbench gun craftable without station");
-        System.out.println("PASS WeaponEconomyTest: 8 world pickups and 12 recipes");
+        for(var faction:CraftingEraRegistry.Faction.values()){
+            long count=WeaponEconomy.craftableWeapons().stream()
+                .filter(w->w.manufacturer()==faction).count();
+            check(count==(faction==CraftingEraRegistry.Faction.ALL?0:4),
+                "Not four independent faction weapon recipes: "+faction);
+        }
+        for(var weapon:WeaponEconomy.craftableWeapons()){
+            var recipe=SurvivalCrafting.recipes().get(weapon.recipeId());
+            var indexed=CraftingRecipeIndex.recipe("hand:"+recipe.id());
+            check(indexed!=null&&indexed.faction().equals(weapon.manufacturer().name()),
+                "Recipe index presents universal or foreign weapon "+weapon.item());
+            var materials=new SurvivalCrafting();
+            for(var input:recipe.requires().entrySet())
+                check(materials.acquire(input.getKey(),input.getValue(),
+                    input.getKey()==SurvivalCrafting.Item.MACHINE_PARTS||
+                    input.getKey()==SurvivalCrafting.Item.METAL_STOCK),
+                    "Cannot acquire fixture ingredients "+weapon.item());
+            var unchanged=materials.inventory();
+            for(var faction:CraftingEraRegistry.Faction.values()){
+                boolean own=faction==weapon.manufacturer();
+                check(CraftingRecipeIndex.recipesFor(faction).contains(indexed)==own,
+                    "Foreign faction recipe visible "+weapon.item());
+                check(WeaponEconomy.canCraft(recipe,faction)==own,
+                    "Permission mismatch "+weapon.item()+"/"+faction);
+                if(!own){
+                    check(!materials.craft(recipe.id(),recipe.station(),faction),
+                        "Foreign faction illegally minted "+weapon.item());
+                    check(materials.inventory().equals(unchanged),
+                        "Denied faction craft consumed inventory "+weapon.item());
+                }
+            }
+            check(!materials.craft(recipe.id(),recipe.station()),
+                "Legacy neutral craft leaked "+weapon.item());
+            check(materials.craft(recipe.id(),recipe.station(),weapon.manufacturer()),
+                "Own faction weapon was rejected "+weapon.item());
+            check(materials.count(weapon.item())==1,
+                "Authorized craft did not mint exactly one "+weapon.item());
+            check(!materials.craft(recipe.id(),recipe.station(),weapon.manufacturer()),
+                "Duplicated faction weapon after debit "+weapon.item());
+        }
+        ArenaSystems host=new ArenaSystems(1024);
+        host.world.npcs.clear();
+        CharacterRoster.Faction[] realFactions=CharacterRoster.Faction.values();
+        String[] starters={"weapon-wooden-club","weapon-stone-shiv","weapon-stone-hatchet"};
+        for(int i=0;i<3;i++){
+            int id=i+1;
+            var player=host.join(id);
+            check(host.assignAccount(id,"acct_"+String.valueOf("abc".charAt(i)).repeat(64)),
+                "Authenticated account");
+            check(host.enrollFaction(id,realFactions[i]),"Host faction enrollment");
+            var own=SurvivalCrafting.recipes().get(starters[i]);
+            var foreign=SurvivalCrafting.recipes().get(starters[(i+1)%3]);
+            for(var recipe:List.of(own,foreign))
+                for(var input:recipe.requires().entrySet())
+                    if(player.survival.count(input.getKey())<input.getValue())
+                        check(player.survival.acquire(input.getKey(),
+                            input.getValue()-player.survival.count(input.getKey()),false),
+                            "Host test ingredients");
+            var before=player.survival.inventory();
+            check(!host.craftHand(id,foreign.id()),"Host manufactured foreign weapon");
+            check(player.survival.inventory().equals(before),
+                "Denied host craft consumed materials");
+            check(host.craftHand(id,own.id()),"Host rejected authorized weapon");
+            check(player.survival.count(own.result())==1,"Host missed inventory output");
+        }
+        System.out.println("PASS WeaponEconomyTest: 8 world pickups, 12 faction-owned recipes and real host enforcement");
     }
 }

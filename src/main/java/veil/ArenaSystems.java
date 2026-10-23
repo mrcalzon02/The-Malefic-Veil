@@ -703,6 +703,16 @@ public final class ArenaSystems {
         if(hit)cargo.advance(0);
         return hit;
     }
+    /** Resolve manufacturer permission from the authenticated host-owned faction. */
+    private CraftingEraRegistry.Faction craftingFaction(Player p){
+        CharacterRoster.Faction selected=factions.faction(p.accountKey);
+        if(selected==null)return CraftingEraRegistry.Faction.ALL;
+        return switch(selected){
+            case THE_UNRAVELED -> CraftingEraRegistry.Faction.UNRAVELED;
+            case THE_PENITENT -> CraftingEraRegistry.Faction.PENITENT;
+            case THE_BEGOTTEN -> CraftingEraRegistry.Faction.BEGOTTEN;
+        };
+    }
     /** A FIRE recipe requires an adjacent, living and allied physical workstation. */
     public synchronized boolean craftStation(int id,String recipe){
         Player p=players.get(id);
@@ -719,7 +729,7 @@ public final class ArenaSystems {
                 nearFire=true;break;
             }
         }
-        if(!nearFire||!p.survival.craft(recipe,SurvivalCrafting.Station.FIRE))return false;
+        if(!nearFire||!p.survival.craft(recipe,SurvivalCrafting.Station.FIRE,craftingFaction(p)))return false;
         p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.ENGINEERING,9,clock,3500);
@@ -743,7 +753,7 @@ public final class ArenaSystems {
                 reachable=true;break;
             }
         }
-        if(!reachable||!p.survival.craft(recipe,SurvivalCrafting.Station.WORKBENCH))
+        if(!reachable||!p.survival.craft(recipe,SurvivalCrafting.Station.WORKBENCH,craftingFaction(p)))
             return false;
         p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
         breakGrace(p);
@@ -757,7 +767,7 @@ public final class ArenaSystems {
            vehicles.carDrivenBy(id)>=0)return false;
         SurvivalCrafting.Recipe record=SurvivalCrafting.recipes().get(recipe);
         if(record==null||record.station()!=SurvivalCrafting.Station.HAND||
-           !p.survival.craft(recipe,SurvivalCrafting.Station.HAND))return false;
+           !p.survival.craft(recipe,SurvivalCrafting.Station.HAND,craftingFaction(p)))return false;
         p.craftReadyAt=clock+Math.round(4000*p.progression.craftingMultiplier());
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.ENGINEERING,9,clock,3500);

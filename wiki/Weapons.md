@@ -21,20 +21,26 @@ Each world seed allocates one instance of every weapon below to navigable RESOUR
 
 ## Twelve player-crafted weapons
 
-| Weapon | Recipe | Station | Ingredients | Mass |
-|---|---|---|---|---:|
-| **Wooden Club** | [weapon-wooden-club](Recipes.md#handweapon-wooden-club) | HAND | 2× `TIMBER`, 1× `FIBER` | 3 |
-| **Stone Shiv** | [weapon-stone-shiv](Recipes.md#handweapon-stone-shiv) | HAND | 2× `FIELD_STONE`, 1× `FIBER` | 2 |
-| **Stone Hatchet** | [weapon-stone-hatchet](Recipes.md#handweapon-stone-hatchet) | HAND | 3× `FIELD_STONE`, 2× `TIMBER`, 2× `FIBER` | 4 |
-| **Wooden Spear** | [weapon-wooden-spear](Recipes.md#handweapon-wooden-spear) | HAND | 3× `TIMBER`, 2× `FIBER`, 1× `FIELD_STONE` | 4 |
-| **Short Bow** | [weapon-short-bow](Recipes.md#handweapon-short-bow) | HAND | 3× `TIMBER`, 4× `FIBER` | 4 |
-| **Spiked Club** | [weapon-spiked-club](Recipes.md#handweapon-spiked-club) | WORKBENCH | 3× `TIMBER`, 2× `RAW_ORE`, 2× `FIBER` | 5 |
-| **Reinforced Spear** | [weapon-reinforced-spear](Recipes.md#handweapon-reinforced-spear) | WORKBENCH | 5× `TIMBER`, 3× `RAW_ORE`, 3× `FIBER` | 5 |
-| **Salvage Machete** | [weapon-salvage-machete](Recipes.md#handweapon-salvage-machete) | WORKBENCH | 5× `RAW_ORE`, 2× `TIMBER`, 1× `FIBER` | 5 |
-| **Hand Crossbow** | [weapon-hand-crossbow](Recipes.md#handweapon-hand-crossbow) | WORKBENCH | 4× `TIMBER`, 4× `FIBER`, 2× `RAW_ORE` | 5 |
-| **Pipe Pistol** | [weapon-pipe-pistol](Recipes.md#handweapon-pipe-pistol) | WORKBENCH | 6× `RAW_ORE`, 1× `MACHINE_PARTS` | 5 |
-| **Bolt Rifle** | [weapon-bolt-rifle](Recipes.md#handweapon-bolt-rifle) | WORKBENCH | 8× `RAW_ORE`, 2× `MACHINE_PARTS` | 8 |
-| **Scrap Shotgun** | [weapon-scrap-shotgun](Recipes.md#handweapon-scrap-shotgun) | WORKBENCH | 7× `RAW_ORE`, 1× `METAL_STOCK` | 9 |
+| Weapon | Manufacturer | Recipe | Station | Ingredients | Mass |
+|---|---|---|---|---|---:|
+| **Wooden Club** | **UNRAVELED** | [weapon-wooden-club](Recipes.md#handweapon-wooden-club) | HAND | 2× `TIMBER`, 1× `FIBER` | 3 |
+| **Stone Shiv** | **PENITENT** | [weapon-stone-shiv](Recipes.md#handweapon-stone-shiv) | HAND | 2× `FIELD_STONE`, 1× `FIBER` | 2 |
+| **Stone Hatchet** | **BEGOTTEN** | [weapon-stone-hatchet](Recipes.md#handweapon-stone-hatchet) | HAND | 3× `FIELD_STONE`, 2× `TIMBER`, 2× `FIBER` | 4 |
+| **Wooden Spear** | **BEGOTTEN** | [weapon-wooden-spear](Recipes.md#handweapon-wooden-spear) | HAND | 3× `TIMBER`, 2× `FIBER`, 1× `FIELD_STONE` | 4 |
+| **Short Bow** | **BEGOTTEN** | [weapon-short-bow](Recipes.md#handweapon-short-bow) | HAND | 3× `TIMBER`, 4× `FIBER` | 4 |
+| **Spiked Club** | **PENITENT** | [weapon-spiked-club](Recipes.md#handweapon-spiked-club) | WORKBENCH | 3× `TIMBER`, 2× `RAW_ORE`, 2× `FIBER` | 5 |
+| **Reinforced Spear** | **PENITENT** | [weapon-reinforced-spear](Recipes.md#handweapon-reinforced-spear) | WORKBENCH | 5× `TIMBER`, 3× `RAW_ORE`, 3× `FIBER` | 5 |
+| **Salvage Machete** | **BEGOTTEN** | [weapon-salvage-machete](Recipes.md#handweapon-salvage-machete) | WORKBENCH | 5× `RAW_ORE`, 2× `TIMBER`, 1× `FIBER` | 5 |
+| **Hand Crossbow** | **PENITENT** | [weapon-hand-crossbow](Recipes.md#handweapon-hand-crossbow) | WORKBENCH | 4× `TIMBER`, 4× `FIBER`, 2× `RAW_ORE` | 5 |
+| **Pipe Pistol** | **UNRAVELED** | [weapon-pipe-pistol](Recipes.md#handweapon-pipe-pistol) | WORKBENCH | 6× `RAW_ORE`, 1× `MACHINE_PARTS` | 5 |
+| **Bolt Rifle** | **UNRAVELED** | [weapon-bolt-rifle](Recipes.md#handweapon-bolt-rifle) | WORKBENCH | 8× `RAW_ORE`, 2× `MACHINE_PARTS` | 8 |
+| **Scrap Shotgun** | **UNRAVELED** | [weapon-scrap-shotgun](Recipes.md#handweapon-scrap-shotgun) | WORKBENCH | 7× `RAW_ORE`, 1× `METAL_STOCK` | 9 |
+
+## Exclusive production, shared scavenging and trading
+
+**The Unraveled:** Wooden Club, Pipe Pistol, Bolt Rifle and Scrap Shotgun. **The Penitent:** Stone Shiv, Spiked Club, Reinforced Spear and Hand Crossbow. **The Begotten:** Stone Hatchet, Wooden Spear, Short Bow and Salvage Machete. This allocation preserves current stable item IDs; names and component formulas remain provisional pending dedicated faction-themed equipment and materials.
+
+The permanent **host-owned faction enrollment** determines which weapons players can manufacture. The host validates ownership before consuming ingredients; an unenrolled player or another faction cannot forge these items, even using raw craft packets. The GPU recipe book and field-craft list filter other factions' formulas, and the index/CSV show owners. **Found weapons, transfers and trading remain faction-neutral:** exclusive *manufacturing* does not mean faction-exclusive possession. Separate specialist material supply chains remain an open development gate.
 
 ## Current operating behavior
 

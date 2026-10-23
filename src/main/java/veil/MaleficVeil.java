@@ -102,6 +102,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             d.hp>0&&d.kind==ArenaSystems.FIELD_BENCH&&
             Math.hypot(d.x-px,d.y-py)<=2.2);
         for(var recipe:SurvivalCrafting.recipes().values()){
+            if(!WeaponEconomy.canCraft(recipe,gpuCraftFaction()))continue;
             boolean nearby=recipe.station()==SurvivalCrafting.Station.HAND||
                 (recipe.station()==SurvivalCrafting.Station.FIRE&&fire)||
                 (recipe.station()==SurvivalCrafting.Station.WORKBENCH&&bench);
@@ -1613,6 +1614,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             d.hp>0&&d.kind==ArenaSystems.FIELD_FIRE&&
             Math.hypot(d.x-px,d.y-py)<=2.2);
         for(var recipe:SurvivalCrafting.recipes().values()){
+            if(!WeaponEconomy.canCraft(recipe,gpuCraftFaction()))continue;
             if(recipe.station()!=SurvivalCrafting.Station.HAND&&
                !(recipe.station()==SurvivalCrafting.Station.FIRE&&nearFire))continue;
             boolean affordable=true;

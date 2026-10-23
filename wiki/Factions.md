@@ -1,6 +1,6 @@
 # The Three Playable Factions
 
-[Home](Home.md) · [Classes](Classes.md) · [Structures](Structures.md)
+[Home](Home.md) · [Classes](Classes.md) · [Structures](Structures.md) · [Faction Weapons](Weapons.md)
 
 **The Lost are not a fourth playable faction.** They are hostile world NPCs with site-owned lifetimes and an independent proposed weapons ecosystem: [The Lost](The-Lost.md).
 
@@ -15,6 +15,12 @@ Penitent survivors interpret the Veil as an ordeal of revelation. **Visual ident
 ## The Begotten — altered bodies and alien adaptation
 
 The Begotten include transformed humans and intruding organisms, bound in unstable broods rather than a single empire. **Visual identity:** split chrysalis, dark violet, pearlescent tissue, asymmetric silhouettes. **Combat:** Harrower / Devourer / Mourner. **Economy:** nutrient cultivation, organo-mechanical production, brood dens, biological processing and living fortifications. **Strength:** biological resilience, predatory movement and territory corruption. **Trade dependency:** requires distinctive biology/technology interfaces and contested inputs, not cheap rebranded Unraveled smelters.
+
+## Faction-exclusive weapons
+
+Each faction has four proprietary manufactured weapons in the [Weapons](Weapons.md) catalog. **Unraveled:** Wooden Club, Pipe Pistol, Bolt Rifle, Scrap Shotgun. **Penitent:** Stone Shiv, Spiked Club, Reinforced Spear, Hand Crossbow. **Begotten:** Stone Hatchet, Wooden Spear, Short Bow, Salvage Machete. Craft permissions are checked by the host using the authenticated account's permanent faction, and the recipe index and client menus use the same owner. The eight city-scavenged weapons are available to all factions. Existing manufactured weapons may be carried or traded outside their origin faction; owning an item never grants permission to manufacture it.
+
+These are the first source-backed exclusive weapons; authentic ritual and organic component supply lines and distinct final silhouettes remain to be integrated.
 
 ## Hard faction rules
 

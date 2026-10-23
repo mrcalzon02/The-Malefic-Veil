@@ -162,9 +162,16 @@ public final class SurvivalCrafting {
         if(!canAcquire(kind,amount,atBase))return false;
         items.merge(kind,amount,Integer::sum);return true;
     }
+    /** Neutral callers may only manufacture shared survival goods. */
     public synchronized boolean craft(String recipeId,Station station){
+        return craft(recipeId,station,CraftingEraRegistry.Faction.ALL);
+    }
+    /** The faction argument must be supplied by trusted host enrollment. */
+    public synchronized boolean craft(String recipeId,Station station,
+                                       CraftingEraRegistry.Faction faction){
         Recipe recipe=RECIPES.get(recipeId);
-        if(recipe==null||station==null||station.ordinal()<recipe.station().ordinal())return false;
+        if(recipe==null||station==null||station.ordinal()<recipe.station().ordinal()||
+           !WeaponEconomy.canCraft(recipe,faction))return false;
         for(var part:recipe.requires().entrySet())
             if(count(part.getKey())<part.getValue())return false;
         int newMass=mass()+weight(recipe.result())*recipe.quantity();

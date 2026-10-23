@@ -1,6 +1,6 @@
 # Construction test image gallery
 
-615 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
+748 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
 
 Private car/character reference renders and comparison panels containing them are excluded. Earlier studies remain visible; gallery inclusion does not imply approval.
 
@@ -41,3 +41,13 @@ Update and publish from the authoring workspace after each render batch: `python
 137 images · [Full image index](begotten-snap-kit.md)
 
 [![Begotten snap construction](images/begotten-snap-kit/preview.png)](begotten-snap-kit.md)
+
+## Faction foundations and stairs
+
+133 images · [Full image index](faction-foundations.md)
+
+[![Faction foundations and stairs](images/faction-foundations/preview.png)](faction-foundations.md)
+
+## Superseded renders
+
+85 earlier test images retained. [Browse the history gallery](history.md).

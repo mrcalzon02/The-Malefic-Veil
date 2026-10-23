@@ -47,8 +47,8 @@ public final class GpuOverlayMenu {
             GpuClientSettings settings,GpuAudioBus audio,
             Runnable goMain,Runnable apply){
         this.skin=Objects.requireNonNull(skin);
-        this.book=new GpuCraftingBook(skin,gameplay::gpuCraftFaction);
         this.gameplay=Objects.requireNonNull(game);
+        this.book=new GpuCraftingBook(skin,this.gameplay::gpuCraftFaction);
         this.settings=Objects.requireNonNull(settings);
         this.audio=audio;this.goMain=goMain;this.apply=apply;
     }

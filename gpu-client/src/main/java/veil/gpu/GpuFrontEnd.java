@@ -38,6 +38,10 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     private final List<Entry> entries=new ArrayList<>();
     private final List<WorldCreationConfig> saves=new ArrayList<>();
     private int selected,loadOffset,frames;
+    private boolean replaceFieldOnType=true;
+    private final java.util.concurrent.atomic.AtomicInteger connectionAttempt=
+        new java.util.concurrent.atomic.AtomicInteger();
+    private volatile int readyAttempt,failedAttempt;
     private String mode="solo",worldName="New Settlement",seedText="";
     private String enemy="normal",loot="normal",address="127.0.0.1",portText="7777";
     private int ai=6,capacity=12;
@@ -68,6 +72,16 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         audio.open();
         applyVideo();
         typing=new InputAdapter(){
+            @Override public boolean keyDown(int key){
+                if((key==Input.Keys.A)&&
+                    (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)||
+                     Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) &&
+                    selected>=0&&selected<entries.size()){
+                    String field=entries.get(selected).textField();
+                    if(field!=null){setText(field,"");replaceFieldOnType=false;return true;}
+                }
+                return false;
+            }
             @Override public boolean keyTyped(char character){
                 if(screen!=Screen.CREATE&&screen!=Screen.JOIN)return false;
                 if(selected<0||selected>=entries.size())return false;
@@ -75,11 +89,15 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 if(field==null)return false;
                 String val=getText(field);
                 if(character=='\b'||character==127){
-                    if(!val.isEmpty())setText(field,val.substring(0,val.length()-1));
+                    if(replaceFieldOnType){
+                        setText(field,"");
+                        replaceFieldOnType=false;
+                    }else if(!val.isEmpty())setText(field,val.substring(0,val.length()-1));
                     return true;
                 }
                 if(character>=32&&character<=126&&val.length()<50){
-                    setText(field,val+character);
+                    setText(field,(replaceFieldOnType?"":val)+character);
+                    replaceFieldOnType=false;
                     return true;
                 }
                 return false;
@@ -240,9 +258,13 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 item("MUSIC: COLD UNRESOLVED DRONE",()->note("User-provided audio (Drive source)"));
                 item("BACK",()->gotoScreen(Screen.HOME));
             }
-            case CONNECTING -> item("CONNECTING... PLEASE KEEP GAME OPEN",()->{});
+            case CONNECTING -> {
+                item("CONNECTING TO AUTHORITATIVE HOST...",()->{});
+                item("CANCEL CONNECTION",this::cancelConnection);
+            }
         }
         selected=reset?0:Math.min(Math.max(0,old),entries.size()-1);
+        if(reset)replaceFieldOnType=true;
     }
     private void worldMode(String next){
         mode=next;chosenWorld=null;gotoScreen(Screen.WORLDS);
@@ -287,6 +309,8 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 mode.equals("join")?address:null,port,faction,role);
             gotoScreen(Screen.CONNECTING);
             note("Connecting to authoritative world...");
+            final int ticket=connectionAttempt.incrementAndGet();
+            ready=null;failed=null;
             Thread worker=new Thread(()->{
                 try{
                     final MaleficVeil[] result={null};
@@ -294,11 +318,28 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                         try{result[0]=MaleficVeil.createGpuSession(request);}
                         catch(IOException failure){throw new RuntimeException(failure);}
                     });
-                    ready=result[0];
-                }catch(Exception failure){failed=failure;}
+                    if(ticket!=connectionAttempt.get()){
+                        if(result[0]!=null)result[0].gpuShutdown();
+                    }else{
+                        readyAttempt=ticket;
+                        ready=result[0];
+                    }
+                }catch(Exception failure){
+                    if(ticket==connectionAttempt.get()){
+                        failedAttempt=ticket;failed=failure;
+                    }
+                }
             },"veil-session-bootstrap");
             worker.setDaemon(true);worker.start();
         }catch(RuntimeException invalid){note("Cannot start game: "+invalid.getMessage());}
+    }
+    /** Cancel never blocks GPU rendering or turns into another system dialog.
+     * A late connection is closed immediately rather than attached to the UI. */
+    private void cancelConnection(){
+        connectionAttempt.incrementAndGet();
+        ready=null;failed=null;
+        note("Connection cancelled.");
+        gotoScreen(Screen.CLASS);
     }
     private void beginEditor(long seed){
         switchView(GpuKenneyPreview.editableWorld(seed,false));
@@ -404,7 +445,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             case CLASS -> gotoScreen(Screen.FACTION);
             case AUDIO,CONTROLS -> gotoScreen(Screen.VIDEO);
             case VIDEO -> saveSettings();
-            case CONNECTING -> note("World connection in progress.");
+            case CONNECTING -> cancelConnection();
         }
     }
     private void activate(int direction){
@@ -417,11 +458,13 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     }
     private void input(){
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){back();return;}
+        int formerlySelected=selected;
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
             selected=Math.floorMod(selected-1,Math.max(1,entries.size()));
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)||
             Gdx.input.isKeyJustPressed(Input.Keys.TAB))
             selected=Math.floorMod(selected+1,Math.max(1,entries.size()));
+        if(selected!=formerlySelected)replaceFieldOnType=true;
         if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))activate(-1);
         if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))activate(1);
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))activate(0);
@@ -431,6 +474,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             for(int i=0;i<entries.size();i++){
                 int baseline=START_Y-i*ROW;
                 if(px>=37&&px<426&&py>=baseline&&py<baseline+22){
+                    if(selected!=i)replaceFieldOnType=true;
                     selected=i;activate(0);break;
                 }
             }
@@ -500,15 +544,22 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         }
         if(ready!=null){
             MaleficVeil session=ready;ready=null;
+            if(screen!=Screen.CONNECTING||readyAttempt!=connectionAttempt.get()){
+                session.gpuShutdown();
+            }else{
             readyGame=session;
             switchView(new GpuKenneyPreview(session,false));
             System.out.println("PASS GPU_UNIFIED_FRONTEND_SESSION seed="+session.gpuWorld().seed);
             gameRenderer.render();return;
+            }
         }
         if(failed!=null){
             Throwable why=failed;failed=null;
-            gotoScreen(Screen.CLASS);
-            note("Cannot join/start world: "+why.getCause());
+            if(screen==Screen.CONNECTING&&failedAttempt==connectionAttempt.get()){
+                gotoScreen(Screen.CLASS);
+                Throwable root=why.getCause()==null?why:why.getCause();
+                note("Cannot join/start world: "+root.getMessage());
+            }
         }
         input();
         // Both UI art and licensed GLBs enter the same FBO before screen

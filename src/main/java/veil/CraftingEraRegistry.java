@@ -228,12 +228,13 @@ public final class CraftingEraRegistry {
         process("temper-alloy",Era.STEAM,Faction.ALL,"forge",
             "HARDENED_ALLOY",1,780,0,"METAL_BILLET",3,"CHARCOAL",2);
         process("tracking-electronics",Era.ELECTRIC,Faction.ALL,"precision-lathe",
-            "TRACKING_CIRCUIT",1,720,6,"CONTROL_BOARD",1,"CONDUCTOR_WIRE",2);
+            "TRACKING_CIRCUIT",1,720,6,"CONTROL_BOARD",1,"CONDUCTOR_WIRE",2,
+            "SORTED_ORE",1);
         process("precision-feedlines",Era.AUTOMATION,Faction.ALL,"industrial-workshop",
             "PRECISION_FEEDLINE",2,780,12,"DRIVE_SHAFT",1,"CONDUCTOR_WIRE",3);
         process("ballistic-resupply",Era.AUTOMATION,Faction.UNRAVELED,"industrial-workshop",
             "BALLISTIC_SUPPLY",2,960,12,"HARDENED_ALLOY",2,"FASTENERS",4,
-            "PRECISION_FEEDLINE",1);
+            "PRECISION_FEEDLINE",1,"TRACKING_CIRCUIT",1);
         process("votive-incense",Era.ENCAMPMENT,Faction.PENITENT,"cooking-hearth",
             "VOTIVE_INCENSE",2,300,0,"MEDICINAL_HERBS",2,"FIREWOOD",2);
         process("witness-seal",Era.SALVAGE,Faction.PENITENT,"forge",

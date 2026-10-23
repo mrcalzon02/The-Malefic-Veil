@@ -184,13 +184,14 @@ public final class GpuCraftingBook implements AutoCloseable {
             row++;
         }
         if(record.inputs().size()>start+row)
-            line(batch,"+"+(record.inputs().size()-start-row)+" MORE  ] NEXT",314,70);
+            line(batch,"+"+(record.inputs().size()-start-row)+" MORE  ] NEXT",314,79);
         else if(start>0)
-            line(batch,"[ PREVIOUS COMPONENTS",314,70);
+            line(batch,"[ PREVIOUS COMPONENTS",314,79);
         String related=CraftingRecipeIndex.usesText(record.output(),2);
-        line(batch,"USED FOR: "+clipped(related,34),314,53);
-        if(!record.prerequisites().isEmpty())
-            line(batch,"NEEDS: "+clipped(String.join(", ",record.prerequisites()),34),314,40);
+        line(batch,"USED FOR: "+clipped(related,34),314,48);
+        if(record.kind()==CraftingRecipeIndex.Kind.FACILITY &&
+           !record.prerequisites().isEmpty())
+            line(batch,"NEEDS: "+clipped(String.join(", ",record.prerequisites()),34),314,63);
     }
     private void detailItem(SpriteBatch batch,String item){
         line(batch,"ITEM  "+clipped(icons.label(item),32),314,309);
@@ -219,7 +220,7 @@ public final class GpuCraftingBook implements AutoCloseable {
         }
         if(row==0)line(batch,"NO REGISTERED DOWNSTREAM USE",314,116);
         int other=CraftingRecipeIndex.uses(item).size()-row;
-        if(other>0)line(batch,"+"+other+" MORE USES",314,35);
+        if(other>0)line(batch,"+"+other+" MORE USES",314,44);
     }
     public void draw(SpriteBatch batch,MaleficVeil.GpuFrame snapshot){
         List<Line> all=entries();

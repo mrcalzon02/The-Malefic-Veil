@@ -110,7 +110,7 @@ public final class SurvivalCrafting {
     public synchronized int count(Item kind){return items.getOrDefault(kind,0);}
     private static int weight(Item item){return switch(item){
         case METAL_STOCK,MACHINE_PARTS,WORKBENCH,SHELTER_KIT -> 25;
-        case FIELD_STONE,RAW_ORE,CAMPFIRE,CRATE_KIT -> 4;
+        case FIELD_STONE,RAW_ORE,CAMPFIRE,CRATE_KIT,FIRED_BRICKS -> 4;
         case TENT_KIT -> 3;
         case FENCE_SECTION,STAKE_TRAP -> 2;
         default -> 1;

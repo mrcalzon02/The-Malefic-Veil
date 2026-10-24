@@ -1,0 +1,264 @@
+{
+  "asset_id": "w06-cerberus-finish-r1",
+  "asset_sha256": "d42237f59f4f5d6a690796afda7884e9f318e8c87f6904be9284d1eff46e6e6c",
+  "status": "PASS",
+  "barrel_count": 3,
+  "break_action_center_travel_m": [
+    0.12685429332168763,
+    0.12685429332168763,
+    0.1762532117004416
+  ],
+  "reload_sweep": [
+    {
+      "frame": 1,
+      "coaxial_offset_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 4,
+      "coaxial_offset_m": [
+        0.0,
+        0.0,
+        2.7939677238464355e-09
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 8,
+      "coaxial_offset_m": [
+        1.4901161193847656e-08,
+        1.4901161193847656e-08,
+        1.5359765386647212e-08
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 16,
+      "coaxial_offset_m": [
+        1.0536712127723509e-08,
+        1.0536712127723509e-08,
+        7.450580596923828e-09
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 23,
+      "coaxial_offset_m": [
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        1.666000468656264e-08
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 30,
+      "coaxial_offset_m": [
+        3.332000937312528e-08,
+        3.332000937312528e-08,
+        1.4901161193847656e-08
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 38,
+      "coaxial_offset_m": [
+        1.666000468656264e-08,
+        1.666000468656264e-08,
+        2.6863450374185958e-08
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 46,
+      "coaxial_offset_m": [
+        1.0536712127723509e-08,
+        1.0536712127723509e-08,
+        7.450580596923828e-09
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 54,
+      "coaxial_offset_m": [
+        1.501712528671799e-08,
+        1.501712528671799e-08,
+        1.5914447131226827e-08
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    },
+    {
+      "frame": 60,
+      "coaxial_offset_m": [
+        1.8612184443034298e-17,
+        1.8612184443034298e-17,
+        1.8612184443034298e-17
+      ],
+      "surface_intersections": {
+        "shell_0_barrel": 0,
+        "shell_0_w06-cerberus__receiver_chassis": 0,
+        "shell_0_w06-cerberus__trigger_guard": 0,
+        "shell_0_w06-cerberus__grip_shell": 0,
+        "shell_1_barrel": 0,
+        "shell_1_w06-cerberus__receiver_chassis": 0,
+        "shell_1_w06-cerberus__trigger_guard": 0,
+        "shell_1_w06-cerberus__grip_shell": 0,
+        "shell_2_barrel": 0,
+        "shell_2_w06-cerberus__receiver_chassis": 0,
+        "shell_2_w06-cerberus__trigger_guard": 0,
+        "shell_2_w06-cerberus__grip_shell": 0,
+        "breech_w06-cerberus__receiver_chassis": 0,
+        "breech_w06-cerberus__trigger_guard": 0,
+        "breech_w06-cerberus__grip_shell": 0
+      }
+    }
+  ],
+  "limits": "Sampled cartridge/frame interfaces; hinge bearing contacts intentionally excluded. No hands or loose-shell physics."
+}

@@ -1,0 +1,61 @@
+{
+  "asset_sha256": "d42237f59f4f5d6a690796afda7884e9f318e8c87f6904be9284d1eff46e6e6c",
+  "decision": "pass",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 4,
+    "silhouette": 4,
+    "reference_comparison": 4,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported final sheet and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Actual final front/rear/closeup/clay/side/reload views inspected. Distinct triangular three-barrel silhouette, tapered receiver and matching breech section; short seated rail leaves the standing breech accessible.",
+    "Reused corrected break-action architecture without a geometry repair: three true through-bores, individually coaxial flat-ended shells, connected fixed hinge support and delayed extraction. Exported sweep passes ten poses against barrels and fixed receiver/guard/grip; muzzle sockets follow their barrels.",
+    "Shared padded 1024 albedo/ORM atlas gives coated body, steel tubes and dark patterned grip; markings read correctly on both sides. Compared with previously viewed actual car/character calibration renders. Pass is for a modest refined low-poly prototype, with richer weathering and runtime review deferred.",
+    "Shared first-eight world loot; no new faction assignment, gameplay change, hand IK or loose-shell physics claimed."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/front.png",
+      "sha256": "2899d78d62b21fe3426f2486250311bd644d6d3dedcc03db497498a5e2ac2be4"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/rear.png",
+      "sha256": "3210713dd98b51f5f56161ee899015488424021b60fd349c4b04db90b6798d2a"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/closeup.png",
+      "sha256": "6fcf88ece799f6fc169a3c82489d830f64180a6c91340dba69a654768844d639"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/clay.png",
+      "sha256": "4848dbb82d3000af05cb2302b5e61ad61c14fa98c780f25b8429d6b1b4120acc"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/side.png",
+      "sha256": "b04c646f5edc19794b253105929a166cb36f7ae1098dbd74c569cef3e12ad010"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/reload.png",
+      "sha256": "c172462046e1d7180d72c95cbffaab38168c82ad32385d540e14c96c93ac39b9"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w06-cerberus-finish-r1/comparison.png",
+      "sha256": "6a48d542790a5d39caf18cd77e089f995d6c8df8260609d63836bbfb2a23f26d"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

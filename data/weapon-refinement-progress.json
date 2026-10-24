@@ -1,0 +1,214 @@
+{
+  "scope": "Art refinement packages; existing runtime arsenal and spawn/crafting rules unchanged.",
+  "stop_rule": "Continue until handled or either usage window has 50% remaining.",
+  "counts": {
+    "REFINED_PROTOTYPE": 5,
+    "REJECTED_REDESIGN_REQUIRED": 1,
+    "PENDING": 26
+  },
+  "weapons": [
+    {
+      "weapon_id": "w01-vesper",
+      "name": "Vesper",
+      "access": "world pickup",
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w01-vesper-finish-r3.glb",
+      "sha256": "a5af8a1260bf887320bc50e8c30b8d4f8b2c578f4083bc91674d6adb28e0812c"
+    },
+    {
+      "weapon_id": "w02-ossuary",
+      "name": "Ossuary",
+      "access": "world pickup",
+      "status": "REJECTED_REDESIGN_REQUIRED",
+      "repair_report": "reports/weapon-ossuary-repair.json"
+    },
+    {
+      "weapon_id": "w03-needle-choir",
+      "name": "Needle Choir",
+      "access": "world pickup",
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w03-needle-choir-finish-r3.glb",
+      "sha256": "c5db9ca4a9396eac1f69a5474fa5b6fc630334badb2702c70ba4059b82ffa9cf"
+    },
+    {
+      "weapon_id": "w04-rivet-saint",
+      "name": "Rivet Saint",
+      "access": "world pickup",
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w04-rivet-saint-finish-r2.glb",
+      "sha256": "0f40a7e20188f7ecfd49d1225bd2838c9967e41ddbffdc257f890e712ee67573"
+    },
+    {
+      "weapon_id": "w05-grave-bell",
+      "name": "Grave Bell",
+      "access": "world pickup",
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w05-grave-bell-finish-r3.glb",
+      "sha256": "8a9dc3248bd9421320ed23146fdc7927403c9e03eb37aa5c092575c7cc3bd636"
+    },
+    {
+      "weapon_id": "w06-cerberus",
+      "name": "Cerberus",
+      "access": "world pickup",
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w06-cerberus-finish-r1.glb",
+      "sha256": "d42237f59f4f5d6a690796afda7884e9f318e8c87f6904be9284d1eff46e6e6c"
+    },
+    {
+      "weapon_id": "w07-reliquary",
+      "name": "Reliquary",
+      "access": "world pickup",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w08-furnace-organ",
+      "name": "Furnace Organ",
+      "access": "world pickup",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w09-hailstorm",
+      "name": "Hailstorm",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w10-cautery",
+      "name": "Cautery",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w11-prism-writ",
+      "name": "Prism Writ",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w12-longwake",
+      "name": "Longwake",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w13-ion-psalm",
+      "name": "Ion Psalm",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w14-sun-eater",
+      "name": "Sun Eater",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w15-storm-rosary",
+      "name": "Storm Rosary",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w16-forked-benediction",
+      "name": "Forked Benediction",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w17-ball-lightning",
+      "name": "Ball Lightning",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w18-thunder-loom",
+      "name": "Thunder Loom",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w19-pilgrim",
+      "name": "Pilgrim",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w20-widow-choir",
+      "name": "Widow Choir",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w21-basilisk",
+      "name": "Basilisk",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w22-censer",
+      "name": "Censer",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w23-vigil-mortar",
+      "name": "Vigil Mortar",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w24-cathedral",
+      "name": "Cathedral",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w25-shrapnel-mass",
+      "name": "Shrapnel Mass",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w26-ricochet-gospel",
+      "name": "Ricochet Gospel",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w27-bankshot",
+      "name": "Bankshot",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w28-scrap-cyclone",
+      "name": "Scrap Cyclone",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w29-miasma",
+      "name": "Miasma",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w30-winter-verdict",
+      "name": "Winter Verdict",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w31-eventide",
+      "name": "Eventide",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    },
+    {
+      "weapon_id": "w32-veilbreaker",
+      "name": "Veilbreaker",
+      "access": "base/faction crafted",
+      "status": "PENDING"
+    }
+  ]
+}

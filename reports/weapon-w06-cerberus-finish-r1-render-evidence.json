@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "d42237f59f4f5d6a690796afda7884e9f318e8c87f6904be9284d1eff46e6e6c",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/front.png",
+      "sha256": "2899d78d62b21fe3426f2486250311bd644d6d3dedcc03db497498a5e2ac2be4"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/rear.png",
+      "sha256": "3210713dd98b51f5f56161ee899015488424021b60fd349c4b04db90b6798d2a"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/closeup.png",
+      "sha256": "6fcf88ece799f6fc169a3c82489d830f64180a6c91340dba69a654768844d639"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/clay.png",
+      "sha256": "4848dbb82d3000af05cb2302b5e61ad61c14fa98c780f25b8429d6b1b4120acc"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/side.png",
+      "sha256": "b04c646f5edc19794b253105929a166cb36f7ae1098dbd74c569cef3e12ad010"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w06-cerberus-finish-r1/reload.png",
+      "sha256": "c172462046e1d7180d72c95cbffaab38168c82ad32385d540e14c96c93ac39b9"
+    }
+  }
+}

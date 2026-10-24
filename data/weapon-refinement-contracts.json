@@ -213,5 +213,59 @@
     ],
     "forbidden_name_tokens": [],
     "isolated_atlas_cells": true
+  },
+  "w06-cerberus-finish-r1": {
+    "placement_kind": "snap-component",
+    "component_function": "handheld weapon assembly; no building placement or plot claim",
+    "local_bounds_z_up": [
+      [
+        -0.41800000858306885,
+        -0.10300000351667404,
+        -0.1870000023841858
+      ],
+      [
+        0.45200001788139343,
+        0.10300000351667404,
+        0.17599998009204865
+      ]
+    ],
+    "organic": false,
+    "continuous_surfaces": [],
+    "intentional_separate_meshes": [
+      "w06-cerberus__panel_fastener_-1",
+      "w06-cerberus__panel_fastener_1",
+      "w06-cerberus__grip_shell",
+      "w06-cerberus__trigger_guard",
+      "w06-cerberus__trigger",
+      "w06-cerberus__stock_upper",
+      "w06-cerberus__stock_lower",
+      "w06-cerberus__butt_pad",
+      "w06-cerberus__stock_socket",
+      "w06-cerberus__receiver_chassis",
+      "w06-cerberus__upper_spine",
+      "w06-cerberus__receiver_service_panel_-1",
+      "w06-cerberus__receiver_service_panel_1",
+      "w06-cerberus__profiled_breech",
+      "w06-cerberus__left_barrel",
+      "w06-cerberus__shot_shell_0",
+      "w06-cerberus__right_barrel",
+      "w06-cerberus__shot_shell_1",
+      "w06-cerberus__top_barrel",
+      "w06-cerberus__shot_shell_2",
+      "w06-cerberus__fixed_hinge_cradle",
+      "w06-cerberus__fixed_hinge_web",
+      "w06-cerberus__breech_hinge"
+    ],
+    "reload_method": "break action; full through-bores with coaxial shells and fixed transverse hinge",
+    "reload_objects": [
+      "shot_shell_0",
+      "shot_shell_1",
+      "shot_shell_2"
+    ],
+    "loading_interfaces": [
+      "breech_hinge"
+    ],
+    "forbidden_name_tokens": [],
+    "isolated_atlas_cells": true
   }
 }

@@ -339,10 +339,12 @@ public final class GpuOverlayMenu {
             if(screen==Screen.CRAFT){
                 List<MaleficVeil.GpuCraftRecipe> recipes=crafts();
                 int source=pageOffset+i;
-                if(source<recipes.size()&&i<MAX_RECIPES_PER_PAGE)
-                    book.drawIcon(sprites,
-                        veil.SurvivalCrafting.recipes().get(recipes.get(source).id())
-                            .result().name(),146,row+1,19);
+                if(source<recipes.size()&&i<MAX_RECIPES_PER_PAGE){
+                    String id=recipes.get(source).id();
+                    var index=veil.CraftingRecipeIndex.recipe(id.startsWith("field:")?
+                        "throw:"+id.substring(6):"hand:"+id);
+                    if(index!=null)book.drawIcon(sprites,index.output(),146,row+1,19);
+                }
             }
         }
         if(screen==Screen.CREW_INPUT){

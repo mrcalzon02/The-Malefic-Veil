@@ -1,0 +1,2477 @@
+[
+  {
+    "id": "car-01",
+    "path": "assets/private/quality-references/cars/Car 01/Car.obj",
+    "category": "reference-hard-surface",
+    "drive_id": "1TeD9Nwo_79ZxL_7mSTZ6euz1M7SjqsX-",
+    "sha256": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "meshes": [
+      {
+        "name": "Car",
+        "triangles": 438,
+        "vertices": 249,
+        "uv_bounds": [
+          [
+            0.009999999776482582,
+            0.009990000165998936
+          ],
+          [
+            0.9982979893684387,
+            0.9904509782791138
+          ]
+        ],
+        "welded_vertices": 249,
+        "components": 14,
+        "largest_component_area_fraction": 0.8094808091178155,
+        "component_details": [
+          {
+            "area": 47.54286398960913,
+            "bounds": [
+              [
+                -1.2073659896850586,
+                -2.9807040691375732,
+                0.2889581322669983
+              ],
+              [
+                1.2073659896850586,
+                2.9524619579315186,
+                2.1352739334106445
+              ]
+            ]
+          },
+          {
+            "area": 1.9580272855436698,
+            "bounds": [
+              [
+                0.8590800166130066,
+                1.051785945892334,
+                -0.03912811726331711
+              ],
+              [
+                1.1327110528945923,
+                1.968940019607544,
+                0.8780258893966675
+              ]
+            ]
+          },
+          {
+            "area": 1.9580265329985642,
+            "bounds": [
+              [
+                0.8590800166130066,
+                -2.6143579483032227,
+                -0.039127837866544724
+              ],
+              [
+                1.1327110528945923,
+                -1.6972039937973022,
+                0.8780261874198914
+              ]
+            ]
+          },
+          {
+            "area": 1.9580263478418178,
+            "bounds": [
+              [
+                -1.1327120065689087,
+                -2.6143569946289062,
+                -0.039127837866544724
+              ],
+              [
+                -0.859080970287323,
+                -1.6972039937973022,
+                0.8780261874198914
+              ]
+            ]
+          },
+          {
+            "area": 1.9580262043001073,
+            "bounds": [
+              [
+                -1.1327110528945923,
+                1.05178701877594,
+                -0.03912811726331711
+              ],
+              [
+                -0.8590790033340454,
+                1.968940019607544,
+                0.8780258893966675
+              ]
+            ]
+          },
+          {
+            "area": 1.2797740708753125,
+            "bounds": [
+              [
+                -1.0882450342178345,
+                2.804517984390259,
+                0.48541679978370667
+              ],
+              [
+                1.0882450342178345,
+                3.003048896789551,
+                0.6254167556762695
+              ]
+            ]
+          },
+          {
+            "area": 1.2441719643521638,
+            "bounds": [
+              [
+                -1.1283559799194336,
+                -3.030205011367798,
+                0.4620722234249115
+              ],
+              [
+                1.1283559799194336,
+                -2.815042018890381,
+                0.6020722389221191
+              ]
+            ]
+          },
+          {
+            "area": 0.1600507812213593,
+            "bounds": [
+              [
+                -0.7623440027236938,
+                2.846153974533081,
+                0.4021647870540619
+              ],
+              [
+                -0.6576560139656067,
+                3.082115888595581,
+                0.6837887763977051
+              ]
+            ]
+          },
+          {
+            "area": 0.1600507812213593,
+            "bounds": [
+              [
+                0.6576560139656067,
+                2.846153974533081,
+                0.4021647870540619
+              ],
+              [
+                0.7623440027236938,
+                3.082115888595581,
+                0.6837887763977051
+              ]
+            ]
+          },
+          {
+            "area": 0.15618408498958083,
+            "bounds": [
+              [
+                -0.5746880173683167,
+                -3.068229913711548,
+                0.4021652042865753
+              ],
+              [
+                -0.4699999988079071,
+                -2.915940999984741,
+                0.6837892532348633
+              ]
+            ]
+          },
+          {
+            "area": 0.1561840849895808,
+            "bounds": [
+              [
+                0.4699999988079071,
+                -3.068229913711548,
+                0.4021652042865753
+              ],
+              [
+                0.5746880173683167,
+                -2.915940999984741,
+                0.6837892532348633
+              ]
+            ]
+          },
+          {
+            "area": 0.11107370223876957,
+            "bounds": [
+              [
+                -0.20999999344348907,
+                2.6877520084381104,
+                1.1296898126602173
+              ],
+              [
+                0.20999999344348907,
+                2.8806591033935547,
+                1.2343777418136597
+              ]
+            ]
+          },
+          {
+            "area": 0.06816411581483255,
+            "bounds": [
+              [
+                1.146723985671997,
+                -1.4625378847122192,
+                1.3341270685195923
+              ],
+              [
+                1.3505909442901611,
+                -1.3900668621063232,
+                1.5333491563796997
+              ]
+            ]
+          },
+          {
+            "area": 0.021916040247617407,
+            "bounds": [
+              [
+                1.1353189945220947,
+                -1.574272871017456,
+                1.2972501516342163
+              ],
+              [
+                1.2595770359039307,
+                -1.4342758655548096,
+                1.4404711723327637
+              ]
+            ]
+          }
+        ],
+        "surface_area": 58.73253998624386,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 8,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5718608169440242,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -1.2073659896850586,
+            -3.068229913711548,
+            -0.03912811726331711
+          ],
+          [
+            1.3505909442901611,
+            3.082115888595581,
+            2.1352739334106445
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "car.png",
+        "width": 128,
+        "height": 128,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 438,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "car-08",
+    "path": "assets/private/quality-references/cars/Car 08/Car8.obj",
+    "category": "reference-hard-surface",
+    "drive_id": "1TeD9Nwo_79ZxL_7mSTZ6euz1M7SjqsX-",
+    "sha256": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "meshes": [
+      {
+        "name": "Car8",
+        "triangles": 376,
+        "vertices": 219,
+        "uv_bounds": [
+          [
+            0.009999999776482582,
+            0.018434999510645866
+          ],
+          [
+            0.9769520163536072,
+            0.9797189831733704
+          ]
+        ],
+        "welded_vertices": 219,
+        "components": 13,
+        "largest_component_area_fraction": 0.8261678791404856,
+        "component_details": [
+          {
+            "area": 79.66492713295251,
+            "bounds": [
+              [
+                -1.3098570108413696,
+                -2.9606010913848877,
+                0.4825079143047333
+              ],
+              [
+                1.309857964515686,
+                3.571362018585205,
+                3.1957292556762695
+              ]
+            ]
+          },
+          {
+            "area": 3.0179074634939704,
+            "bounds": [
+              [
+                -1.2672079801559448,
+                -2.530555009841919,
+                -0.03883584961295128
+              ],
+              [
+                -0.9177929759025574,
+                -1.3998219966888428,
+                1.0918991565704346
+              ]
+            ]
+          },
+          {
+            "area": 3.0179071487289466,
+            "bounds": [
+              [
+                0.9177929759025574,
+                1.3999040126800537,
+                -0.03883514925837517
+              ],
+              [
+                1.2672079801559448,
+                2.53063702583313,
+                1.0918998718261719
+              ]
+            ]
+          },
+          {
+            "area": 3.0179050014004467,
+            "bounds": [
+              [
+                -1.2672079801559448,
+                1.3999049663543701,
+                -0.038836147636175156
+              ],
+              [
+                -0.9177929759025574,
+                2.53063702583313,
+                1.0918989181518555
+              ]
+            ]
+          },
+          {
+            "area": 3.0179044408379476,
+            "bounds": [
+              [
+                0.9177929759025574,
+                -2.530555009841919,
+                -0.03883485123515129
+              ],
+              [
+                1.2672079801559448,
+                -1.3998219966888428,
+                1.091900110244751
+              ]
+            ]
+          },
+          {
+            "area": 2.44681161217216,
+            "bounds": [
+              [
+                -1.3800040483474731,
+                -3.12477707862854,
+                0.4825212061405182
+              ],
+              [
+                1.3800050020217896,
+                -2.888489007949829,
+                0.7429842352867126
+              ]
+            ]
+          },
+          {
+            "area": 1.4592679437490952,
+            "bounds": [
+              [
+                -1.3098640441894531,
+                3.571357011795044,
+                0.4825117290019989
+              ],
+              [
+                1.3098640441894531,
+                3.767357110977173,
+                0.6428056955337524
+              ]
+            ]
+          },
+          {
+            "area": 0.2436348647422288,
+            "bounds": [
+              [
+                -1.583251953125,
+                -1.8414849042892456,
+                2.103992223739624
+              ],
+              [
+                -1.3730809688568115,
+                -1.7457808256149292,
+                2.4364962577819824
+              ]
+            ]
+          },
+          {
+            "area": 0.2436345405435439,
+            "bounds": [
+              [
+                1.3730820417404175,
+                -1.8414849042892456,
+                2.1039931774139404
+              ],
+              [
+                1.583251953125,
+                -1.7457808256149292,
+                2.4364962577819824
+              ]
+            ]
+          },
+          {
+            "area": 0.09214834633046437,
+            "bounds": [
+              [
+                1.3062169551849365,
+                -1.8144197463989258,
+                2.4361603260040283
+              ],
+              [
+                1.5078370571136475,
+                -1.7782707214355469,
+                2.8366003036499023
+              ]
+            ]
+          },
+          {
+            "area": 0.09214834191951413,
+            "bounds": [
+              [
+                -1.5078370571136475,
+                -1.8144197463989258,
+                2.436159133911133
+              ],
+              [
+                -1.3062169551849365,
+                -1.7782707214355469,
+                2.836599349975586
+              ]
+            ]
+          },
+          {
+            "area": 0.05642406294680548,
+            "bounds": [
+              [
+                -1.5078359842300415,
+                -1.8144198656082153,
+                1.8572241067886353
+              ],
+              [
+                -1.3062160015106201,
+                -1.7782708406448364,
+                2.106410264968872
+              ]
+            ]
+          },
+          {
+            "area": 0.05642394708807997,
+            "bounds": [
+              [
+                1.3062169551849365,
+                -1.8144198656082153,
+                1.8572241067886353
+              ],
+              [
+                1.5078359842300415,
+                -1.7782708406448364,
+                2.1064112186431885
+              ]
+            ]
+          }
+        ],
+        "surface_area": 96.42704484690563,
+        "uv_coverage": 0.9981549554990697,
+        "textured_fraction": 1.0,
+        "boundary_edges": 34,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5060240963855421,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -1.583251953125,
+            -3.12477707862854,
+            -0.038836147636175156
+          ],
+          [
+            1.583251953125,
+            3.767357110977173,
+            3.1957292556762695
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "Car8.png",
+        "width": 128,
+        "height": 128,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 376,
+    "uv_coverage": 0.9981549554990697,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "character-01",
+    "path": "assets/private/quality-references/characters/Characters_psx_1.2/Characters_psx_02/Models/No-Rig/Male/Character_01.fbx",
+    "category": "reference-character",
+    "drive_id": "1Dd6RWVvV1qUGT8G0Q1rATlHYSn3doXgU",
+    "sha256": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "meshes": [
+      {
+        "name": "Character_01",
+        "triangles": 866,
+        "vertices": 435,
+        "uv_bounds": [
+          [
+            0.010396064259111881,
+            0.010468002408742905
+          ],
+          [
+            0.9896989464759827,
+            0.9739059209823608
+          ]
+        ],
+        "welded_vertices": 435,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 1.9324491944280033,
+            "bounds": [
+              [
+                -0.18663141131401062,
+                -0.30898433923721313,
+                -0.006633335258811712
+              ],
+              [
+                0.15646596252918243,
+                0.30898553133010864,
+                1.7614996433258057
+              ]
+            ]
+          }
+        ],
+        "surface_area": 1.9324491944280033,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.015396458814472672,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.18663141131401062,
+            -0.30898433923721313,
+            -0.006633335258811712
+          ],
+          [
+            0.15646596252918243,
+            0.30898553133010864,
+            1.7614996433258057
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "Character_01",
+        "width": 512,
+        "height": 512,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 866,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "character-17",
+    "path": "assets/private/quality-references/characters/Characters_psx_1.2/Characters_psx_02/Models/No-Rig/Female/Character_17_Female_Police.fbx",
+    "category": "reference-character",
+    "drive_id": "1Dd6RWVvV1qUGT8G0Q1rATlHYSn3doXgU",
+    "sha256": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1",
+    "meshes": [
+      {
+        "name": "Character_17_Female_Police",
+        "triangles": 1163,
+        "vertices": 584,
+        "uv_bounds": [
+          [
+            0.011426248587667942,
+            0.011561336927115917
+          ],
+          [
+            0.9887404441833496,
+            0.9858493804931641
+          ]
+        ],
+        "welded_vertices": 584,
+        "components": 2,
+        "largest_component_area_fraction": 0.9948197360469289,
+        "component_details": [
+          {
+            "area": 1.7281693389336872,
+            "bounds": [
+              [
+                -0.13289521634578705,
+                -0.42145249247550964,
+                -0.0077260518446564674
+              ],
+              [
+                0.177993506193161,
+                0.4214527904987335,
+                1.6753178834915161
+              ]
+            ]
+          },
+          {
+            "area": 0.00899899047726379,
+            "bounds": [
+              [
+                -0.12620864808559418,
+                -0.026072431355714798,
+                1.5506950616836548
+              ],
+              [
+                -0.07199487835168839,
+                0.032227858901023865,
+                1.6119956970214844
+              ]
+            ]
+          }
+        ],
+        "surface_area": 1.7371683294109515,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 5,
+        "nonmanifold_edges": 8,
+        "normal_seam_fraction": 0.0,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.13289521634578705,
+            -0.42145249247550964,
+            -0.0077260518446564674
+          ],
+          [
+            0.177993506193161,
+            0.4214527904987335,
+            1.6753178834915161
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "Character_17_Female_Police",
+        "width": 512,
+        "height": 512,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 1163,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "w04-rivet-saint-finish-r2",
+    "path": "build/candidates/weapon-refinement/w04-rivet-saint-finish-r2/w04-rivet-saint-finish-r2.glb",
+    "category": "weapon-rough-candidate",
+    "sha256": "0f40a7e20188f7ecfd49d1225bd2838c9967e41ddbffdc257f890e712ee67573",
+    "meshes": [
+      {
+        "name": "w04-rivet-saint__barrel",
+        "triangles": 188,
+        "vertices": 350,
+        "uv_bounds": [
+          [
+            0.0038401701021939516,
+            0.003840148448944092
+          ],
+          [
+            0.11907253414392471,
+            0.16282647848129272
+          ]
+        ],
+        "welded_vertices": 96,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.07003474818555422,
+            "bounds": [
+              [
+                0.11999998986721039,
+                -0.027000000700354576,
+                0.007999987341463566
+              ],
+              [
+                0.47040000557899475,
+                0.027000000700354576,
+                0.06199998781085014
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.07003474818555422,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5673758865248227,
+        "smooth_face_fraction": 0.05319148936170213,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.11999998986721039,
+            -0.027000000700354576,
+            0.007999987341463566
+          ],
+          [
+            0.47040000557899475,
+            0.027000000700354576,
+            0.06199998781085014
+          ]
+        ],
+        "properties": {
+          "replacement_role": "barrel",
+          "stage": "blockout",
+          "trim_band": 1,
+          "has_physical_bore": true,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.0029296875,
+            0.16373697916666666,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__charging_handle_knob",
+        "triangles": 92,
+        "vertices": 170,
+        "uv_bounds": [
+          [
+            0.0035836913157254457,
+            0.6702503561973572
+          ],
+          [
+            0.16308298707008362,
+            0.7943058609962463
+          ]
+        ],
+        "welded_vertices": 48,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0012525244979347014,
+            "bounds": [
+              [
+                -0.0036592583637684584,
+                -0.07900000363588333,
+                0.04534074291586876
+              ],
+              [
+                0.015659257769584656,
+                -0.06700000166893005,
+                0.06465926021337509
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0012525244979347014,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6086956521739131,
+        "smooth_face_fraction": 0.010869565217391304,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.0036592583637684584,
+            -0.07900000363588333,
+            0.04534074291586876
+          ],
+          [
+            0.015659257769584656,
+            -0.06700000166893005,
+            0.06465926021337509
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "charging_handle_knob",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.6695963541666666,
+            0.16373697916666666,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__charging_handle_stem",
+        "triangles": 92,
+        "vertices": 168,
+        "uv_bounds": [
+          [
+            0.8371351957321167,
+            0.5038018226623535
+          ],
+          [
+            0.9961981773376465,
+            0.657593846321106
+          ]
+        ],
+        "welded_vertices": 48,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.001034131773853226,
+            "bounds": [
+              [
+                0.0002044450375251472,
+                -0.06949999928474426,
+                0.049204446375370026
+              ],
+              [
+                0.011795555241405964,
+                -0.04650000110268593,
+                0.060795556753873825
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.001034131773853226,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6086956521739131,
+        "smooth_face_fraction": 0.010869565217391304,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.0002044450375251472,
+            -0.06949999928474426,
+            0.049204446375370026
+          ],
+          [
+            0.011795555241405964,
+            -0.04650000110268593,
+            0.060795556753873825
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "charging_handle_stem",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.5029296875,
+            0.9970703125,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__visible_bolt_carrier",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.6703977584838867,
+            0.5037310719490051
+          ],
+          [
+            0.8296022415161133,
+            0.6617220640182495
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.004726048737003106,
+            "bounds": [
+              [
+                -0.01899999938905239,
+                -0.05000000074505806,
+                0.042500000447034836
+              ],
+              [
+                0.050999999046325684,
+                -0.041999999433755875,
+                0.06750000268220901
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.004726048737003106,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.13636363636363635,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.01899999938905239,
+            -0.05000000074505806,
+            0.042500000447034836
+          ],
+          [
+            0.050999999046325684,
+            -0.041999999433755875,
+            0.06750000268220901
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "visible_bolt_carrier",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.5029296875,
+            0.8304036458333333,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__ballistic_box_magazine",
+        "triangles": 60,
+        "vertices": 136,
+        "uv_bounds": [
+          [
+            0.5036729574203491,
+            0.3370063304901123
+          ],
+          [
+            0.6475158333778381,
+            0.4963270425796509
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.037012465907093214,
+            "bounds": [
+              [
+                0.03637078404426575,
+                -0.027947355061769485,
+                -0.19300000369548798
+              ],
+              [
+                0.10482243448495865,
+                0.027947355061769485,
+                -0.017999999225139618
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.037012465907093214,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5222222222222223,
+        "smooth_face_fraction": 0.03333333333333333,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.03637078404426575,
+            -0.027947355061769485,
+            -0.19300000369548798
+          ],
+          [
+            0.10482243448495865,
+            0.027947355061769485,
+            -0.017999999225139618
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "ballistic_box_magazine",
+          "refinement_stage": "geometry review",
+          "trim_band": 4,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.3362630208333333,
+            0.6637369791666666,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__ballistic_box_magazine_feed_lips",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.836928129196167,
+            0.336928129196167
+          ],
+          [
+            0.9964051842689514,
+            0.45571714639663696
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.006887373762204133,
+            "bounds": [
+              [
+                0.05624999850988388,
+                -0.021175000816583633,
+                -0.01850000023841858
+              ],
+              [
+                0.10175000131130219,
+                0.021175000816583633,
+                0.0005000000237487257
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.006887373762204133,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.18181818181818182,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.05624999850988388,
+            -0.021175000816583633,
+            -0.01850000023841858
+          ],
+          [
+            0.10175000131130219,
+            0.021175000816583633,
+            0.0005000000237487257
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "ballistic_box_magazine_feed_lips",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.3362630208333333,
+            0.9970703125,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__ballistic_box_magazine_floorplate",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.6702440977096558,
+            0.3369107246398926
+          ],
+          [
+            0.8297559022903442,
+            0.46975481510162354
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.013558814901529138,
+            "bounds": [
+              [
+                0.03424999862909317,
+                -0.03189999982714653,
+                -0.19699999690055847
+              ],
+              [
+                0.10575000196695328,
+                0.03189999982714653,
+                -0.17900000512599945
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.013558814901529138,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.045454545454545456,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.03424999862909317,
+            -0.03189999982714653,
+            -0.19699999690055847
+          ],
+          [
+            0.10575000196695328,
+            0.03189999982714653,
+            -0.17900000512599945
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "ballistic_box_magazine_floorplate",
+          "refinement_stage": "geometry review",
+          "trim_band": 4,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.3362630208333333,
+            0.8304036458333333,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__ballistic_box_magazine_catch",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.17030170559883118,
+            0.503635048866272
+          ],
+          [
+            0.32969826459884644,
+            0.6378973722457886
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0007796258612083146,
+            "bounds": [
+              [
+                0.0925000011920929,
+                -0.03400000184774399,
+                -0.05000000074505806
+              ],
+              [
+                0.10450000315904617,
+                -0.02500000037252903,
+                -0.03400000184774399
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0007796258612083146,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.09090909090909091,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.0925000011920929,
+            -0.03400000184774399,
+            -0.05000000074505806
+          ],
+          [
+            0.10450000315904617,
+            -0.02500000037252903,
+            -0.03400000184774399
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "ballistic_box_magazine_catch",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.5029296875,
+            0.3304036458333333,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__ballistic_box_magazine_well",
+        "triangles": 64,
+        "vertices": 120,
+        "uv_bounds": [
+          [
+            0.003954045940190554,
+            0.5039540529251099
+          ],
+          [
+            0.16271261870861053,
+            0.6501752138137817
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.01679649895994209,
+            "bounds": [
+              [
+                0.04259999841451645,
+                -0.03189999982714653,
+                -0.041999999433755875
+              ],
+              [
+                0.11540000140666962,
+                0.03189999982714653,
+                -0.012000000104308128
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.01679649895994209,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.625,
+        "smooth_face_fraction": 0.09375,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.04259999841451645,
+            -0.03189999982714653,
+            -0.041999999433755875
+          ],
+          [
+            0.11540000140666962,
+            0.03189999982714653,
+            -0.012000000104308128
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "ballistic_box_magazine_well",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.5029296875,
+            0.16373697916666666,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__butt_pad",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.17027704417705536,
+            0.33694374561309814
+          ],
+          [
+            0.32972294092178345,
+            0.4771348237991333
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.03597728923366087,
+            "bounds": [
+              [
+                -0.44359999895095825,
+                -0.039500001817941666,
+                -0.09851554036140442
+              ],
+              [
+                -0.4115999937057495,
+                0.039500001817941666,
+                0.04399999976158142
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.03597728923366087,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.44359999895095825,
+            -0.039500001817941666,
+            -0.09851554036140442
+          ],
+          [
+            -0.4115999937057495,
+            0.039500001817941666,
+            0.04399999976158142
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "butt_pad",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.3362630208333333,
+            0.3304036458333333,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__ejection_recess",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.3369095027446747,
+            0.0035761594772338867
+          ],
+          [
+            0.4964238107204437,
+            0.1470535397529602
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.005596809309900327,
+            "bounds": [
+              [
+                -0.028199993073940277,
+                -0.04715000092983246,
+                0.03553749620914459
+              ],
+              [
+                0.04020000621676445,
+                -0.04414999857544899,
+                0.07266249507665634
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.005596809309900327,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.028199993073940277,
+            -0.04715000092983246,
+            0.03553749620914459
+          ],
+          [
+            0.04020000621676445,
+            -0.04414999857544899,
+            0.07266249507665634
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "ejection_recess",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.0029296875,
+            0.4970703125,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__front_sight",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.33706143498420715,
+            0.5037280321121216
+          ],
+          [
+            0.47735416889190674,
+            0.6629385352134705
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0006228731577652294,
+            "bounds": [
+              [
+                0.10300000011920929,
+                -0.0044999998062849045,
+                0.14399997889995575
+              ],
+              [
+                0.11500000208616257,
+                0.0044999998062849045,
+                0.15599998831748962
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0006228731577652294,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.06818181818181818,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.10300000011920929,
+            -0.0044999998062849045,
+            0.14399997889995575
+          ],
+          [
+            0.11500000208616257,
+            0.0044999998062849045,
+            0.15599998831748962
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "front_sight",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.5029296875,
+            0.4970703125,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__grip_shell",
+        "triangles": 180,
+        "vertices": 346,
+        "uv_bounds": [
+          [
+            0.33722832798957825,
+            0.17056167125701904
+          ],
+          [
+            0.48649126291275024,
+            0.32943832874298096
+          ]
+        ],
+        "welded_vertices": 92,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.04301872276174887,
+            "bounds": [
+              [
+                -0.17270004749298096,
+                -0.02956414595246315,
+                -0.1850000023841858
+              ],
+              [
+                -0.07907772064208984,
+                0.02956414595246315,
+                -0.009999999776482582
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.04301872276174887,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.4777777777777778,
+        "smooth_face_fraction": 0.011111111111111112,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.17270004749298096,
+            -0.02956414595246315,
+            -0.1850000023841858
+          ],
+          [
+            -0.07907772064208984,
+            0.02956414595246315,
+            -0.009999999776482582
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "grip_shell",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.16959635416666666,
+            0.4970703125,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__panel_fastener_-1",
+        "triangles": 60,
+        "vertices": 128,
+        "uv_bounds": [
+          [
+            0.8373103141784668,
+            0.003977060317993164
+          ],
+          [
+            0.9960229396820068,
+            0.1592974066734314
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0005949660792333159,
+            "bounds": [
+              [
+                -0.1525910347700119,
+                -0.0551999993622303,
+                0.04010896012187004
+              ],
+              [
+                -0.13780896365642548,
+                -0.04919999837875366,
+                0.054891034960746765
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0005949660792333159,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6222222222222222,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.1525910347700119,
+            -0.0551999993622303,
+            0.04010896012187004
+          ],
+          [
+            -0.13780896365642548,
+            -0.04919999837875366,
+            0.054891034960746765
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "panel_fastener_-1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.0029296875,
+            0.9970703125,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__panel_fastener_1",
+        "triangles": 60,
+        "vertices": 128,
+        "uv_bounds": [
+          [
+            0.1706588864326477,
+            0.1706588864326477
+          ],
+          [
+            0.3293410539627075,
+            0.32591915130615234
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0005949660793743133,
+            "bounds": [
+              [
+                -0.1525910347700119,
+                0.04919999837875366,
+                0.04010896012187004
+              ],
+              [
+                -0.13780896365642548,
+                0.0551999993622303,
+                0.054891034960746765
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0005949660793743133,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6222222222222222,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.1525910347700119,
+            0.04919999837875366,
+            0.04010896012187004
+          ],
+          [
+            -0.13780896365642548,
+            0.0551999993622303,
+            0.054891034960746765
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "panel_fastener_1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.16959635416666666,
+            0.3304036458333333,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__profiled_handguard",
+        "triangles": 532,
+        "vertices": 772,
+        "uv_bounds": [
+          [
+            0.17112672328948975,
+            0.6711267232894897
+          ],
+          [
+            0.32829639315605164,
+            0.8288732767105103
+          ]
+        ],
+        "welded_vertices": 246,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.1127364140547136,
+            "bounds": [
+              [
+                0.125,
+                -0.04157457873225212,
+                -0.014889494515955448
+              ],
+              [
+                0.3449999988079071,
+                0.04157457873225212,
+                0.0848894938826561
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.1127364140547136,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.45112781954887216,
+        "smooth_face_fraction": 0.011278195488721804,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.125,
+            -0.04157457873225212,
+            -0.014889494515955448
+          ],
+          [
+            0.3449999988079071,
+            0.04157457873225212,
+            0.0848894938826561
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "profiled_handguard",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.6695963541666666,
+            0.3304036458333333,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__rear_sight",
+        "triangles": 68,
+        "vertices": 132,
+        "uv_bounds": [
+          [
+            0.5040126442909241,
+            0.5040126442909241
+          ],
+          [
+            0.6593385934829712,
+            0.6626539826393127
+          ]
+        ],
+        "welded_vertices": 36,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0022095394226985766,
+            "bounds": [
+              [
+                -0.18250000476837158,
+                -0.014499999582767487,
+                0.14299997687339783
+              ],
+              [
+                -0.1655000001192093,
+                0.014499999582767487,
+                0.15699997544288635
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0022095394226985766,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6470588235294118,
+        "smooth_face_fraction": 0.11764705882352941,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.18250000476837158,
+            -0.014499999582767487,
+            0.14299997687339783
+          ],
+          [
+            -0.1655000001192093,
+            0.014499999582767487,
+            0.15699997544288635
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "rear_sight",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.5029296875,
+            0.6637369791666666,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__receiver_chassis",
+        "triangles": 104,
+        "vertices": 212,
+        "uv_bounds": [
+          [
+            0.17066164314746857,
+            0.003994941711425781
+          ],
+          [
+            0.31955787539482117,
+            0.16267168521881104
+          ]
+        ],
+        "welded_vertices": 54,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.15911845043168096,
+            "bounds": [
+              [
+                -0.20999999344348907,
+                -0.05081337317824364,
+                -0.028720062226057053
+              ],
+              [
+                0.15000000596046448,
+                0.05081337317824364,
+                0.12372005730867386
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.15911845043168096,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.532051282051282,
+        "smooth_face_fraction": 0.09615384615384616,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.20999999344348907,
+            -0.05081337317824364,
+            -0.028720062226057053
+          ],
+          [
+            0.15000000596046448,
+            0.05081337317824364,
+            0.12372005730867386
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "receiver_chassis",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.0029296875,
+            0.3304036458333333,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__receiver_service_panel_-1",
+        "triangles": 28,
+        "vertices": 48,
+        "uv_bounds": [
+          [
+            0.6703588962554932,
+            0.0036922097206115723
+          ],
+          [
+            0.8013386130332947,
+            0.16297447681427002
+          ]
+        ],
+        "welded_vertices": 16,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.02793451903218587,
+            "bounds": [
+              [
+                -0.16679999232292175,
+                -0.05202842503786087,
+                0.011331486515700817
+              ],
+              [
+                0.04920000582933426,
+                -0.046371571719646454,
+                0.08366850763559341
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.02793451903218587,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5714285714285714,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.16679999232292175,
+            -0.05202842503786087,
+            0.011331486515700817
+          ],
+          [
+            0.04920000582933426,
+            -0.046371571719646454,
+            0.08366850763559341
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "receiver_service_panel_-1",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.0029296875,
+            0.8304036458333333,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__receiver_service_panel_1",
+        "triangles": 28,
+        "vertices": 48,
+        "uv_bounds": [
+          [
+            0.003692208556458354,
+            0.17035889625549316
+          ],
+          [
+            0.13467194139957428,
+            0.32964110374450684
+          ]
+        ],
+        "welded_vertices": 16,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.02793451903218587,
+            "bounds": [
+              [
+                -0.16679999232292175,
+                0.046371571719646454,
+                0.011331486515700817
+              ],
+              [
+                0.04920000582933426,
+                0.05202842503786087,
+                0.08366850763559341
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.02793451903218587,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5714285714285714,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.16679999232292175,
+            0.046371571719646454,
+            0.011331486515700817
+          ],
+          [
+            0.04920000582933426,
+            0.05202842503786087,
+            0.08366850763559341
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "receiver_service_panel_1",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.16959635416666666,
+            0.16373697916666666,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__stock_lower",
+        "triangles": 44,
+        "vertices": 106,
+        "uv_bounds": [
+          [
+            0.0036926879547536373,
+            0.3370260000228882
+          ],
+          [
+            0.10807527601718903,
+            0.4963073134422302
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.025981473409189534,
+            "bounds": [
+              [
+                -0.41791588068008423,
+                -0.017500000074505806,
+                -0.08501370996236801
+              ],
+              [
+                -0.18968413770198822,
+                0.017500000074505806,
+                0.004498172085732222
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.025981473409189534,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.06818181818181818,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.41791588068008423,
+            -0.017500000074505806,
+            -0.08501370996236801
+          ],
+          [
+            -0.18968413770198822,
+            0.017500000074505806,
+            0.004498172085732222
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "stock_lower",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.3362630208333333,
+            0.16373697916666666,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__stock_socket",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.33698755502700806,
+            0.33698755502700806
+          ],
+          [
+            0.4889638125896454,
+            0.49634575843811035
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0238729861989077,
+            "bounds": [
+              [
+                -0.21599999070167542,
+                -0.03750000149011612,
+                -0.029999999329447746
+              ],
+              [
+                -0.1679999977350235,
+                0.03750000149011612,
+                0.03999999910593033
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0238729861989077,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.045454545454545456,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.21599999070167542,
+            -0.03750000149011612,
+            -0.029999999329447746
+          ],
+          [
+            -0.1679999977350235,
+            0.03750000149011612,
+            0.03999999910593033
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "stock_socket",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.3362630208333333,
+            0.4970703125,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__stock_upper",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.8370097875595093,
+            0.17034316062927246
+          ],
+          [
+            0.9673447012901306,
+            0.32965683937072754
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.044265938996249685,
+            "bounds": [
+              [
+                -0.41659998893737793,
+                -0.026000000536441803,
+                0.005499999970197678
+              ],
+              [
+                -0.17500001192092896,
+                0.026000000536441803,
+                0.04650000110268593
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.044265938996249685,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.09090909090909091,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.41659998893737793,
+            -0.026000000536441803,
+            0.005499999970197678
+          ],
+          [
+            -0.17500001192092896,
+            0.026000000536441803,
+            0.04650000110268593
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "stock_upper",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.16959635416666666,
+            0.9970703125,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__trigger",
+        "triangles": 28,
+        "vertices": 48,
+        "uv_bounds": [
+          [
+            0.670394778251648,
+            0.17039477825164795
+          ],
+          [
+            0.8167096972465515,
+            0.32960522174835205
+          ]
+        ],
+        "welded_vertices": 16,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.001767801642987952,
+            "bounds": [
+              [
+                -0.06449045240879059,
+                -0.004999999888241291,
+                -0.04399999976158142
+              ],
+              [
+                -0.04549045488238335,
+                0.004999999888241291,
+                -0.0010000000474974513
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.001767801642987952,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5714285714285714,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.06449045240879059,
+            -0.004999999888241291,
+            -0.04399999976158142
+          ],
+          [
+            -0.04549045488238335,
+            0.004999999888241291,
+            -0.0010000000474974513
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "trigger",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.16959635416666666,
+            0.8304036458333333,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__trigger_guard",
+        "triangles": 140,
+        "vertices": 326,
+        "uv_bounds": [
+          [
+            0.503878116607666,
+            0.1705448031425476
+          ],
+          [
+            0.6627885103225708,
+            0.32048261165618896
+          ]
+        ],
+        "welded_vertices": 70,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.01382995858024213,
+            "bounds": [
+              [
+                -0.09438172727823257,
+                -0.00800000037997961,
+                -0.0729999989271164
+              ],
+              [
+                0.018234824761748314,
+                0.00800000037997961,
+                -0.008999999612569809
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.01382995858024213,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6619047619047619,
+        "smooth_face_fraction": 0.04285714285714286,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.09438172727823257,
+            -0.00800000037997961,
+            -0.0729999989271164
+          ],
+          [
+            0.018234824761748314,
+            0.00800000037997961,
+            -0.008999999612569809
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "trigger_guard",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.16959635416666666,
+            0.6637369791666666,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w04-rivet-saint__upper_spine",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.5034072995185852,
+            0.0034072399139404297
+          ],
+          [
+            0.5641240477561951,
+            0.1632593870162964
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0345407373581566,
+            "bounds": [
+              [
+                -0.1899999976158142,
+                -0.017500000074505806,
+                0.12299998849630356
+              ],
+              [
+                0.125,
+                0.017500000074505806,
+                0.14499998092651367
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0345407373581566,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.045454545454545456,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.1899999976158142,
+            -0.017500000074505806,
+            0.12299998849630356
+          ],
+          [
+            0.125,
+            0.017500000074505806,
+            0.14499998092651367
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "upper_spine",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.0029296875,
+            0.6637369791666666,
+            0.16373697916666666
+          ]
+        }
+      }
+    ],
+    "images": [
+      {
+        "name": "albedo",
+        "width": 1024,
+        "height": 1024,
+        "loaded": true,
+        "packed": true
+      },
+      {
+        "name": "orm",
+        "width": 1024,
+        "height": 1024,
+        "loaded": true,
+        "packed": true
+      }
+    ],
+    "triangles": 2208,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  }
+]

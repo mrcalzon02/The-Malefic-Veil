@@ -2,9 +2,10 @@
 import bpy,json,sys,hashlib,tempfile
 from pathlib import Path
 R=Path(__file__).resolve().parents[1];sys.path.insert(0,str(R/'tools'));from weapon_materials import bake
+from weapon_candidate_history import preserve
 args=sys.argv[sys.argv.index('--')+1:];source=args[args.index('--source')+1];ident=args[args.index('--id')+1];base=R/'build/candidates/weapon-refinement';src=base/source;out=base/ident
 if src.parent!=base or out.parent!=base:raise ValueError('Candidate identifiers only')
-out.mkdir(exist_ok=True);tempfile.tempdir=str(out);bpy.ops.wm.open_mainfile(filepath=str(src/(source+'.blend')),load_ui=False);scene=bpy.context.scene
+preserve(R,out);out.mkdir(exist_ok=True);tempfile.tempdir=str(out);bpy.ops.wm.open_mainfile(filepath=str(src/(source+'.blend')),load_ui=False);scene=bpy.context.scene
 for o in scene.objects:
     if o.animation_data:
         o.animation_data.action=None

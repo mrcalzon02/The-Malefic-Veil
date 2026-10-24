@@ -105,5 +105,62 @@
     ],
     "forbidden_name_tokens": [],
     "isolated_atlas_cells": true
+  },
+  "w04-rivet-saint-finish-r2": {
+    "placement_kind": "snap-component",
+    "component_function": "handheld weapon assembly; no building placement or plot claim",
+    "local_bounds_z_up": [
+      [
+        -0.44559999895095825,
+        -0.08100000363588333,
+        -0.19899999690055847
+      ],
+      [
+        0.47240000557899475,
+        0.0571999993622303,
+        0.15899997544288635
+      ]
+    ],
+    "organic": false,
+    "continuous_surfaces": [],
+    "intentional_separate_meshes": [
+      "w04-rivet-saint__barrel",
+      "w04-rivet-saint__receiver_chassis",
+      "w04-rivet-saint__ejection_recess",
+      "w04-rivet-saint__upper_spine",
+      "w04-rivet-saint__receiver_service_panel_-1",
+      "w04-rivet-saint__panel_fastener_-1",
+      "w04-rivet-saint__receiver_service_panel_1",
+      "w04-rivet-saint__panel_fastener_1",
+      "w04-rivet-saint__grip_shell",
+      "w04-rivet-saint__trigger_guard",
+      "w04-rivet-saint__trigger",
+      "w04-rivet-saint__stock_upper",
+      "w04-rivet-saint__stock_lower",
+      "w04-rivet-saint__butt_pad",
+      "w04-rivet-saint__stock_socket",
+      "w04-rivet-saint__ballistic_box_magazine",
+      "w04-rivet-saint__ballistic_box_magazine_floorplate",
+      "w04-rivet-saint__ballistic_box_magazine_feed_lips",
+      "w04-rivet-saint__ballistic_box_magazine_well",
+      "w04-rivet-saint__ballistic_box_magazine_catch",
+      "w04-rivet-saint__front_sight",
+      "w04-rivet-saint__rear_sight",
+      "w04-rivet-saint__visible_bolt_carrier",
+      "w04-rivet-saint__charging_handle_stem",
+      "w04-rivet-saint__charging_handle_knob",
+      "w04-rivet-saint__profiled_handguard"
+    ],
+    "reload_method": "detachable ballistic box magazine forward of trigger guard",
+    "reload_objects": [
+      "ballistic_box_magazine",
+      "ballistic_box_magazine_floorplate",
+      "ballistic_box_magazine_feed_lips"
+    ],
+    "loading_interfaces": [
+      "ballistic_box_magazine_well"
+    ],
+    "forbidden_name_tokens": [],
+    "isolated_atlas_cells": true
   }
 }

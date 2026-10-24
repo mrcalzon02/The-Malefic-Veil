@@ -6,6 +6,7 @@ import bpy,bmesh,math,json,sys,hashlib,struct,tempfile
 from pathlib import Path
 from mathutils import Vector,Matrix
 R=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(R/'tools'));from weapon_candidate_history import preserve
 BASE=R/'build/candidates/weapon-refinement'
 BASE.mkdir(parents=True,exist_ok=True);tempfile.tempdir=str(BASE)
 defs=json.loads((R/'data/weapons.json').read_text())['weapons']
@@ -16,7 +17,7 @@ records=[];contracts={};report=[]
 C=Matrix(((0,1,0,0),(0,0,1,0),(1,0,0,0),(0,0,0,1)));Ci=C.inverted()
 for d in defs:
     idx=int(d['id'][1:3])-1
-    ident=d['id']+'-refined-'+revision;out=BASE/ident;out.mkdir(exist_ok=True)
+    ident=d['id']+'-refined-'+revision;out=BASE/ident;preserve(R,out);out.mkdir(exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     with bpy.data.libraries.load(str(R/'assets/game/arsenal/working-arsenal.blend'),link=False) as(src,dst):dst.collections=[d['id']]
     col=dst.collections[0];bpy.context.scene.collection.children.link(col)
@@ -275,6 +276,13 @@ for d in defs:
         if idx in(16,26,30,31):
             pack('reactor_cartridge',-.19,0,.18,(.13,.115,.14));axis=(0,0,.21)
         else:pack('power_cartridge',-.012,0,-.115,(.092,.080,.19))
+    if idx==3:
+        old=find('forearm');remove(old)
+        guard=loft('profiled_handguard',[(.125,0,.035,.043,.052),(.146,0,.035,.045,.054),(.315,0,.035,.042,.050),(.345,0,.035,.037,.042)],'X',8,band=0)
+        bore=cylinder('temporary_handguard_bore',(.235,0,.035),.030,.27,'X',receiver,3,24)
+        bpy.context.view_layer.objects.active=guard;mod=guard.modifiers.new('Barrel clearance through handguard','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=bore;bpy.ops.object.modifier_apply(modifier=mod.name);generated.remove(bore);remove(bore)
+        for side in(-1,1):
+            for x in(.174,.207,.240,.273,.306):cut_box(guard,(x,side*.039,.042),(.017,.028,.022))
     # Panels and contact collars give long prongs an engineered profile, rather than flat sticks.
     for o in list(col.objects):
         if o.type!='MESH':continue

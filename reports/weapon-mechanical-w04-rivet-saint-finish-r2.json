@@ -1,0 +1,106 @@
+{
+  "asset_id": "w04-rivet-saint-finish-r2",
+  "asset_sha256": "0f40a7e20188f7ecfd49d1225bd2838c9967e41ddbffdc257f890e712ee67573",
+  "status": "PASS",
+  "trigger_magwell_gap_m": 0.024365173652768135,
+  "magazine_length_m": 0.17500000447034836,
+  "reload_travel_m": 0.24984483075698408,
+  "bolt_travel_m": [
+    -0.027000004425644875,
+    0.0,
+    0.0
+  ],
+  "reload_sweep": [
+    {
+      "frame": 1,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 4,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 8,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 16,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 23,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 30,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 38,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 46,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 54,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    },
+    {
+      "frame": 60,
+      "surface_intersections": {
+        "w04-rivet-saint__ballistic_box_magazine_well": 0,
+        "w04-rivet-saint__receiver_chassis": 0,
+        "w04-rivet-saint__trigger_guard": 0,
+        "w04-rivet-saint__profiled_handguard": 0
+      }
+    }
+  ],
+  "limits": "Sampled component geometry; no hand IK or cartridge simulation."
+}

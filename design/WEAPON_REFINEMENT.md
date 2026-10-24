@@ -21,7 +21,7 @@ Rebuild Vesper seed with Blender running `tools/refine_weapon_roughs.py -- --ids
 | Vesper | Refined prototype r3, exported review passed |
 | Ossuary | Rejected after 3 attempts; coordinated guard/frame redesign required |
 | Needle Choir | Refined prototype r3, exported mechanical and art checks passed |
-| Rivet Saint | Pending individual mechanical review |
+| Rivet Saint | Refined prototype r2, exported mechanical and art checks passed |
 | Grave Bell | Pending individual mechanical review |
 | Cerberus | Pending individual mechanical review |
 | Reliquary | Pending individual mechanical review |

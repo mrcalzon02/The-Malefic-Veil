@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "0f40a7e20188f7ecfd49d1225bd2838c9967e41ddbffdc257f890e712ee67573",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-finish-r2/front.png",
+      "sha256": "d9d56c72d8de00af0bbdfcbf71670740b6ac41ba4c7d589bd727ed28333133e8"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-finish-r2/rear.png",
+      "sha256": "96b386c66e07dedb26210c53e4805e7fb7117aa052c5ae90a901be03b4b12ddc"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-finish-r2/closeup.png",
+      "sha256": "75227f2aefb2dcc2d6a63b59ae3577b3be905741a7a669930232b01a3e5ed191"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-finish-r2/clay.png",
+      "sha256": "0dc703cfa02b656bd216c57fe7ed64f825e16437da9a05eb3a228039e6317723"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-finish-r2/side.png",
+      "sha256": "8da3260eec8e16975713a79d31e862b1621ed1893200c0316544ce064dd4e72e"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-finish-r2/reload.png",
+      "sha256": "7924c1c70e02a2f82c07304554984674489b0908be289a738076d095a331d085"
+    }
+  }
+}

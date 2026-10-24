@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "dba6e704b2bb90a5614c4db2990641173f2c0a8688f6627a36ebbde4b27189f5",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 3,
+    "material_coherence": 3,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Forearm remains a plain box surrounding the barrel and crowds the magazine seating region. Replaced with a tapered, bored, vented handguard before texturing."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-refined-r1/front.png",
+      "sha256": "f3e9089e068f2deb1a2c489939161d5d5674976685007d937db7f974e5a2a880"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-refined-r1/rear.png",
+      "sha256": "0a9bee422b1c4a25986631da86c4ec72e37f2ec73072f3e7c2b24d065e550b0e"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-refined-r1/closeup.png",
+      "sha256": "51e4b47a2bdbd4061ae2904a61c3d80db08fcb4ac62d51369c52b63cbec4e164"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-refined-r1/clay.png",
+      "sha256": "9b6b76e0221f11503fab785debfa236c739bdf97a7b9132cbfe8c462b05df681"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-refined-r1/side.png",
+      "sha256": "b18150c8372fb8687e9316192dcb14d084d0121af22b22b5e598f75f364104d4"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w04-rivet-saint-refined-r1/reload.png",
+      "sha256": "863de3e2d9bdc964dad2679d9bf521199c0c17333a62452f2482bfe8657edade"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w04-rivet-saint-refined-r1/comparison.png",
+      "sha256": "839e93f2425e259c0598a5e64d58a8e4ffd863436449adfda5e108d335f894d4"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

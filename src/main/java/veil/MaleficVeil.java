@@ -25,6 +25,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final WeaponViewRenderer weaponRenderer=new WeaponViewRenderer();
     private final ArsenalMeshes arsenalMeshes=new ArsenalMeshes();
     private long arsenalSequence;
+    private int fieldChoice;
+    private record FieldBurstVisual(double x,double y,int faction,long untilTick){}
+    private final java.util.List<FieldBurstVisual> fieldBurstVisuals=new java.util.ArrayList<>();
     private boolean arsenalMenuVisible,primaryHeld,secondaryHeld;
     private int arsenalMenuChoice;
     private final NetLink net;
@@ -128,11 +131,38 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     SurvivalCrafting.Station.WORKBENCH?"  NEED WORKBENCH":
                     "  NEED CAMPFIRE"),enough));
         }
+        for(ThrownDeployables.Blueprint bp:ThrownDeployables.catalog()){
+            var selected=gpuCraftFaction();
+            if(selected==CraftingEraRegistry.Faction.ALL||
+               !bp.faction().name().equals(selected.name()))continue;
+            boolean near=bp.station()==SurvivalCrafting.Station.HAND||
+                bp.station()==SurvivalCrafting.Station.FIRE&&fire||
+                bp.station()==SurvivalCrafting.Station.WORKBENCH&&bench;
+            boolean enough=near;var parts=new java.util.ArrayList<String>();
+            for(var ingredient:bp.ingredients().entrySet()){
+                int count=inventory.getOrDefault(ingredient.getKey().name(),0);
+                parts.add(ingredient.getKey()+" "+count+"/"+ingredient.getValue());
+                if(count<ingredient.getValue())enough=false;
+            }
+            java.util.Collections.sort(parts);
+            result.add(new GpuCraftRecipe("field:"+bp.id(),bp.station().name(),
+                String.join(" ",parts)+(near?"":" NEED "+bp.station()),enough));
+        }
         result.sort(java.util.Comparator.comparing(GpuCraftRecipe::id));
         return java.util.List.copyOf(result);
     }
     /** GPU UI never manipulates inventory directly; sends existing transactions. */
     public void gpuCraft(String id){
+        if(id!=null&&id.startsWith("field:")){
+            ThrownDeployables.Blueprint bp=ThrownDeployables.catalog().stream()
+                .filter(b->id.equals("field:"+b.id())).findFirst()
+                .orElseThrow(()->new IllegalArgumentException("Unknown throwable recipe"));
+            SwingUtilities.invokeLater(()->{
+                if(net!=null)net.fieldCraft(bp.role().ordinal());
+                else if(localHost!=null)toast(localHost.thrown.craft(1,bp.role().ordinal()).reason());
+            });
+            return;
+        }
         var recipe=SurvivalCrafting.recipes().get(id);
         if(recipe==null)throw new IllegalArgumentException("Unknown field recipe");
         SwingUtilities.invokeLater(()->{
@@ -150,6 +180,43 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 toast(accepted?"CRAFTED "+id:"CRAFT DENIED");
             }
         });
+    }
+    private void throwField(){
+        if(dead)return;
+        if(net!=null)net.fieldThrow(fieldChoice);
+        else if(localHost!=null){
+            ArenaSystems.Player p=localHost.player(1);
+            p.x=px;p.y=py;p.angle=angle;
+            toast(localHost.thrown.throwKit(1,fieldChoice).reason());
+        }
+    }
+    private void cycleField(){
+        fieldChoice=(fieldChoice+1)%ThrownDeployables.Role.values().length;
+        toast("THROWABLE "+ThrownDeployables.Role.values()[fieldChoice]+" / Y THROW");
+    }
+    /** Geometry views come from the transient registry, not World.Device. */
+    private java.util.List<UrbanScene.ModelInstance> fieldVisuals(){
+        var result=new java.util.ArrayList<UrbanScene.ModelInstance>();
+        if(net!=null){
+            for(NetLink.FieldEvent f:net.activeFields.values()){
+                ThrownDeployables.Blueprint bp=ThrownDeployables.blueprint(f.blueprint());
+                if(bp!=null&&f.hp()>0)
+                    result.add(new UrbanScene.ModelInstance(bp.mesh(),f.x(),f.y(),f.id()*.1,
+                        f.flying()?.35:1,1,f.height()));
+            }
+        }else if(localHost!=null){
+            for(ThrownDeployables.View f:localHost.thrown.views()){
+                ThrownDeployables.Blueprint bp=ThrownDeployables.blueprint(f.blueprint());
+                if(bp!=null&&f.hp()>0)
+                    result.add(new UrbanScene.ModelInstance(bp.mesh(),f.x(),f.y(),f.heading(),
+                        f.flying()?.35:1,1,f.z()));
+            }
+        }
+        fieldBurstVisuals.removeIf(f->f.untilTick()<ticks);
+        for(FieldBurstVisual f:fieldBurstVisuals)
+            result.add(new UrbanScene.ModelInstance("thrown-harmless-burst",f.x(),f.y(),
+                ticks*.06,Math.max(.05,(f.untilTick()-ticks)/25.0),.75));
+        return result;
     }
     /** A crafted kit is consumed by the host only after real placement validation. */
     public void gpuPlaceWorkbench(){
@@ -265,6 +332,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(!pickup.taken&&pickup.kind>=0&&pickup.kind<GameplayMeshes.PICKUP.length)
                 actors.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[pickup.kind],
                     pickup.x,pickup.y,ticks*.018,1.15,1,.86+.10*Math.sin(ticks*.11+pickup.kind)));
+        actors.addAll(fieldVisuals());
         for(World.Device device:world.devices)
             if(device.hp>0&&device.kind>=0&&device.kind<GameplayMeshes.DEVICE.length)
                 actors.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[device.kind],
@@ -749,6 +817,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     "CITY IS IMMUTABLE — BUILD IN WILDERNESS":
                     "BUILD REJECTED: "+construction.reason());
             }
+            String fieldResult;
+            while((fieldResult=net.fieldResults.poll())!=null)toast("THROWN FIELD "+fieldResult);
+            NetLink.FieldBurst fieldBurst;
+            while((fieldBurst=net.fieldBursts.poll())!=null)
+                fieldBurstVisuals.add(new FieldBurstVisual(fieldBurst.x(),fieldBurst.y(),
+                    fieldBurst.faction(),ticks+25));
             Integer pickupIndex;
             while((pickupIndex=net.pickedUp.poll())!=null){
                 if(pickupIndex>=0&&pickupIndex<world.pickups.size())world.pickups.get(pickupIndex).taken=true;
@@ -782,6 +856,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             ArenaSystems.Player p=localHost.player(1);
             p.x=px;p.y=py;p.angle=angle;
             localHost.advance(33);
+            for(ThrownDeployables.Burst burst:localHost.thrown.drainBursts())
+                fieldBurstVisuals.add(new FieldBurstVisual(burst.x(),burst.y(),burst.faction(),ticks+25));
+            localHost.thrown.drainRemoved();
         }
         if(!dead&&ticks%2==0&&(primaryHeld||secondaryHeld))shoot(secondaryHeld);
         if(!dead){
@@ -1122,6 +1199,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 Math.atan2(py-npc.y,px-npc.x)-Math.PI/2,1.0));
         java.util.Arrays.fill(depth,65);
         urbanRenderer.draw(g,urban,px,py,angle,depth,RW,RH);
+        displays.addAll(fieldVisuals());
         urbanRenderer.draw(g,actorModels.meshes(),displays,px,py,angle,depth,RW,RH);
         renderWeatherEffects(g);
         g.setColor(new Color(204,186,157));
@@ -1258,6 +1336,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         for(World.Pickup p:world.pickups)if(!p.taken&&p.kind>=0&&p.kind<GameplayMeshes.PICKUP.length)
             gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.PICKUP[p.kind],p.x,p.y,
                 ticks*.018+p.kind,1.15,1.0,.86+.10*Math.sin(ticks*.11+p.kind)));
+        gameplay.addAll(fieldVisuals());
         for(World.Device d:world.devices)if(d.hp>0&&d.kind>=0&&d.kind<GameplayMeshes.DEVICE.length)
             gameplay.add(new UrbanScene.ModelInstance(GameplayMeshes.DEVICE[d.kind],d.x,d.y,0,1.0));
         for(World.Npc n:world.npcs)if(n.hp>0)
@@ -1677,6 +1756,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 else if(medkits>0&&health<100){medkits--;health=Math.min(100,health+55);toast("MEDKIT USED");}
             }
             case KeyEvent.VK_B -> deploy(3);
+            case KeyEvent.VK_Z -> cycleField();
+            case KeyEvent.VK_Y -> throwField();
             case KeyEvent.VK_Q -> toggleCar();
             case KeyEvent.VK_SPACE -> shoot();
             case KeyEvent.VK_M -> {mapVisible=!mapVisible;continentVisible=false;}

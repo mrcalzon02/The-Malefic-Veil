@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "09a6f08e2b748f41649f589472bb7c0c4a37e5fa3b542fed04faa729228193c8",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 3,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images, private calibration panel and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Independent rotor and guided-drum mechanics pass their initial checks, but the rear bearing region reads as an open ring rather than a coherent receiver/gearcase connection. Shaped shoulders are required before texturing."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r2/front.png",
+      "sha256": "3e5c244cd6835307350542ee838abcb4f22bfdaef71e47b65790c289d3c4e67c"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r2/rear.png",
+      "sha256": "79037d6949bf1bb88f276e0c54c0dce1ee5e0c2877b31e5a3e306618955e9423"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r2/closeup.png",
+      "sha256": "946eb222ddf33bc36c78aa24ebadee801bb8e0dd1e5e257f4c48cc5a9d1b0a02"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r2/clay.png",
+      "sha256": "dd1965b981223bc750800b1e7859f968eceb75a2959cb0b05be4fbf0f2ffde82"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r2/side.png",
+      "sha256": "d905d22fb0e76b7256d9105e102db03975d92eca2abbe2aa104f065f1bfdaa30"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r2/reload.png",
+      "sha256": "75997ca7bf23ad30d23d36b5939a26b012451a9d3f065c5009a58c4f0e18f444"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w09-hailstorm-refined-r2/comparison.png",
+      "sha256": "a0eadaa1ded8c89b746819eafc1178ff250e878ae66270928004a4c04dd25598"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

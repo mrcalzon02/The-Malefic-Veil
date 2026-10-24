@@ -346,6 +346,43 @@ for d in defs:
         drum=find('feed_drum_cartridge');cutter=cylinder('drum_guide_bore',(-.16,-.24,-.035),.041,.270,'Y',receiver,3,24);bpy.context.view_layer.objects.active=drum;m=drum.modifiers.new('Drum spindle clearance','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
         remove(find('drum_lock_spindle'));cylinder('drum_lock_spindle',(-.16,-.205,-.035),.039,.190,'Y',receiver,1,20)
         remove(find('feed_bridge'));loft('feed_bridge',[(-.145,-.035,-.16,.052,.055),(-.060,-.020,-.16,.055,.055)],'Y',8,receiver,0)
+    if idx==8:
+        # Twin rotors need separate local axes; a shared rotating pivot would orbit
+        # both clusters around the weapon instead of spinning each barrel cage.
+        for group in(0,1):
+            old_barrels=sorted([o for o in col.objects if o.type=='MESH' and role(o).startswith('tube_'+str(group)+'_')],key=lambda o:o.name)
+            channels=[]
+            for old in old_barrels:
+                lo,hi=bounds(old);channels.append((role(old),(lo.y+hi.y)/2,(lo.z+hi.z)/2,lo.x,hi.x,(hi.y-lo.y)/2))
+            cy=sum(c[1] for c in channels)/len(channels);cz=sum(c[2] for c in channels)/len(channels)
+            driver=empty('cluster_rotor_'+str(group)+'_PIVOT');driver.matrix_world=Matrix.Translation((.100,cy,cz));driver['rotor_group']=group;driver['spin_direction']=1 if group==0 else -1
+            for name,y,z,start,end,radius in channels:
+                remove(find(name));tube=open_tube(name,start,end,y,z,radius,.0145,driver,1);tube['rotor_group']=group
+                socket=find('muzzle_'+str(group*6+int(name.rsplit('_',1)[1]))+'_SOCKET')
+                if socket:socket.parent=driver;socket.matrix_parent_inverse=driver.matrix_world.inverted();socket.matrix_basis=Matrix.Translation((end+.012,y,z))
+            for station in('front','rear'):
+                plate=find('rotor_'+station+'_'+str(group));preserve_parent(plate,driver);plate['rotor_group']=group;lo,hi=bounds(plate)
+                for _,y,z,_,_,_ in channels:
+                    cutter=cylinder('twin_rotor_aperture',((lo.x+hi.x)/2,y,z),.0235,hi.x-lo.x+.030,'X',receiver,3,20);bpy.context.view_layer.objects.active=plate;m=plate.modifiers.new('Coaxial barrel opening','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+            cylinder('central_drive_'+str(group),(.340,cy,cz),.017,.490,'X',driver,1,20)
+            open_tube('fixed_rotor_bearing_'+str(group),.020,.150,cy,cz,.140,.128,receiver,0)
+            cutter=cylinder('twin_receiver_clearance',(.110,cy,cz),.129,.190,'X',receiver,3,32);body=find('receiver_chassis');bpy.context.view_layer.objects.active=body;m=body.modifiers.new('Independent rotor envelope','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+            # Closed motor shoulders end behind the rotating plates. Their front
+            # section matches the fixed bearing, and their aft taper enters the body.
+            sections=[(-.080,.075),(-.030,.120),(.025,.140),(.075,.140)];n=20;vv=[(x,cy+math.cos(j*math.tau/n)*r,cz+math.sin(j*math.tau/n)*r) for x,r in sections for j in range(n)];ff=[tuple(range(n-1,-1,-1)),tuple((len(sections)-1)*n+j for j in range(n))]
+            for k in range(len(sections)-1):
+                for j in range(n):ff.append((k*n+j,k*n+(j+1)%n,(k+1)*n+(j+1)%n,(k+1)*n+j))
+            mesh('gearcase_shoulder_'+str(group),vv,ff,receiver,0)
+        drum=find('feed_drum_cartridge');cutter=cylinder('drum_guide_bore',(-.16,-.24,-.035),.041,.270,'Y',receiver,3,24);bpy.context.view_layer.objects.active=drum;m=drum.modifiers.new('Drum spindle clearance','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        remove(find('drum_lock_spindle'));cylinder('drum_lock_spindle',(-.16,-.205,-.035),.039,.190,'Y',receiver,1,20)
+        remove(find('feed_bridge'));loft('feed_bridge',[(-.145,-.035,-.16,.052,.055),(-.060,-.020,-.16,.055,.055)],'Y',8,receiver,0)
+        for v in find('upper_spine').data.vertices:v.co.z-=.004
+        hub=mark(cylinder('drum_guide_collar',(-.16,-.333,-.035),.052,.020,'Y',ammo,1,24));cutter=cylinder('guide_collar_bore',(-.16,-.333,-.035),.041,.040,'Y',receiver,3,24);bpy.context.view_layer.objects.active=hub;m=hub.modifiers.new('Open guide collar','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        # Move the complete docking interface aft of the new motor shoulders.
+        # Helpers bake weapon-space geometry, so the paired vertex shifts preserve
+        # magazine articulation and do not alter the established rotor pivots.
+        for o in [o for o in ammo.children if o.type=='MESH']+[find('drum_lock_spindle'),find('feed_bridge')]:
+            for v in o.data.vertices:v.co.x-=.075
     # Panels and contact collars give long prongs an engineered profile, rather than flat sticks.
     for o in list(col.objects):
         if o.type!='MESH':continue
@@ -384,7 +421,7 @@ for d in defs:
             for j in p.loop_indices:
                 v=o.data.vertices[o.data.loops[j].vertex_index].co;u=(v[a]-lo[a])/max(hi[a]-lo[a],1e-6);vv=(v[b]-lo[b])/max(hi[b]-lo[b],1e-6);uv.data[j].uv=((band+.04+u*.92)/8,.02+.96*vv)
     # Author articulation around visible loading objects. No texture changes or combat changes.
-    bpy.context.view_layer.update();drivers=[root,action,ammo];bind={o:o.matrix_basis.copy() for o in drivers}
+    bpy.context.view_layer.update();rotor_drivers=[o for o in col.objects if role(o).startswith('cluster_rotor_') and o.type=='EMPTY'];drivers=[root,action,ammo]+rotor_drivers;bind={o:o.matrix_basis.copy() for o in drivers}
     for clip,end in [('idle',60),('fire',12),('alternate',24),('reload',60)]:
         for o in drivers:
             basis=bind[o];o.animation_data_create();act=bpy.data.actions.new(ident+'_'+role(o)+'_'+clip);o.animation_data.action=act
@@ -394,7 +431,8 @@ for d in defs:
                 if clip in('fire','alternate'):
                     if o==root:o.location.x-=.012*pulse
                     if o==action and d['mechanism'] in('slide','pump','bolt'):o.location.x-=(.045 if idx==6 else .027)*pulse
-                    if o==action and d['mechanism'] in('rotor','rings','disc','cylinder'):o.rotation_euler.x+=t*math.tau if d['mechanism']!='disc' else 0
+                    if o==action and d['mechanism'] in('rotor','rings','disc','cylinder') and idx!=8:o.rotation_euler.x+=t*math.tau if d['mechanism']!='disc' else 0
+                    if o in rotor_drivers:o.rotation_euler.x+=t*math.tau*o['spin_direction']
                 if clip=='reload':
                     if o==ammo:
                         if idx==6:o.location+=Vector((-.088 if t in(.25,.5,.75) else 0,0,-.105 if t==.5 else 0))

@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "bdfabf4dd5940a6c0455c9d403cf9f60ae1229266de5a8e3b021c92d76afc5ad",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 3,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images, private calibration panel and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Original rough preserves two visible barrel groups but its common rotor driver does not provide independent local axes. Rotor apertures and guided drum clearance require refinement before finishing."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r1/front.png",
+      "sha256": "cedd2b51714785a1256e7dc7367b3a5f42cabce2cc2da60d86c409d7f6c9a0e0"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r1/rear.png",
+      "sha256": "b66fa7debd8fff9e1bc9bda892f7873def6e04bbce27359516e2116073e038d2"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r1/closeup.png",
+      "sha256": "8da4cf1c11595b518ec134aa8ead63f61ec1f50906564fdb10ce1f87a1de3196"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r1/clay.png",
+      "sha256": "713bbcc878c05acdcd5351fc3998a400324d7661fc9c5c4f83e54e87024cd240"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r1/side.png",
+      "sha256": "700592ac608a5bd6dc454ad8286b95425f30dd709da3abd2c80bc07f4aec70b8"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w09-hailstorm-refined-r1/reload.png",
+      "sha256": "f1ecb2aaecc00afa23a56bbfc735427da8d874adbb0647f5a6b859676847e63c"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w09-hailstorm-refined-r1/comparison.png",
+      "sha256": "346b6494a9af58cf726dcf6369cac01ce03968d3b90544f1d8d928ae8a60c868"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

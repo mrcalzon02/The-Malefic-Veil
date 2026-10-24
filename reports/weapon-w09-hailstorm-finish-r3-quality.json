@@ -1,0 +1,55 @@
+{
+  "policy_version": 1,
+  "reference_baseline_valid": true,
+  "reference_results": {
+    "car-01": [],
+    "car-08": [],
+    "character-01": [],
+    "character-17": []
+  },
+  "reference_metrics": [
+    {
+      "id": "car-01",
+      "sha256": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+      "triangles": 438,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "car-08",
+      "sha256": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+      "triangles": 376,
+      "uv_coverage": 0.9981549554990697,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "character-01",
+      "sha256": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+      "triangles": 866,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "character-17",
+      "sha256": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1",
+      "triangles": 1163,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    }
+  ],
+  "results": [
+    {
+      "id": "w09-hailstorm-finish-r3",
+      "path": "build/candidates/weapon-refinement/w09-hailstorm-finish-r3/w09-hailstorm-finish-r3.glb",
+      "sha256": "c5e1a5eb3799feffddd6de309ce9a4d1b944ede1cba5b35997dc8d4dc3cf4e4e",
+      "status": "DELIVERY_ELIGIBLE",
+      "technical_failures": [],
+      "art_failures": []
+    }
+  ],
+  "counts": {
+    "REJECTED": 0,
+    "ART_REVIEW_REQUIRED": 0,
+    "DELIVERY_ELIGIBLE": 1
+  }
+}

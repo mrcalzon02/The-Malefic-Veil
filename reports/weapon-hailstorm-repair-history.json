@@ -1,0 +1,11 @@
+{
+  "candidate": "w09-hailstorm-refined-r3",
+  "phase": "mechanical preflight before third render/review",
+  "rejected_asset_sha256": "8a7d4837c6a767e39d59fbb41722def7b8812a89acb2f8b8dde1f8440106dad2",
+  "failure": "47 drum assembly / left gearcase shoulder surface intersections at reload frame 1",
+  "repair": "Move drum, pull handle, guide collar, spindle and feed bridge together 75 mm aft; keep rotor geometry unchanged.",
+  "status": "RESOLVED",
+  "resolved_candidate": "w09-hailstorm-finish-r3",
+  "resolved_asset_sha256": "c5e1a5eb3799feffddd6de309ce9a4d1b944ede1cba5b35997dc8d4dc3cf4e4e",
+  "retained_rejected_asset": "build/candidates/weapon-refinement/w09-hailstorm-refined-r3-study-8a7d4837c6/w09-hailstorm-refined-r3-study-8a7d4837c6.glb"
+}

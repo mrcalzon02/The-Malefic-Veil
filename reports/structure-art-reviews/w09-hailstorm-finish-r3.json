@@ -1,0 +1,62 @@
+{
+  "asset_sha256": "c5e1a5eb3799feffddd6de309ce9a4d1b944ede1cba5b35997dc8d4dc3cf4e4e",
+  "decision": "pass",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 4,
+    "silhouette": 4,
+    "reference_comparison": 4,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images, private calibration panel and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Refined prototype art review, not final production art or user approval. Actual exported/reimported front, rear, closeup, neutral clay, side and reload views inspected. Twelve individually bored barrels form two readable six-barrel clusters with separate fixed bearings, shouldered motor housings, a seated rail/carry handle and an attached stock and grip.",
+    "Both firing clips pass nine sampled poses each. Each cluster spins about its own stable axis, with 280 mm separation between axes; quarter-clip rotations are approximately +90 and -90 degrees. All twelve muzzle sockets follow their barrels, bores and rotor apertures stay clear, and rotating tubes/plates avoid the fixed receiver, bearings and shoulders.",
+    "Drum, pull handle and guide collar move as one removable assembly. Its guide bore, spindle and feed bridge were moved 75 mm aft together to clear the left gearcase. Ten sampled reload poses pass against the fixed docking hardware, receiver, grip, guard, bearings and shoulders; withdrawal is approximately 250 mm and it reseats at the end.",
+    "Shared padded 1024 albedo/ORM atlas separates dark coated receiver/gearcase surfaces, steel barrels and collar, patterned grip and bronze magazine. Viewed the actual private comparison panel with car-01, car-08, character-01 and character-17. Shape, functional openings and material separation meet a modest low-poly refined-prototype stage; richer wear and game-view legibility remain later art work.",
+    "Hailstorm remains an advanced base/faction craftable rather than first-eight world loot. Neutral materials do not invent an unapproved faction identity. No runtime replacement, synchronized ammunition feed, hand IK or bearing-contact simulation is claimed."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/front.png",
+      "sha256": "ab3f5d80eacfe597d7fcc943e25e3a3fca856d94b4c9c4ad071a0faa812d5b74"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/rear.png",
+      "sha256": "3eb337eed0a3388c83162d30bef7d68d8604e1dd1b789eb66e7409ff123b9d2c"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/closeup.png",
+      "sha256": "e0c7eabbf8d77ce6c2d1b8b05feeac315f32537120cb369fb3e09ac738e096cd"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/clay.png",
+      "sha256": "7fd83a8892e165613b8bda67f7765033a90e33a4c9becfc163a2546211d0af1c"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/side.png",
+      "sha256": "38abe67d12f25959d804f2d6e690feb60f70ee69f97114551f75745f51ae62a1"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/reload.png",
+      "sha256": "e33a822871dff947f40e81d015fff7afa2885eabc73b03bcde20f27efca5ae6c"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w09-hailstorm-finish-r3/comparison.png",
+      "sha256": "cf14aae3cd48280a4d3b1bca2209524b65d88cb091de2c7c0bf064158e14bea9"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

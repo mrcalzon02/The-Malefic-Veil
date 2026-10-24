@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "asset_id": "w09-hailstorm-finish-r3",
+  "asset_sha256": "c5e1a5eb3799feffddd6de309ce9a4d1b944ede1cba5b35997dc8d4dc3cf4e4e",
+  "clips": [
+    "alternate",
+    "fire",
+    "idle",
+    "reload"
+  ],
+  "triangles": 8306,
+  "uv_coverage": 1.0,
+  "textured_fraction": 1.0,
+  "firing_poses_checked": 18,
+  "reload_poses_checked": 10,
+  "gallery_views_verified": 6,
+  "scope": "Reviewed art/animation package; existing runtime assets and base/faction crafting access unchanged."
+}

@@ -26,7 +26,7 @@ Rebuild Vesper seed with Blender running `tools/refine_weapon_roughs.py -- --ids
 | Cerberus | Refined prototype r1, triple break-action checks passed |
 | Reliquary | Refined prototype r3, pump and bottom-loading checks passed |
 | Furnace Organ | Refined prototype r3, rotor/drum checks passed |
-| Hailstorm | Pending individual mechanical review |
+| Hailstorm | Refined prototype r3, twin counter-rotor and guided drum checks passed |
 | Cautery | Pending individual mechanical review |
 | Prism Writ | Pending individual mechanical review |
 | Longwake | Pending individual mechanical review |
@@ -50,3 +50,5 @@ Rebuild Vesper seed with Blender running `tools/refine_weapon_roughs.py -- --ids
 | Winter Verdict | Pending individual mechanical review |
 | Eventide | Pending individual mechanical review |
 | Veilbreaker | Pending individual mechanical review |
+
+Hailstorm uses independent counter-rotating six-barrel cages, drilled rotor plates, fixed bearings and shouldered gearcases. The guided drum and docking hardware sit 75 mm aft of the rough placement to clear the left gearcase. Both component firing clips and the drum reload were checked on the final reimported GLB; this remains a staged art package with existing gameplay access and runtime assets unchanged.

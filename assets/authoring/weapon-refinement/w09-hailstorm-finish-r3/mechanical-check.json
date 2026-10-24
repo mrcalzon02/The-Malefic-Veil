@@ -1,0 +1,960 @@
+{
+  "asset_id": "w09-hailstorm-finish-r3",
+  "asset_sha256": "c5e1a5eb3799feffddd6de309ce9a4d1b944ede1cba5b35997dc8d4dc3cf4e4e",
+  "status": "PASS",
+  "barrel_count": 12,
+  "rotor_axis_centers_m": [
+    [
+      0.3783000111579895,
+      -0.14000001549720764,
+      0.04000001400709152
+    ],
+    [
+      0.3783000111579895,
+      0.14000001549720764,
+      0.04000001400709152
+    ]
+  ],
+  "quarter_clip_signed_spin_radians": [
+    1.5707965459296254,
+    -1.570796765064362
+  ],
+  "drum_reload_travel_m": 0.2498448158465679,
+  "fire_sweep": [
+    {
+      "clip": "fire",
+      "frame": 1,
+      "axis_center_errors_m": [
+        0.0,
+        0.0
+      ],
+      "signed_spin_radians": [
+        0.0,
+        0.0
+      ],
+      "muzzle_axis_errors_m": [
+        0.0,
+        0.0,
+        0.0,
+        3.725290298461914e-09,
+        0.0,
+        0.0,
+        3.725290298461914e-09,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 2,
+      "axis_center_errors_m": [
+        1.666000468656264e-08,
+        1.666000468656264e-08
+      ],
+      "signed_spin_radians": [
+        0.5489490677879166,
+        -0.5489490651686927
+      ],
+      "muzzle_axis_errors_m": [
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        2.9802322387695312e-08,
+        1.862645149230957e-08,
+        3.725290298461914e-09,
+        1.5914447131226827e-08,
+        1.862645149230957e-08,
+        2.9802322387695312e-08,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        1.5914447131226827e-08,
+        3.725290298461914e-09
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 3,
+      "axis_center_errors_m": [
+        7.450580596923828e-09,
+        7.450580596923828e-09
+      ],
+      "signed_spin_radians": [
+        1.5707965459296254,
+        -1.570796765064362
+      ],
+      "muzzle_axis_errors_m": [
+        0.0,
+        7.450580596923828e-09,
+        4.6566128730773926e-09,
+        7.450580596923828e-09,
+        8.786079596780802e-09,
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        4.6566128730773926e-09,
+        7.450580596923828e-09,
+        0.0,
+        7.450580596923828e-09,
+        8.786079596780802e-09
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 4,
+      "axis_center_errors_m": [
+        3.003425057343598e-08,
+        1.5359765386647212e-08
+      ],
+      "signed_spin_radians": [
+        2.3148148553400474,
+        -2.314814659367592
+      ],
+      "muzzle_axis_errors_m": [
+        7.450580596923828e-09,
+        1.5359765386647212e-08,
+        1.1175870895385742e-08,
+        7.679882693323606e-09,
+        1.580506819158526e-08,
+        1.666000468656264e-08,
+        7.679882693323606e-09,
+        1.1175870895385742e-08,
+        1.5359765386647212e-08,
+        7.450580596923828e-09,
+        1.666000468656264e-08,
+        1.580506819158526e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 6,
+      "axis_center_errors_m": [
+        3.0719530773294423e-08,
+        3.0719530773294423e-08
+      ],
+      "signed_spin_radians": [
+        -3.1415925221089758,
+        3.1415926097628373
+      ],
+      "muzzle_axis_errors_m": [
+        3.725290298461914e-09,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        3.725290298461914e-09,
+        0.0,
+        7.450580596923828e-09,
+        3.725290298461914e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        3.725290298461914e-09,
+        7.450580596923828e-09,
+        0.0
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 8,
+      "axis_center_errors_m": [
+        1.862645149230957e-08,
+        1.862645149230957e-08
+      ],
+      "signed_spin_radians": [
+        -2.2017371008780766,
+        2.2017374773300884
+      ],
+      "muzzle_axis_errors_m": [
+        1.862645149230957e-08,
+        1.0536712127723509e-08,
+        7.450580596923828e-09,
+        2.1073424255447017e-08,
+        1.666000468656264e-08,
+        1.4901161193847656e-08,
+        2.1073424255447017e-08,
+        7.450580596923828e-09,
+        1.0536712127723509e-08,
+        1.862645149230957e-08,
+        1.4901161193847656e-08,
+        1.666000468656264e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 9,
+      "axis_center_errors_m": [
+        0.0,
+        1.4901161193847656e-08
+      ],
+      "signed_spin_radians": [
+        -1.5707964582757523,
+        1.5707965897566158
+      ],
+      "muzzle_axis_errors_m": [
+        3.725290298461914e-09,
+        2.7939677238464355e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        0.0,
+        2.7939677238464355e-09,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        2.7939677238464355e-09,
+        3.725290298461914e-09,
+        2.7939677238464355e-09,
+        0.0
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 11,
+      "axis_center_errors_m": [
+        2.9802322387695312e-08,
+        1.4901161193847656e-08
+      ],
+      "signed_spin_radians": [
+        -0.2536053028657469,
+        0.25360528663812704
+      ],
+      "muzzle_axis_errors_m": [
+        0.0,
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        1.666000468656264e-08,
+        1.5359765386647212e-08,
+        3.725290298461914e-09,
+        1.666000468656264e-08,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        0.0,
+        3.725290298461914e-09,
+        1.5359765386647212e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "fire",
+      "frame": 12,
+      "axis_center_errors_m": [
+        3.725290298461914e-09,
+        0.0
+      ],
+      "signed_spin_radians": [
+        2.1913469808436324e-07,
+        -1.7530782300641113e-07
+      ],
+      "muzzle_axis_errors_m": [
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        0.0,
+        3.725290298461914e-09,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        3.725290298461914e-09,
+        0.0,
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 1,
+      "axis_center_errors_m": [
+        0.0,
+        0.0
+      ],
+      "signed_spin_radians": [
+        0.0,
+        0.0
+      ],
+      "muzzle_axis_errors_m": [
+        0.0,
+        0.0,
+        0.0,
+        3.725290298461914e-09,
+        0.0,
+        0.0,
+        3.725290298461914e-09,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 3,
+      "axis_center_errors_m": [
+        2.9802322387695312e-08,
+        3.725290298461914e-09
+      ],
+      "signed_spin_radians": [
+        0.36685703475552034,
+        -0.36685708888669494
+      ],
+      "muzzle_axis_errors_m": [
+        8.33000234328132e-09,
+        0.0,
+        1.4901161193847656e-08,
+        5.587935447692871e-09,
+        3.003425057343598e-08,
+        7.679882693323606e-09,
+        5.587935447692871e-09,
+        1.4901161193847656e-08,
+        0.0,
+        8.33000234328132e-09,
+        7.679882693323606e-09,
+        3.003425057343598e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 6,
+      "axis_center_errors_m": [
+        7.450580596923828e-09,
+        7.450580596923828e-09
+      ],
+      "signed_spin_radians": [
+        1.5707965459296254,
+        -1.570796765064362
+      ],
+      "muzzle_axis_errors_m": [
+        0.0,
+        7.450580596923828e-09,
+        4.6566128730773926e-09,
+        7.450580596923828e-09,
+        8.786079596780802e-09,
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        4.6566128730773926e-09,
+        7.450580596923828e-09,
+        0.0,
+        7.450580596923828e-09,
+        8.786079596780802e-09
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 9,
+      "axis_center_errors_m": [
+        1.666000468656264e-08,
+        7.450580596923828e-09
+      ],
+      "signed_spin_radians": [
+        2.4888255985069314,
+        -2.4888255386893303
+      ],
+      "muzzle_axis_errors_m": [
+        0.0,
+        1.4901161193847656e-08,
+        1.4901161193847656e-08,
+        1.1175870895385742e-08,
+        1.5359765386647212e-08,
+        1.4901161193847656e-08,
+        1.1175870895385742e-08,
+        1.4901161193847656e-08,
+        1.4901161193847656e-08,
+        0.0,
+        1.4901161193847656e-08,
+        1.5359765386647212e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 12,
+      "axis_center_errors_m": [
+        3.0719530773294423e-08,
+        3.0719530773294423e-08
+      ],
+      "signed_spin_radians": [
+        -3.1415925221089758,
+        3.1415926097628373
+      ],
+      "muzzle_axis_errors_m": [
+        3.725290298461914e-09,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        3.725290298461914e-09,
+        0.0,
+        7.450580596923828e-09,
+        3.725290298461914e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        3.725290298461914e-09,
+        7.450580596923828e-09,
+        0.0
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 16,
+      "axis_center_errors_m": [
+        1.666000468656264e-08,
+        1.666000468656264e-08
+      ],
+      "signed_spin_radians": [
+        -2.1865786827268145,
+        2.1865789363900983
+      ],
+      "muzzle_axis_errors_m": [
+        1.501712528671799e-08,
+        8.33000234328132e-09,
+        8.33000234328132e-09,
+        7.450580596923828e-09,
+        1.666000468656264e-08,
+        3.725290298461914e-09,
+        7.450580596923828e-09,
+        8.33000234328132e-09,
+        8.33000234328132e-09,
+        1.501712528671799e-08,
+        3.725290298461914e-09,
+        1.666000468656264e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 18,
+      "axis_center_errors_m": [
+        0.0,
+        1.4901161193847656e-08
+      ],
+      "signed_spin_radians": [
+        -1.5707964582757523,
+        1.5707965897566158
+      ],
+      "muzzle_axis_errors_m": [
+        3.725290298461914e-09,
+        2.7939677238464355e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        0.0,
+        2.7939677238464355e-09,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        2.7939677238464355e-09,
+        3.725290298461914e-09,
+        2.7939677238464355e-09,
+        0.0
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 22,
+      "axis_center_errors_m": [
+        0.0,
+        0.0
+      ],
+      "signed_spin_radians": [
+        -0.25613144244831015,
+        0.25613151335632284
+      ],
+      "muzzle_axis_errors_m": [
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        3.725290298461914e-09,
+        1.5359765386647212e-08,
+        1.4901161193847656e-08,
+        3.725290298461914e-09,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08,
+        1.5359765386647212e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    },
+    {
+      "clip": "alternate",
+      "frame": 24,
+      "axis_center_errors_m": [
+        3.725290298461914e-09,
+        0.0
+      ],
+      "signed_spin_radians": [
+        2.1913469808436324e-07,
+        -1.7530782300641113e-07
+      ],
+      "muzzle_axis_errors_m": [
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        0.0,
+        3.725290298461914e-09,
+        1.4901161193847656e-08,
+        7.450580596923828e-09,
+        3.725290298461914e-09,
+        0.0,
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        7.450580596923828e-09,
+        1.4901161193847656e-08
+      ],
+      "fixed_housing_intersections": {
+        "w09-hailstorm__tube_0_0": 0,
+        "w09-hailstorm__tube_0_1": 0,
+        "w09-hailstorm__tube_0_2": 0,
+        "w09-hailstorm__tube_0_3": 0,
+        "w09-hailstorm__tube_0_4": 0,
+        "w09-hailstorm__tube_0_5": 0,
+        "w09-hailstorm__rotor_front_0": 0,
+        "w09-hailstorm__rotor_rear_0": 0,
+        "w09-hailstorm__tube_1_0": 0,
+        "w09-hailstorm__tube_1_1": 0,
+        "w09-hailstorm__tube_1_2": 0,
+        "w09-hailstorm__tube_1_3": 0,
+        "w09-hailstorm__tube_1_4": 0,
+        "w09-hailstorm__tube_1_5": 0,
+        "w09-hailstorm__rotor_front_1": 0,
+        "w09-hailstorm__rotor_rear_1": 0
+      }
+    }
+  ],
+  "reload_sweep": [
+    {
+      "frame": 1,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 4,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 8,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 16,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 23,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 30,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 38,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 46,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 54,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    },
+    {
+      "frame": 60,
+      "surface_intersections": {
+        "w09-hailstorm__drum_lock_spindle": 0,
+        "w09-hailstorm__feed_bridge": 0,
+        "w09-hailstorm__receiver_chassis": 0,
+        "w09-hailstorm__grip_shell": 0,
+        "w09-hailstorm__trigger_guard": 0,
+        "w09-hailstorm__fixed_rotor_bearing_0": 0,
+        "w09-hailstorm__fixed_rotor_bearing_1": 0,
+        "w09-hailstorm__gearcase_shoulder_0": 0,
+        "w09-hailstorm__gearcase_shoulder_1": 0
+      }
+    }
+  ],
+  "limits": "Sampled component clearances; no synchronized ammunition feed, hands, bearing contact simulation or gameplay changes."
+}

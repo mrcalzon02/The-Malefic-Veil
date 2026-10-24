@@ -2,9 +2,9 @@
   "scope": "Art refinement packages; existing runtime arsenal and spawn/crafting rules unchanged.",
   "stop_rule": "Continue until handled or either usage window has 50% remaining.",
   "counts": {
-    "REFINED_PROTOTYPE": 7,
+    "REFINED_PROTOTYPE": 8,
     "REJECTED_REDESIGN_REQUIRED": 1,
-    "PENDING": 24
+    "PENDING": 23
   },
   "weapons": [
     {
@@ -74,7 +74,9 @@
       "weapon_id": "w09-hailstorm",
       "name": "Hailstorm",
       "access": "base/faction crafted",
-      "status": "PENDING"
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w09-hailstorm-finish-r3.glb",
+      "sha256": "c5e1a5eb3799feffddd6de309ce9a4d1b944ede1cba5b35997dc8d4dc3cf4e4e"
     },
     {
       "weapon_id": "w10-cautery",

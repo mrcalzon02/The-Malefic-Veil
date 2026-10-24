@@ -1,0 +1,75 @@
+{
+  "placement_kind": "snap-component",
+  "component_function": "handheld weapon assembly; no building placement or plot claim",
+  "local_bounds_z_up": [
+    [
+      -0.6069999594688416,
+      -0.35049998354911804,
+      -0.23675000262260437
+    ],
+    [
+      0.6585999984741211,
+      0.2820000011920929,
+      0.32950001549720764
+    ]
+  ],
+  "organic": false,
+  "continuous_surfaces": [],
+  "intentional_separate_meshes": [
+    "w09-hailstorm__rotor_rear_0",
+    "w09-hailstorm__rotor_front_0",
+    "w09-hailstorm__rotor_rear_1",
+    "w09-hailstorm__rotor_front_1",
+    "w09-hailstorm__carry_handle_top",
+    "w09-hailstorm__carry_handle_mount_-0.2",
+    "w09-hailstorm__carry_handle_mount_0.06",
+    "w09-hailstorm__receiver_chassis",
+    "w09-hailstorm__ejection_recess",
+    "w09-hailstorm__upper_spine",
+    "w09-hailstorm__receiver_service_panel_-1",
+    "w09-hailstorm__panel_fastener_-1",
+    "w09-hailstorm__receiver_service_panel_1",
+    "w09-hailstorm__panel_fastener_1",
+    "w09-hailstorm__grip_shell",
+    "w09-hailstorm__trigger_guard",
+    "w09-hailstorm__trigger",
+    "w09-hailstorm__stock_upper",
+    "w09-hailstorm__stock_lower",
+    "w09-hailstorm__butt_pad",
+    "w09-hailstorm__stock_socket",
+    "w09-hailstorm__feed_drum_cartridge",
+    "w09-hailstorm__drum_pull_handle",
+    "w09-hailstorm__tube_0_0",
+    "w09-hailstorm__tube_0_1",
+    "w09-hailstorm__tube_0_2",
+    "w09-hailstorm__tube_0_3",
+    "w09-hailstorm__tube_0_4",
+    "w09-hailstorm__tube_0_5",
+    "w09-hailstorm__central_drive_0",
+    "w09-hailstorm__fixed_rotor_bearing_0",
+    "w09-hailstorm__gearcase_shoulder_0",
+    "w09-hailstorm__tube_1_0",
+    "w09-hailstorm__tube_1_1",
+    "w09-hailstorm__tube_1_2",
+    "w09-hailstorm__tube_1_3",
+    "w09-hailstorm__tube_1_4",
+    "w09-hailstorm__tube_1_5",
+    "w09-hailstorm__central_drive_1",
+    "w09-hailstorm__fixed_rotor_bearing_1",
+    "w09-hailstorm__gearcase_shoulder_1",
+    "w09-hailstorm__drum_lock_spindle",
+    "w09-hailstorm__feed_bridge",
+    "w09-hailstorm__drum_guide_collar"
+  ],
+  "reload_method": "removable fluted ammunition drum",
+  "reload_objects": [
+    "feed_drum_cartridge",
+    "drum_pull_handle",
+    "drum_guide_collar"
+  ],
+  "loading_interfaces": [
+    "feed_bridge"
+  ],
+  "forbidden_name_tokens": [],
+  "isolated_atlas_cells": true
+}

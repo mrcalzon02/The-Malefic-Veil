@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "c5e1a5eb3799feffddd6de309ce9a4d1b944ede1cba5b35997dc8d4dc3cf4e4e",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/front.png",
+      "sha256": "ab3f5d80eacfe597d7fcc943e25e3a3fca856d94b4c9c4ad071a0faa812d5b74"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/rear.png",
+      "sha256": "3eb337eed0a3388c83162d30bef7d68d8604e1dd1b789eb66e7409ff123b9d2c"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/closeup.png",
+      "sha256": "e0c7eabbf8d77ce6c2d1b8b05feeac315f32537120cb369fb3e09ac738e096cd"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/clay.png",
+      "sha256": "7fd83a8892e165613b8bda67f7765033a90e33a4c9becfc163a2546211d0af1c"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/side.png",
+      "sha256": "38abe67d12f25959d804f2d6e690feb60f70ee69f97114551f75745f51ae62a1"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w09-hailstorm-finish-r3/reload.png",
+      "sha256": "e33a822871dff947f40e81d015fff7afa2885eabc73b03bcde20f27efca5ae6c"
+    }
+  }
+}

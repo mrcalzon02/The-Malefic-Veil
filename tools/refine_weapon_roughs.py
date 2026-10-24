@@ -200,13 +200,37 @@ for d in defs:
         mark(body);beam('cylinder_crane',(-.067,0,.017),(-.005,0,.017),.015,.018,band=1)
         method='six-round swing-out cylinder';axis=(0,-.16,0);loading.append('cylinder_crane')
     elif idx in(4,5):
-        method='break action; individually visible chambered shells';axis=(-.15,0,0)
-        ammo.parent=action;ammo.matrix_world=Matrix.Identity(4)
-        n=2 if idx==4 else 3
-        for j in range(n):
-            y=(-.043 if j==0 else .043) if j<2 else 0;z=.04 if idx==4 else .025 if j<2 else .110
-            shell('shot_shell_'+str(j),(.108,y,z),.094,.026)
-        cylinder('breech_hinge',(.10,0,-.013),.025,.17,'Y',receiver,1);loading.append('breech_hinge')
+        method='break action; full through-bores with coaxial shells and fixed transverse hinge';axis=(-.080,0,0)
+        names=['left_barrel','right_barrel']+(['top_barrel'] if idx==5 else []);channels=[]
+        for name in names:
+            old=find(name);a,b=bounds(old);channels.append(((a.y+b.y)/2,(a.z+b.z)/2,a.x,b.x,(b.y-a.y)/2));remove(old)
+        remove(find('breech'));action.matrix_world=Matrix.Translation((.145,0,-.025));ammo.parent=action;ammo.matrix_parent_inverse=Matrix.Identity(4);ammo.matrix_basis=Matrix.Identity(4);bpy.context.view_layer.update()
+        def through_tube(name,x0,x1,y,z,outer,inner):
+            rings=[(x0,outer*.95),(x0+.008,outer),(x1-.009,outer),(x1,outer*.90),(x1,inner),(x0,inner)];n=20;vv=[(x,y+math.cos(j*math.tau/n)*r,z+math.sin(j*math.tau/n)*r) for x,r in rings for j in range(n)];ff=[]
+            for k in range(len(rings)):
+                kk=(k+1)%len(rings)
+                for j in range(n):ff.append((k*n+j,k*n+(j+1)%n,kk*n+(j+1)%n,kk*n+j))
+            return mesh(name,vv,ff,action,1)
+        ymax=max(abs(c[0])+c[4] for c in channels)+.012;zmin=min(c[1]-c[4] for c in channels)-.016;zmax=max(c[1]+c[4] for c in channels)+.016;cz=(zmin+zmax)/2;rz=(zmax-zmin)/2/.92388
+        # One matched section at the standing/hinged breech seam; taper only aft.
+        remove(find('receiver_chassis'));remove(find('ejection_recess'));remove(find('upper_spine'))
+        loft('receiver_chassis',[(-.210,0,.040,.045,.052),(-.170,0,.040,.055,.060),(-.045,0,cz,ymax/.92388,rz),(.074,0,cz,ymax/.92388,rz)],'X',8,receiver,0)
+        beam('upper_spine',(-.045 if idx==5 else -.190,0,cz+rz*.92388+.006),(.060,0,cz+rz*.92388+.006),.014,.035,receiver,1)
+        for side in(-1,1):
+            remove(find('receiver_service_panel_'+str(side)))
+            loft('receiver_service_panel_'+str(side),[(-.155,side*(.055*.92388+(ymax-.055*.92388)*.015/.125+.002),.040+(cz-.040)*.015/.125,.003,(.060+(rz-.060)*.015/.125)*.50),(-.045,side*(ymax+.002),cz,.003,rz*.50),(.055,side*(ymax+.002),cz,.003,rz*.50)],'X',4,receiver,0)
+            fast=find('panel_fastener_'+str(side));fl,fh=bounds(fast);newy=side*(.055*.92388+(ymax-.055*.92388)*.025/.125+.005)
+            for v in fast.data.vertices:v.co.y+=newy-(fl.y+fh.y)/2;v.co.z+=.040+(cz-.040)*.025/.125-(fl.z+fh.z)/2
+        breech=loft('profiled_breech',[(.080,0,cz,ymax/.92388,rz),(.092,0,cz,ymax/.92388,rz),(.155,0,cz,ymax/.92388,rz)],'X',8,action,0)
+        for j,(y,z,x0,x1,rad) in enumerate(channels):
+            through_tube(names[j],.080,x1,y,z,rad,.022)
+            socket=find('muzzle_'+str(j)+'_SOCKET')
+            if socket:socket.parent=action;socket.matrix_parent_inverse=action.matrix_world.inverted();socket.matrix_basis=Matrix.Translation((x1+.012,y,z))
+            cutter=cylinder('breech_chamber_cut',(.1175,y,z),.022,.125,'X',receiver,3,20);bpy.context.view_layer.objects.active=breech;m=breech.modifiers.new('Chamber through breech','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+            mark(loft('shot_shell_'+str(j),[(.078,y,z,.021,.021),(.084,y,z,.021,.021),(.086,y,z,.019,.019),(.154,y,z,.019,.019)],'X',20,ammo,4))
+        box('fixed_hinge_cradle',(.098,0,-.034),(.114,.074,.024),receiver,0)
+        beam('fixed_hinge_web',(.055,0,-.030),(.055,0,.003),.023,.056,receiver,0)
+        cylinder('breech_hinge',(.145,0,-.025),.017,max(.18,ymax*2+.014),'Y',receiver,1);loading.append('breech_hinge')
     elif idx==6:
         method='under-receiver shell loading gate';axis=(0,-.10,-.08)
         shell('reload_shot_shell',(-.035,0,-.028),.080,.022)
@@ -333,8 +357,8 @@ for d in defs:
                     if o==action and d['mechanism'] in('slide','pump','bolt'):o.location.x-=.027*pulse
                     if o==action and d['mechanism'] in('rotor','rings','disc','cylinder'):o.rotation_euler.x+=t*math.tau if d['mechanism']!='disc' else 0
                 if clip=='reload':
-                    if o==ammo:o.location+=Vector(axis)*pulse
-                    if o==action and idx in(4,5):o.rotation_euler.y+=.55*pulse
+                    if o==ammo:o.location+=Vector(axis)*(max(0,1-abs(t-.5)*4) if idx in(4,5) else pulse)
+                    if o==action and idx in(4,5):o.rotation_euler.y+=1.02*pulse
                     if o==action and idx in(22,23):o.rotation_euler.y+=.22*pulse
                 for path in('location','rotation_euler','scale'):o.keyframe_insert(data_path=path,frame=frame)
             tr=o.animation_data.nla_tracks.new();tr.name=clip;tr.strips.new(clip,1,act);tr.mute=True;o.animation_data.action=None;o.matrix_basis=basis

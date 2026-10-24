@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "8a9dc3248bd9421320ed23146fdc7927403c9e03eb37aa5c092575c7cc3bd636",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/front.png",
+      "sha256": "3c500ad891a8c897f5d5777c9e3a59a9f637a1d3dcdb9c7266da2209bc7d6222"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/rear.png",
+      "sha256": "6387225a8fb9ed9b73cb09bfde5a955be2b5fe4d3c3f9243e56d2f60e3e40a8c"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/closeup.png",
+      "sha256": "fcdf85f44012b9c308cf664e06d5b12906414aef15ff712518c3e1240f30f8ac"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/clay.png",
+      "sha256": "d15be1c0b16fd943c211e2cdce0919f5cfcafb7ca288b7c87c23f9b924675375"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/side.png",
+      "sha256": "6b5c61c5ee815098d28473e7d0b4cf7ea0bc42c67b95a9ba421b97c6e1bceb14"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/reload.png",
+      "sha256": "adccd3f6db0c76b4d949cada035872b4d4dc120a9bf9ca916a0ce832d07de9f7"
+    }
+  }
+}

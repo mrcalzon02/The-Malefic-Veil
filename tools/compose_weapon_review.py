@@ -8,6 +8,7 @@ sheet=Image.new('RGB',(1792,1392),(20,27,34));draw=ImageDraw.Draw(sheet);draw.te
 for i,label in enumerate(('front','rear','closeup','clay','side','reload')):
     im=Image.open(pre/(label+'.png')).convert('RGB');im.thumbnail((880,400));x=(i%2)*896;y=60+(i//2)*444;sheet.paste(im,(x+(896-im.width)//2,y));draw.text((x+18,y+402),label,font=font,fill=(220,226,230))
 sheet.save(pre/'review-sheet.png')
+sheet.resize((1280,994),Image.Resampling.LANCZOS).save(pre/'review-compact.png')
 # Reference panels are private, and intentionally stored outside the gallery source roots.
 comparison=Image.new('RGB',(1792,1220),(20,27,34));draw=ImageDraw.Draw(comparison);draw.text((18,10),'PRIVATE calibration comparison — source references are not redistributed',font=bold,fill='white')
 asset=Image.open(pre/'front.png').convert('RGB');asset.thumbnail((880,560));comparison.paste(asset,(8,75));draw.text((18,650),'Original weapon candidate: grip, receiver, bore and magazine detail',font=font,fill='white')

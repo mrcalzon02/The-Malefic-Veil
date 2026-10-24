@@ -4,6 +4,7 @@ from pathlib import Path
 R=Path(__file__).resolve().parents[1];p=argparse.ArgumentParser(description=__doc__);p.add_argument('--id',required=True);a=p.parse_args();b=R/'build/candidates/weapon-refinement'/a.id
 if b.parent!=R/'build/candidates/weapon-refinement':raise ValueError('Candidate identifier only')
 review=R/'reports/structure-art-reviews'/(a.id+'.json');asset=b/(a.id+'.glb');sha=hashlib.sha256(asset.read_bytes()).hexdigest();v=json.loads(review.read_text());assert v['decision']=='pass' and v['asset_sha256']==sha,'Current visual pass required'
+mechanics=json.loads((b/'mechanical-check.json').read_text());assert mechanics['status']=='PASS' and mechanics['asset_sha256']==sha,'Current exported mechanical pass required'
 inspection='reports/weapon-'+a.id+'-inspection.json';quality='reports/weapon-'+a.id+'-quality.json'
 subprocess.run([sys.executable,'tools/structure_quality_gate.py','--inspection',inspection,'--contracts',str(b/'contracts.json'),'--report',quality,'--promote','--destination','assets/game/arsenal-refined-approved'],cwd=R,check=True)
 dest=R/'assets/authoring/weapon-refinement'/a.id;dest.mkdir(parents=True,exist_ok=True)

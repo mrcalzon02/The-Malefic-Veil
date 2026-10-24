@@ -1,0 +1,62 @@
+{
+  "asset_sha256": "8a9dc3248bd9421320ed23146fdc7927403c9e03eb37aa5c092575c7cc3bd636",
+  "decision": "pass",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 4,
+    "silhouette": 4,
+    "reference_comparison": 4,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Refined prototype stage. Actual final front/rear/closeup/clay/side/reload sheet inspected. Body and hinged breech now share the same section at their seam, with a taper toward the stock. The rail ends behind the loading opening.",
+    "Each barrel and the breech have a true through-bore with a coaxial flat-ended shell. Shell extraction is delayed until the action has opened, then completed before it closes. Ten exported reload poses pass cartridge/barrel and cartridge/fixed-frame collision checks; hinge bearing contacts are intentionally excluded.",
+    "Hinge support is connected to the fixed receiver through a web and cradle, and the muzzle sockets follow the rotating barrels. The exported checker also verifies matching Y/Z seam extents.",
+    "Shared 1024 albedo and ORM distinguish dark coating, steel barrels and patterned grip. Small receiver markings remain on both sides. Compared with the previously viewed actual project car and character calibration renders: meets a restrained low-poly refinement stage; richer weathering and runtime legibility remain later work.",
+    "Shared first-eight world loot. No faction assignment or gameplay changes; no hands, loose-shell physics or final production-art approval claimed."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/front.png",
+      "sha256": "3c500ad891a8c897f5d5777c9e3a59a9f637a1d3dcdb9c7266da2209bc7d6222"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/rear.png",
+      "sha256": "6387225a8fb9ed9b73cb09bfde5a955be2b5fe4d3c3f9243e56d2f60e3e40a8c"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/closeup.png",
+      "sha256": "fcdf85f44012b9c308cf664e06d5b12906414aef15ff712518c3e1240f30f8ac"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/clay.png",
+      "sha256": "d15be1c0b16fd943c211e2cdce0919f5cfcafb7ca288b7c87c23f9b924675375"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/side.png",
+      "sha256": "6b5c61c5ee815098d28473e7d0b4cf7ea0bc42c67b95a9ba421b97c6e1bceb14"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3/reload.png",
+      "sha256": "adccd3f6db0c76b4d949cada035872b4d4dc120a9bf9ca916a0ce832d07de9f7"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w05-grave-bell-finish-r3/comparison.png",
+      "sha256": "4fce3f496f58d2afe861cb85d5339d86f4b893808c72947c6aa6c445878c422b"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

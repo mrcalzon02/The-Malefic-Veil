@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "7a5d53d7b3661407ad74b6de4e7bc0d276260880bd5a08c52bf26b3ff3fdc3e9",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 3,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Break-action movement is improved but body and hinged breech have incompatible cross-sections, and the rail overhangs the opening. User requested a matching section at the seam."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r2/front.png",
+      "sha256": "13de5bdbfe3d5330a69d46724c8c0b5bd6891a533ee963257e8ecceaf8570a29"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r2/rear.png",
+      "sha256": "ef57fdd4d61785c97aa6ab313e18ebcd6f097b5ebd06585572b0a615e60eaec4"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r2/closeup.png",
+      "sha256": "9bb948a740647e47a8f67d2b33135401ea27e14acfc78a7228b8e5d1b5974043"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r2/clay.png",
+      "sha256": "755d757851de7028ae22991888e3b1125c0143161875710a87a9ce4edbcb68e3"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r2/side.png",
+      "sha256": "b0e1684475b07c2acde29e5058273011bbb355e93295325438a2176c4cd4e4f8"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r2/reload.png",
+      "sha256": "ab8d15c9087928062d1856873de56b8221009beaf8928f81f381f8262972c88f"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w05-grave-bell-refined-r2/comparison.png",
+      "sha256": "be99e86e265059494024cdc0fdd7f72ffc49fe22d98234b0dd614f31df12079f"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

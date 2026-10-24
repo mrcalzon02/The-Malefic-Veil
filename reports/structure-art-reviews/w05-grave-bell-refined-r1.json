@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "ddb833220be6f93e6f2cc51622064fc87af15d948951d8f2b0a207ba458582b7",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 3,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Oversized plain breech block and fixed receiver obstruct a readable break-action loading area; shells appear floating in the reload view."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r1/front.png",
+      "sha256": "b1558c7764d67d85130b94a43078400ff7faa312db5d2ed398953f1b5427a679"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r1/rear.png",
+      "sha256": "54a8673ba310726cce87b52c5fcb0380fb6ff5e63dbd621dfdcfe5cce9774c38"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r1/closeup.png",
+      "sha256": "2ddc10a36c47642ff7b17dda80f6c309b265e29ad87584421d23173e9cc786b4"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r1/clay.png",
+      "sha256": "aee9d20ddd34d5aaeba258858d1ccb8ca37bccfbb2adbd2baf634e615504418e"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r1/side.png",
+      "sha256": "29545f48469fc071574968323a3fb2249ff864d08a867132afd1794d1925a3fa"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w05-grave-bell-refined-r1/reload.png",
+      "sha256": "6a2fddcbc0efeefbe45167220bc41fe1d9b984ebd80b739cda205f8f84dd45e6"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w05-grave-bell-refined-r1/comparison.png",
+      "sha256": "2af67ded6ea133c8fc60423d20e5297762ed52b42d53f03a54197548fb49969a"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

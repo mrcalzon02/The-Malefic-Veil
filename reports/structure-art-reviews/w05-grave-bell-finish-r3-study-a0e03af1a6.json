@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "54b4d55b614533a87d6a88c9fb0b226855fd7b192d3aad7d1c4754b0686d0516",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Superseded sequence/support study. The earlier matching-section design still needed delayed shell extraction and a connected fixed hinge support; original export and PNG bytes retained. Not approved."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3-study-a0e03af1a6/front.png",
+      "sha256": "db49edb07f78d65264ff991e9ddd939f3eaed77276436ded5d20e62783f1ca7d"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3-study-a0e03af1a6/rear.png",
+      "sha256": "59dbcc04e79fc259aaf09d20d36958a5f78065b9abaa0be21b3e90b1e276837b"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3-study-a0e03af1a6/closeup.png",
+      "sha256": "0ee4e991f8e45edce9fc03c6ada4b0b57901538159ff6538bde75ee04eec71e9"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3-study-a0e03af1a6/clay.png",
+      "sha256": "146f17875c64ef1ba4b05be9b3c4efe6ae44c259448d6d0f5a2504427f187261"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3-study-a0e03af1a6/side.png",
+      "sha256": "741ce34407a67e6e0b33dc8832bc4e8c9d1fb5486493ca48974408ff2d8d991d"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w05-grave-bell-finish-r3-study-a0e03af1a6/reload.png",
+      "sha256": "e7f452efb9371a49993775f86a8b924bf51c026a4be149d70d152e9f95002a8b"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w05-grave-bell-finish-r3-study-a0e03af1a6/comparison.png",
+      "sha256": "30071aad9be59971f43f6bac159ff694a4038a2e7e9f53dfba0c8bc4a1f4b0e7"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

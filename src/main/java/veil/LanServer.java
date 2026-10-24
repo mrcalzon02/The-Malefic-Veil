@@ -128,6 +128,13 @@ public final class LanServer implements AutoCloseable {
                     for(CargoHaulage.Drop drop:match.cargo.drops())
                         broadcast(cargoDropPacket(drop),-1);
                 }
+                if(match.time()%500==0)for(ThrownDeployables.View f:match.thrown.views())
+                    broadcast("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
+                        f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0),-1);
+                for(int gone:match.thrown.drainRemoved())
+                    broadcast("FIELD_GONE|"+gone,-1);
+                for(ThrownDeployables.Burst burst:match.thrown.drainBursts())
+                    broadcast("FIELD_BURST|"+burst.x()+"|"+burst.y()+"|"+burst.faction(),-1);
                 if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++){
                     World.Device d=match.world.devices.get(i);
                     broadcast("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
@@ -287,6 +294,9 @@ public final class LanServer implements AutoCloseable {
             World.Device d=match.world.devices.get(i);
             peer.send("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp);
         }
+        for(ThrownDeployables.View f:match.thrown.views())
+            peer.send("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
+                f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0));
     }
     private void serve(Socket socket){
         Peer peer=new Peer();peer.id=id();peer.socket=socket;
@@ -614,6 +624,26 @@ public final class LanServer implements AutoCloseable {
                                 peer.send(inventoryPacket(maker));
                                 peer.send(progressionPacket(maker));
                             }
+                        }
+                        case "FIELD_CRAFT" -> {
+                            if(s.length!=2)continue;
+                            int role=Integer.parseInt(s[1]);
+                            ThrownDeployables.Result result=match.thrown.craft(peer.id,role);
+                            changed=result.ok();
+                            peer.send("CRAFT_RESULT|field-"+role+"|"+(changed?"OK":result.reason()));
+                            if(changed){
+                                ArenaSystems.Player maker=match.player(peer.id);
+                                peer.send(inventoryPacket(maker));
+                                peer.send(progressionPacket(maker));
+                            }
+                        }
+                        case "FIELD_THROW" -> {
+                            if(s.length!=2)continue;
+                            int role=Integer.parseInt(s[1]);
+                            ThrownDeployables.Result result=match.thrown.throwKit(peer.id,role);
+                            changed=result.ok();
+                            peer.send("FIELD_THROW_RESULT|"+role+"|"+(changed?"OK":result.reason()));
+                            if(changed)peer.send(inventoryPacket(match.player(peer.id)));
                         }
                         case "BUILD" -> {
                             if(s.length!=2)continue;

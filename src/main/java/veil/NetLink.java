@@ -24,6 +24,8 @@ public final class NetLink implements AutoCloseable {
         int pistolReserve,int shellReserve,int pistolClip,int shellClip,boolean dead,int frags,
         double x,double y,double angle,double visibility){}
     public record DeviceEvent(int index,int kind,double x,double y,int hp){}
+    public record FieldEvent(int id,int blueprint,double x,double y,double height,int hp,long remaining,boolean flying){}
+    public record FieldBurst(double x,double y,int faction){}
     public record NpcEvent(int index,double x,double y,int hp){}
     public record ShotEvent(long sequence,boolean fired,String outcome,int targetId,int damage,int ammo){}
     public record BuildEvent(int kind,String reason,int cashCost,int suppliesCost){}
@@ -80,6 +82,9 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<String> rideResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<Integer> pickedUp=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<DeviceEvent> structures=new ConcurrentLinkedQueue<>();
+    public final ConcurrentHashMap<Integer,FieldEvent> activeFields=new ConcurrentHashMap<>();
+    public final ConcurrentLinkedQueue<FieldBurst> fieldBursts=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> fieldResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<NpcEvent> npcs=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<ShotEvent> shots=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<BuildEvent> buildResults=new ConcurrentLinkedQueue<>();
@@ -197,6 +202,25 @@ public final class NetLink implements AutoCloseable {
                                  "TRADE_RESULT", "TRADE_RECEIVED" -> itemResults.add(line);
                             case "HARVEST_RESULT" -> {
                                 if(s.length==3)harvestResults.add(s[1]+"|"+s[2]);
+                            }
+                            case "FIELD" -> {
+                                if(s.length==9){
+                                    FieldEvent field=new FieldEvent(Integer.parseInt(s[1]),Integer.parseInt(s[2]),
+                                        Double.parseDouble(s[3]),Double.parseDouble(s[4]),Double.parseDouble(s[5]),
+                                        Integer.parseInt(s[6]),Long.parseLong(s[7]),s[8].equals("1"));
+                                    if(field.hp()>0)activeFields.put(field.id(),field);
+                                    else activeFields.remove(field.id());
+                                }
+                            }
+                            case "FIELD_GONE" -> {
+                                if(s.length==2)activeFields.remove(Integer.parseInt(s[1]));
+                            }
+                            case "FIELD_BURST" -> {
+                                if(s.length==4)fieldBursts.add(new FieldBurst(
+                                    Double.parseDouble(s[1]),Double.parseDouble(s[2]),Integer.parseInt(s[3])));
+                            }
+                            case "FIELD_THROW_RESULT" -> {
+                                if(s.length==3)fieldResults.add(s[1]+"|"+s[2]);
                             }
                             case "DEVICE" -> {
                                 if(s.length==6)structures.add(new DeviceEvent(Integer.parseInt(s[1]),
@@ -385,6 +409,8 @@ public final class NetLink implements AutoCloseable {
     public void reload(int weapon){send("RELOAD|"+weapon);}
     public void ability(){send("ABILITY");}
     public void build(int kind){send("BUILD|"+kind);}
+    public void fieldCraft(int role){send("FIELD_CRAFT|"+role);}
+    public void fieldThrow(int role){send("FIELD_THROW|"+role);}
     public void respawn(int index){send("RESPAWN|"+index);}
     public void sceneReady(){send("SCENE_READY");}
     public void craftHand(String recipeId){send("CRAFT_HAND|"+recipeId);}

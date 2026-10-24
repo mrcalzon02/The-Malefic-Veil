@@ -1,0 +1,61 @@
+{
+  "placement_kind": "snap-component",
+  "component_function": "handheld weapon assembly; no building placement or plot claim",
+  "local_bounds_z_up": [
+    [
+      -0.5169999856948853,
+      -0.35049998354911804,
+      -0.23675000262260437
+    ],
+    [
+      0.5606000084877014,
+      0.14200000059604645,
+      0.32950001549720764
+    ]
+  ],
+  "organic": false,
+  "continuous_surfaces": [],
+  "intentional_separate_meshes": [
+    "w08-furnace-organ__rotor_rear_0",
+    "w08-furnace-organ__rotor_front_0",
+    "w08-furnace-organ__carry_handle_top",
+    "w08-furnace-organ__carry_handle_mount_-0.2",
+    "w08-furnace-organ__carry_handle_mount_0.06",
+    "w08-furnace-organ__receiver_chassis",
+    "w08-furnace-organ__ejection_recess",
+    "w08-furnace-organ__upper_spine",
+    "w08-furnace-organ__receiver_service_panel_-1",
+    "w08-furnace-organ__panel_fastener_-1",
+    "w08-furnace-organ__receiver_service_panel_1",
+    "w08-furnace-organ__panel_fastener_1",
+    "w08-furnace-organ__grip_shell",
+    "w08-furnace-organ__trigger_guard",
+    "w08-furnace-organ__trigger",
+    "w08-furnace-organ__stock_upper",
+    "w08-furnace-organ__stock_lower",
+    "w08-furnace-organ__butt_pad",
+    "w08-furnace-organ__stock_socket",
+    "w08-furnace-organ__feed_drum_cartridge",
+    "w08-furnace-organ__drum_pull_handle",
+    "w08-furnace-organ__tube_0_0",
+    "w08-furnace-organ__tube_0_1",
+    "w08-furnace-organ__tube_0_2",
+    "w08-furnace-organ__tube_0_3",
+    "w08-furnace-organ__tube_0_4",
+    "w08-furnace-organ__tube_0_5",
+    "w08-furnace-organ__central_drive",
+    "w08-furnace-organ__fixed_rotor_bearing",
+    "w08-furnace-organ__drum_lock_spindle",
+    "w08-furnace-organ__feed_bridge"
+  ],
+  "reload_method": "removable fluted ammunition drum",
+  "reload_objects": [
+    "feed_drum_cartridge",
+    "drum_pull_handle"
+  ],
+  "loading_interfaces": [
+    "feed_bridge"
+  ],
+  "forbidden_name_tokens": [],
+  "isolated_atlas_cells": true
+}

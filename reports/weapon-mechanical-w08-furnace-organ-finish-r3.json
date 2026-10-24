@@ -1,0 +1,212 @@
+{
+  "asset_id": "w08-furnace-organ-finish-r3",
+  "asset_sha256": "aa31b7c536ab5a00eff081d5814a0b435efa8091caa49599a1210bf67f09540c",
+  "status": "PASS",
+  "barrel_count": 6,
+  "rotor_axis_center_m": [
+    0.3292999863624573,
+    -1.2417634698280722e-09,
+    0.040000010281801224
+  ],
+  "drum_reload_travel_m": 0.2498448158465679,
+  "fire_sweep": [
+    {
+      "frame": 1,
+      "fixed_housing_intersections": {
+        "w08-furnace-organ__tube_0_0": 0,
+        "w08-furnace-organ__tube_0_1": 0,
+        "w08-furnace-organ__tube_0_2": 0,
+        "w08-furnace-organ__tube_0_3": 0,
+        "w08-furnace-organ__tube_0_4": 0,
+        "w08-furnace-organ__tube_0_5": 0
+      },
+      "muzzle_axis_errors_m": [
+        1.1175870895385742e-08,
+        0.0,
+        0.0,
+        1.1175870895385742e-08,
+        3.725290298461914e-09,
+        3.725290298461914e-09
+      ]
+    },
+    {
+      "frame": 3,
+      "fixed_housing_intersections": {
+        "w08-furnace-organ__tube_0_0": 0,
+        "w08-furnace-organ__tube_0_1": 0,
+        "w08-furnace-organ__tube_0_2": 0,
+        "w08-furnace-organ__tube_0_3": 0,
+        "w08-furnace-organ__tube_0_4": 0,
+        "w08-furnace-organ__tube_0_5": 0
+      },
+      "muzzle_axis_errors_m": [
+        1.1175869119028762e-08,
+        0.0,
+        7.508562643358995e-09,
+        1.1175870895385742e-08,
+        7.508562643358995e-09,
+        0.0
+      ]
+    },
+    {
+      "frame": 6,
+      "fixed_housing_intersections": {
+        "w08-furnace-organ__tube_0_0": 0,
+        "w08-furnace-organ__tube_0_1": 0,
+        "w08-furnace-organ__tube_0_2": 0,
+        "w08-furnace-organ__tube_0_3": 0,
+        "w08-furnace-organ__tube_0_4": 0,
+        "w08-furnace-organ__tube_0_5": 0
+      },
+      "muzzle_axis_errors_m": [
+        1.1175870895385742e-08,
+        0.0,
+        0.0,
+        1.1175870895385742e-08,
+        0.0,
+        7.450580596923828e-09
+      ]
+    },
+    {
+      "frame": 9,
+      "fixed_housing_intersections": {
+        "w08-furnace-organ__tube_0_0": 0,
+        "w08-furnace-organ__tube_0_1": 0,
+        "w08-furnace-organ__tube_0_2": 0,
+        "w08-furnace-organ__tube_0_3": 0,
+        "w08-furnace-organ__tube_0_4": 0,
+        "w08-furnace-organ__tube_0_5": 0
+      },
+      "muzzle_axis_errors_m": [
+        1.1175870895385742e-08,
+        7.508562643358995e-09,
+        0.0,
+        1.1175869119028762e-08,
+        0.0,
+        7.508562643358995e-09
+      ]
+    },
+    {
+      "frame": 12,
+      "fixed_housing_intersections": {
+        "w08-furnace-organ__tube_0_0": 0,
+        "w08-furnace-organ__tube_0_1": 0,
+        "w08-furnace-organ__tube_0_2": 0,
+        "w08-furnace-organ__tube_0_3": 0,
+        "w08-furnace-organ__tube_0_4": 0,
+        "w08-furnace-organ__tube_0_5": 0
+      },
+      "muzzle_axis_errors_m": [
+        1.1175870895385742e-08,
+        0.0,
+        0.0,
+        1.1175870895385742e-08,
+        3.725290298461914e-09,
+        3.725290298461914e-09
+      ]
+    }
+  ],
+  "reload_sweep": [
+    {
+      "frame": 1,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 4,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 8,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 16,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 23,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 30,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 38,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 46,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 54,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    },
+    {
+      "frame": 60,
+      "surface_intersections": {
+        "w08-furnace-organ__drum_lock_spindle": 0,
+        "w08-furnace-organ__feed_bridge": 0,
+        "w08-furnace-organ__receiver_chassis": 0,
+        "w08-furnace-organ__grip_shell": 0,
+        "w08-furnace-organ__trigger_guard": 0
+      }
+    }
+  ],
+  "limits": "Sampled component poses; no belt rounds, feed synchronization, hand IK or bearing contact simulation."
+}

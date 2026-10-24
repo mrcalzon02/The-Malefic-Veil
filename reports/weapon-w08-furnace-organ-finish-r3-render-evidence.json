@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "aa31b7c536ab5a00eff081d5814a0b435efa8091caa49599a1210bf67f09540c",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-finish-r3/front.png",
+      "sha256": "95ae94b82c229c523a2918349a82251bb8a925c0b131420fb0a91dfe8b1e006e"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-finish-r3/rear.png",
+      "sha256": "9b6f3c5685aaa677d974cd09fba39e24c4b4e1dabed797ca90b20ea75188d690"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-finish-r3/closeup.png",
+      "sha256": "33bd5b1fe9fecd2425e82364dc2b3d6415d22961311d18478d1fc59d26f3aac7"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-finish-r3/clay.png",
+      "sha256": "ea2eb7c243a51f617a5b44abc887d24ba7d2355f50fc27b036385ead6d9ee459"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-finish-r3/side.png",
+      "sha256": "de62b4839af2bd5d49f828e8d2f2f14fc033fc36a783e5ef16bb67c686ea913c"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-finish-r3/reload.png",
+      "sha256": "943aa998c019d4e5e033e7140792b5e474ab80d24de5281ec68dce8260bb77f2"
+    }
+  }
+}

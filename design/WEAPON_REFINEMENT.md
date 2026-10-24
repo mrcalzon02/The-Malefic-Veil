@@ -25,7 +25,7 @@ Rebuild Vesper seed with Blender running `tools/refine_weapon_roughs.py -- --ids
 | Grave Bell | Refined prototype r3, matched body/breech and exported reload checks passed |
 | Cerberus | Refined prototype r1, triple break-action checks passed |
 | Reliquary | Refined prototype r3, pump and bottom-loading checks passed |
-| Furnace Organ | Pending individual mechanical review |
+| Furnace Organ | Refined prototype r3, rotor/drum checks passed |
 | Hailstorm | Pending individual mechanical review |
 | Cautery | Pending individual mechanical review |
 | Prism Writ | Pending individual mechanical review |

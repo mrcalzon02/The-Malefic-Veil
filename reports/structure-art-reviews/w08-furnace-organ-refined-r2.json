@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "9972da176c8ee24356341ced15ff5699e7588fdb163820b46e0da27ee93c5d81",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 3,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Through-bores and guided drum are improved, but the drilled rotor plates remain fixed while the barrel cluster rotates. Exported firing ray check fails at frame 3."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-refined-r2/front.png",
+      "sha256": "de910524e437bc1a4e18f10a9c97daa8cccdff59c085a2767c9cc69ef6d255c2"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-refined-r2/rear.png",
+      "sha256": "800c8d3c3c7bdc114d98bf647b2450e678e4c84e8b588a6acb21788039d4ff80"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-refined-r2/closeup.png",
+      "sha256": "1c39015e147387e358055877820ca417805539ade3cbe49ec16ed56e56738460"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-refined-r2/clay.png",
+      "sha256": "d527a7025547814323c42d52e971cc819cf1b43f093f847b9885cb7e36bba41a"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-refined-r2/side.png",
+      "sha256": "2d52493fb249a57145ba2af84eb16e41926348d45aa841c5a2ad84d73aeff0dd"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w08-furnace-organ-refined-r2/reload.png",
+      "sha256": "35ff02a8d3774722da92880a99c9debceb38de00b6501211139e742a52649ae3"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w08-furnace-organ-refined-r2/comparison.png",
+      "sha256": "7aac0e9a85a41a68e9a4aff992917155260e48272a51ac6b551db116e91c2e2d"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

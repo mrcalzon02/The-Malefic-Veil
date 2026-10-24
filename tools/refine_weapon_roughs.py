@@ -325,6 +325,27 @@ for d in defs:
         bpy.context.view_layer.objects.active=guard;mod=guard.modifiers.new('Barrel clearance through handguard','BOOLEAN');mod.operation='DIFFERENCE';mod.solver='EXACT';mod.object=bore;bpy.ops.object.modifier_apply(modifier=mod.name);generated.remove(bore);remove(bore)
         for side in(-1,1):
             for x in(.174,.207,.240,.273,.306):cut_box(guard,(x,side*.039,.042),(.017,.028,.022))
+    if idx==7:
+        # Six through-bores and matching rotor-plate apertures share one +X axis.
+        barrels=[o for o in list(col.objects) if o.type=='MESH' and role(o).startswith('tube_')];channels=[]
+        for old in barrels:
+            lo,hi=bounds(old);name=role(old);y=(lo.y+hi.y)/2;z=(lo.z+hi.z)/2;rad=(hi.y-lo.y)/2;channels.append((name,y,z,lo.x,hi.x,rad));remove(old);open_tube(name,lo.x,hi.x,y,z,rad,.0145,action,1)
+        plates=[o for o in col.objects if o.type=='MESH' and role(o).startswith(('rotor_front_','rotor_rear_'))]
+        for plate in plates:
+            preserve_parent(plate,action)
+            lo,hi=bounds(plate)
+            for _,y,z,_,_,_ in channels:
+                cutter=cylinder('rotor_aperture',((lo.x+hi.x)/2,y,z),.0235,(hi.x-lo.x)+.03,'X',receiver,3,20);bpy.context.view_layer.objects.active=plate;m=plate.modifiers.new('Barrel aperture through rotor plate','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        cylinder('central_drive',(.292,0,.040),.017,.390,'X',action,1,20)
+        bearing=open_tube('fixed_rotor_bearing',.020,.150,0,.040,.140,.128,receiver,0)
+        cutter=cylinder('rotor_receiver_clearance',(.110,0,.040),.129,.190,'X',receiver,3,32);body=find('receiver_chassis');bpy.context.view_layer.objects.active=body;m=body.modifiers.new('Rotating bearing envelope','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        for j,(_,y,z,_,end,_) in enumerate(channels):
+            socket=find('muzzle_'+str(j)+'_SOCKET')
+            if socket:socket.parent=action;socket.matrix_parent_inverse=action.matrix_world.inverted();socket.matrix_basis=Matrix.Translation((end+.012,y,z))
+        # A real central guide passage permits the drum to leave the fixed spindle.
+        drum=find('feed_drum_cartridge');cutter=cylinder('drum_guide_bore',(-.16,-.24,-.035),.041,.270,'Y',receiver,3,24);bpy.context.view_layer.objects.active=drum;m=drum.modifiers.new('Drum spindle clearance','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        remove(find('drum_lock_spindle'));cylinder('drum_lock_spindle',(-.16,-.205,-.035),.039,.190,'Y',receiver,1,20)
+        remove(find('feed_bridge'));loft('feed_bridge',[(-.145,-.035,-.16,.052,.055),(-.060,-.020,-.16,.055,.055)],'Y',8,receiver,0)
     # Panels and contact collars give long prongs an engineered profile, rather than flat sticks.
     for o in list(col.objects):
         if o.type!='MESH':continue

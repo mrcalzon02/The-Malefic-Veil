@@ -2,9 +2,9 @@
   "scope": "Art refinement packages; existing runtime arsenal and spawn/crafting rules unchanged.",
   "stop_rule": "Continue until handled or either usage window has 50% remaining.",
   "counts": {
-    "REFINED_PROTOTYPE": 6,
+    "REFINED_PROTOTYPE": 7,
     "REJECTED_REDESIGN_REQUIRED": 1,
-    "PENDING": 25
+    "PENDING": 24
   },
   "weapons": [
     {
@@ -66,7 +66,9 @@
       "weapon_id": "w08-furnace-organ",
       "name": "Furnace Organ",
       "access": "world pickup",
-      "status": "PENDING"
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w08-furnace-organ-finish-r3.glb",
+      "sha256": "aa31b7c536ab5a00eff081d5814a0b435efa8091caa49599a1210bf67f09540c"
     },
     {
       "weapon_id": "w09-hailstorm",

@@ -73,7 +73,7 @@ public final class ThrownDeployables {
         };
     }
     private static final class Entity {
-        int id,hp,ownerId;
+        int id,hp,ownerId,ammoStock;
         String ownerKey;
         Blueprint blueprint;
         double x,y,z,fromX,fromY,toX,toY,heading;
@@ -154,6 +154,8 @@ public final class ThrownDeployables {
             e.fromX=p.x;e.fromY=p.y;e.x=p.x;e.y=p.y;e.z=.9;
             e.toX=p.x+Math.cos(p.angle)*last;e.toY=p.y+Math.sin(p.angle)*last;
             e.heading=p.angle;e.hp=b.hp();e.launchedAt=host.time();
+            if(b.role()==Role.AMMO)e.ammoStock=switch(b.faction()){
+                case UNRAVELED -> 300;case PENITENT -> 240;case BEGOTTEN -> 180;};
             entities.put(e.id,e);p.protectedUntil=0;
             return new Result(true,"THROWN_"+b.id());
         }
@@ -257,9 +259,16 @@ public final class ThrownDeployables {
                         p.sanity=Math.min(100,p.sanity+(b.faction()==Faction.PENITENT?4:1));}
                 }
                 case AMMO -> {
-                    if(friendly&&host.time()%3000<1000)
-                        host.arsenal.fieldRefill(p.id,b.faction().ordinal(),
-                            b.faction()==Faction.UNRAVELED?9:6);
+                    if(friendly&&e.ammoStock>0&&host.time()%3000<1000){
+                        int amount=Math.min(e.ammoStock,b.faction()==Faction.UNRAVELED?9:
+                            b.faction()==Faction.PENITENT?7:6);
+                        int supplied=host.arsenal.fieldRefill(p.id,b.faction().ordinal(),amount);
+                        e.ammoStock-=supplied;
+                        if(supplied>0&&b.faction()==Faction.PENITENT)
+                            p.sanity=Math.min(100,p.sanity+2);
+                        if(supplied>0&&b.faction()==Faction.BEGOTTEN)
+                            p.hp=Math.min(100,p.hp+2);
+                    }
                 }
                 case MIASMA -> {
                     if(!friendly){
@@ -296,7 +305,11 @@ public final class ThrownDeployables {
                 if(range<nearest&&host.clear(e.x,e.y,n.x,n.y)){nearest=range;victim=null;npc=n;}
             }
             int hit=b.faction()==Faction.UNRAVELED?11:b.faction()==Faction.PENITENT?7:9;
-            if(victim!=null)host.damage(victim,hit,b.faction()==Faction.PENITENT?6:0);
+            if(victim!=null){
+                host.damage(victim,hit,b.faction()==Faction.PENITENT?6:0);
+                if(b.faction()==Faction.BEGOTTEN)
+                    host.damage(victim,2,1); // Living weapon delivers a second toxic pulse.
+            }
             if(npc!=null)npc.hp=Math.max(0,npc.hp-hit);
         }
         if(b.role()==Role.SHIELD&&b.faction()==Faction.BEGOTTEN)

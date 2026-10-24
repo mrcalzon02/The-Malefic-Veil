@@ -46,7 +46,7 @@ public final class ThrownDeployables {
                 case BEGOTTEN -> {
                     station=SurvivalCrafting.Station.HAND; // Cultivate/assemble living seed packs.
                     cost.put(SurvivalCrafting.Item.COMPOST,role==Role.MIASMA||role==Role.SHIELD?4:3);
-                    cost.put(SurvivalCrafting.Item.FIELD_CROPS,role==Role.HEALTH||role==Role.AMMO?4:2);
+                    cost.put(SurvivalCrafting.Item.EDIBLES,role==Role.HEALTH||role==Role.AMMO?4:2);
                     cost.put(SurvivalCrafting.Item.MEDICINAL_HERBS,role==Role.MIASMA?4:2);
                 }
                 default -> throw new IllegalStateException("Unknown faction");

@@ -5,9 +5,15 @@ import java.util.*;
 public final class CraftingRecipeIndexTest {
     public static void main(String[] args){
         var records=CraftingRecipeIndex.recipes();
-        int expected=SurvivalCrafting.recipes().size()+
+        int expected=SurvivalCrafting.recipes().size()+ThrownDeployables.catalog().size()+
             CraftingEraRegistry.processes().size()+CraftingEraRegistry.facilities().size();
         if(records.size()!=expected)throw new AssertionError("Missing indexed recipe/structure");
+        for(var kit:ThrownDeployables.catalog()){
+            var indexed=CraftingRecipeIndex.recipe("throw:"+kit.id());
+            if(indexed==null||!indexed.output().equals(kit.item().name())||
+               !indexed.faction().equals(kit.faction().name()))
+                throw new AssertionError("Faction throwable lost: "+kit.id());
+        }
         if(SurvivalCrafting.recipes().size()<22||CraftingEraRegistry.processes().size()<41)
             throw new AssertionError("Crafting expansion truncated");
         for(var original:SurvivalCrafting.recipes().values()){

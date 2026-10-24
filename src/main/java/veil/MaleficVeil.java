@@ -181,6 +181,14 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
         });
     }
+    public String gpuFieldStatus(){
+        String faction=net!=null?net.faction():localHost==null?"NONE":
+            String.valueOf(localHost.factions.faction(localHost.player(1).accountKey));
+        ThrownDeployables.Role role=ThrownDeployables.Role.values()[fieldChoice];
+        String manufacturer=faction.startsWith("THE_")?faction.substring(4):"UNENROLLED";
+        int available=carried().getOrDefault("DEPLOY_"+manufacturer+"_"+role.name(),0);
+        return "FIELD "+role.name()+" x"+available;
+    }
     private void throwField(){
         if(dead)return;
         if(net!=null)net.fieldThrow(fieldChoice);

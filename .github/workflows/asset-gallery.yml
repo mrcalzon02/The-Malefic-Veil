@@ -1,0 +1,15 @@
+name: Verify construction image gallery
+on:
+  push:
+    paths: ['docs/asset-gallery/**', 'tools/build_asset_gallery.py', '.github/workflows/asset-gallery.yml']
+  pull_request:
+    paths: ['docs/asset-gallery/**', 'tools/build_asset_gallery.py', '.github/workflows/asset-gallery.yml']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/build_asset_gallery.py --verify-archive

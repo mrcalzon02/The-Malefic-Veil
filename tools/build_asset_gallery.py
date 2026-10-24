@@ -61,7 +61,7 @@ def evidence_index():
         if not isinstance(report, dict):
             continue
         for item in report.get('results', []):
-            if isinstance(item, dict) and item.get('sha256') and item.get('status'):
+            if isinstance(item, dict) and item.get('sha256') and item.get('status') in ('REJECTED', 'ART_REVIEW_REQUIRED', 'DELIVERY_ELIGIBLE'):
                 prior = gates.get(item['sha256'])
                 stamp = path.stat().st_mtime_ns
                 if prior is None or stamp > prior[0]:

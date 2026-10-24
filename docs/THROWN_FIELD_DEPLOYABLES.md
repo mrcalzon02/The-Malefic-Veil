@@ -28,7 +28,7 @@ The current playable first-pass material costs are *distinct* and are enforced b
 
 - **Unraveled**: produced at an owned or allied workbench from machine parts, delivered metal stock, and charcoal. Turrets and shields require extra metal. This is an engineered portable assembly.
 - **Penitent**: prepared beside an owned or allied field fire from ritualized cloth, herbal bundles, and fired bricks, with higher herb demand for sacred healing/shielding and heavier masonry for walls/barricades.
-- **Begotten**: hand-cultivated seed kits from compost, crops, and medicinal herbs, with greater nutrients for healing/ammo and richer biological feedstock for spores/shields.
+- **Begotten**: hand-cultivated seed kits from compost, gathered edibles, and medicinal herbs, with greater nutrients for healing/ammo and richer biological feedstock for spores/shields.
 
 The existing wider faction industry registry describes additional manufacturing stages that are not all executed in live gameplay yet. These first-pass throwable material costs are not a claim that mature Penitent and Begotten production chains are complete.
 

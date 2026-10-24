@@ -130,7 +130,14 @@ public final class SurvivalCrafting {
     /** Solo client and persistence may inspect, but cannot mint consumed items. */
     public synchronized Map<Item,Integer> inventory(){return Map.copyOf(items);}
     public synchronized int count(Item kind){return items.getOrDefault(kind,0);}
-    private static int weight(Item item){return switch(item){
+    private static int weight(Item item){
+        if(item.name().startsWith("DEPLOY_")){
+            if(item.name().endsWith("_WALL"))return 12;
+            if(item.name().endsWith("_BARRICADE"))return 8;
+            if(item.name().endsWith("_TURRET")||item.name().endsWith("_SHIELD"))return 10;
+            return 6;
+        }
+        return switch(item){
         case METAL_STOCK,MACHINE_PARTS,WORKBENCH,SHELTER_KIT -> 25;
         case FIELD_STONE,RAW_ORE,CAMPFIRE,CRATE_KIT,FIRED_BRICKS -> 4;
         case TENT_KIT -> 3;

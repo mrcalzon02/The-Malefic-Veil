@@ -1,0 +1,7 @@
+sentry-mki triangles=2556 packed=0.511x0.485x0.495 minY=0.009
+sentry-mki deployment minimum Y=0.0000
+censer-of-dread triangles=4206 packed=0.549x0.499x0.533 minY=0.005
+censer-of-dread deployment minimum Y=0.0000
+regeneration-heart triangles=3004 packed=0.370x0.471x0.420 minY=0.028
+regeneration-heart deployment minimum Y=0.0000
+FieldPilotAnimationTest OK: exported TRS/morph evaluation, 27 nonempty unique-channel clips, no root scale, finite deployment, texture coverage and host aim

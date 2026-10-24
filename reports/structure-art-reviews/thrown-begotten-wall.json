@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "04bc86d4f6b07d2045ce9d1d7967f9bb39e912b4ecd33e9fad69b3abda26e719",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** A connected purple mass has not become a skeletal defensive organism.\n\nThe current object is a smooth comb-like body with six pale tapered strips on its front. The strips resemble attached paddles. There are no vertebral joints, readable rib arches, cartilage seams or vascular transitions to explain their anatomy.\n\nThe broad mass gives some wall recognition, but smooth blending and the unstructured upper gaps weaken the distinction between rigid bone and flexible tissue. Actual remeshing solves connectivity, not anatomy. Rotating separate strips does not show bones growing or ribs curling while connective tissue remains attached.\n\n**Redesign:** vertebral buttresses joined by overlapping rib arches, with tendon and membrane spanning their intervals. Integrate bone emergence and tissue attachments into the anatomy. Vary rib size around a clear structural rhythm; use thorns as secondary growth rather than the entire identity.\n\n**Acceptance:** clay material should reveal a supported skeletal wall. Growth must preserve connected tissue and end in useful continuous cover without detached decorative bone strips or arbitrary enlargement of a finished wall."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-wall/front.png",
+      "sha256": "8c73620ec1d54de846c649c307f0ba9cbcd4bec29070df49bab233549f6041d5"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-wall/rear.png",
+      "sha256": "df38f6321e28468d27b48b48a072ad346ef635adb58eeaf98ded69b8170ab4db"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-wall/closeup.png",
+      "sha256": "d1c9f8452c16e8b6dfb46244ddfd3675fbfc6cae28e660d85a88bc8a11fdabc9"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-wall/clay.png",
+      "sha256": "76eaec27861ba211f65e23c9f38554dc91df04fc94647532002f84f7a40c8dc2"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

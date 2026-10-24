@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "46b0acfe983123fcf85651286d082ca9d2adf2466a8166bbdafb06b66c46eea8",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** It remains the mechanical medical cabinet in ceremonial colors.\n\nThe amber cross, pale shelves and red flap do not create an altar. There is no useful devotional surface, recessed reliquary chamber, articulated column or legible lantern/candle construction. Small caps on top do not carry the requested sacred lighting function.\n\nThe object does not explain where the protected relic sits, how an ally approaches it or how its manufacture differs from medical equipment. Inheriting the tray groups also inherits the wrong unfolding story. The healing action needs a specific relic/lantern mechanism rather than generalized shelf movement and glow.\n\n**Redesign:** a hinged altar chest whose leaves unfold into a compact devotional surface. Reveal a recessed relic chamber, low extending columns and hanging lanterns. Give the ceremonial cloth visible folds, thickness and attachment points.\n\n**Acceptance:** it must read as an altar when the cross and lighting are hidden. Successful healing should visibly engage its own mechanism while the existing host health and sanity calculations remain authoritative."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-health/front.png",
+      "sha256": "f3356a5350b0d5313b485801d4d82337426673687f46f074f239c9b297b55dd8"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-health/rear.png",
+      "sha256": "e7fc1993c79a2b11f83e4fba8182c51966f6a884199445ace68cd945262be814"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-health/closeup.png",
+      "sha256": "3bf61b494439f6d80dd041fa8a9efde2c7b3271e5730c1e6d065f316478729f7"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-health/clay.png",
+      "sha256": "6f4ae80df95d6cd77da321b28139ab496fdb21b1632ad95c0bebeef39dbcb660"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

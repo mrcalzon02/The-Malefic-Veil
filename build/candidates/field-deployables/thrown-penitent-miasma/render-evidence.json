@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "34682feb3a00699f69d7f770f29ae197692fad3ad98fc16a2b58abc3ce1a693c",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/front.png",
+      "sha256": "27424ddfed0430c2ef6bb89d59380e895831f742255158031decac16e10e0680"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/rear.png",
+      "sha256": "e8ad0c930c15e209517297be15b9156635a0f146f1b217e2bdf292da9dc8c0bc"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/closeup.png",
+      "sha256": "397ec935b80d75bcd0434d8eb32e1d234db927c05b69a1ff0a2089ea36532166"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/clay.png",
+      "sha256": "4030bac5081a8243d94acb2ba69e072484f9cd236e9324a57fa8fdbbe12389a1"
+    }
+  }
+}

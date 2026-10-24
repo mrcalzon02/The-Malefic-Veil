@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "e6d07dd175d257308b335ef9d90e236f9834e9f70878b6b10f75487c028881d0",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** The defining circular supply and consecration architecture is missing.\n\nIt reuses the Munition Feeder cuboid, cartridge display and tray with red rounds and pale tips. The red spheres and plaque below are a repeated ornament package. They do not explain sacred storage or supply.\n\nThere is no circular rack, central chamber or selected receptacle travelling toward the ally. The viewer cannot follow ammunition through storage, consecration and delivery. The inherited rack rotation is not a distinctive prayer mechanism, and the generic box does not communicate a finite reliquary inventory.\n\n**Redesign:** an opening reliquary around an annular ammunition rack. Index one charge through an enclosed central chamber, then slide or lower a receiving cup toward the user. Put seals and inscriptions on actual structural surfaces rather than using detached symbols.\n\n**Acceptance:** trace a selected charge through all three stages. Successful server-authorized supply must trigger delivery; depleted stock must be readable. Its clay silhouette must differ from the Unraveled case and Begotten incubator."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/front.png",
+      "sha256": "4d3c4ce1c7e6ca4cd57622b32796abe3150102fa841b43d68d6e70ea72bad1da"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/rear.png",
+      "sha256": "05013a32e78968cb33b65180fd0d58cfc9d8c478055302cdc72e9be756f7a135"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/closeup.png",
+      "sha256": "04b4c84d8ebe83973d7b04d702a8146b5edd29971245924d3833d359e007af0b"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/clay.png",
+      "sha256": "b58d85c8a2b259271e5ce0718b370698779377ff1c0fa39f7867aea80e8a43a9"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

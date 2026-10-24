@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "94356bd540e94ce27d2756bc099719b0dd616f6c3b34eb9f5d5e9913340aa7db",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/front.png",
+      "sha256": "77019bce05bd068c3d9b074cb1dd065aff0cfac57d14845ac955506ad4f6aa3d"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/rear.png",
+      "sha256": "fba91b3904c23351c8d24a13082e6b79ea106bf23283121f79ea486f5d8cf4a7"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/closeup.png",
+      "sha256": "a096d6d02f69d953553a284dd746f3281acea27a07a1db4393d9ae693f19846f"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/clay.png",
+      "sha256": "f8b9b53819d7b1b238cefc1bfa34c18ab02e6abb985a2e25bc33bed92fb7b6a2"
+    }
+  }
+}

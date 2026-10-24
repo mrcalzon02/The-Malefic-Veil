@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "f82cdc7e367483dda875faa89ac518924c317ffdb414867543d2a41266ecd8b5",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-shield/front.png",
+      "sha256": "dd8e972a497b225ccae44e43b945821332e64710a4899bb65771f94543b4511b"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-shield/rear.png",
+      "sha256": "55bb9457ace6de79bd2fd4cd4c05c02a6790cc8231b2eb6666ef566e7ef0eb3f"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-shield/closeup.png",
+      "sha256": "9ae8f565bda4629ad1fc2541599d7c6bb7a1470143fa7993aaf14f18029085f3"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-shield/clay.png",
+      "sha256": "675284a0f44ef90014dc6e50cf24bc8a6b46cece3faaea00ead5a4ee5519c749"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "78fb9a2aaa1ee8e997ff0be11b68a37d6921d54a772322a3cf0237a2bc63767c",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-health/front.png",
+      "sha256": "e526a7c0d7c08ab66345318fed4820a76e9db2df161e96df336a80a9b00a017f"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-health/rear.png",
+      "sha256": "38f167d3ac85acbda0f07d4db20825392d6e32d9a21f4c46de32323c6c9fbd40"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-health/closeup.png",
+      "sha256": "b2133deff4d1f931ec8682deec333158583248bdaacf44e27e9b2481de49551c"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-health/clay.png",
+      "sha256": "8585db14e8678d3b3470a865ac1ac7b5bb5520b7dbbdf43e7dd72365d56096ec"
+    }
+  }
+}

@@ -281,7 +281,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             Map<String,List<GlbMesh.Surface>> groups=new LinkedHashMap<>();
             for(GlbMesh.Surface surface:source.surfaces())
                 groups.computeIfAbsent(surface.texture(),k->new ArrayList<>()).add(surface);
-            List<GpuModel> geometry=new ArrayList<>();
+            List<GpuModel> previous=models.get(id);
+            List<GpuModel> geometry=new ArrayList<>();int groupIndex=0;
             for(var group:groups.entrySet()){
                 int count=group.getValue().size()*3;
                 float[] vertexData=new float[count*9];
@@ -309,6 +310,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                         vertexData[cursor++]=verts[i+4];
                     }
                 }
+                if(previous!=null&&groupIndex<previous.size()&&previous.get(groupIndex).vertexCount==count){
+                    GpuModel existing=previous.get(groupIndex++);existing.mesh.setVertices(vertexData);geometry.add(existing);continue;
+                }
+                groupIndex++;
                 Mesh mesh=new Mesh(Mesh.VertexDataType.VertexBufferObjectWithVAO,
                     true,count,0,VertexAttribute.Position(),VertexAttribute.ColorUnpacked(),
                     new VertexAttribute(VertexAttributes.Usage.TextureCoordinates,2,"a_texcoord"));
@@ -800,6 +805,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
         if(gameplay!=null){
             MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
+            if(frame!=null){
+                // Poses are evaluated on the simulation thread; GPU buffers are updated here only.
+                var stale=new ArrayList<String>();
+                for(String key:models.keySet())if(key.startsWith("field-pose-")&&!frame.fieldMeshes().containsKey(key))stale.add(key);
+                for(String key:stale)for(GpuModel model:models.remove(key))model.mesh.dispose();
+                for(var pose:frame.fieldMeshes().entrySet())uploadGeometry(pose.getKey(),pose.getValue(),1);
+            }
             if(frame!=null)for(UrbanScene.ModelInstance entity:frame.dynamic()){
                 if(Math.hypot(entity.x()-x,entity.y()-y)>visualDistance)continue;
                 if(!models.containsKey(entity.model()))

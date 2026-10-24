@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "8f8d6c7e3678bf628464fdbdf01bb17f83b2e7e0992ca6f55aaefd704ac336ab",
+  "renders": {
+    "front": {
+      "path": "previews/field-pilots-r1/regeneration-heart/front.png",
+      "sha256": "c4d2026a15f601b0e7d4a6b2fd70c9e8d5af5a9db0f9d385a8a9521ebf232634"
+    },
+    "rear": {
+      "path": "previews/field-pilots-r1/regeneration-heart/rear.png",
+      "sha256": "48620a747ae8e151b05bdf43ce8b0c63e498636627266fd6e9a3b68f7d3331ac"
+    },
+    "closeup": {
+      "path": "previews/field-pilots-r1/regeneration-heart/closeup.png",
+      "sha256": "d8e2c2777e1fcb03d47289145b2384488caa323eb34f9e71dd6e8ae862e51805"
+    },
+    "clay": {
+      "path": "previews/field-pilots-r1/regeneration-heart/clay.png",
+      "sha256": "63cff84908c2e3dff985600866c37960f23043bc794219bfedb567f9e5eca35e"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "ae1f0bcdfc80edf39641715a78382fe2e25dae728019aae9747c4b64b4ff7e36"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "92734ba6a2312e93ebe6a03c1d7e62f870c0663ffe610baef83fa6568fdc8b79"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "2d9928d83ebd44ac2f5b19f521c830632e66b05368e898c22e8154a5b50030af"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "4f54fbd7965e2c6da768b1b137f3995eec85e6b53807e37ad17b74fb2dce1d59"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "0ba5834b6e043d9e8f002b150e26ff98fa4b0c91307879d20ca584575ee5fc1e"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "e12d00bfd293bc2431378fc9db98fce9ee69217f1de3c49c8ee6c585f3082e7a"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "8d56b480139b1ace506547b89462101c7f624c85ce5ed2bdbf1a4b7c073e01ba"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "1be0e2c78b26d97327217e8cd64c85748179ec93b6acf78cc5a66184a00183e4"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "ec1a7c1d8567436346b058ccf36a8fea0b86b98f3d6d858eb1c15f86042aff64"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "42c1aac66f80c90175c762e26b8a2e2f0390632dccfe03bb36f44a8dd39ba630"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-00.png",
+        "time_s": 0.0,
+        "sha256": "d9872abdf3fce2e037a6299d461a9b44e900a0d4795bc824f2348a3a4b61b585"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "c52c90032d1d8ade2f1d09fd57dbfbde57a29a1c36c850aa99bebfd380cb7fe0"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "18829af0614f60663c727292b487b17b23272bb25076700b577391f920d60d02"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "f76e950bf58eb6cc3772ddcda38b72298448215b3c0eb616f1f895c2edb06773"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "d68cf1d8eae4e8c9ef10dea6f048fc4483bc8df0949d78cff82a532d9c8935c9"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "3922bf115364b5dd859dcf1dc621d0361728b25b2d9539b782f3a816f51819a7"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "43cfb74e2a0bfff232fabd674d733257281e66e4e81b8056f03d0692199e675d"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "f771ed939fb9946f062eb96dcc192a4714dc381671c888c80f9a6ae23965f5d8"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "f135ba2d5a570084fa41d74ad138f97bb08d886e29d1ec6325f3909e13557431"
+      },
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/operating-09.png",
+        "time_s": 0.65,
+        "sha256": "dbcf8a9d120331ad00dc607a196fe8e5909068d7ff14032f84089be3bdb7fc92"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "previews/field-pilots-r1/regeneration-heart/packed-00.png",
+        "time_s": 0.0,
+        "sha256": "3e0e86737728cf23c2c55b19b684c4f1993378ec64c4ac54eb8d77a6adbe4392"
+      }
+    ]
+  }
+}

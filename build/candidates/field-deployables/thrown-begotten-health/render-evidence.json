@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "5baf610ad017a1cb736b6ff8403c2d6194e540d9b3ee4bed7825cd91eebe7d32",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-health/front.png",
+      "sha256": "7ffde67437fa7ef5b6680e10fce4315da16ccbdbc9fb30f43218050fd89fd70b"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-health/rear.png",
+      "sha256": "fec56f99f48a0a1c8e0a13cc93ed01c000920838c594d12e6259bb79aa444aa9"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-health/closeup.png",
+      "sha256": "683ed89c0daf6ed30b54aba7381cdfa23460a80ff19c79d0e7e7c4d31f8efc2b"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-health/clay.png",
+      "sha256": "472eb351547517243dc0a5c5ba87da1acdaaf3d667c9bea5190db3f2fd5bd9f9"
+    }
+  }
+}

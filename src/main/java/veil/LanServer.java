@@ -128,9 +128,8 @@ public final class LanServer implements AutoCloseable {
                     for(CargoHaulage.Drop drop:match.cargo.drops())
                         broadcast(cargoDropPacket(drop),-1);
                 }
-                if(match.time()%500==0)for(ThrownDeployables.View f:match.thrown.views())
-                    broadcast("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
-                        f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0),-1);
+                if(match.time()%100==0)for(ThrownDeployables.View f:match.thrown.views())
+                    broadcast(fieldPacket(f),-1);
                 for(int gone:match.thrown.drainRemoved())
                     broadcast("FIELD_GONE|"+gone,-1);
                 for(ThrownDeployables.Burst burst:match.thrown.drainBursts())
@@ -295,8 +294,12 @@ public final class LanServer implements AutoCloseable {
             peer.send("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp);
         }
         for(ThrownDeployables.View f:match.thrown.views())
-            peer.send("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
-                f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0));
+            peer.send(fieldPacket(f));
+    }
+    static String fieldPacket(ThrownDeployables.View f){
+        return "FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+f.z()+"|"+
+            f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0)+"|"+f.heading()+"|"+f.ageMs()+"|"+
+            f.operationAgeMs()+"|"+f.damageAgeMs()+"|"+f.aimYaw()+"|"+f.aimPitch()+"|"+f.ammoStock();
     }
     private void serve(Socket socket){
         Peer peer=new Peer();peer.id=id();peer.socket=socket;

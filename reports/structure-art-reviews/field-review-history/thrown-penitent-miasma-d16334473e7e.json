@@ -1,0 +1,48 @@
+{
+  "asset_sha256": "d16334473e7e35cc81ab06010d0b7a856d40fccb200010c75d27c1306b1e1a38",
+  "decision": "reject",
+  "reviewer": "Codex visual inspection",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 1,
+    "faction_identity": 2
+  },
+  "findings": [
+    "Export imports in PACKED pose; tiny and poorly framed across all four views. Deployed silhouette cannot be approved.",
+    "Compared with four sampled car/character renders: material detail and functional part definition are insufficient.",
+    "Penitent shares mechanical chassis and several role silhouettes; additional distinct manufacture needed. Begotten turret has detached eye/mandible appearance."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/front.png",
+      "sha256": "343d1d698b044df0f9bd3bdbb272bf52349d69f893f0f423f4c32122aaaa718d"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/rear.png",
+      "sha256": "2d1088bb17779cad506daae61606bb3320cb06ab3f25bd447740f36873f70258"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/closeup.png",
+      "sha256": "cad77035b45812df7dc8a500b85a2ff11228238b2db4dacefb081acaf99d7e6c"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/clay.png",
+      "sha256": "8fb9475288519a7d19569e6412ae8a3c001adc1d98777867305d2cc790086fc0"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "attempt": 1
+}

@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "66ddee9025bdd469414ece8724947dedbe6c1e3d082da5766bba6fa0b6e4b53c",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** This is the Bastion Panel with palette and ornament changes.\n\nThe prescribed carved masonry, opening reliquary, rising slab segments and retaining ironwork are absent. The same rectangular plates, strips, central housing and feet remain. Amber squares, red spheres and a red rectangle do not establish religious manufacture or an independent silhouette.\n\nThe construction narrative is wrong: shared hinged-panel motion cannot represent ascending masonry. The slabs lack carving, stepped joints and thickness hierarchy. The hanging ornaments do not read as worked objects with meaningful suspension. Even neutral clay reveals the same engineering-faction asset.\n\n**Redesign:** an iron-bound reliquary whose opening leaves become retaining arms. Raise interlocking carved slabs into a stepped defensive arrangement, with an integrated devotional relief and carefully placed votive recesses. Design the actual stowed slab arrangement.\n\n**Acceptance:** distinguish it from Bastion Panel with materials and lights removed. Prove how stone segments rise, engage and lock. Every ornament must have understandable construction and attachment rather than being a bead added to the base."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-wall/front.png",
+      "sha256": "f9a51a0f339e8c84ee19bb386022851c73424b4f7c4ebefdb98152c0ff020db3"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-wall/rear.png",
+      "sha256": "b7554f0923e8dedd6322e6f1fcc9c35b982b6a08fa703c1b1d1f16ec9f2ede47"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-wall/closeup.png",
+      "sha256": "861aec03b4a639bab0362dfd9f54127ff3bef4518546a908fd20e9c1bc688433"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-wall/clay.png",
+      "sha256": "86fc90023329c076a32a0a013a1f1fd9eb0ae4f51130f3c7547b5dc20173b9b8"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "2d3be76c644ae190dcea073fe04d4afda23a065645c0ce660b3caa416af01d5c",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/front.png",
+      "sha256": "730eecfc618bd09e94c370d0e53cb35bb960ef258b2d76942f34f36f4fdad896"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/rear.png",
+      "sha256": "f53922d6cce4a2ee5e08d7337183b84b857ce7621a7b37ffc1d07def89f6c18f"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/closeup.png",
+      "sha256": "66b28a516127199b700278c8e9279b927f2d71adf091e1d74a3a54104e7ad016"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/clay.png",
+      "sha256": "edbd617915e9ba7e6b6caa14a123434ae1754f7e1e9924602a187e68890060c9"
+    }
+  }
+}

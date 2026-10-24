@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "935828ece00e1d07b4f83be2faaf89cc2088ae35b60ecbeb81a9ea9dd5062c6e",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** The swelling does not explain spore production or expulsion.\n\nThe current object is a tall, smooth purple mass with minor side protrusions and no readable emission openings. Its surface and rooted lower body resemble the health and ammunition pods. The intended pustules do not resolve as distinct pressure organs.\n\nNo stomata, membrane lips or protective ribs identify where spores emerge or how the organ supports pressure. Rotating tiny carapace elements does not open an organic vent. The primary sac lacks a specific inflation/contraction cycle and the output is not tied to a visible anatomical aperture.\n\n**Redesign:** a squat distended sac restrained by irregular protective ribs. Place secondary pustules around clear sphincter-like stomata; differentiate taut thin membranes from thick structural tissue and vascular feeding routes.\n\n**Acceptance:** show a connected organ swelling, opening local vents and contracting during authoritative emission. The source and three-metre effect must be legible, and its silhouette must remain distinct from the heart and incubator."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/front.png",
+      "sha256": "2b2ef4d3a88db1887c3ce4e87da14ee5264e87fc8b7eabff9f7df741e9a9749e"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/rear.png",
+      "sha256": "ed1e706e17fa93ecbf7ef0f9b2d813e71a66efd28aaf1f2a6ffdd63cdda2f40d"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/closeup.png",
+      "sha256": "5e66e5b700d9937a2f5e4b276dc36b47062fa5d7de81843c96f5c0a5aa72feca"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/clay.png",
+      "sha256": "f8100ecaf52e03a24ae87822f4792e25a57e4f61c3280ca8adb3d6e719f5908e"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

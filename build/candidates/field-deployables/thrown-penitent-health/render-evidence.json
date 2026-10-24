@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "46b0acfe983123fcf85651286d082ca9d2adf2466a8166bbdafb06b66c46eea8",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-health/front.png",
+      "sha256": "f3356a5350b0d5313b485801d4d82337426673687f46f074f239c9b297b55dd8"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-health/rear.png",
+      "sha256": "e7fc1993c79a2b11f83e4fba8182c51966f6a884199445ace68cd945262be814"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-health/closeup.png",
+      "sha256": "3bf61b494439f6d80dd041fa8a9efde2c7b3271e5730c1e6d065f316478729f7"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-health/clay.png",
+      "sha256": "6f4ae80df95d6cd77da321b28139ab496fdb21b1632ad95c0bebeef39dbcb660"
+    }
+  }
+}

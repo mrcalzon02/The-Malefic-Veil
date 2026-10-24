@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "user-established construction standard, 2026-10-22",
+  "units": "metres",
+  "grid_step_m": 1,
+  "authoring_axes": "Z up; front -Y",
+  "export_axes": "glTF Y up; front -Z",
+  "origin": "centre of the ground-floor square at ground level",
+  "ground_level_m": 0,
+  "allowed_sizes": [
+    {"id": "plot-5", "width_m": 5, "depth_m": 5, "height_m": 5, "bounds_z_up": [[-2.5, -2.5, 0], [2.5, 2.5, 5]]},
+    {"id": "plot-10", "width_m": 10, "depth_m": 10, "height_m": 10, "bounds_z_up": [[-5, -5, 0], [5, 5, 10]]}
+  ],
+  "containment": {
+    "include_all_mesh_parts": true,
+    "underground_geometry_allowed": false,
+    "overhang_outside_plot_allowed": false,
+    "boundary_contact_allowed": true,
+    "numerical_tolerance_m": 0.0001,
+    "silent_rescale_to_fit_allowed": false,
+    "note": "Roof, roots, branches, limbs, pipes and decorative attachments all count. Future animation and mechanical operating envelopes must also fit."
+  },
+  "reference_visuals": {
+    "base": "solid ground-floor square, top surface at z=0; presentation plinth lies below ground and is not construction geometry",
+    "spectral_outer_cube": "translucent six-face enclosure from ground level to the size-specific height, with thin visible edges",
+    "classification": "engineering guides; intentionally simple primitives, not faction art candidates"
+  },
+  "runtime_integration": "Authoring and exported-asset gate. Existing six-tile city parcels and host placement checks are not migrated by this standard. Continental macro parcels have no assumed metre conversion."
+}

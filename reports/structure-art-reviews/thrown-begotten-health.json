@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "5baf610ad017a1cb736b6ff8403c2d6194e540d9b3ee4bed7825cd91eebe7d32",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** The object cannot be identified as a medical organ without its label.\n\nThe render shows a smooth upright purple pod, angular tabs and a green patch. Intended ventricles merge into a nearly featureless silhouette. No vessel network, nutrient sacs, treatment appendages or circulation route is legible.\n\nThe green patch is a color cue rather than an explanation of restoration. Rotating rigid tabs does not produce a contracting heart, and the vascular body has no meaningful authored chamber deformation. Compared with the other support pods, the role-specific anatomy is almost absent.\n\n**Redesign:** two unequal muscular chambers with a strong connecting cleft, branching vessel arches and smaller nutrient sacs. Anchor them in a low living root organ. Give the ally-facing side soft treatment tendrils with clear tissue bases and a readable nutrient route.\n\n**Acceptance:** an unlit clay silhouette must identify an anatomical pump. Show genuine chamber contraction and circulation/tendril activity during successful restoration, preserving tissue continuity rather than wobbling armor tabs around a rigid pod."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-health/front.png",
+      "sha256": "7ffde67437fa7ef5b6680e10fce4315da16ccbdbc9fb30f43218050fd89fd70b"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-health/rear.png",
+      "sha256": "fec56f99f48a0a1c8e0a13cc93ed01c000920838c594d12e6259bb79aa444aa9"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-health/closeup.png",
+      "sha256": "683ed89c0daf6ed30b54aba7381cdfa23460a80ff19c79d0e7e7c4d31f8efc2b"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-health/clay.png",
+      "sha256": "472eb351547517243dc0a5c5ba87da1acdaaf3d667c9bea5190db3f2fd5bd9f9"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

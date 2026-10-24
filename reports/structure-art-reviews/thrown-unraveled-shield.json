@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "9e4aa13ff8d4043c9181869def8be1351807673df4e0055e1f98ebe77e08d459",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** The defining protective surface is missing.\n\nA central glowing lump sits between two rings and four thin lamp-topped rods on the repeated base. This reads as an ornamental electrical stand. The rods do not communicate stabilization, the emitter has no engineered housing, and the spheres/rings are symbols of energy rather than a coherent projection mechanism.\n\nNo candidate dome is authored. As a result, there is no visible expansion into the protective radius and no surface to flash or deform on absorption. Generic rotations of rods and rings do not establish clamps engaging, a projector rising and an emitter aligning.\n\n**Redesign:** a low power cassette with four substantial folding outriggers feeding a protected gimballed projector. Use directional coils or segmented emitter petals with a defined deployed alignment. Author the translucent protective field separately from the physical generator.\n\n**Acceptance:** match the actual 2.4 m protective radius, keep actors readable through the dome and respond to absorbed attacks. Show clear support locking and field expansion from the emitter.\n\n## Penitent"
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/front.png",
+      "sha256": "afbbfc4be72bfa051672d670e571e92bf99ec559b698736ce7f6bb8a51bc2029"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/rear.png",
+      "sha256": "bc9e505809619ff0369bdc7d2049dcb97c0405c068aeb8c96f2d8e9a45e5d725"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/closeup.png",
+      "sha256": "5643e71444957bb8d92d02f062aac941aa93996c7cb674dbf703d1d2eace990d"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/clay.png",
+      "sha256": "1c01e06ee6c76bec9895b0fac8f95dda2bc4f0fbe323835f9939e41746497252"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

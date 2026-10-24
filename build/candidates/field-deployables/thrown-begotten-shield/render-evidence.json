@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "130dd4defe24292fbdd5f811d98a754463805c5579de6e2e6d9a50bd2a5d8dad",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-shield/front.png",
+      "sha256": "f96fa11751cc0cc586b4e440484da1eefb15f4df2f849b4daf675db75ddab2b0"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-shield/rear.png",
+      "sha256": "24e33d2e2fe9af13bc867995396b209cd2af55bdb4841d61c303852a15064fca"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-shield/closeup.png",
+      "sha256": "133d6fadd1613e263d45dc519773054943c537bdb9cf1a3fe0937f161e95d41c"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-shield/clay.png",
+      "sha256": "2b7212edcdec22b2901d97d0b76d1f11a0ad8ce6f5d2376bc4490c3caef6d16b"
+    }
+  }
+}

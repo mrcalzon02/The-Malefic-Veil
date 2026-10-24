@@ -82,7 +82,7 @@ public final class ThrownDeployablesTest {
             check(host.thrown.blocksLine(landed.x()-2,landed.y(),landed.x()+2,landed.y()),
                 "Deployed wall must block line of sight");
             ArenaSystems.Player enemy=host.join(2);
-            check(host.assignAccount(2,account('z')),"Attacker identity");
+            check(host.assignAccount(2,account('f')),"Attacker identity");
             check(host.enrollFaction(2,faction==ThrownDeployables.Faction.UNRAVELED?
                 CharacterRoster.Faction.THE_PENITENT:CharacterRoster.Faction.THE_UNRAVELED),
                 "Attacker faction registration failed");
@@ -96,7 +96,7 @@ public final class ThrownDeployablesTest {
                 "Removal explosion damaged a nearby player");
         }
         // Duration is measured by the host clock, not real-time sleep or client FPS.
-        ArenaSystems host=ready(ThrownDeployables.Faction.BEGOTTEN,'t');
+        ArenaSystems host=ready(ThrownDeployables.Faction.BEGOTTEN,'d');
         findSafeThrow(host);
         check(host.thrown.craft(1,0).ok()&&host.thrown.throwKit(1,0).ok(),
             "Expiry setup failed");

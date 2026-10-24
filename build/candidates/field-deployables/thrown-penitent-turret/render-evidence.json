@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "99969e98d814db4c4b7a2e2cc7ed879cbbceb55a128f7ee921e6ad280efc836f",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-turret/front.png",
+      "sha256": "9b4fea285b02690c30d019c3dd9094cf4799b2fed70e51b4cb1cc6a87b2f2ca4"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-turret/rear.png",
+      "sha256": "7537d4b8ea89e3091b141ddc5369ffd3e6abe77a395c5831230d83b26c585d30"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-turret/closeup.png",
+      "sha256": "3494669b29c6b2c44505c018d641d34f541a702d5851300f3ea7f989a6a880ed"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-turret/clay.png",
+      "sha256": "dc5d7f629fc1c79aadc9445782e8d64d00d47064559949556e91a7f060f24d58"
+    }
+  }
+}

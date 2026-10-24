@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "d88be3fae51e1d8e5de849d78f6c12e4b68c7d48de72e3c5b4cd78f3c68ce32e",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 3,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** It displays an ammunition symbol rather than a supply mechanism.\n\nSix oversized vertical rounds sit on the face of a box above a flat ledge. No magazine bank, indexing drive, retention hardware or delivery path is visible. The common stalk/plinth supports it without serving a specific dispensing purpose.\n\nThe viewer cannot distinguish stored ammunition, a selected charge and supplied ammunition. There is no protected volume that plausibly contains the finite supply, and no geometry that explains how a round reaches the tray. Rotating the entire feed rack does not animate ammunition advancing through a guide. Remaining stock is present in the host view but unused by candidate pose selection.\n\n**Redesign:** a low opening case with a magazine carousel or belt cassette, indexing pawl, guide rails and an accessible receiving bay. Make selection and delivery separate visible steps.\n\n**Acceptance:** follow one item from storage to delivery. Each successful resupply must cause a clear indexed action; empty stock must stop delivery and leave a readable depleted state."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/front.png",
+      "sha256": "b34fcf16bf80d05b0df2c23f3faffabaae663040150f5db9f7bf15690352d9ad"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/rear.png",
+      "sha256": "6af8ace48b1494de86e3043b8d7aaa85a88fe198e118f78504a1e08fd3c3e0e3"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/closeup.png",
+      "sha256": "27b72faab254e28495e1adf29a4a88cc51c710c16f2987789afb4040b5b33c7d"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/clay.png",
+      "sha256": "5b093fb66a328f6b690bad9653f2ccb1bac997eedb9e671cf525ebe2a01e5e92"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

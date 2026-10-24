@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "78fb9a2aaa1ee8e997ff0be11b68a37d6921d54a772322a3cf0237a2bc63767c",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** The cross carries nearly all of the medical identification.\n\nThe brief requires a folding case with instrument trays, pharmaceutical cartridges, injector reservoirs, hoses and treatment indicators. The render shows a dark cabinet, empty shelves, small caps and a bright cross. There is no readable patient-facing injector, tool arm, dispensing socket or medicine delivery route.\n\nThe model does not answer how an ally receives treatment, where consumables are protected or how the case closes. Tray rotation is relevant, but generic motion of the shelves is not a treatment cycle. The actual pumps and instruments should perform the operational action; lights should support it.\n\n**Redesign:** a rugged clamshell case with a recessed drug cassette, hose reels, a fold-out injector arm and instrument trays with retained tools. Differentiate supply access from the patient-facing side. Use the emblem as a secondary cue.\n\n**Acceptance:** hide the cross and lights; it should still read as medical equipment. Show packed closure, usable access and a pump/tool action linked to successful authoritative healing."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-health/front.png",
+      "sha256": "e526a7c0d7c08ab66345318fed4820a76e9db2df161e96df336a80a9b00a017f"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-health/rear.png",
+      "sha256": "38f167d3ac85acbda0f07d4db20825392d6e32d9a21f4c46de32323c6c9fbd40"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-health/closeup.png",
+      "sha256": "b2133deff4d1f931ec8682deec333158583248bdaacf44e27e9b2481de49551c"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-health/clay.png",
+      "sha256": "8585db14e8678d3b3470a865ac1ac7b5bb5520b7dbbdf43e7dd72365d56096ec"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

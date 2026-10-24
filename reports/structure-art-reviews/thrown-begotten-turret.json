@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "f9774fdd96e376df3254157295acd0caa71e9c4f6f20f0d2d1eecd2c49d73458",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** The anatomy reads as a small mascot rather than a biological weapon.\n\nA round smooth head sits on a tapered stalk, with a lime bead and two sideways pale prongs. There is no mouth aperture, visible pressure membrane or differentiated chitin base. The viewer cannot identify where a projectile would leave the body.\n\nThe prongs lack jaw sockets and look attached. The bead supplies the entire eye cue without orbital anatomy. Named eye/jaw groups can move, but there is no actual maw to open or gland to compress. Rigid head movement and generic prong rotation cannot establish the buildup and release of pressure.\n\n**Redesign:** a supported, forward-leaning muscular stalk ending in an open throat with thick lips. Position the tracking eye above or beside that aperture. Connect mandibles through defined sockets and expose a rear pressure sac with longitudinal muscle bands.\n\n**Acceptance:** host aim must align the throat. A confirmed attack must visibly tense the gland, open the maw, expel from the aperture and recover through connected musculature."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-turret/front.png",
+      "sha256": "69894ca5693d5dc8a459da5945d352813deb669bea01cd858659514bc278efc4"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-turret/rear.png",
+      "sha256": "5a1f879213d11ff42643d3e33c6593723f1956a7cc3dd935f8053bd0ffd36172"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-turret/closeup.png",
+      "sha256": "f5831ed65980ad49a726d8c3b5ec3e90d88991db2215f6427ca43882ce60422b"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-turret/clay.png",
+      "sha256": "c6fea0d9b444ce1902589c1555fb3fa94deee254155546b76798adcfcf7fd70a"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

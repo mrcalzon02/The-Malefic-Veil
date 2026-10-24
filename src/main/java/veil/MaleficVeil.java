@@ -26,6 +26,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final ArsenalMeshes arsenalMeshes=new ArsenalMeshes();
     private long arsenalSequence;
     private int fieldChoice;
+    private final FieldDeployableAssets fieldAssets=loadFieldAssets();
+    private final java.util.Map<String,GlbMesh> fieldPoses=new java.util.HashMap<>();
+    private static FieldDeployableAssets loadFieldAssets(){
+        try{return new FieldDeployableAssets(java.nio.file.Path.of("."));}
+        catch(IOException e){throw new IllegalStateException("Invalid approved field equipment",e);}
+    }
     private record FieldBurstVisual(double x,double y,int faction,long untilTick){}
     private final java.util.List<FieldBurstVisual> fieldBurstVisuals=new java.util.ArrayList<>();
     private boolean arsenalMenuVisible,primaryHeld,secondaryHeld;
@@ -65,7 +71,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.List<String> skillStats,
         java.util.List<GpuCraftRecipe> crafts,
         java.util.List<UrbanScene.ModelInstance> dynamic,
-        ArsenalSystems.View arsenalState,boolean arsenalMenu,int arsenalChoice) {}
+        ArsenalSystems.View arsenalState,boolean arsenalMenu,int arsenalChoice,java.util.Map<String,GlbMesh> fieldMeshes) {}
     public record GpuCraftRecipe(String id,String station,String description,
                                  boolean affordable) {}
     private volatile GpuFrame gpuFrame;
@@ -205,26 +211,28 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     /** Geometry views come from the transient registry, not World.Device. */
     private java.util.List<UrbanScene.ModelInstance> fieldVisuals(){
         var result=new java.util.ArrayList<UrbanScene.ModelInstance>();
+        fieldPoses.clear();
         if(net!=null){
-            for(NetLink.FieldEvent f:net.activeFields.values()){
-                ThrownDeployables.Blueprint bp=ThrownDeployables.blueprint(f.blueprint());
-                if(bp!=null&&f.hp()>0)
-                    result.add(new UrbanScene.ModelInstance(bp.mesh(),f.x(),f.y(),f.id()*.1,
-                        f.flying()?.35:1,1,f.height()));
-            }
+            for(NetLink.FieldEvent event:net.activeFields.values())addFieldVisual(result,event.view());
         }else if(localHost!=null){
-            for(ThrownDeployables.View f:localHost.thrown.views()){
-                ThrownDeployables.Blueprint bp=ThrownDeployables.blueprint(f.blueprint());
-                if(bp!=null&&f.hp()>0)
-                    result.add(new UrbanScene.ModelInstance(bp.mesh(),f.x(),f.y(),f.heading(),
-                        f.flying()?.35:1,1,f.z()));
-            }
+            for(ThrownDeployables.View view:localHost.thrown.views())addFieldVisual(result,view);
         }
         fieldBurstVisuals.removeIf(f->f.untilTick()<ticks);
         for(FieldBurstVisual f:fieldBurstVisuals)
             result.add(new UrbanScene.ModelInstance("thrown-harmless-burst",f.x(),f.y(),
                 ticks*.06,Math.max(.05,(f.untilTick()-ticks)/25.0),.75));
         return result;
+    }
+    private void addFieldVisual(java.util.List<UrbanScene.ModelInstance> result,ThrownDeployables.View f){
+        var bp=ThrownDeployables.blueprint(f.blueprint());if(bp==null||f.hp()<=0)return;
+        GlbMesh pose=fieldAssets.pose(f);
+        String key=pose==null?bp.mesh():"field-pose-"+f.id();
+        if(pose!=null)fieldPoses.put(key,pose);
+        result.add(new UrbanScene.ModelInstance(key,f.x(),f.y(),f.heading(),
+            pose!=null?1:f.flying()?.19:1,1,f.z()));
+    }
+    private java.util.Map<String,GlbMesh> fieldRenderModels(){
+        var all=new java.util.HashMap<>(actorModels.meshes());all.putAll(fieldPoses);return all;
     }
     /** A crafted kit is consumed by the host only after real placement validation. */
     public void gpuPlaceWorkbench(){
@@ -383,7 +391,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             inventoryVisible,skillsVisible,mapVisible,continentVisible,
             noticeTicks>0?notice:"",java.util.Map.copyOf(carried()),
             java.util.List.copyOf(stats),gpuCraftingSnapshot(),
-            java.util.List.copyOf(actors),equipped,arsenalMenuVisible,arsenalMenuChoice);
+            java.util.List.copyOf(actors),equipped,arsenalMenuVisible,arsenalMenuChoice,java.util.Map.copyOf(fieldPoses));
     }
 
     private java.util.List<ArsenalSystems.Loot> arsenalLootVisuals(){
@@ -1372,7 +1380,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     localHarvesting.nodeY(node),0,
                     node.type()==WildernessResources.Type.TIMBER?.39:1.05));
         }
-        urbanRenderer.draw(g,actorModels.meshes(),gameplay,px,py,angle,depth,RW,RH);
+        urbanRenderer.draw(g,fieldRenderModels(),gameplay,px,py,angle,depth,RW,RH);
         java.util.List<UrbanScene.ModelInstance> arsenalLoot=new java.util.ArrayList<>();
         for(var loot:arsenalVisualHost.arsenal.loot)
             if(!loot.taken&&loot.type==0)

@@ -18,9 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / 'docs/asset-gallery'
 # Explicit authored-construction allowlist. Purchased source/reference media and
 # unrelated weapon source studies are deliberately outside the public archive.
-GROUPS = ('field-deployables', 'construction-plots', 'faction-structures', 'snap-kit',
+GROUPS = ('field-medic-r1', 'field-pilots-r1', 'field-pilots-r2', 'field-pilots-r3', 'field-pilots-r4', 'field-pilots-r5', 'field-pilots-r6', 'field-deployables', 'construction-plots', 'faction-structures', 'snap-kit',
           'penitent-snap-kit', 'begotten-snap-kit', 'faction-foundations', 'production-kit', 'material-refresh', 'weapon-refinement')
-LABELS = {'field-deployables': 'Thrown field equipment: candidate studies', 'construction-plots': 'Construction plot guides',
+LABELS = {'field-medic-r1': 'Field Medic repair study', 'field-pilots-r1': 'Deployable pilot studies r1', 'field-pilots-r2': 'Deployable pilot studies r2', 'field-pilots-r3': 'Deployable pilot studies r3', 'field-pilots-r4': 'Deployable pilot studies r4', 'field-pilots-r5': 'Censer packing study r5', 'field-pilots-r6': 'Censer packing study r6', 'field-deployables': 'Thrown field equipment: candidate studies', 'construction-plots': 'Construction plot guides',
           'faction-structures': 'Faction structures and earlier studies',
           'snap-kit': 'Unraveled snap construction',
           'penitent-snap-kit': 'Penitent snap construction',
@@ -72,7 +72,11 @@ def evidence_index():
         model_sha = data.get('asset_sha256')
         review_path = ROOT / 'reports/structure-art-reviews' / (path.parent.name + '.json')
         review = json.loads(review_path.read_text(encoding='utf-8')) if review_path.exists() else {}
-        for view, render in data.get('renders', {}).items():
+        render_records=dict(data.get('renders', {}))
+        for clip, frames in data.get('sequences', {}).items():
+            for frame, render in enumerate(frames):
+                render_records[clip.lower()+'-'+str(frame).zfill(2)]=render
+        for view, render in render_records.items():
             if view == 'comparison':
                 continue
             render_path = Path(render['path'])
@@ -88,6 +92,8 @@ def evidence_index():
             status = 'UNREVIEWED'
             if (reviewed and review.get('decision') in ('reject', 'rejected')) or 'REJECTED' in states:
                 status = 'REJECTED'
+            elif 'ART_REVIEW_REQUIRED' in states:
+                status = 'ART_REVIEW_REQUIRED'
             elif reviewed and review.get('decision') == 'pass' and 'DELIVERY_ELIGIBLE' in states:
                 status = 'ROUGH_STAGE_PASS'
             evidence[key] = dict(asset_id=path.parent.name, asset_sha256=model_sha,
@@ -185,21 +191,21 @@ def write_pages(manifest):
     lines = ['# Construction test image gallery', '',
              f"{len(records)} original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.", '',
              'Private car/character reference renders and comparison panels containing them are excluded. Earlier studies remain visible; gallery inclusion does not imply approval.', '',
-             'Review labels: **ROUGH_STAGE_PASS** = current image and model hashes match a passing rough-stage review/gate; **REJECTED** = retained failed study; **UNREVIEWED** = rendered but no matching pass; **OVERVIEW_OR_HISTORICAL_STUDY** = contact sheet, guide or older study. These assets still require final art and game integration review.', '',
-             '[Machine-readable manifest](manifest.json) · [Filterable local gallery](index.html)', '',
+             'Review labels: **ROUGH_STAGE_PASS** = current image and model hashes match a passing rough-stage review/gate; **REJECTED** = retained failed study; **ART_REVIEW_REQUIRED** = refinement pending art/runtime acceptance; **UNREVIEWED** = rendered but no matching pass; **OVERVIEW_OR_HISTORICAL_STUDY** = contact sheet, guide or older study. These assets still require final art and game integration review.', '',
+             '[Machine-readable manifest](manifest.json) Ã‚Â· [Filterable local gallery](index.html)', '',
              'The HTML gallery runs locally after cloning: `python -m http.server 8000`, then open `http://localhost:8000/docs/asset-gallery/`.', '',
              'Update and publish from the authoring workspace after each render batch: `python tools/build_asset_gallery.py --publish`. This preserves superseded renders, commits only gallery files and its verification workflow, and pushes the current branch. `--check` verifies source coverage and checksums; `--verify-archive` verifies a GitHub clone without ignored authoring sources. GitHub Actions runs the archive check on gallery changes.', '']
     for group in GROUPS:
         items = [r for r in records if r['group'] == group]
         if not items:
             continue
-        lines += [f'## {LABELS[group]}', '', f'{len(items)} images · [Full image index]({group}.md)', '']
+        lines += [f'## {LABELS[group]}', '', f'{len(items)} images Ã‚Â· [Full image index]({group}.md)', '']
         preferred = next((r for r in items if Path(r['file']).name in ('preview.png', 'snap-kit-preview.png', 'faction-structures-preview.png', 'construction-plots-preview.png')), items[0])
         lines += [f"[![{LABELS[group]}]({preferred['file']})]({group}.md)", '']
         page = [f'# {LABELS[group]}', '', '[Back to gallery](README.md)', '',
                 '| Image | Asset / view | Review status | Pixels |', '|---|---|---|---|']
         for r in items:
-            page.append(f"| [<img src=\"{r['file']}\" width=\"180\" alt=\"{r['asset_id']} {r['view']}\">]({r['file']}) | {r['asset_id']} / {r['view']} | {r['status']} | {r['width']}×{r['height']} |")
+            page.append(f"| [<img src=\"{r['file']}\" width=\"180\" alt=\"{r['asset_id']} {r['view']}\">]({r['file']}) | {r['asset_id']} / {r['view']} | {r['status']} | {r['width']}Ãƒâ€”{r['height']} |")
         (DEST / (group + '.md')).write_text('\n'.join(page) + '\n', encoding='utf-8')
     if manifest['history']:
         lines += ['## Superseded renders', '', f"{len(manifest['history'])} earlier test images retained. [Browse the history gallery](history.md).", '']
@@ -226,13 +232,13 @@ def check(archive_only=False):
 
 HTML = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Malefic Vale construction gallery</title>
 <style>body{background:#151a1b;color:#e0ddd1;font:16px system-ui;margin:24px}a{color:#9ed2bf}header{max-width:1000px}input,select{font:inherit;padding:10px;margin:4px;background:#27302f;color:inherit;border:1px solid #60726b}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-top:20px}article{background:#222b29;border:1px solid #41524a;padding:10px}img{width:100%;height:250px;object-fit:contain}h2{font-size:16px;overflow-wrap:anywhere}small{color:#abb9b1}.badge{font-size:12px;color:#d0c9a4}#error{color:#f2bb9d}</style>
-<header><h1>Construction test gallery</h1><p>Unraveled · Penitent · Begotten. Original test renders, clay views and earlier studies. A rough-stage pass does not imply final user approval.</p><p><a href="README.md">GitHub image indexes</a> · <a href="manifest.json">Hashes and review manifest</a></p></header>
-<input id="query" type="search" placeholder="Find an asset…" aria-label="Find an asset"><select id="group" aria-label="Collection"><option value="">All collections</option></select><select id="status" aria-label="Review status"><option value="">All statuses</option></select><select id="view" aria-label="Test view"><option value="">All views</option></select><label><input id="history" type="checkbox">Include superseded tests</label><p id="count"></p><p id="error"></p><main id="grid"></main>
+<header><h1>Construction test gallery</h1><p>Unraveled Ã‚Â· Penitent Ã‚Â· Begotten. Original test renders, clay views and earlier studies. A rough-stage pass does not imply final user approval.</p><p><a href="README.md">GitHub image indexes</a> Ã‚Â· <a href="manifest.json">Hashes and review manifest</a></p></header>
+<input id="query" type="search" placeholder="Find an assetÃ¢â‚¬Â¦" aria-label="Find an asset"><select id="group" aria-label="Collection"><option value="">All collections</option></select><select id="status" aria-label="Review status"><option value="">All statuses</option></select><select id="view" aria-label="Test view"><option value="">All views</option></select><label><input id="history" type="checkbox">Include superseded tests</label><p id="count"></p><p id="error"></p><main id="grid"></main>
 <script>
 const $=id=>document.getElementById(id);
 fetch('manifest.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json()}).then(data=>{
  for(const key of ['group','status','view'])for(const value of [...new Set(data.images.concat(data.history||[]).map(x=>x[key]))].sort()){const o=document.createElement('option');o.value=value;o.textContent=value;$(key).append(o)}
- function draw(){const needle=$('query').value.toLowerCase();const available=data.images.concat($('history').checked?(data.history||[]):[]);const rows=available.filter(x=>(x.asset_id+' '+x.source+' '+x.faction).toLowerCase().includes(needle)&&['group','status','view'].every(k=>!$(k).value||$(k).value===x[k]));$('count').textContent=rows.length+' / '+available.length+' images';$('grid').replaceChildren();for(const x of rows){const card=document.createElement('article'),a=document.createElement('a'),im=document.createElement('img'),title=document.createElement('h2'),state=document.createElement('p'),info=document.createElement('small');a.href=x.file;im.src=x.file;im.loading='lazy';im.alt=x.asset_id+' / '+x.view;a.append(im);title.textContent=im.alt;state.textContent=x.status;state.className='badge';info.textContent=x.width+' × '+x.height+' · '+x.faction+' · SHA-256 '+x.sha256.slice(0,12);card.append(a,title,state,info);$('grid').append(card)}}
+ function draw(){const needle=$('query').value.toLowerCase();const available=data.images.concat($('history').checked?(data.history||[]):[]);const rows=available.filter(x=>(x.asset_id+' '+x.source+' '+x.faction).toLowerCase().includes(needle)&&['group','status','view'].every(k=>!$(k).value||$(k).value===x[k]));$('count').textContent=rows.length+' / '+available.length+' images';$('grid').replaceChildren();for(const x of rows){const card=document.createElement('article'),a=document.createElement('a'),im=document.createElement('img'),title=document.createElement('h2'),state=document.createElement('p'),info=document.createElement('small');a.href=x.file;im.src=x.file;im.loading='lazy';im.alt=x.asset_id+' / '+x.view;a.append(im);title.textContent=im.alt;state.textContent=x.status;state.className='badge';info.textContent=x.width+' Ãƒâ€” '+x.height+' Ã‚Â· '+x.faction+' Ã‚Â· SHA-256 '+x.sha256.slice(0,12);card.append(a,title,state,info);$('grid').append(card)}}
  for(const id of ['query','group','status','view','history'])$(id).addEventListener('input',draw);draw();
 }).catch(e=>{$('error').textContent='Open this gallery through a local HTTP server (see README), or use the GitHub Markdown indexes. '+e.message});
 </script></html>'''

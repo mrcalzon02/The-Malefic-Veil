@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "94356bd540e94ce27d2756bc099719b0dd616f6c3b34eb9f5d5e9913340aa7db",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 3,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** Two barrels identify a gun, but the weapon assembly is largely absent.\n\nThe current model is a cuboid receiver, two uniform rods, a cyan bead and a narrow stalk on the shared base. It has no readable ammunition storage, feed path, breech, ejection, barrel support or recoil guide. The sensor is a colored bead rather than protected optics. The tall pedestal gives little sense of stability under fire.\n\nThe specified independent yaw and elevation need a turntable and trunnioned cradle that can actually move through the required envelope. Named nodes alone do not establish that. The generated operating clip rotates recoil groups and shifts them; meaningful recoil should follow the barrel axis through visible guides and return hardware.\n\n**Redesign:** a low ammunition/power cassette, supported yaw bearing, elevation cradle, segmented receiver housings, paired guided barrels and an offset sensor cluster. Make the ammunition route and muzzle direction obvious.\n\n**Acceptance:** check aim limits and clear firing arcs. Confirmed host attacks must drive bore-aligned recoil and feed movement; decorative idle motion must not simulate firing."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/front.png",
+      "sha256": "77019bce05bd068c3d9b074cb1dd065aff0cfac57d14845ac955506ad4f6aa3d"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/rear.png",
+      "sha256": "fba91b3904c23351c8d24a13082e6b79ea106bf23283121f79ea486f5d8cf4a7"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/closeup.png",
+      "sha256": "a096d6d02f69d953553a284dd746f3281acea27a07a1db4393d9ae693f19846f"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-turret/clay.png",
+      "sha256": "f8b9b53819d7b1b238cefc1bfa34c18ab02e6abb985a2e25bc33bed92fb7b6a2"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

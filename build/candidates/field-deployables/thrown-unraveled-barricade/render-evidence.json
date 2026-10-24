@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "73b7a24a6b98f1e21bfe7dd5fb1958567ec7d8a027cac177da025d941b5e29b5",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/front.png",
+      "sha256": "d1871f36dd12ec88594ef3ba1a55872b22b42601945d8679b69e7b769efbcc90"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/rear.png",
+      "sha256": "84457e8326999fd13d5b6f2fb900a9be733cb4daf3e6d475ef916e8deaa71450"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/closeup.png",
+      "sha256": "cba0a136b704c4766b5c85cc50b7857057f7735609430b4da3fceb7e8add2fe3"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/clay.png",
+      "sha256": "e9fa901c90c56ddc64483ed6aabd976665b1cdc93ce9ef718a76c190a352e2aa"
+    }
+  }
+}

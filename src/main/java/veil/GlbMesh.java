@@ -40,7 +40,7 @@ public final class GlbMesh {
         java.awt.image.BufferedImage image=decodedTextures.get(texture);
         if(image!=null)return image;
         image=javax.imageio.ImageIO.read(new ByteArrayInputStream(embeddedTextures.get(texture)));
-        if(image==null||image.getWidth()!=128||image.getHeight()!=128)
+        if(image==null||image.getWidth()>4096||image.getHeight()>4096)
             throw new IOException("Invalid GGBot 128x128 source atlas");
         decodedTextures.put(texture,image);
         return image;
@@ -56,6 +56,10 @@ public final class GlbMesh {
         List<Surface> plain=new ArrayList<>();
         for(Triangle face:faces)plain.add(new Surface(face,null,0,0,0,0,0,0,0xffffff));
         return new GlbMesh(faces,b,plain);
+    }
+    static GlbMesh animated(List<Surface> surfaces,Map<String,byte[]> textures){
+        List<Triangle> faces=surfaces.stream().map(Surface::triangle).toList();
+        return new GlbMesh(faces,authored(faces).bounds(),surfaces,textures);
     }
     public List<Triangle> triangles(){return triangles;}
     public List<Surface> surfaces(){return surfaces;}
@@ -91,7 +95,7 @@ public final class GlbMesh {
         if(obj==null||png==null||id==null||!id.matches("ggbot-[a-z0-9_-]+"))
             throw new IOException("Invalid textured OBJ");
         java.awt.image.BufferedImage image=javax.imageio.ImageIO.read(new ByteArrayInputStream(png));
-        if(image==null||image.getWidth()!=128||image.getHeight()!=128)
+        if(image==null||image.getWidth()>4096||image.getHeight()>4096)
             throw new IOException("Not an original 128x128 car atlas");
         List<float[]> xyz=new ArrayList<>(),uv=new ArrayList<>();
         List<Triangle> tris=new ArrayList<>();
@@ -397,7 +401,7 @@ public final class GlbMesh {
     }
 
     /** Strict bounded object/array/number/string parser. No external JSON dependency. */
-    private static final class Parser {
+    static final class Parser {
         private final String text;
         private int i;
         Parser(String text){this.text=text;}

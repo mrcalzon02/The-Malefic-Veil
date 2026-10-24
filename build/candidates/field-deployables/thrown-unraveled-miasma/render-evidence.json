@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "173de9eb4f048730989fccbc3f081cd21a575eb0ccab36edecfa5896e7bfb642",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/front.png",
+      "sha256": "47ccaed6fba1bb713d72b2b18eaa111d61b0b56de2d568460cbb057cd19fb790"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/rear.png",
+      "sha256": "40efaa072fdc78a523b8aed12f497d323b847f3d6f8f05b03837e53eb75cdd03"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/closeup.png",
+      "sha256": "efbafdaf287b29ac6cd651cc296101c17f9c1b9a0bb627a5d8dafe9deec67c44"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/clay.png",
+      "sha256": "1eed6f3a5109149f23f4d405d8e4a535b89d4a8c786fc6c18b5050a535351c60"
+    }
+  }
+}

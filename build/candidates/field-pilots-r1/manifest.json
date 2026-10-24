@@ -1,0 +1,484 @@
+[
+  {
+    "id": "sentry-mki",
+    "path": "build/candidates/field-pilots-r1/sentry-mki/sentry-mki.glb",
+    "category": "candidate",
+    "faction": "unraveled",
+    "role": "turret",
+    "sha256": "94c37c520b793c28f2249977cd504718ac68eb4c10bc5f9cf2dbe3aa4581bf60",
+    "triangles": 2800,
+    "bounds_z_up": [
+      [
+        -0.3570888936519623,
+        -0.5350000262260437,
+        0.026000000536441803
+      ],
+      [
+        0.3570888936519623,
+        0.3570888936519623,
+        1.0399999618530273
+      ]
+    ],
+    "status": "REVIEW_REQUIRED",
+    "motion_design": {
+      "DeployRoot": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "Outrigger_0": {
+        "move": null,
+        "axis": [
+          -0.7071067811865476,
+          0.7071067811865476,
+          0
+        ],
+        "angle": -1.4,
+        "operation": null,
+        "idle": null
+      },
+      "Outrigger_1": {
+        "move": null,
+        "axis": [
+          -0.7071067811865476,
+          -0.7071067811865475,
+          0
+        ],
+        "angle": -1.4,
+        "operation": null,
+        "idle": null
+      },
+      "Outrigger_2": {
+        "move": null,
+        "axis": [
+          0.7071067811865475,
+          -0.7071067811865477,
+          0
+        ],
+        "angle": -1.4,
+        "operation": null,
+        "idle": null
+      },
+      "Outrigger_3": {
+        "move": null,
+        "axis": [
+          0.7071067811865477,
+          0.7071067811865474,
+          0
+        ],
+        "angle": -1.4,
+        "operation": null,
+        "idle": null
+      },
+      "MastLower": {
+        "move": [
+          0,
+          0,
+          -0.16
+        ],
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "MastUpper": {
+        "move": [
+          0,
+          0,
+          -0.16
+        ],
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "AimYaw": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "AimPitch": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "Recoil_-1": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "move",
+          [
+            0,
+            0.045,
+            0
+          ]
+        ],
+        "idle": null
+      },
+      "BarrelExtension_-1": {
+        "move": [
+          0,
+          0.2,
+          0
+        ],
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "Recoil_1": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "move",
+          [
+            0,
+            0.045,
+            0
+          ]
+        ],
+        "idle": null
+      },
+      "BarrelExtension_1": {
+        "move": [
+          0,
+          0.2,
+          0
+        ],
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      }
+    }
+  },
+  {
+    "id": "censer-of-dread",
+    "path": "build/candidates/field-pilots-r1/censer-of-dread/censer-of-dread.glb",
+    "category": "candidate",
+    "faction": "penitent",
+    "role": "miasma",
+    "sha256": "63eb23cdba835ffa93980ff64e8e5ff5a5908c4c47fdf8ba95bf6eb7452e7a5a",
+    "triangles": 6488,
+    "bounds_z_up": [
+      [
+        -0.40637168288230896,
+        -0.4611507058143616,
+        0.033871643245220184
+      ],
+      [
+        0.40637168288230896,
+        0.24385641515254974,
+        1.2470000982284546
+      ]
+    ],
+    "status": "REVIEW_REQUIRED",
+    "motion_design": {
+      "DeployRoot": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "IronLeg_0": {
+        "move": null,
+        "axis": [
+          -0.49999999999999994,
+          0.8660254037844387,
+          0
+        ],
+        "angle": -1.25,
+        "operation": null,
+        "idle": null
+      },
+      "IronLeg_1": {
+        "move": null,
+        "axis": [
+          -0.5000000000000003,
+          -0.8660254037844385,
+          0
+        ],
+        "angle": -1.25,
+        "operation": null,
+        "idle": null
+      },
+      "IronLeg_2": {
+        "move": null,
+        "axis": [
+          1.0,
+          -1.8369701987210297e-16,
+          0
+        ],
+        "angle": -1.25,
+        "operation": null,
+        "idle": null
+      },
+      "ReliquaryLift": {
+        "move": [
+          0,
+          0,
+          -0.3
+        ],
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "CanopyArm_0": {
+        "move": null,
+        "axis": [
+          -0.49999999999999994,
+          0.8660254037844387,
+          0
+        ],
+        "angle": 0.7,
+        "operation": null,
+        "idle": null
+      },
+      "CanopyArm_1": {
+        "move": null,
+        "axis": [
+          -0.5000000000000003,
+          -0.8660254037844385,
+          0
+        ],
+        "angle": 0.7,
+        "operation": null,
+        "idle": null
+      },
+      "CanopyArm_2": {
+        "move": null,
+        "axis": [
+          1.0,
+          -1.8369701987210297e-16,
+          0
+        ],
+        "angle": 0.7,
+        "operation": null,
+        "idle": null
+      },
+      "CenserPendulum": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "rot",
+          [
+            1,
+            0,
+            0
+          ],
+          0.11
+        ],
+        "idle": [
+          "rot",
+          [
+            1,
+            0,
+            0
+          ],
+          0.055
+        ]
+      },
+      "VentedLid_-1": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "rot",
+          [
+            0,
+            1,
+            0
+          ],
+          -0.28
+        ],
+        "idle": null
+      },
+      "VentedLid_1": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "rot",
+          [
+            0,
+            1,
+            0
+          ],
+          0.28
+        ],
+        "idle": null
+      },
+      "SatelliteCenser_0": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "rot",
+          [
+            0.8660254037844387,
+            0.49999999999999994,
+            0
+          ],
+          0.16
+        ],
+        "idle": [
+          "rot",
+          [
+            0.8660254037844387,
+            0.49999999999999994,
+            0
+          ],
+          0.08
+        ]
+      },
+      "SatelliteCenser_1": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "rot",
+          [
+            -0.8660254037844385,
+            0.5000000000000003,
+            0
+          ],
+          0.16
+        ],
+        "idle": [
+          "rot",
+          [
+            -0.8660254037844385,
+            0.5000000000000003,
+            0
+          ],
+          0.08
+        ]
+      },
+      "SatelliteCenser_2": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": [
+          "rot",
+          [
+            -1.8369701987210297e-16,
+            -1.0,
+            0
+          ],
+          0.16
+        ],
+        "idle": [
+          "rot",
+          [
+            -1.8369701987210297e-16,
+            -1.0,
+            0
+          ],
+          0.08
+        ]
+      }
+    }
+  },
+  {
+    "id": "regeneration-heart",
+    "path": "build/candidates/field-pilots-r1/regeneration-heart/regeneration-heart.glb",
+    "category": "candidate",
+    "faction": "begotten",
+    "role": "health",
+    "sha256": "8f8d6c7e3678bf628464fdbdf01bb17f83b2e7e0992ca6f55aaefd704ac336ab",
+    "triangles": 3188,
+    "bounds_z_up": [
+      [
+        -0.38547760248184204,
+        -0.474161833524704,
+        0.02973794937133789
+      ],
+      [
+        0.42890891432762146,
+        0.3630753457546234,
+        1.1512815952301025
+      ]
+    ],
+    "status": "REVIEW_REQUIRED",
+    "motion_design": {
+      "DeployRoot": {
+        "move": null,
+        "axis": null,
+        "angle": 0,
+        "operation": null,
+        "idle": null
+      },
+      "CradleRib_-1": {
+        "move": null,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "angle": -0.85,
+        "operation": null,
+        "idle": null
+      },
+      "CradleRib_1": {
+        "move": null,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "angle": 0.85,
+        "operation": null,
+        "idle": null
+      },
+      "TreatmentTendril_-1": {
+        "move": null,
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "angle": -0.9,
+        "operation": [
+          "rot",
+          [
+            1,
+            0,
+            0
+          ],
+          -0.2
+        ],
+        "idle": null
+      },
+      "TreatmentTendril_1": {
+        "move": null,
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "angle": -0.9,
+        "operation": [
+          "rot",
+          [
+            1,
+            0,
+            0
+          ],
+          -0.2
+        ],
+        "idle": null
+      }
+    }
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "field-medic",
+    "path": "build/candidates/field-medic-r1/field-medic/field-medic.glb",
+    "category": "candidate",
+    "faction": "unraveled",
+    "role": "health",
+    "sha256": "946fa5ee52c268c83335269e4e8000cd1661f3a93d07224c92e11c56a4b2f79e",
+    "triangles": 2326,
+    "status": "REVIEW_REQUIRED"
+  }
+]

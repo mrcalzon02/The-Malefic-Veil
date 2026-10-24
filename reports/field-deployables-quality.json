@@ -1,0 +1,362 @@
+{
+  "policy_version": 1,
+  "reference_baseline_valid": true,
+  "reference_results": {
+    "car-01": [],
+    "car-08": [],
+    "character-01": [],
+    "character-17": []
+  },
+  "reference_metrics": [
+    {
+      "id": "car-01",
+      "sha256": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+      "triangles": 438,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "car-08",
+      "sha256": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+      "triangles": 376,
+      "uv_coverage": 0.9981549554990697,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "character-01",
+      "sha256": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+      "triangles": 866,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "character-17",
+      "sha256": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1",
+      "triangles": 1163,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    }
+  ],
+  "results": [
+    {
+      "id": "thrown-unraveled-wall",
+      "path": "build/candidates/field-deployables/thrown-unraveled-wall/thrown-unraveled-wall.glb",
+      "sha256": "0a6887a260d6b12f46971a0950cc7ffce02323e464d963f4a495320f7c30cef1",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-barricade",
+      "path": "build/candidates/field-deployables/thrown-unraveled-barricade/thrown-unraveled-barricade.glb",
+      "sha256": "73b7a24a6b98f1e21bfe7dd5fb1958567ec7d8a027cac177da025d941b5e29b5",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-turret",
+      "path": "build/candidates/field-deployables/thrown-unraveled-turret/thrown-unraveled-turret.glb",
+      "sha256": "94356bd540e94ce27d2756bc099719b0dd616f6c3b34eb9f5d5e9913340aa7db",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-health",
+      "path": "build/candidates/field-deployables/thrown-unraveled-health/thrown-unraveled-health.glb",
+      "sha256": "78fb9a2aaa1ee8e997ff0be11b68a37d6921d54a772322a3cf0237a2bc63767c",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-ammo",
+      "path": "build/candidates/field-deployables/thrown-unraveled-ammo/thrown-unraveled-ammo.glb",
+      "sha256": "d88be3fae51e1d8e5de849d78f6c12e4b68c7d48de72e3c5b4cd78f3c68ce32e",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-miasma",
+      "path": "build/candidates/field-deployables/thrown-unraveled-miasma/thrown-unraveled-miasma.glb",
+      "sha256": "173de9eb4f048730989fccbc3f081cd21a575eb0ccab36edecfa5896e7bfb642",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-shield",
+      "path": "build/candidates/field-deployables/thrown-unraveled-shield/thrown-unraveled-shield.glb",
+      "sha256": "9e4aa13ff8d4043c9181869def8be1351807673df4e0055e1f98ebe77e08d459",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-penitent-wall",
+      "path": "build/candidates/field-deployables/thrown-penitent-wall/thrown-penitent-wall.glb",
+      "sha256": "66ddee9025bdd469414ece8724947dedbe6c1e3d082da5766bba6fa0b6e4b53c",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-penitent-barricade",
+      "path": "build/candidates/field-deployables/thrown-penitent-barricade/thrown-penitent-barricade.glb",
+      "sha256": "adad6926a31c7ed1c2eb8455c642498e4c6bf27b16830081cd390995f924d9af",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-penitent-turret",
+      "path": "build/candidates/field-deployables/thrown-penitent-turret/thrown-penitent-turret.glb",
+      "sha256": "99969e98d814db4c4b7a2e2cc7ed879cbbceb55a128f7ee921e6ad280efc836f",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-penitent-health",
+      "path": "build/candidates/field-deployables/thrown-penitent-health/thrown-penitent-health.glb",
+      "sha256": "46b0acfe983123fcf85651286d082ca9d2adf2466a8166bbdafb06b66c46eea8",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-penitent-ammo",
+      "path": "build/candidates/field-deployables/thrown-penitent-ammo/thrown-penitent-ammo.glb",
+      "sha256": "e6d07dd175d257308b335ef9d90e236f9834e9f70878b6b10f75487c028881d0",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-penitent-miasma",
+      "path": "build/candidates/field-deployables/thrown-penitent-miasma/thrown-penitent-miasma.glb",
+      "sha256": "34682feb3a00699f69d7f770f29ae197692fad3ad98fc16a2b58abc3ce1a693c",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-penitent-shield",
+      "path": "build/candidates/field-deployables/thrown-penitent-shield/thrown-penitent-shield.glb",
+      "sha256": "f82cdc7e367483dda875faa89ac518924c317ffdb414867543d2a41266ecd8b5",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-begotten-wall",
+      "path": "build/candidates/field-deployables/thrown-begotten-wall/thrown-begotten-wall.glb",
+      "sha256": "04bc86d4f6b07d2045ce9d1d7967f9bb39e912b4ecd33e9fad69b3abda26e719",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-begotten-barricade",
+      "path": "build/candidates/field-deployables/thrown-begotten-barricade/thrown-begotten-barricade.glb",
+      "sha256": "2d3be76c644ae190dcea073fe04d4afda23a065645c0ce660b3caa416af01d5c",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-begotten-turret",
+      "path": "build/candidates/field-deployables/thrown-begotten-turret/thrown-begotten-turret.glb",
+      "sha256": "f9774fdd96e376df3254157295acd0caa71e9c4f6f20f0d2d1eecd2c49d73458",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-begotten-health",
+      "path": "build/candidates/field-deployables/thrown-begotten-health/thrown-begotten-health.glb",
+      "sha256": "5baf610ad017a1cb736b6ff8403c2d6194e540d9b3ee4bed7825cd91eebe7d32",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-begotten-ammo",
+      "path": "build/candidates/field-deployables/thrown-begotten-ammo/thrown-begotten-ammo.glb",
+      "sha256": "fd080b0789599877fd318f746bfee807768856c8f913d4d40b2b7f57cb1fda79",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-begotten-miasma",
+      "path": "build/candidates/field-deployables/thrown-begotten-miasma/thrown-begotten-miasma.glb",
+      "sha256": "935828ece00e1d07b4f83be2faaf89cc2088ae35b60ecbeb81a9ea9dd5062c6e",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    },
+    {
+      "id": "thrown-begotten-shield",
+      "path": "build/candidates/field-deployables/thrown-begotten-shield/thrown-begotten-shield.glb",
+      "sha256": "130dd4defe24292fbdd5f811d98a754463805c5579de6e2e6d9a50bd2a5d8dad",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity",
+        "RENDER_MISSING: comparison"
+      ]
+    }
+  ],
+  "counts": {
+    "REJECTED": 21,
+    "ART_REVIEW_REQUIRED": 0,
+    "DELIVERY_ELIGIBLE": 0
+  }
+}

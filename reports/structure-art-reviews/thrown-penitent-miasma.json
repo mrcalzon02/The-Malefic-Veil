@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "34682feb3a00699f69d7f770f29ae197692fad3ad98fc16a2b58abc3ce1a693c",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** Recolored industrial exhaust pipes do not constitute a censer.\n\nThe Vapor Engine cylinders and bent stacks are retained in pale/dark materials, with the same small red spheres below. There is no substantial suspended main vessel. A cross on the body cannot explain an incense burner.\n\nThe defining working components are missing: bowl, lid, perforations, combustion chamber and suspension. These are the object's functional anatomy. Shared vent rotations do not become chain sway, vessel rotation or lifting censer motion. The current assembly is fundamentally the wrong substrate.\n\n**Redesign:** a folding iron tripod or small gantry raising a pierced censer bowl on a chain. Add a few smaller suspended vessels at unequal heights, with lids, vents and actual chain attachment points. Give the support frame and lifting mechanism enough substance to carry them.\n\n**Acceptance:** smoke must originate from the vessels and follow host activation/radius. Verify suspension, clear pendulum travel and a visibly distinct raising/opening ritual instead of industrial valve motion."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/front.png",
+      "sha256": "27424ddfed0430c2ef6bb89d59380e895831f742255158031decac16e10e0680"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/rear.png",
+      "sha256": "e8ad0c930c15e209517297be15b9156635a0f146f1b217e2bdf292da9dc8c0bc"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/closeup.png",
+      "sha256": "397ec935b80d75bcd0434d8eb32e1d234db927c05b69a1ff0a2089ea36532166"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-miasma/clay.png",
+      "sha256": "4030bac5081a8243d94acb2ba69e072484f9cd236e9324a57fa8fdbbe12389a1"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

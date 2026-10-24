@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "94c37c520b793c28f2249977cd504718ac68eb4c10bc5f9cf2dbe3aa4581bf60",
+  "renders": {
+    "front": {
+      "path": "previews/field-pilots-r1/sentry-mki/front.png",
+      "sha256": "cee2c0b647202cbe285c1cd06e1d5e245e957e2d6a5ea5fe67b5632b1b433bd7"
+    },
+    "rear": {
+      "path": "previews/field-pilots-r1/sentry-mki/rear.png",
+      "sha256": "ae07835c89422d139c8293350f3ba4d56adf4f54856e3ac0624689e8b93136f3"
+    },
+    "closeup": {
+      "path": "previews/field-pilots-r1/sentry-mki/closeup.png",
+      "sha256": "99754768a61afa21f63c5a88d3bbc3028fe69953e03168bc76671036b2f72cb7"
+    },
+    "clay": {
+      "path": "previews/field-pilots-r1/sentry-mki/clay.png",
+      "sha256": "045fd38e135346e136ae20a7a45adfa38801b0f4330e81828609350962cafd34"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "dfd5fdb31f55316e1593d1f838162a33e7d7da1f69a736a27126af4896d646a4"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "4c64a4581a7d1ad32df1cab32f7eeff5d615f46ed9f9bf2c17abe468e477f041"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "cf76f1b95a3d8bfe23507610ace4e5ca7e5ee27c31b010f58c95806c3b649db9"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "86e05164a1a069a6ee0f7567aba0bae3e136062ac6b6b0bc908a4085f9a19253"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "550ff789d5b770e70e81e68d27ff52374dcc2e37b51e5c976e8df49d08a43a25"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "1816d7fd0d67aa9f7c4619530b74f8f9918ce479ddd9e2a44fab5e90b0e836d5"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "d34dc0d7607e5c47784bd9a25ea187ee7863c150f4b34a5ca41731005095efc4"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "4576f35380c8b8f9993f32d6e1f1cac9d8a4574e62b770d8d67153f7a070e82f"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "44dc954859f4f1c7cec124bfcedee60b35c53f47fe083f916835311380a3d677"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "e68fb562d41bea4e8b15b27e9c68dd7c87db577500ffd27138a4a5887457abb5"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-00.png",
+        "time_s": 0.0,
+        "sha256": "8739984e914b15e113a60a354b5201895513ed38a0022864613ae38ad6b464f0"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "815102f923352b40991860ed9017d60ae3c0240cf93c94656e2114973a16327d"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "5744e489dc72715391f593276f7139dde8367e9da63ae9c2f5c33613dc546e30"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "835b1afbfb06c81642d7bcd5dc056fdfc5309699aca2a280250f70a5ad2d08c7"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "3dee463789f835a3526a8bad55381f0c62943faf6e292e09fe4eb96bd364c92f"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "5d9c6947cdf388ba4b28aabbafb27f8408839b3d8554d251fadcdc27fa0e3b89"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "c57f16acb970b1177fc5a9f5e0a6338b9757fe256f808fafdef28184b564212d"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "62dfb52958a0c88daa80da17704c8e418e5ddb08bc336cb7892f0cb687499591"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "61c9ad05d945ebee77e8f7e7c232f38a8d5d4bc9653e3c14e3b7aeff4f81f9a3"
+      },
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/operating-09.png",
+        "time_s": 0.65,
+        "sha256": "f96c4b0101209ddd34b64ef5b9613610f2d0a09952939be9a75c42b351b9574f"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "previews/field-pilots-r1/sentry-mki/packed-00.png",
+        "time_s": 0.0,
+        "sha256": "2bf38cda3646b52b8446f029b3a1c9d3f5f907ba6b696b14bb43e74ee9af8d60"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "73b7a24a6b98f1e21bfe7dd5fb1958567ec7d8a027cac177da025d941b5e29b5",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** It reads as a fence fragment rather than a deployable obstruction.\n\nThe visible X is an appropriate starting motif, but its center has no convincing pivot, its ends have no sliding joints, and the plain posts do not telescope. Short upright rods suggest a fence rather than deliberately deployed anti-personnel rails. The isolated middle housing does not explain what drives or retains the outer frame.\n\nThere is no visible chain of forces from anchors through braces to obstruction rails. A shared rotation applied to the crossed groups is not a scissor linkage: the crossing members need offset thicknesses, pinned ends, constrained movement and a locking position. Small generic feet do not convincingly stabilize the full span.\n\n**Redesign:** two nested end frames joined by an actual scissor assembly, with an offset center pin, sliding end blocks, expanding rails and folding ground claws. Define how each rail clears its neighbor while stowed and deploying.\n\n**Acceptance:** prove compact stowage, nonintersecting expansion and stable anchoring. Its lower, porous silhouette must remain distinct from the solid wall at gameplay distance."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/front.png",
+      "sha256": "d1871f36dd12ec88594ef3ba1a55872b22b42601945d8679b69e7b769efbcc90"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/rear.png",
+      "sha256": "84457e8326999fd13d5b6f2fb900a9be733cb4daf3e6d475ef916e8deaa71450"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/closeup.png",
+      "sha256": "cba0a136b704c4766b5c85cc50b7857057f7735609430b4da3fceb7e8add2fe3"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-barricade/clay.png",
+      "sha256": "e9fa901c90c56ddc64483ed6aabd976665b1cdc93ce9ef718a76c190a352e2aa"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

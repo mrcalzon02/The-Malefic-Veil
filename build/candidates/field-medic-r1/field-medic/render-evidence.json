@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "946fa5ee52c268c83335269e4e8000cd1661f3a93d07224c92e11c56a4b2f79e",
+  "renders": {
+    "front": {
+      "path": "previews/field-medic-r1/field-medic/front.png",
+      "sha256": "2390f1eca49053e6943538616c63cf4dcec7b79eab24ac0a439c7fca103fd5c8"
+    },
+    "rear": {
+      "path": "previews/field-medic-r1/field-medic/rear.png",
+      "sha256": "5063058b5a07192eba06980ac290cf2f6d10a4ae49ba5823757d2cb99cb197db"
+    },
+    "closeup": {
+      "path": "previews/field-medic-r1/field-medic/closeup.png",
+      "sha256": "d8ae8f5469f652f70bf4a84e92bf1d2e037da3a548bb37ffb46f08fbf6d849cf"
+    },
+    "clay": {
+      "path": "previews/field-medic-r1/field-medic/clay.png",
+      "sha256": "76dd46b3534f5702864b1715697fc34dc23bad678fc7c39dd3eb6dd642b41b86"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "11a19255017069ef141ecab3996bb1c0e009a2203f74cb9c97b4d5ad38d20bea"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "15550682c2bb6bbaac42046af122829d2305a325392016c64ec80eebda80436e"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "e9d363b37d3b98b3aa568aa10887c61021cbdffeaf017ef58be6c5e5c5620781"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "9e203acde0fb1ce0099a33954ae4d02f0d185a47f0e64cdccdb5878a87b61aa6"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "473210b22c5d051368bc663fe9a27c53900e36554d855ce14bcffb0f69f96b71"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "9ab6f27a0d07bc3e6084603b0a8dd7305b3112af1cccd1663098d0b01480ff0e"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "bc1c58caa931cc5916f35d75bb71805bb468f66de165313e0a47bc671cfc5014"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "12b46f96a9d703bd877de81790d1fcc4efb5049dd915dedba82aac105989b737"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "1a19d85e3501e022b6104a0480be15b260178c81e51e45aee23c0f526b8ddc60"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "29fc0c6f268d82d9c77adb6a7c934583a5190bc46f410c770917bc0777e4ff04"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-00.png",
+        "time_s": 0.0,
+        "sha256": "fb0ebed6e415d99f2df8453057baa3f5274348ed7ce3b7ddb96e23d80c68b08e"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "744645e4705f6f64207e86e3b67a1bfb217f5d86b94009e8977d5f266822c5a5"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "dc87b2b8efdff581f842ba95ca5339d3dfdd9672050dc40f45f605f3a88d3234"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "d5dde86416b6d2c6fd0c5605ae36edd0ca5ff7c3e2c2a3d08962d8efd175f858"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "8350591c992d0397ca7aca5bbfceebfbbc6c3efe652533cf193d42082d87e34b"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "55e3cc77520109b591f894740ee87234f1f7fab6109a3dd1a063d396acb3a961"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "80343397fe8e5f34badf1a9bc31df6acf80676c8224a77273d1bd7dca3cb025b"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "1fcbed757d404614252baaa2b76c655f33812ab005673d973b18dfca47ba06f8"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "3670843d604fbe5264af833857ac4df28d45ff00ba79846355bf73284c2c52cf"
+      },
+      {
+        "path": "previews/field-medic-r1/field-medic/operating-09.png",
+        "time_s": 0.65,
+        "sha256": "3df4a7309dc6168311e6aa8fbaa45988a05368fcb6f6834ea00906ca115e7b53"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "previews/field-medic-r1/field-medic/packed-00.png",
+        "time_s": 0.0,
+        "sha256": "d11165cfca6ff15d64bfcc4453849ffe6bea53a3033bbb876f288436ea8c5d44"
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "purpose": "Fail-closed delivery gate; technical pass alone is not artistic approval",
+  "reference_sources": [
+    {"id": "car-01", "path": "assets/private/quality-references/cars/Car 01/Car.obj", "category": "reference-hard-surface", "drive_id": "1TeD9Nwo_79ZxL_7mSTZ6euz1M7SjqsX-"},
+    {"id": "car-08", "path": "assets/private/quality-references/cars/Car 08/Car8.obj", "category": "reference-hard-surface", "drive_id": "1TeD9Nwo_79ZxL_7mSTZ6euz1M7SjqsX-"},
+    {"id": "character-01", "path": "assets/private/quality-references/characters/Characters_psx_1.2/Characters_psx_02/Models/No-Rig/Male/Character_01.fbx", "category": "reference-character", "drive_id": "1Dd6RWVvV1qUGT8G0Q1rATlHYSn3doXgU"},
+    {"id": "character-17", "path": "assets/private/quality-references/characters/Characters_psx_1.2/Characters_psx_02/Models/No-Rig/Female/Character_17_Female_Police.fbx", "category": "reference-character", "drive_id": "1Dd6RWVvV1qUGT8G0Q1rATlHYSn3doXgU"}
+  ],
+  "limits": {
+    "min_uv_area_coverage": 0.98,
+    "min_textured_area_fraction": 0.98,
+    "min_texture_dimension": 128,
+    "max_degenerate_fraction": 0.001,
+    "max_triangles": 160000,
+    "organic_min_connected_area_fraction": 0.995,
+    "organic_max_components_per_surface": 1,
+    "organic_max_normal_seam_fraction": 0.02,
+    "organic_max_nonmanifold_edges": 0
+  },
+  "art_references": [
+    {"faction": "begotten", "reference": "StarCraft Zerg structures", "url": "https://news.blizzard.com/en-us/article/5740264/game-guide-zerg-basics", "criteria": ["continuous living mass", "organic transitions", "rooted integration", "readable organ function"]},
+    {"faction": "unraveled", "reference": "Rust scrap construction", "url": "https://rust.facepunch.com/news/devblog-189", "criteria": ["assembled salvage", "credible joins", "weathered shared surfaces", "recognizable building construction"]},
+    {"faction": "all", "reference": "Command and Conquer buildings", "url": "https://www.ea.com/games/command-and-conquer/command-and-conquer-remastered", "criteria": ["distinct function at gameplay distance", "coherent silhouette", "consistent detail scale"]},
+    {"faction": "penitent", "reference": "User direction 2026-10-22", "criteria": ["rural horror", "corruption integrated in geometry", "no decorative purple-ring substitute", "continuous wood and anatomical surfaces"]}
+  ]
+}

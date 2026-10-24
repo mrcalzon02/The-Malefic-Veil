@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "9e4aa13ff8d4043c9181869def8be1351807673df4e0055e1f98ebe77e08d459",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/front.png",
+      "sha256": "afbbfc4be72bfa051672d670e571e92bf99ec559b698736ce7f6bb8a51bc2029"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/rear.png",
+      "sha256": "bc9e505809619ff0369bdc7d2049dcb97c0405c068aeb8c96f2d8e9a45e5d725"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/closeup.png",
+      "sha256": "5643e71444957bb8d92d02f062aac941aa93996c7cb674dbf703d1d2eace990d"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/clay.png",
+      "sha256": "1c01e06ee6c76bec9895b0fac8f95dda2bc4f0fbe323835f9939e41746497252"
+    }
+  }
+}

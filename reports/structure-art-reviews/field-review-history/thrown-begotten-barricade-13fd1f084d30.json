@@ -1,0 +1,48 @@
+{
+  "asset_sha256": "13fd1f084d30469cd94f07ddae442802cdcc93ddf995c54acbdae440df7a3028",
+  "decision": "reject",
+  "reviewer": "Codex visual inspection",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 1,
+    "faction_identity": 2
+  },
+  "findings": [
+    "Export imports in PACKED pose; tiny and poorly framed across all four views. Deployed silhouette cannot be approved.",
+    "Compared with four sampled car/character renders: material detail and functional part definition are insufficient.",
+    "Penitent shares mechanical chassis and several role silhouettes; additional distinct manufacture needed. Begotten turret has detached eye/mandible appearance."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/front.png",
+      "sha256": "9205c4918ff813badcf14adc8fd4829ce103acd3c83166f34b0e3338bc6e3116"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/rear.png",
+      "sha256": "78351d00a0d7fdd4fc06064d9a4443ec8517c5d0d2ad3c7facf4ab461b7a1f1c"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/closeup.png",
+      "sha256": "f0b8b1e8844f0cb3ff16c768b06e263e5b4a4d6ba9e35a831b754d44fa153877"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/clay.png",
+      "sha256": "726595b534bbe28b52b3eb0810d1694bf00a795387da1f66f712cbd3db9da825"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "attempt": 1
+}

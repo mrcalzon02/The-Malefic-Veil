@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "f82cdc7e367483dda875faa89ac518924c317ffdb414867543d2a41266ecd8b5",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** It is the Aegis stand recolored, and the ward itself is absent.\n\nThe same thin rods, bead tops, rings and central glowing lump remain, supplemented by the standard plaque and spheres. The supports lack the massing and detailing of ceremonial pillars; the center is not a protected lantern with an interior.\n\nThe four-way arrangement is relevant, but does not establish independent sacred construction. Generic rotations cannot demonstrate ascending pillar capsules and unfolding ornamentation. No transparent field exists for the required illuminated impact sigils, so the main protective function is not represented.\n\n**Redesign:** four independently rising iron-bound pillar capsules around a hanging lantern. Open articulated top leaves inward toward the light; use a few properly suspended relic boxes to articulate its ritual mechanism. Author the amber field as a separate transparent surface.\n\n**Acceptance:** prove pillar extension and lantern activation. Match the 2.4 m field radius, retain actor visibility and drive protective sigils from real absorption events on the field surface.\n\n## Begotten"
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-shield/front.png",
+      "sha256": "dd8e972a497b225ccae44e43b945821332e64710a4899bb65771f94543b4511b"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-shield/rear.png",
+      "sha256": "55bb9457ace6de79bd2fd4cd4c05c02a6790cc8231b2eb6666ef566e7ef0eb3f"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-shield/closeup.png",
+      "sha256": "9ae8f565bda4629ad1fc2541599d7c6bb7a1470143fa7993aaf14f18029085f3"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-shield/clay.png",
+      "sha256": "675284a0f44ef90014dc6e50cf24bc8a6b46cece3faaea00ead5a4ee5519c749"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

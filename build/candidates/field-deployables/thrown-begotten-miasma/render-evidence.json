@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "935828ece00e1d07b4f83be2faaf89cc2088ae35b60ecbeb81a9ea9dd5062c6e",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/front.png",
+      "sha256": "2b2ef4d3a88db1887c3ce4e87da14ee5264e87fc8b7eabff9f7df741e9a9749e"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/rear.png",
+      "sha256": "ed1e706e17fa93ecbf7ef0f9b2d813e71a66efd28aaf1f2a6ffdd63cdda2f40d"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/closeup.png",
+      "sha256": "5e66e5b700d9937a2f5e4b276dc36b47062fa5d7de81843c96f5c0a5aa72feca"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-miasma/clay.png",
+      "sha256": "f8100ecaf52e03a24ae87822f4792e25a57e4f61c3280ca8adb3d6e719f5908e"
+    }
+  }
+}

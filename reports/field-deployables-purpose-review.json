@@ -1,0 +1,685 @@
+{
+  "review_date": "2026-10-24",
+  "decision": "REJECT_ALL_21_FOR_PRODUCTION",
+  "scope": "Individual static images and source inspection; no claim of visually validated animation or live GPU integration.",
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "items": [
+    {
+      "id": "thrown-unraveled-wall",
+      "name": "Bastion Panel",
+      "faction": "unraveled",
+      "role": "wall",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 2,
+        "faction_identity": 3
+      },
+      "individual_findings": "**Reject.** The role is recognizable, but the construction is not convincing.\n\nThe brief calls for a compact armored capsule becoming roughly 2.2 m-wide, 1.8 m-high reinforced cover through hinged plates, hydraulic braces and locking feet. The actual object is two broad rectangular plates with three regular strips each, cyan squares and the repeated small central stand. It resembles two oversized doors on a pedestal. Thickness, repair construction, hinge knuckles and structural connections are poorly articulated.\n\nThe central seam and narrow support arrangement weaken its protective and load-bearing story. Rotating the plates while enlarging the entire object does not explain how full-height rigid armor fits into a small capsule. The rear needs an understandable load path, not decorative diagonals.\n\n**Redesign:** start with a split armored cassette containing nested overlapping plates. Use real hinge barrels, travel stops, diagonal extending braces and broad feet aligned with the panel loads. Establish the packed plate stack first.\n\n**Acceptance:** demonstrate useful continuous cover, supported plate edges, physical nesting without arbitrary shrinkage, and collision checked against the full deployed and moving envelope.",
+      "asset_sha256": "0a6887a260d6b12f46971a0950cc7ffce02323e464d963f4a495320f7c30cef1",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-unraveled-wall/front.png",
+          "sha256": "7dbacb2cb0a6b7d3d59a26a0b339ce1cd8dba2b800b0cd9f8f4256872d3ec449"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-unraveled-wall/rear.png",
+          "sha256": "e5045a7ca47d4be0633ddc91b970899147d5bffabf40e724ae8ae475c2e51f63"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-unraveled-wall/closeup.png",
+          "sha256": "2438c3005bddc01a7f3179e8f0ce70387c273163670975f56a642fbff276c8ed"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-unraveled-wall/clay.png",
+          "sha256": "8136302c7682aa88fa5515127b346bc37ed683ca72a1a77b6e0de4c824c8d6ab"
+        }
+      }
+    },
+    {
+      "id": "thrown-unraveled-barricade",
+      "name": "Razorframe",
+      "faction": "unraveled",
+      "role": "barricade",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 2,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** It reads as a fence fragment rather than a deployable obstruction.\n\nThe visible X is an appropriate starting motif, but its center has no convincing pivot, its ends have no sliding joints, and the plain posts do not telescope. Short upright rods suggest a fence rather than deliberately deployed anti-personnel rails. The isolated middle housing does not explain what drives or retains the outer frame.\n\nThere is no visible chain of forces from anchors through braces to obstruction rails. A shared rotation applied to the crossed groups is not a scissor linkage: the crossing members need offset thicknesses, pinned ends, constrained movement and a locking position. Small generic feet do not convincingly stabilize the full span.\n\n**Redesign:** two nested end frames joined by an actual scissor assembly, with an offset center pin, sliding end blocks, expanding rails and folding ground claws. Define how each rail clears its neighbor while stowed and deploying.\n\n**Acceptance:** prove compact stowage, nonintersecting expansion and stable anchoring. Its lower, porous silhouette must remain distinct from the solid wall at gameplay distance.",
+      "asset_sha256": "73b7a24a6b98f1e21bfe7dd5fb1958567ec7d8a027cac177da025d941b5e29b5",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-unraveled-barricade/front.png",
+          "sha256": "d1871f36dd12ec88594ef3ba1a55872b22b42601945d8679b69e7b769efbcc90"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-unraveled-barricade/rear.png",
+          "sha256": "84457e8326999fd13d5b6f2fb900a9be733cb4daf3e6d475ef916e8deaa71450"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-unraveled-barricade/closeup.png",
+          "sha256": "cba0a136b704c4766b5c85cc50b7857057f7735609430b4da3fceb7e8add2fe3"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-unraveled-barricade/clay.png",
+          "sha256": "e9fa901c90c56ddc64483ed6aabd976665b1cdc93ce9ef718a76c190a352e2aa"
+        }
+      }
+    },
+    {
+      "id": "thrown-unraveled-turret",
+      "name": "Sentry Mk.I",
+      "faction": "unraveled",
+      "role": "turret",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 3,
+        "functional_construction": 1,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** Two barrels identify a gun, but the weapon assembly is largely absent.\n\nThe current model is a cuboid receiver, two uniform rods, a cyan bead and a narrow stalk on the shared base. It has no readable ammunition storage, feed path, breech, ejection, barrel support or recoil guide. The sensor is a colored bead rather than protected optics. The tall pedestal gives little sense of stability under fire.\n\nThe specified independent yaw and elevation need a turntable and trunnioned cradle that can actually move through the required envelope. Named nodes alone do not establish that. The generated operating clip rotates recoil groups and shifts them; meaningful recoil should follow the barrel axis through visible guides and return hardware.\n\n**Redesign:** a low ammunition/power cassette, supported yaw bearing, elevation cradle, segmented receiver housings, paired guided barrels and an offset sensor cluster. Make the ammunition route and muzzle direction obvious.\n\n**Acceptance:** check aim limits and clear firing arcs. Confirmed host attacks must drive bore-aligned recoil and feed movement; decorative idle motion must not simulate firing.",
+      "asset_sha256": "94356bd540e94ce27d2756bc099719b0dd616f6c3b34eb9f5d5e9913340aa7db",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-unraveled-turret/front.png",
+          "sha256": "77019bce05bd068c3d9b074cb1dd065aff0cfac57d14845ac955506ad4f6aa3d"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-unraveled-turret/rear.png",
+          "sha256": "fba91b3904c23351c8d24a13082e6b79ea106bf23283121f79ea486f5d8cf4a7"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-unraveled-turret/closeup.png",
+          "sha256": "a096d6d02f69d953553a284dd746f3281acea27a07a1db4393d9ae693f19846f"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-unraveled-turret/clay.png",
+          "sha256": "f8b9b53819d7b1b238cefc1bfa34c18ab02e6abb985a2e25bc33bed92fb7b6a2"
+        }
+      }
+    },
+    {
+      "id": "thrown-unraveled-health",
+      "name": "Field Medic",
+      "faction": "unraveled",
+      "role": "health",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** The cross carries nearly all of the medical identification.\n\nThe brief requires a folding case with instrument trays, pharmaceutical cartridges, injector reservoirs, hoses and treatment indicators. The render shows a dark cabinet, empty shelves, small caps and a bright cross. There is no readable patient-facing injector, tool arm, dispensing socket or medicine delivery route.\n\nThe model does not answer how an ally receives treatment, where consumables are protected or how the case closes. Tray rotation is relevant, but generic motion of the shelves is not a treatment cycle. The actual pumps and instruments should perform the operational action; lights should support it.\n\n**Redesign:** a rugged clamshell case with a recessed drug cassette, hose reels, a fold-out injector arm and instrument trays with retained tools. Differentiate supply access from the patient-facing side. Use the emblem as a secondary cue.\n\n**Acceptance:** hide the cross and lights; it should still read as medical equipment. Show packed closure, usable access and a pump/tool action linked to successful authoritative healing.",
+      "asset_sha256": "78fb9a2aaa1ee8e997ff0be11b68a37d6921d54a772322a3cf0237a2bc63767c",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-unraveled-health/front.png",
+          "sha256": "e526a7c0d7c08ab66345318fed4820a76e9db2df161e96df336a80a9b00a017f"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-unraveled-health/rear.png",
+          "sha256": "38f167d3ac85acbda0f07d4db20825392d6e32d9a21f4c46de32323c6c9fbd40"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-unraveled-health/closeup.png",
+          "sha256": "b2133deff4d1f931ec8682deec333158583248bdaacf44e27e9b2481de49551c"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-unraveled-health/clay.png",
+          "sha256": "8585db14e8678d3b3470a865ac1ac7b5bb5520b7dbbdf43e7dd72365d56096ec"
+        }
+      }
+    },
+    {
+      "id": "thrown-unraveled-ammo",
+      "name": "Munition Feeder",
+      "faction": "unraveled",
+      "role": "ammo",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 3,
+        "functional_construction": 1,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** It displays an ammunition symbol rather than a supply mechanism.\n\nSix oversized vertical rounds sit on the face of a box above a flat ledge. No magazine bank, indexing drive, retention hardware or delivery path is visible. The common stalk/plinth supports it without serving a specific dispensing purpose.\n\nThe viewer cannot distinguish stored ammunition, a selected charge and supplied ammunition. There is no protected volume that plausibly contains the finite supply, and no geometry that explains how a round reaches the tray. Rotating the entire feed rack does not animate ammunition advancing through a guide. Remaining stock is present in the host view but unused by candidate pose selection.\n\n**Redesign:** a low opening case with a magazine carousel or belt cassette, indexing pawl, guide rails and an accessible receiving bay. Make selection and delivery separate visible steps.\n\n**Acceptance:** follow one item from storage to delivery. Each successful resupply must cause a clear indexed action; empty stock must stop delivery and leave a readable depleted state.",
+      "asset_sha256": "d88be3fae51e1d8e5de849d78f6c12e4b68c7d48de72e3c5b4cd78f3c68ce32e",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-unraveled-ammo/front.png",
+          "sha256": "b34fcf16bf80d05b0df2c23f3faffabaae663040150f5db9f7bf15690352d9ad"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-unraveled-ammo/rear.png",
+          "sha256": "6af8ace48b1494de86e3043b8d7aaa85a88fe198e118f78504a1e08fd3c3e0e3"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-unraveled-ammo/closeup.png",
+          "sha256": "27b72faab254e28495e1adf29a4a88cc51c710c16f2987789afb4040b5b33c7d"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-unraveled-ammo/clay.png",
+          "sha256": "5b093fb66a328f6b690bad9653f2ccb1bac997eedb9e671cf525ebe2a01e5e92"
+        }
+      }
+    },
+    {
+      "id": "thrown-unraveled-miasma",
+      "name": "Vapor Engine",
+      "faction": "unraveled",
+      "role": "miasma",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 3,
+        "functional_construction": 2,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** It suggests industrial exhaust hardware but does not explain chemical dispensing.\n\nThe two cylinders and bent extensions establish a useful broad motif. However, the tiny ring-like valves, undifferentiated pipe ends and central assembly do not define filling, regulation, fan flow or pressure indication. There is no readable gauge or clear separation between reservoir, intake and output.\n\nThe exhaust heads appear capped or visually ambiguous. The viewer cannot trace a flow path from chemical storage to discharge. Generic vent rotations do not establish a valve opening, and a rotor node is insufficient without correctly oriented fan geometry. These images do not demonstrate vapor emitted at a real aperture or matched to the authoritative effect radius.\n\n**Redesign:** a squat pressure skid with strapped bottles, a regulator manifold, readable gauge face, venturi/fan housing and open or perforated exhaust heads. Route short visible pipes between them.\n\n**Acceptance:** show pressure/fan action and emission from actual outlets. The field must follow authoritative activation and the three-metre effect radius without changing gameplay calculations.",
+      "asset_sha256": "173de9eb4f048730989fccbc3f081cd21a575eb0ccab36edecfa5896e7bfb642",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-unraveled-miasma/front.png",
+          "sha256": "47ccaed6fba1bb713d72b2b18eaa111d61b0b56de2d568460cbb057cd19fb790"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-unraveled-miasma/rear.png",
+          "sha256": "40efaa072fdc78a523b8aed12f497d323b847f3d6f8f05b03837e53eb75cdd03"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-unraveled-miasma/closeup.png",
+          "sha256": "efbafdaf287b29ac6cd651cc296101c17f9c1b9a0bb627a5d8dafe9deec67c44"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-unraveled-miasma/clay.png",
+          "sha256": "1eed6f3a5109149f23f4d405d8e4a535b89d4a8c786fc6c18b5050a535351c60"
+        }
+      }
+    },
+    {
+      "id": "thrown-unraveled-shield",
+      "name": "Aegis Projector",
+      "faction": "unraveled",
+      "role": "shield",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** The defining protective surface is missing.\n\nA central glowing lump sits between two rings and four thin lamp-topped rods on the repeated base. This reads as an ornamental electrical stand. The rods do not communicate stabilization, the emitter has no engineered housing, and the spheres/rings are symbols of energy rather than a coherent projection mechanism.\n\nNo candidate dome is authored. As a result, there is no visible expansion into the protective radius and no surface to flash or deform on absorption. Generic rotations of rods and rings do not establish clamps engaging, a projector rising and an emitter aligning.\n\n**Redesign:** a low power cassette with four substantial folding outriggers feeding a protected gimballed projector. Use directional coils or segmented emitter petals with a defined deployed alignment. Author the translucent protective field separately from the physical generator.\n\n**Acceptance:** match the actual 2.4 m protective radius, keep actors readable through the dome and respond to absorbed attacks. Show clear support locking and field expansion from the emitter.\n\n## Penitent",
+      "asset_sha256": "9e4aa13ff8d4043c9181869def8be1351807673df4e0055e1f98ebe77e08d459",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-unraveled-shield/front.png",
+          "sha256": "afbbfc4be72bfa051672d670e571e92bf99ec559b698736ce7f6bb8a51bc2029"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-unraveled-shield/rear.png",
+          "sha256": "bc9e505809619ff0369bdc7d2049dcb97c0405c068aeb8c96f2d8e9a45e5d725"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-unraveled-shield/closeup.png",
+          "sha256": "5643e71444957bb8d92d02f062aac941aa93996c7cb674dbf703d1d2eace990d"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-unraveled-shield/clay.png",
+          "sha256": "1c01e06ee6c76bec9895b0fac8f95dda2bc4f0fbe323835f9939e41746497252"
+        }
+      }
+    },
+    {
+      "id": "thrown-penitent-wall",
+      "name": "Wall of Contrition",
+      "faction": "penitent",
+      "role": "wall",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** This is the Bastion Panel with palette and ornament changes.\n\nThe prescribed carved masonry, opening reliquary, rising slab segments and retaining ironwork are absent. The same rectangular plates, strips, central housing and feet remain. Amber squares, red spheres and a red rectangle do not establish religious manufacture or an independent silhouette.\n\nThe construction narrative is wrong: shared hinged-panel motion cannot represent ascending masonry. The slabs lack carving, stepped joints and thickness hierarchy. The hanging ornaments do not read as worked objects with meaningful suspension. Even neutral clay reveals the same engineering-faction asset.\n\n**Redesign:** an iron-bound reliquary whose opening leaves become retaining arms. Raise interlocking carved slabs into a stepped defensive arrangement, with an integrated devotional relief and carefully placed votive recesses. Design the actual stowed slab arrangement.\n\n**Acceptance:** distinguish it from Bastion Panel with materials and lights removed. Prove how stone segments rise, engage and lock. Every ornament must have understandable construction and attachment rather than being a bead added to the base.",
+      "asset_sha256": "66ddee9025bdd469414ece8724947dedbe6c1e3d082da5766bba6fa0b6e4b53c",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-penitent-wall/front.png",
+          "sha256": "f9a51a0f339e8c84ee19bb386022851c73424b4f7c4ebefdb98152c0ff020db3"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-penitent-wall/rear.png",
+          "sha256": "b7554f0923e8dedd6322e6f1fcc9c35b982b6a08fa703c1b1d1f16ec9f2ede47"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-penitent-wall/closeup.png",
+          "sha256": "861aec03b4a639bab0362dfd9f54127ff3bef4518546a908fd20e9c1bc688433"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-penitent-wall/clay.png",
+          "sha256": "86fc90023329c076a32a0a013a1f1fd9eb0ae4f51130f3c7547b5dc20173b9b8"
+        }
+      }
+    },
+    {
+      "id": "thrown-penitent-barricade",
+      "name": "Warding Cross",
+      "faction": "penitent",
+      "role": "barricade",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** The appropriate crossed motif has not become a distinct ritual device.\n\nThe Unraveled X-frame is reused with pale bars, the same upright rod row, red ornaments and the same base. The plain end stakes do not read as reliquary pillars; there are no engraved mechanisms, nested collars or suspended censers with believable vessels.\n\nIts construction remains an engineering barricade with ceremonial colors. Shared rod rotations do not demonstrate extending pillars, independently swinging ornaments or a precise locking sequence. The frame needs to explain how the two sides are physically connected and how their warding members deploy together.\n\n**Redesign:** paired iron-caged, carved pillar capsules. Pivot the protective rods from separate collars and engage them at the crossing. Hang recognizable pierced censer bowls below their engagement points, on properly attached chains.\n\n**Acceptance:** prove that pillars and rods pack together and deploy through connected mechanisms. Make a low ritual obstruction, clearly different from both the Unraveled barricade and the Penitent solid wall.",
+      "asset_sha256": "adad6926a31c7ed1c2eb8455c642498e4c6bf27b16830081cd390995f924d9af",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-penitent-barricade/front.png",
+          "sha256": "868aa1e6db957aa2a6fbf83b0b4e0484ef1ef24c72c885318b262a05161eefb6"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-penitent-barricade/rear.png",
+          "sha256": "2bf6782ff4eca8f9c73edb59a63a6c83a45f9a748f3d011322b589e622230cf6"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-penitent-barricade/closeup.png",
+          "sha256": "8e87729ebe4e1b39b7a10d50324dfeb08f4194f8635934c4d91ad3d6dbae705a"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-penitent-barricade/clay.png",
+          "sha256": "f5aa99388b3731a66da960838330372d2509eea45278d9ceb8b6fccd31c3a756"
+        }
+      }
+    },
+    {
+      "id": "thrown-penitent-turret",
+      "name": "Litany Engine",
+      "faction": "penitent",
+      "role": "turret",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** A conventional twin-barrel gun has been decorated rather than redesigned.\n\nThe Sentry receiver, stalk and barrels remain dominant. Pale crown prongs and an amber bead do not supply a sanctification chamber, sacred emitter aperture, rotating prayer mechanism or incense vents. It reads as the same mechanical weapon with a crown.\n\nThis fails the requested independent operating principle. The inherited gun-style groups do not stage an intelligible charge and emission cycle; moving crown pieces cannot carry that entire story. A ritual weapon still needs an unambiguous attack axis and a mechanism that points it.\n\n**Redesign:** an iron reliquary cradle surrounding a directional sanctification chamber. Place the attack aperture behind articulated seal plates. Use a geared prayer wheel or engraved rotating shutters to expose, charge and reseal the chamber; include actual incense discharge hardware.\n\n**Acceptance:** neutral clay must separate it from Sentry Mk.I. Host aim must align the aperture, and a confirmed attack must drive a specific charge/open/discharge/recover sequence rather than decorative looping.",
+      "asset_sha256": "99969e98d814db4c4b7a2e2cc7ed879cbbceb55a128f7ee921e6ad280efc836f",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-penitent-turret/front.png",
+          "sha256": "9b4fea285b02690c30d019c3dd9094cf4799b2fed70e51b4cb1cc6a87b2f2ca4"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-penitent-turret/rear.png",
+          "sha256": "7537d4b8ea89e3091b141ddc5369ffd3e6abe77a395c5831230d83b26c585d30"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-penitent-turret/closeup.png",
+          "sha256": "3494669b29c6b2c44505c018d641d34f541a702d5851300f3ea7f989a6a880ed"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-penitent-turret/clay.png",
+          "sha256": "dc5d7f629fc1c79aadc9445782e8d64d00d47064559949556e91a7f060f24d58"
+        }
+      }
+    },
+    {
+      "id": "thrown-penitent-health",
+      "name": "Shrine of Mercy",
+      "faction": "penitent",
+      "role": "health",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** It remains the mechanical medical cabinet in ceremonial colors.\n\nThe amber cross, pale shelves and red flap do not create an altar. There is no useful devotional surface, recessed reliquary chamber, articulated column or legible lantern/candle construction. Small caps on top do not carry the requested sacred lighting function.\n\nThe object does not explain where the protected relic sits, how an ally approaches it or how its manufacture differs from medical equipment. Inheriting the tray groups also inherits the wrong unfolding story. The healing action needs a specific relic/lantern mechanism rather than generalized shelf movement and glow.\n\n**Redesign:** a hinged altar chest whose leaves unfold into a compact devotional surface. Reveal a recessed relic chamber, low extending columns and hanging lanterns. Give the ceremonial cloth visible folds, thickness and attachment points.\n\n**Acceptance:** it must read as an altar when the cross and lighting are hidden. Successful healing should visibly engage its own mechanism while the existing host health and sanity calculations remain authoritative.",
+      "asset_sha256": "46b0acfe983123fcf85651286d082ca9d2adf2466a8166bbdafb06b66c46eea8",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-penitent-health/front.png",
+          "sha256": "f3356a5350b0d5313b485801d4d82337426673687f46f074f239c9b297b55dd8"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-penitent-health/rear.png",
+          "sha256": "e7fc1993c79a2b11f83e4fba8182c51966f6a884199445ace68cd945262be814"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-penitent-health/closeup.png",
+          "sha256": "3bf61b494439f6d80dd041fa8a9efde2c7b3271e5730c1e6d065f316478729f7"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-penitent-health/clay.png",
+          "sha256": "6f4ae80df95d6cd77da321b28139ab496fdb21b1632ad95c0bebeef39dbcb660"
+        }
+      }
+    },
+    {
+      "id": "thrown-penitent-ammo",
+      "name": "Arsenal Reliquary",
+      "faction": "penitent",
+      "role": "ammo",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** The defining circular supply and consecration architecture is missing.\n\nIt reuses the Munition Feeder cuboid, cartridge display and tray with red rounds and pale tips. The red spheres and plaque below are a repeated ornament package. They do not explain sacred storage or supply.\n\nThere is no circular rack, central chamber or selected receptacle travelling toward the ally. The viewer cannot follow ammunition through storage, consecration and delivery. The inherited rack rotation is not a distinctive prayer mechanism, and the generic box does not communicate a finite reliquary inventory.\n\n**Redesign:** an opening reliquary around an annular ammunition rack. Index one charge through an enclosed central chamber, then slide or lower a receiving cup toward the user. Put seals and inscriptions on actual structural surfaces rather than using detached symbols.\n\n**Acceptance:** trace a selected charge through all three stages. Successful server-authorized supply must trigger delivery; depleted stock must be readable. Its clay silhouette must differ from the Unraveled case and Begotten incubator.",
+      "asset_sha256": "e6d07dd175d257308b335ef9d90e236f9834e9f70878b6b10f75487c028881d0",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-penitent-ammo/front.png",
+          "sha256": "4d3c4ce1c7e6ca4cd57622b32796abe3150102fa841b43d68d6e70ea72bad1da"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-penitent-ammo/rear.png",
+          "sha256": "05013a32e78968cb33b65180fd0d58cfc9d8c478055302cdc72e9be756f7a135"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-penitent-ammo/closeup.png",
+          "sha256": "04b4c84d8ebe83973d7b04d702a8146b5edd29971245924d3833d359e007af0b"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-penitent-ammo/clay.png",
+          "sha256": "b58d85c8a2b259271e5ce0718b370698779377ff1c0fa39f7867aea80e8a43a9"
+        }
+      }
+    },
+    {
+      "id": "thrown-penitent-miasma",
+      "name": "Censer of Dread",
+      "faction": "penitent",
+      "role": "miasma",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 1,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** Recolored industrial exhaust pipes do not constitute a censer.\n\nThe Vapor Engine cylinders and bent stacks are retained in pale/dark materials, with the same small red spheres below. There is no substantial suspended main vessel. A cross on the body cannot explain an incense burner.\n\nThe defining working components are missing: bowl, lid, perforations, combustion chamber and suspension. These are the object's functional anatomy. Shared vent rotations do not become chain sway, vessel rotation or lifting censer motion. The current assembly is fundamentally the wrong substrate.\n\n**Redesign:** a folding iron tripod or small gantry raising a pierced censer bowl on a chain. Add a few smaller suspended vessels at unequal heights, with lids, vents and actual chain attachment points. Give the support frame and lifting mechanism enough substance to carry them.\n\n**Acceptance:** smoke must originate from the vessels and follow host activation/radius. Verify suspension, clear pendulum travel and a visibly distinct raising/opening ritual instead of industrial valve motion.",
+      "asset_sha256": "34682feb3a00699f69d7f770f29ae197692fad3ad98fc16a2b58abc3ce1a693c",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-penitent-miasma/front.png",
+          "sha256": "27424ddfed0430c2ef6bb89d59380e895831f742255158031decac16e10e0680"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-penitent-miasma/rear.png",
+          "sha256": "e8ad0c930c15e209517297be15b9156635a0f146f1b217e2bdf292da9dc8c0bc"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-penitent-miasma/closeup.png",
+          "sha256": "397ec935b80d75bcd0434d8eb32e1d234db927c05b69a1ff0a2089ea36532166"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-penitent-miasma/clay.png",
+          "sha256": "4030bac5081a8243d94acb2ba69e072484f9cd236e9324a57fa8fdbbe12389a1"
+        }
+      }
+    },
+    {
+      "id": "thrown-penitent-shield",
+      "name": "Sanctuary Ward",
+      "faction": "penitent",
+      "role": "shield",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** It is the Aegis stand recolored, and the ward itself is absent.\n\nThe same thin rods, bead tops, rings and central glowing lump remain, supplemented by the standard plaque and spheres. The supports lack the massing and detailing of ceremonial pillars; the center is not a protected lantern with an interior.\n\nThe four-way arrangement is relevant, but does not establish independent sacred construction. Generic rotations cannot demonstrate ascending pillar capsules and unfolding ornamentation. No transparent field exists for the required illuminated impact sigils, so the main protective function is not represented.\n\n**Redesign:** four independently rising iron-bound pillar capsules around a hanging lantern. Open articulated top leaves inward toward the light; use a few properly suspended relic boxes to articulate its ritual mechanism. Author the amber field as a separate transparent surface.\n\n**Acceptance:** prove pillar extension and lantern activation. Match the 2.4 m field radius, retain actor visibility and drive protective sigils from real absorption events on the field surface.\n\n## Begotten",
+      "asset_sha256": "f82cdc7e367483dda875faa89ac518924c317ffdb414867543d2a41266ecd8b5",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-penitent-shield/front.png",
+          "sha256": "dd8e972a497b225ccae44e43b945821332e64710a4899bb65771f94543b4511b"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-penitent-shield/rear.png",
+          "sha256": "55bb9457ace6de79bd2fd4cd4c05c02a6790cc8231b2eb6666ef566e7ef0eb3f"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-penitent-shield/closeup.png",
+          "sha256": "9ae8f565bda4629ad1fc2541599d7c6bb7a1470143fa7993aaf14f18029085f3"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-penitent-shield/clay.png",
+          "sha256": "675284a0f44ef90014dc6e50cf24bc8a6b46cece3faaea00ead5a4ee5519c749"
+        }
+      }
+    },
+    {
+      "id": "thrown-begotten-wall",
+      "name": "Ossuary Rampart",
+      "faction": "begotten",
+      "role": "wall",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 2,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** A connected purple mass has not become a skeletal defensive organism.\n\nThe current object is a smooth comb-like body with six pale tapered strips on its front. The strips resemble attached paddles. There are no vertebral joints, readable rib arches, cartilage seams or vascular transitions to explain their anatomy.\n\nThe broad mass gives some wall recognition, but smooth blending and the unstructured upper gaps weaken the distinction between rigid bone and flexible tissue. Actual remeshing solves connectivity, not anatomy. Rotating separate strips does not show bones growing or ribs curling while connective tissue remains attached.\n\n**Redesign:** vertebral buttresses joined by overlapping rib arches, with tendon and membrane spanning their intervals. Integrate bone emergence and tissue attachments into the anatomy. Vary rib size around a clear structural rhythm; use thorns as secondary growth rather than the entire identity.\n\n**Acceptance:** clay material should reveal a supported skeletal wall. Growth must preserve connected tissue and end in useful continuous cover without detached decorative bone strips or arbitrary enlargement of a finished wall.",
+      "asset_sha256": "04bc86d4f6b07d2045ce9d1d7967f9bb39e912b4ecd33e9fad69b3abda26e719",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-begotten-wall/front.png",
+          "sha256": "8c73620ec1d54de846c649c307f0ba9cbcd4bec29070df49bab233549f6041d5"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-begotten-wall/rear.png",
+          "sha256": "df38f6321e28468d27b48b48a072ad346ef635adb58eeaf98ded69b8170ab4db"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-begotten-wall/closeup.png",
+          "sha256": "d1c9f8452c16e8b6dfb46244ddfd3675fbfc6cae28e660d85a88bc8a11fdabc9"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-begotten-wall/clay.png",
+          "sha256": "76eaec27861ba211f65e23c9f38554dc91df04fc94647532002f84f7a40c8dc2"
+        }
+      }
+    },
+    {
+      "id": "thrown-begotten-barricade",
+      "name": "Grasping Thicket",
+      "faction": "begotten",
+      "role": "barricade",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 2
+      },
+      "individual_findings": "**Reject.** Blunt pale posts do not communicate grasping or entanglement.\n\nThe low purple root mass is a useful starting scale, but six cut-off-looking rods dominate the front. Living branches lack the hooked tips, joint hierarchy and tendon tension expected of an aggressive obstruction. It resembles a miniature fence rather than limbs reaching to catch an enemy.\n\nThe bone groups use the same simple rotation recipe as the wall. That does not create a travelling curl through a flexible appendage or explain attachment at the rooted body. The grasping action should be visible in both silhouette and motion, not inferred from a role label.\n\n**Redesign:** a low radial root knot with a few asymmetrical segmented claw limbs. Give each a broad tendon base, narrowing joint chain and inward hook. Add short cartilage barbs between those larger primary limbs.\n\n**Acceptance:** maintain a distinct low obstacle silhouette, continuous limb bases and a convincing unfolding/grasping cycle. Verify the hostile obstruction footprint and avoid detached tips, rigid post gestures and whole-object shrinkage as deployment.",
+      "asset_sha256": "2d3be76c644ae190dcea073fe04d4afda23a065645c0ce660b3caa416af01d5c",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-begotten-barricade/front.png",
+          "sha256": "730eecfc618bd09e94c370d0e53cb35bb960ef258b2d76942f34f36f4fdad896"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-begotten-barricade/rear.png",
+          "sha256": "f53922d6cce4a2ee5e08d7337183b84b857ce7621a7b37ffc1d07def89f6c18f"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-begotten-barricade/closeup.png",
+          "sha256": "66b28a516127199b700278c8e9279b927f2d71adf091e1d74a3a54104e7ad016"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-begotten-barricade/clay.png",
+          "sha256": "edbd617915e9ba7e6b6caa14a123434ae1754f7e1e9924602a187e68890060c9"
+        }
+      }
+    },
+    {
+      "id": "thrown-begotten-turret",
+      "name": "Spore Spitter",
+      "faction": "begotten",
+      "role": "turret",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 2,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** The anatomy reads as a small mascot rather than a biological weapon.\n\nA round smooth head sits on a tapered stalk, with a lime bead and two sideways pale prongs. There is no mouth aperture, visible pressure membrane or differentiated chitin base. The viewer cannot identify where a projectile would leave the body.\n\nThe prongs lack jaw sockets and look attached. The bead supplies the entire eye cue without orbital anatomy. Named eye/jaw groups can move, but there is no actual maw to open or gland to compress. Rigid head movement and generic prong rotation cannot establish the buildup and release of pressure.\n\n**Redesign:** a supported, forward-leaning muscular stalk ending in an open throat with thick lips. Position the tracking eye above or beside that aperture. Connect mandibles through defined sockets and expose a rear pressure sac with longitudinal muscle bands.\n\n**Acceptance:** host aim must align the throat. A confirmed attack must visibly tense the gland, open the maw, expel from the aperture and recover through connected musculature.",
+      "asset_sha256": "f9774fdd96e376df3254157295acd0caa71e9c4f6f20f0d2d1eecd2c49d73458",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-begotten-turret/front.png",
+          "sha256": "69894ca5693d5dc8a459da5945d352813deb669bea01cd858659514bc278efc4"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-begotten-turret/rear.png",
+          "sha256": "5a1f879213d11ff42643d3e33c6593723f1956a7cc3dd935f8053bd0ffd36172"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-begotten-turret/closeup.png",
+          "sha256": "f5831ed65980ad49a726d8c3b5ec3e90d88991db2215f6427ca43882ce60422b"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-begotten-turret/clay.png",
+          "sha256": "c6fea0d9b444ce1902589c1555fb3fa94deee254155546b76798adcfcf7fd70a"
+        }
+      }
+    },
+    {
+      "id": "thrown-begotten-health",
+      "name": "Regeneration Heart",
+      "faction": "begotten",
+      "role": "health",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 1,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** The object cannot be identified as a medical organ without its label.\n\nThe render shows a smooth upright purple pod, angular tabs and a green patch. Intended ventricles merge into a nearly featureless silhouette. No vessel network, nutrient sacs, treatment appendages or circulation route is legible.\n\nThe green patch is a color cue rather than an explanation of restoration. Rotating rigid tabs does not produce a contracting heart, and the vascular body has no meaningful authored chamber deformation. Compared with the other support pods, the role-specific anatomy is almost absent.\n\n**Redesign:** two unequal muscular chambers with a strong connecting cleft, branching vessel arches and smaller nutrient sacs. Anchor them in a low living root organ. Give the ally-facing side soft treatment tendrils with clear tissue bases and a readable nutrient route.\n\n**Acceptance:** an unlit clay silhouette must identify an anatomical pump. Show genuine chamber contraction and circulation/tendril activity during successful restoration, preserving tissue continuity rather than wobbling armor tabs around a rigid pod.",
+      "asset_sha256": "5baf610ad017a1cb736b6ff8403c2d6194e540d9b3ee4bed7825cd91eebe7d32",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-begotten-health/front.png",
+          "sha256": "7ffde67437fa7ef5b6680e10fce4315da16ccbdbc9fb30f43218050fd89fd70b"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-begotten-health/rear.png",
+          "sha256": "fec56f99f48a0a1c8e0a13cc93ed01c000920838c594d12e6259bb79aa444aa9"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-begotten-health/closeup.png",
+          "sha256": "683ed89c0daf6ed30b54aba7381cdfa23460a80ff19c79d0e7e7c4d31f8efc2b"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-begotten-health/clay.png",
+          "sha256": "472eb351547517243dc0a5c5ba87da1acdaaf3d667c9bea5190db3f2fd5bd9f9"
+        }
+      }
+    },
+    {
+      "id": "thrown-begotten-ammo",
+      "name": "Brood Magazine",
+      "faction": "begotten",
+      "role": "ammo",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 1,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** It lacks readable brood chambers and an actual release path.\n\nA rounded cluster with angular tabs sits on the same rooted pedestal used by the other support organs. Its lobes merge so strongly that separate egg chambers and membranes are difficult to distinguish. There is no clear central nutrient organ or exit lip.\n\nThe model does not read as an incubator or dispenser. A viewer cannot identify a selected capsule, distinguish available stock or see how a grown munition separates from its living attachment. The tabs rotate generically; no chamber contracts and no capsule is released. Finite host stock is not represented by distinct chamber states.\n\n**Redesign:** a low brood cradle with several individually readable membrane-wrapped capsules, joined through short vascular stalks to a central nutrient organ. Add one unmistakable release lip and preserve the connected living network.\n\n**Acceptance:** trace a capsule from attached chamber through contraction and separation to delivery. Successful host resupply must drive release, with visibly depleted chambers after supply ends.",
+      "asset_sha256": "fd080b0789599877fd318f746bfee807768856c8f913d4d40b2b7f57cb1fda79",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-begotten-ammo/front.png",
+          "sha256": "38ad2f2465ea316616bc501b9d64c05d08d7f1bbbd521fbb925c62b8544fe26d"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-begotten-ammo/rear.png",
+          "sha256": "301709df4a96a9f5f7715b7b730a30bcfa1bd05bad227f36927db7f6cff94c37"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-begotten-ammo/closeup.png",
+          "sha256": "80c152aeba418771177cc42273f6d0c33818ca9f6e022d90f34bf09db54e8435"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-begotten-ammo/clay.png",
+          "sha256": "e3ed69953adf1e32afee7067974e60cb0e28f2f52e2406ad7e0525abb65412b7"
+        }
+      }
+    },
+    {
+      "id": "thrown-begotten-miasma",
+      "name": "Blight Spore",
+      "faction": "begotten",
+      "role": "miasma",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 1,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** The swelling does not explain spore production or expulsion.\n\nThe current object is a tall, smooth purple mass with minor side protrusions and no readable emission openings. Its surface and rooted lower body resemble the health and ammunition pods. The intended pustules do not resolve as distinct pressure organs.\n\nNo stomata, membrane lips or protective ribs identify where spores emerge or how the organ supports pressure. Rotating tiny carapace elements does not open an organic vent. The primary sac lacks a specific inflation/contraction cycle and the output is not tied to a visible anatomical aperture.\n\n**Redesign:** a squat distended sac restrained by irregular protective ribs. Place secondary pustules around clear sphincter-like stomata; differentiate taut thin membranes from thick structural tissue and vascular feeding routes.\n\n**Acceptance:** show a connected organ swelling, opening local vents and contracting during authoritative emission. The source and three-metre effect must be legible, and its silhouette must remain distinct from the heart and incubator.",
+      "asset_sha256": "935828ece00e1d07b4f83be2faaf89cc2088ae35b60ecbeb81a9ea9dd5062c6e",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-begotten-miasma/front.png",
+          "sha256": "2b2ef4d3a88db1887c3ce4e87da14ee5264e87fc8b7eabff9f7df741e9a9749e"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-begotten-miasma/rear.png",
+          "sha256": "ed1e706e17fa93ecbf7ef0f9b2d813e71a66efd28aaf1f2a6ffdd63cdda2f40d"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-begotten-miasma/closeup.png",
+          "sha256": "5e66e5b700d9937a2f5e4b276dc36b47062fa5d7de81843c96f5c0a5aa72feca"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-begotten-miasma/clay.png",
+          "sha256": "f8100ecaf52e03a24ae87822f4792e25a57e4f61c3280ca8adb3d6e719f5908e"
+        }
+      }
+    },
+    {
+      "id": "thrown-begotten-shield",
+      "name": "Living Mantle",
+      "faction": "begotten",
+      "role": "shield",
+      "decision": "REJECT_REDESIGN",
+      "scores_out_of_5": {
+        "role_readability": 1,
+        "functional_construction": 1,
+        "faction_identity": 1
+      },
+      "individual_findings": "**Reject.** The protective membrane, the defining part of the design, is missing.\n\nThe object repeats the upright pod and green patch, with extra outward spikes. Its rib-like pieces do not span a membrane or explain a broad protective envelope. It remains difficult to distinguish from the other support organs.\n\nA crown of spikes cannot demonstrate how a mantle is stretched and supported. Generic rib rotations neither grow membrane nor preserve attached seams. There is no translucent surface to ripple under impact or visibly recover during regeneration, leaving the principal gameplay function without a visual representation.\n\n**Redesign:** a low central organ with radial rib fans and tendon-web attachments. Open these into a broad canopy while a thin continuous membrane stretches between defined seams. Treat the compact generator and the full protective field as related but distinct anatomical systems.\n\n**Acceptance:** preserve membrane attachments throughout motion. Keep the envelope transparent, match the 2.4 m protective radius and drive impact ripples/recovery from real host absorption and regeneration.",
+      "asset_sha256": "130dd4defe24292fbdd5f811d98a754463805c5579de6e2e6d9a50bd2a5d8dad",
+      "renders": {
+        "front": {
+          "path": "previews/field-deployables/thrown-begotten-shield/front.png",
+          "sha256": "f96fa11751cc0cc586b4e440484da1eefb15f4df2f849b4daf675db75ddab2b0"
+        },
+        "rear": {
+          "path": "previews/field-deployables/thrown-begotten-shield/rear.png",
+          "sha256": "24e33d2e2fe9af13bc867995396b209cd2af55bdb4841d61c303852a15064fca"
+        },
+        "closeup": {
+          "path": "previews/field-deployables/thrown-begotten-shield/closeup.png",
+          "sha256": "133d6fadd1613e263d45dc519773054943c537bdb9cf1a3fe0937f161e95d41c"
+        },
+        "clay": {
+          "path": "previews/field-deployables/thrown-begotten-shield/clay.png",
+          "sha256": "2b7212edcdec22b2901d97d0b76d1f11a0ad8ce6f5d2376bc4490c3caef6d16b"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "e6d07dd175d257308b335ef9d90e236f9834e9f70878b6b10f75487c028881d0",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/front.png",
+      "sha256": "4d3c4ce1c7e6ca4cd57622b32796abe3150102fa841b43d68d6e70ea72bad1da"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/rear.png",
+      "sha256": "05013a32e78968cb33b65180fd0d58cfc9d8c478055302cdc72e9be756f7a135"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/closeup.png",
+      "sha256": "04b4c84d8ebe83973d7b04d702a8146b5edd29971245924d3833d359e007af0b"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-ammo/clay.png",
+      "sha256": "b58d85c8a2b259271e5ce0718b370698779377ff1c0fa39f7867aea80e8a43a9"
+    }
+  }
+}

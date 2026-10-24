@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "130dd4defe24292fbdd5f811d98a754463805c5579de6e2e6d9a50bd2a5d8dad",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** The protective membrane, the defining part of the design, is missing.\n\nThe object repeats the upright pod and green patch, with extra outward spikes. Its rib-like pieces do not span a membrane or explain a broad protective envelope. It remains difficult to distinguish from the other support organs.\n\nA crown of spikes cannot demonstrate how a mantle is stretched and supported. Generic rib rotations neither grow membrane nor preserve attached seams. There is no translucent surface to ripple under impact or visibly recover during regeneration, leaving the principal gameplay function without a visual representation.\n\n**Redesign:** a low central organ with radial rib fans and tendon-web attachments. Open these into a broad canopy while a thin continuous membrane stretches between defined seams. Treat the compact generator and the full protective field as related but distinct anatomical systems.\n\n**Acceptance:** preserve membrane attachments throughout motion. Keep the envelope transparent, match the 2.4 m protective radius and drive impact ripples/recovery from real host absorption and regeneration."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-shield/front.png",
+      "sha256": "f96fa11751cc0cc586b4e440484da1eefb15f4df2f849b4daf675db75ddab2b0"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-shield/rear.png",
+      "sha256": "24e33d2e2fe9af13bc867995396b209cd2af55bdb4841d61c303852a15064fca"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-shield/closeup.png",
+      "sha256": "133d6fadd1613e263d45dc519773054943c537bdb9cf1a3fe0937f161e95d41c"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-shield/clay.png",
+      "sha256": "2b7212edcdec22b2901d97d0b76d1f11a0ad8ce6f5d2376bc4490c3caef6d16b"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

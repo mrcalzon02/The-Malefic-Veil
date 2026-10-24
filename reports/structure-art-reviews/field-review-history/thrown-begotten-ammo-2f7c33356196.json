@@ -1,0 +1,48 @@
+{
+  "asset_sha256": "2f7c3335619666bc151a4c4ff30f9e77c1c930286c1d7d2ec6045f3c0dad72ec",
+  "decision": "reject",
+  "reviewer": "Codex visual inspection",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 1,
+    "faction_identity": 2
+  },
+  "findings": [
+    "Export imports in PACKED pose; tiny and poorly framed across all four views. Deployed silhouette cannot be approved.",
+    "Compared with four sampled car/character renders: material detail and functional part definition are insufficient.",
+    "Penitent shares mechanical chassis and several role silhouettes; additional distinct manufacture needed. Begotten turret has detached eye/mandible appearance."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/front.png",
+      "sha256": "3436b91dcb6990188e0b32c46ac5c9811a31bdc071f21317e5f855c2ac22746b"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/rear.png",
+      "sha256": "4349c49e0a5fd7834820d93febd7d4d3f8749156d4eab0df27da9fcc0cb1254e"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/closeup.png",
+      "sha256": "fd6bb045edcbd3d2b12ee3b8bf4712d6b15f4f2c55afbc3cd789fda41aedbfe2"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/clay.png",
+      "sha256": "2118eaaf33a04fa95a1c498438c3021fd3d2143cc3709d4316bcdc39fd4b1adb"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "attempt": 1
+}

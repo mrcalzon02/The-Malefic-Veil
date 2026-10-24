@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "0a6887a260d6b12f46971a0950cc7ffce02323e464d963f4a495320f7c30cef1",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 3
+  },
+  "findings": [
+    "**Reject.** The role is recognizable, but the construction is not convincing.\n\nThe brief calls for a compact armored capsule becoming roughly 2.2 m-wide, 1.8 m-high reinforced cover through hinged plates, hydraulic braces and locking feet. The actual object is two broad rectangular plates with three regular strips each, cyan squares and the repeated small central stand. It resembles two oversized doors on a pedestal. Thickness, repair construction, hinge knuckles and structural connections are poorly articulated.\n\nThe central seam and narrow support arrangement weaken its protective and load-bearing story. Rotating the plates while enlarging the entire object does not explain how full-height rigid armor fits into a small capsule. The rear needs an understandable load path, not decorative diagonals.\n\n**Redesign:** start with a split armored cassette containing nested overlapping plates. Use real hinge barrels, travel stops, diagonal extending braces and broad feet aligned with the panel loads. Establish the packed plate stack first.\n\n**Acceptance:** demonstrate useful continuous cover, supported plate edges, physical nesting without arbitrary shrinkage, and collision checked against the full deployed and moving envelope."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-wall/front.png",
+      "sha256": "7dbacb2cb0a6b7d3d59a26a0b339ce1cd8dba2b800b0cd9f8f4256872d3ec449"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-wall/rear.png",
+      "sha256": "e5045a7ca47d4be0633ddc91b970899147d5bffabf40e724ae8ae475c2e51f63"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-wall/closeup.png",
+      "sha256": "2438c3005bddc01a7f3179e8f0ce70387c273163670975f56a642fbff276c8ed"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-wall/clay.png",
+      "sha256": "8136302c7682aa88fa5515127b346bc37ed683ca72a1a77b6e0de4c824c8d6ab"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

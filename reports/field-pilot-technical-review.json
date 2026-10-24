@@ -1,0 +1,47 @@
+{
+  "results": [
+    {
+      "id": "sentry-mki",
+      "asset_sha256": "b890081d91212adb0cfa47a69acb69fcc92caeb8e1bc129d4bd08fa06236926f",
+      "triangles": 2556,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0,
+      "degenerate_triangles": 0,
+      "nonfinite_triangles": 0,
+      "connected_closed_organic_body": false,
+      "budget_exception": false,
+      "status": "REFINEMENT_REVIEW_REQUIRED"
+    },
+    {
+      "id": "censer-of-dread",
+      "asset_sha256": "1b2f6f77f282a5da78b56c8439bac424caf51ffe25831dd68cea7d52cec3c64b",
+      "triangles": 4206,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0,
+      "degenerate_triangles": 0,
+      "nonfinite_triangles": 0,
+      "connected_closed_organic_body": false,
+      "budget_exception": true,
+      "status": "REFINEMENT_REVIEW_REQUIRED"
+    },
+    {
+      "id": "regeneration-heart",
+      "asset_sha256": "03868e68d67267fdb0475d75b3465d259ac8153ee8c68b93e9e2fd771c26d668",
+      "triangles": 3004,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0,
+      "degenerate_triangles": 0,
+      "nonfinite_triangles": 0,
+      "connected_closed_organic_body": true,
+      "budget_exception": false,
+      "status": "REFINEMENT_REVIEW_REQUIRED"
+    }
+  ],
+  "animation_tests": "reports/field-pilot-animation-tests.txt",
+  "limits_of_validation": [
+    "No live GPU playthrough",
+    "Packed dimensions do not prove absence of internal intersections",
+    "Progressive damage, depletion and runtime destruction remain unfinished",
+    "Censer exceeds the target triangle budget"
+  ]
+}

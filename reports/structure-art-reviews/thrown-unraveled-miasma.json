@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "173de9eb4f048730989fccbc3f081cd21a575eb0ccab36edecfa5896e7bfb642",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 3,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** It suggests industrial exhaust hardware but does not explain chemical dispensing.\n\nThe two cylinders and bent extensions establish a useful broad motif. However, the tiny ring-like valves, undifferentiated pipe ends and central assembly do not define filling, regulation, fan flow or pressure indication. There is no readable gauge or clear separation between reservoir, intake and output.\n\nThe exhaust heads appear capped or visually ambiguous. The viewer cannot trace a flow path from chemical storage to discharge. Generic vent rotations do not establish a valve opening, and a rotor node is insufficient without correctly oriented fan geometry. These images do not demonstrate vapor emitted at a real aperture or matched to the authoritative effect radius.\n\n**Redesign:** a squat pressure skid with strapped bottles, a regulator manifold, readable gauge face, venturi/fan housing and open or perforated exhaust heads. Route short visible pipes between them.\n\n**Acceptance:** show pressure/fan action and emission from actual outlets. The field must follow authoritative activation and the three-metre effect radius without changing gameplay calculations."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/front.png",
+      "sha256": "47ccaed6fba1bb713d72b2b18eaa111d61b0b56de2d568460cbb057cd19fb790"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/rear.png",
+      "sha256": "40efaa072fdc78a523b8aed12f497d323b847f3d6f8f05b03837e53eb75cdd03"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/closeup.png",
+      "sha256": "efbafdaf287b29ac6cd651cc296101c17f9c1b9a0bb627a5d8dafe9deec67c44"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-miasma/clay.png",
+      "sha256": "1eed6f3a5109149f23f4d405d8e4a535b89d4a8c786fc6c18b5050a535351c60"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "63eb23cdba835ffa93980ff64e8e5ff5a5908c4c47fdf8ba95bf6eb7452e7a5a",
+  "renders": {
+    "front": {
+      "path": "previews/field-pilots-r1/censer-of-dread/front.png",
+      "sha256": "7cdf06ba41095e7ddc7a5937b3ccc29a6753e098ac9e766e363ab1ecb4f4787d"
+    },
+    "rear": {
+      "path": "previews/field-pilots-r1/censer-of-dread/rear.png",
+      "sha256": "81355156352cb0a639cbde80e9275b1ae19faa72fad9356e4d04de26d74cb697"
+    },
+    "closeup": {
+      "path": "previews/field-pilots-r1/censer-of-dread/closeup.png",
+      "sha256": "735107e187cfa018fc44df0c681b7556e41226456832ce10320819348027799e"
+    },
+    "clay": {
+      "path": "previews/field-pilots-r1/censer-of-dread/clay.png",
+      "sha256": "12be2e06fa175c1d138c78607e8e2a87e0c523d3f6ac967e6e67f7116cceb2a8"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "ccfa034c107a067a3f92ffdfa7d8b901655409f5585a06152b52b7ed3276923c"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "1e3e2171c051c039bc65d5f1a247b1707dcb006710c8337ea338e3f0f698736b"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "e942af96c2ddab82c2566238921ec27a4365b77ad54bfdddc1e1704317b08e9a"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "b9ea5bed8e10ae022f35a3a023e833a60fcbe604691695d3f13d0a16acfcd8c7"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "f79693cfcba29f50448d6a3ea9ae0c01eef5c9b874e6069213fef635e305285a"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "35aeed78d31a408e5138854f2ffb4387e7e148ff5ee972c6c3fbba432657f9ea"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "d96b223bb09f1c08f5a8ef3663ee64f308f25f6f146611b1d683808ae80b687f"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "a3b4ab09371c7a729b7d1d63ea8370b98827e8751b8264c973ac7abfbd8ff7b7"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "f24ec56b5e42e465fbc3b5c630a189f50e72c1f54bc36492e5cdb6f1d4e6ac94"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "b7bf1e080097abee8b7615849183cedb7f3d1eda56e8f3cc2f94a6345d12c353"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-00.png",
+        "time_s": 0.0,
+        "sha256": "07528b80375b9762aabf7c233ef70f02a465d79727fb5b1bb40fa5fa489aa447"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "bad84b7e0ae29bb9d22866e3d3b011eb455982611b566e333fabc1f302111a72"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "be98b280e0aad4a2f9d36be75055d4b7d7d1883d57b524b85f8c51b4c9d21dd0"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "082eb51ef8954d724eb978b98fcf8c91545cb0aa2efa6003380b310bbcd60511"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "df29f8f5ea45b82b8933e2d5dd740da55236ea3cb113bde545560693087f4b16"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "40ecda2a59a2f70a37d3e5947f36df365176eb7cd9b9c39517de4f3867e32e15"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "b687d57e840f0f5c046166f1bb63b4ce7d8ccedc7522e64fc41bbbdb309b1221"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "2e87ee57b9785b37193a717cf6901340fbddea90f62423bf6bdc25c0d251df7b"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "df6ee9b9e07a055f1c03604fbc8a96cface3e80723082b407545b8c4f6938ba1"
+      },
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/operating-09.png",
+        "time_s": 0.65,
+        "sha256": "bd39168cc28dc01200762ee1ccede3dcba3861c0709209ab31165da8300eed97"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "previews/field-pilots-r1/censer-of-dread/packed-00.png",
+        "time_s": 0.0,
+        "sha256": "ed023962daa00473406f81515ef657e94d1f83eaaa43424a50b661459597263c"
+      }
+    ]
+  }
+}

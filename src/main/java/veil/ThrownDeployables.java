@@ -9,6 +9,9 @@ import java.util.*;
 public final class ThrownDeployables {
     public static final long LIFETIME_MS=3_600_000L;
     public static final int MAX_ACTIVE=84, MAX_OWNED=12;
+    public static final long IMPACT_MS=150, DEPLOY_MS=1500;
+    public static final double SHIELD_RADIUS=2.4, MIASMA_RADIUS=3.0;
+    public enum State { PACKED, THROWN, IMPACT, DEPLOYING, ACTIVE, OPERATING, DAMAGED, EXPIRING, DESTROYED }
     public enum Role { WALL, BARRICADE, TURRET, HEALTH, AMMO, MIASMA, SHIELD }
     public enum Faction { UNRAVELED, PENITENT, BEGOTTEN }
     public record Blueprint(int index,Role role,Faction faction,String id,String name,
@@ -18,7 +21,18 @@ public final class ThrownDeployables {
         public String mesh(){return "thrown-"+id;}
     }
     public record View(int id,int blueprint,double x,double y,double z,double heading,
-                       int hp,long remainingMs,boolean flying) {}
+                       int hp,long remainingMs,boolean flying,long ageMs,long operationAgeMs,
+                       long damageAgeMs,double aimYaw,double aimPitch,int ammoStock) {
+        public State state(){
+            if(flying)return State.THROWN;
+            if(ageMs<IMPACT_MS)return State.IMPACT;
+            if(ageMs<IMPACT_MS+DEPLOY_MS)return State.DEPLOYING;
+            if(remainingMs<5000)return State.EXPIRING;
+            if(damageAgeMs>=0&&damageAgeMs<450)return State.DAMAGED;
+            if(operationAgeMs>=0&&operationAgeMs<650)return State.OPERATING;
+            return State.ACTIVE;
+        }
+    }
     public record Burst(double x,double y,int faction) {}
     public record Result(boolean ok,String reason) {}
     private static final List<Blueprint> CATALOG;
@@ -77,7 +91,8 @@ public final class ThrownDeployables {
         String ownerKey;
         Blueprint blueprint;
         double x,y,z,fromX,fromY,toX,toY,heading;
-        long launchedAt,landedAt=-1,expiresAt,nextPulse;
+        long launchedAt,landedAt=-1,expiresAt,nextPulse,operatedAt=-1,damagedAt=-1;
+        double aimYaw,aimPitch;
         boolean flying=true;
     }
     private final ArenaSystems host;
@@ -165,7 +180,10 @@ public final class ThrownDeployables {
             List<View> result=new ArrayList<>();
             for(Entity e:entities.values())if(e.hp>0)
                 result.add(new View(e.id,e.blueprint.index(),e.x,e.y,e.z,e.heading,
-                    e.hp,e.flying?LIFETIME_MS:Math.max(0,e.expiresAt-host.time()),e.flying));
+                    e.hp,e.flying?LIFETIME_MS:Math.max(0,e.expiresAt-host.time()),e.flying,
+                    host.time()-(e.flying?e.launchedAt:e.landedAt),
+                    e.operatedAt<0?-1:host.time()-e.operatedAt,
+                    e.damagedAt<0?-1:host.time()-e.damagedAt,e.aimYaw,e.aimPitch,e.ammoStock));
             return List.copyOf(result);
         }
     }
@@ -176,12 +194,16 @@ public final class ThrownDeployables {
         synchronized(host){List<Integer> result=List.copyOf(removed);removed.clear();return result;}
     }
     /** Walls and barricades block movement/line of sight; shields block incoming HP damage. */
+    private static boolean coverContains(Entity e,double x,double y,double padding){
+        double dx=x-e.x,dy=y-e.y,c=Math.cos(e.heading),s=Math.sin(e.heading);
+        return Math.abs(dx*c+dy*s)<1.10+padding&&Math.abs(-dx*s+dy*c)<.46+padding;
+    }
     public boolean occupied(double x,double y){
         synchronized(host){
             for(Entity e:entities.values())
                 if(e.hp>0&&!e.flying&&(e.blueprint.role()==Role.WALL||
                     e.blueprint.role()==Role.BARRICADE)&&
-                    Math.hypot(x-e.x,y-e.y)<e.blueprint.radius()+.19)return true;
+                    coverContains(e,x,y,.19))return true;
             return false;
         }
     }
@@ -192,9 +214,16 @@ public final class ThrownDeployables {
             for(Entity e:entities.values()){
                 if(e.hp<=0||e.flying||
                    (e.blueprint.role()!=Role.WALL&&e.blueprint.role()!=Role.BARRICADE))continue;
-                double t=ArenaSystems.clamp(((e.x-x)*dx+(e.y-y)*dy)/len,0,1);
-                if(t>.04&&t<.96&&Math.hypot(x+dx*t-e.x,y+dy*t-e.y)<e.blueprint.radius())
-                    return true;
+                double c=Math.cos(e.heading),s=Math.sin(e.heading);
+                double[] origin={(x-e.x)*c+(y-e.y)*s,-(x-e.x)*s+(y-e.y)*c};
+                double[] direction={dx*c+dy*s,-dx*s+dy*c},half={1.10,.46};
+                double enter=.04,exit=.96;
+                for(int axis=0;axis<2;axis++){
+                    if(Math.abs(direction[axis])<1e-10){if(Math.abs(origin[axis])>half[axis]){enter=1;break;}}
+                    else{double a=(-half[axis]-origin[axis])/direction[axis],b=(half[axis]-origin[axis])/direction[axis];
+                        enter=Math.max(enter,Math.min(a,b));exit=Math.min(exit,Math.max(a,b));}
+                }
+                if(enter<exit)return true;
             }
             return false;
         }
@@ -227,10 +256,10 @@ public final class ThrownDeployables {
             if(incoming<=0)return 0;
             for(Entity e:entities.values()){
                 if(e.hp<=0||e.flying||e.blueprint.role()!=Role.SHIELD||!ally(e,p)||
-                   Math.hypot(e.x-p.x,e.y-p.y)>2.4)continue;
+                   Math.hypot(e.x-p.x,e.y-p.y)>SHIELD_RADIUS)continue;
                 int saved=Math.min(e.hp,Math.max(1,(int)Math.ceil(incoming*
                     switch(e.blueprint.faction()){case UNRAVELED->.80;case PENITENT->.65;case BEGOTTEN->.55;})));
-                e.hp-=saved;return saved;
+                e.hp-=saved;e.damagedAt=host.time();return saved;
             }
             return 0;
         }
@@ -243,18 +272,19 @@ public final class ThrownDeployables {
             if(attacker==null||attacker.dead||e==null||e.hp<=0||damage<1||damage>500||
                e.ownerKey.equals(attacker.accountKey)||
                host.factions.allied(e.ownerKey,attacker.accountKey))return false;
-            e.hp=Math.max(0,e.hp-damage);return true;
+            e.hp=Math.max(0,e.hp-damage);e.damagedAt=host.time();return true;
         }
     }
     private void tickEffect(Entity e){
         Blueprint b=e.blueprint;
+        if(b.role()==Role.MIASMA)e.operatedAt=host.time();
         for(ArenaSystems.Player p:host.roster()){
             if(p.dead||Math.hypot(p.x-e.x,p.y-e.y)>
                (b.role()==Role.MIASMA?3.0:b.role()==Role.SHIELD?2.4:2.2))continue;
             boolean friendly=ally(e,p);
             switch(b.role()){
                 case HEALTH -> {
-                    if(friendly){p.hp=Math.min(100,p.hp+(b.faction()==Faction.BEGOTTEN?5:
+                    if(friendly){if(p.hp<100||p.sanity<100)e.operatedAt=host.time();p.hp=Math.min(100,p.hp+(b.faction()==Faction.BEGOTTEN?5:
                         b.faction()==Faction.PENITENT?2:4));
                         p.sanity=Math.min(100,p.sanity+(b.faction()==Faction.PENITENT?4:1));}
                 }
@@ -264,6 +294,7 @@ public final class ThrownDeployables {
                             b.faction()==Faction.PENITENT?7:6);
                         int supplied=host.arsenal.fieldRefill(p.id,b.faction().ordinal(),amount);
                         e.ammoStock-=supplied;
+                        if(supplied>0)e.operatedAt=host.time();
                         if(supplied>0&&b.faction()==Faction.PENITENT)
                             p.sanity=Math.min(100,p.sanity+2);
                         if(supplied>0&&b.faction()==Faction.BEGOTTEN)
@@ -271,6 +302,7 @@ public final class ThrownDeployables {
                     }
                 }
                 case MIASMA -> {
+                    e.operatedAt=host.time();
                     if(!friendly){
                         if(b.faction()==Faction.PENITENT)host.damage(p,0,3);
                         else if(b.faction()==Faction.BEGOTTEN)host.damage(p,3,1);
@@ -305,6 +337,12 @@ public final class ThrownDeployables {
                 if(range<nearest&&host.clear(e.x,e.y,n.x,n.y)){nearest=range;victim=null;npc=n;}
             }
             int hit=b.faction()==Faction.UNRAVELED?11:b.faction()==Faction.PENITENT?7:9;
+            if(victim!=null||npc!=null){
+                double tx=victim!=null?victim.x:npc.x,ty=victim!=null?victim.y:npc.y;
+                // Local model forward is -Z; instance heading maps X into world XY.
+                e.aimYaw=Math.atan2(ty-e.y,tx-e.x)+Math.PI/2-e.heading;
+                e.aimPitch=Math.atan2(.3,nearest);e.operatedAt=host.time();
+            }
             if(victim!=null){
                 host.damage(victim,hit,b.faction()==Faction.PENITENT?6:0);
                 if(b.faction()==Faction.BEGOTTEN)

@@ -1,0 +1,925 @@
+[
+  {
+    "id": "censer-of-dread",
+    "samples": 31,
+    "scope": "Satellite bowl surfaces against main bowl, incense basket, and support slides",
+    "intersections": [
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "inner_iron_slide_0"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "inner_iron_slide_1"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "inner_iron_slide_2"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.95,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 0.95,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 0.95,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.0,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.0,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 1.0,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.05,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.05,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 1.05,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.1,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.1,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 1.1,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.15,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.15,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 1.15,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.2,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.2,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 1.2,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.25,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.25,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 1.25,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.3,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.3,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "middle_iron_slide_1"
+      },
+      {
+        "time_s": 1.3,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.35,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "middle_iron_slide_0"
+      },
+      {
+        "time_s": 1.35,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.4,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      },
+      {
+        "time_s": 1.45,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "middle_iron_slide_2"
+      }
+    ],
+    "status": "INTERSECTIONS_FOUND"
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "2d3be76c644ae190dcea073fe04d4afda23a065645c0ce660b3caa416af01d5c",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "findings": [
+    "**Reject.** Blunt pale posts do not communicate grasping or entanglement.\n\nThe low purple root mass is a useful starting scale, but six cut-off-looking rods dominate the front. Living branches lack the hooked tips, joint hierarchy and tendon tension expected of an aggressive obstruction. It resembles a miniature fence rather than limbs reaching to catch an enemy.\n\nThe bone groups use the same simple rotation recipe as the wall. That does not create a travelling curl through a flexible appendage or explain attachment at the rooted body. The grasping action should be visible in both silhouette and motion, not inferred from a role label.\n\n**Redesign:** a low radial root knot with a few asymmetrical segmented claw limbs. Give each a broad tendon base, narrowing joint chain and inward hook. Add short cartilage barbs between those larger primary limbs.\n\n**Acceptance:** maintain a distinct low obstacle silhouette, continuous limb bases and a convincing unfolding/grasping cycle. Verify the hostile obstruction footprint and avoid detached tips, rigid post gestures and whole-object shrinkage as deployment."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/front.png",
+      "sha256": "730eecfc618bd09e94c370d0e53cb35bb960ef258b2d76942f34f36f4fdad896"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/rear.png",
+      "sha256": "f53922d6cce4a2ee5e08d7337183b84b857ce7621a7b37ffc1d07def89f6c18f"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/closeup.png",
+      "sha256": "66b28a516127199b700278c8e9279b927f2d71adf091e1d74a3a54104e7ad016"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-barricade/clay.png",
+      "sha256": "edbd617915e9ba7e6b6caa14a123434ae1754f7e1e9924602a187e68890060c9"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

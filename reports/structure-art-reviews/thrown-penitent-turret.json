@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "99969e98d814db4c4b7a2e2cc7ed879cbbceb55a128f7ee921e6ad280efc836f",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** A conventional twin-barrel gun has been decorated rather than redesigned.\n\nThe Sentry receiver, stalk and barrels remain dominant. Pale crown prongs and an amber bead do not supply a sanctification chamber, sacred emitter aperture, rotating prayer mechanism or incense vents. It reads as the same mechanical weapon with a crown.\n\nThis fails the requested independent operating principle. The inherited gun-style groups do not stage an intelligible charge and emission cycle; moving crown pieces cannot carry that entire story. A ritual weapon still needs an unambiguous attack axis and a mechanism that points it.\n\n**Redesign:** an iron reliquary cradle surrounding a directional sanctification chamber. Place the attack aperture behind articulated seal plates. Use a geared prayer wheel or engraved rotating shutters to expose, charge and reseal the chamber; include actual incense discharge hardware.\n\n**Acceptance:** neutral clay must separate it from Sentry Mk.I. Host aim must align the aperture, and a confirmed attack must drive a specific charge/open/discharge/recover sequence rather than decorative looping."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-turret/front.png",
+      "sha256": "9b4fea285b02690c30d019c3dd9094cf4799b2fed70e51b4cb1cc6a87b2f2ca4"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-turret/rear.png",
+      "sha256": "7537d4b8ea89e3091b141ddc5369ffd3e6abe77a395c5831230d83b26c585d30"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-turret/closeup.png",
+      "sha256": "3494669b29c6b2c44505c018d641d34f541a702d5851300f3ea7f989a6a880ed"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-turret/clay.png",
+      "sha256": "dc5d7f629fc1c79aadc9445782e8d64d00d47064559949556e91a7f060f24d58"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

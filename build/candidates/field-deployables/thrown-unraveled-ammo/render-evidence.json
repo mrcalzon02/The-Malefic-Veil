@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "d88be3fae51e1d8e5de849d78f6c12e4b68c7d48de72e3c5b4cd78f3c68ce32e",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/front.png",
+      "sha256": "b34fcf16bf80d05b0df2c23f3faffabaae663040150f5db9f7bf15690352d9ad"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/rear.png",
+      "sha256": "6af8ace48b1494de86e3043b8d7aaa85a88fe198e118f78504a1e08fd3c3e0e3"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/closeup.png",
+      "sha256": "27b72faab254e28495e1adf29a4a88cc51c710c16f2987789afb4040b5b33c7d"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-ammo/clay.png",
+      "sha256": "5b093fb66a328f6b690bad9653f2ccb1bac997eedb9e671cf525ebe2a01e5e92"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "adad6926a31c7ed1c2eb8455c642498e4c6bf27b16830081cd390995f924d9af",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/front.png",
+      "sha256": "868aa1e6db957aa2a6fbf83b0b4e0484ef1ef24c72c885318b262a05161eefb6"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/rear.png",
+      "sha256": "2bf6782ff4eca8f9c73edb59a63a6c83a45f9a748f3d011322b589e622230cf6"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/closeup.png",
+      "sha256": "8e87729ebe4e1b39b7a10d50324dfeb08f4194f8635934c4d91ad3d6dbae705a"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/clay.png",
+      "sha256": "f5aa99388b3731a66da960838330372d2509eea45278d9ceb8b6fccd31c3a756"
+    }
+  }
+}

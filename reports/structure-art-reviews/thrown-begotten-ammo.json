@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "fd080b0789599877fd318f746bfee807768856c8f913d4d40b2b7f57cb1fda79",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** It lacks readable brood chambers and an actual release path.\n\nA rounded cluster with angular tabs sits on the same rooted pedestal used by the other support organs. Its lobes merge so strongly that separate egg chambers and membranes are difficult to distinguish. There is no clear central nutrient organ or exit lip.\n\nThe model does not read as an incubator or dispenser. A viewer cannot identify a selected capsule, distinguish available stock or see how a grown munition separates from its living attachment. The tabs rotate generically; no chamber contracts and no capsule is released. Finite host stock is not represented by distinct chamber states.\n\n**Redesign:** a low brood cradle with several individually readable membrane-wrapped capsules, joined through short vascular stalks to a central nutrient organ. Add one unmistakable release lip and preserve the connected living network.\n\n**Acceptance:** trace a capsule from attached chamber through contraction and separation to delivery. Successful host resupply must drive release, with visibly depleted chambers after supply ends."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/front.png",
+      "sha256": "38ad2f2465ea316616bc501b9d64c05d08d7f1bbbd521fbb925c62b8544fe26d"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/rear.png",
+      "sha256": "301709df4a96a9f5f7715b7b730a30bcfa1bd05bad227f36927db7f6cff94c37"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/closeup.png",
+      "sha256": "80c152aeba418771177cc42273f6d0c33818ca9f6e022d90f34bf09db54e8435"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/clay.png",
+      "sha256": "e3ed69953adf1e32afee7067974e60cb0e28f2f52e2406ad7e0525abb65412b7"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

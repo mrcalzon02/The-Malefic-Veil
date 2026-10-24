@@ -1,0 +1,48 @@
+{
+  "asset_sha256": "7f12eb4ffdd3edf84a6f1b015cd66a7661c7dce01adef764ac6ca55a54bfc0bc",
+  "decision": "reject",
+  "reviewer": "Codex visual inspection",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 2,
+    "silhouette": 1,
+    "reference_comparison": 1,
+    "faction_identity": 2
+  },
+  "findings": [
+    "Export imports in PACKED pose; tiny and poorly framed across all four views. Deployed silhouette cannot be approved.",
+    "Compared with four sampled car/character renders: material detail and functional part definition are insufficient.",
+    "Penitent shares mechanical chassis and several role silhouettes; additional distinct manufacture needed. Begotten turret has detached eye/mandible appearance."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/front.png",
+      "sha256": "2e5e88b414d1c7779a80155662e40fb6196e2187f3ff4c5943d604657350cf08"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/rear.png",
+      "sha256": "a866e4ffbc7e67b351d0c9a3bb80f871d888ebfbb3db5e563ee61621f2c6c7d9"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/closeup.png",
+      "sha256": "2aa15f2b3a006b79156c6f2fe9dd77dff0113ca0ef2c8f14202b1535932bad16"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-unraveled-shield/clay.png",
+      "sha256": "a4e43746be675f5967282f789d89e546f60bc399120fe4e5b304eb551464375a"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "attempt": 1
+}

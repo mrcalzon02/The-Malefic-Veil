@@ -10,3 +10,8 @@ build/
 .vscode/
 assets/private/
 assets/runtime/
+
+# Local authoring and diagnostic scratch
+__pycache__/
+*.log
+*.blend[0-9]

@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "fd080b0789599877fd318f746bfee807768856c8f913d4d40b2b7f57cb1fda79",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/front.png",
+      "sha256": "38ad2f2465ea316616bc501b9d64c05d08d7f1bbbd521fbb925c62b8544fe26d"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/rear.png",
+      "sha256": "301709df4a96a9f5f7715b7b730a30bcfa1bd05bad227f36927db7f6cff94c37"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/closeup.png",
+      "sha256": "80c152aeba418771177cc42273f6d0c33818ca9f6e022d90f34bf09db54e8435"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-ammo/clay.png",
+      "sha256": "e3ed69953adf1e32afee7067974e60cb0e28f2f52e2406ad7e0525abb65412b7"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "asset_sha256": "f9774fdd96e376df3254157295acd0caa71e9c4f6f20f0d2d1eecd2c49d73458",
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-begotten-turret/front.png",
+      "sha256": "69894ca5693d5dc8a459da5945d352813deb669bea01cd858659514bc278efc4"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-begotten-turret/rear.png",
+      "sha256": "5a1f879213d11ff42643d3e33c6593723f1956a7cc3dd935f8053bd0ffd36172"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-begotten-turret/closeup.png",
+      "sha256": "f5831ed65980ad49a726d8c3b5ec3e90d88991db2215f6427ca43882ce60422b"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-begotten-turret/clay.png",
+      "sha256": "c6fea0d9b444ce1902589c1555fb3fa94deee254155546b76798adcfcf7fd70a"
+    }
+  }
+}

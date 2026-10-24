@@ -1,0 +1,46 @@
+{
+  "asset_sha256": "adad6926a31c7ed1c2eb8455c642498e4c6bf27b16830081cd390995f924d9af",
+  "decision": "reject",
+  "reviewer": "Codex: actual individual closeup, roster and source inspection",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 1
+  },
+  "findings": [
+    "**Reject.** The appropriate crossed motif has not become a distinct ritual device.\n\nThe Unraveled X-frame is reused with pale bars, the same upright rod row, red ornaments and the same base. The plain end stakes do not read as reliquary pillars; there are no engraved mechanisms, nested collars or suspended censers with believable vessels.\n\nIts construction remains an engineering barricade with ceremonial colors. Shared rod rotations do not demonstrate extending pillars, independently swinging ornaments or a precise locking sequence. The frame needs to explain how the two sides are physically connected and how their warding members deploy together.\n\n**Redesign:** paired iron-caged, carved pillar capsules. Pivot the protective rods from separate collars and engage them at the crossing. Hang recognizable pierced censer bowls below their engagement points, on properly attached chains.\n\n**Acceptance:** prove that pillars and rods pack together and deploy through connected mechanisms. Make a low ritual obstruction, clearly different from both the Unraveled barricade and the Penitent solid wall."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/front.png",
+      "sha256": "868aa1e6db957aa2a6fbf83b0b4e0484ef1ef24c72c885318b262a05161eefb6"
+    },
+    "rear": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/rear.png",
+      "sha256": "2bf6782ff4eca8f9c73edb59a63a6c83a45f9a748f3d011322b589e622230cf6"
+    },
+    "closeup": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/closeup.png",
+      "sha256": "8e87729ebe4e1b39b7a10d50324dfeb08f4194f8635934c4d91ad3d6dbae705a"
+    },
+    "clay": {
+      "path": "previews/field-deployables/thrown-penitent-barricade/clay.png",
+      "sha256": "f5aa99388b3731a66da960838330372d2509eea45278d9ceb8b6fccd31c3a756"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  },
+  "purpose_review": "reports/field-deployables-purpose-review.md"
+}

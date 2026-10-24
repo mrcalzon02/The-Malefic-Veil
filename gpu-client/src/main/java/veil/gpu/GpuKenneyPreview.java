@@ -528,6 +528,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         menu.progress(sprites,119,355,91,frame.sanity()/100f);
         font.draw(sprites,"CASH "+frame.cash()+"  SCRAP "+frame.scrap()+
             "  KILLS "+frame.frags(),221,364);
+        font.draw(sprites,gameplay.gpuFieldStatus()+"   Z SELECT  Y THROW",14,337);
         // Source cursor sprite and source tooltip/dialogue are not impostor polygons.
         menu.marker(sprites,WIDTH/2f-4,HEIGHT/2f-4);
         if(!frame.notice().isBlank()){
@@ -613,8 +614,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 menu.marker(sprites,left+markerX-5,base+markerY-5);
         }
         menu.band(sprites,4,5,WIDTH-8,23);
-        font.draw(sprites,"WASD MOVE  MOUSE AIM/FIRE  E USE  R RELOAD  I INVENTORY  "+
-            "K ARSENAL  F11 MENU  ESC PAUSE",12,20);
+        font.draw(sprites,"WASD MOVE  AIM/FIRE  Z FIELD  Y THROW  E USE  I INV  "+
+            "K ARSENAL  F11 MENU  ESC",12,20);
     }
     /** Foreground sourced weapon mesh, drawn as a camera-relative 3D object. */
     private void renderLiveWeapon(MaleficVeil.GpuFrame frame){

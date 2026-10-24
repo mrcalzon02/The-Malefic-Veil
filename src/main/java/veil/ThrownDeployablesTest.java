@@ -19,11 +19,12 @@ public final class ThrownDeployablesTest {
         for(var input:blueprint.ingredients().entrySet())
             check(maker.survival.acquire(input.getKey(),input.getValue(),true),
                 "Gathering test materials "+input.getKey());
+        findSafeThrow(host);
         // Existing physical craft station is a manufacturing input, not the deployable.
         if(blueprint.station()!=SurvivalCrafting.Station.HAND){
             int station=blueprint.station()==SurvivalCrafting.Station.FIRE?
                 ArenaSystems.FIELD_FIRE:ArenaSystems.FIELD_BENCH;
-            World.Device facility=new World.Device(maker.x+.6,maker.y,station);
+            World.Device facility=new World.Device(maker.x-1.0,maker.y,station);
             facility.ownerId=1;facility.ownerKey=maker.accountKey;
             host.world.devices.add(facility);
         }
@@ -33,8 +34,9 @@ public final class ThrownDeployablesTest {
         ArenaSystems.Player p=host.player(1);
         for(int x=4;x<World.SIZE-6;x++)for(int y=4;y<World.SIZE-6;y++){
             double px=x+.5,py=y+.5,aim=2.8;
-            if(host.world.canWalk(px,py)&&host.world.canWalk(px+aim,py)&&
-               host.world.lineClear(px,py,px+aim,py)){
+            if(host.world.canWalk(px,py)&&host.world.canWalk(px-1.0,py)&&
+               host.world.canWalk(px+aim,py)&&
+               host.world.lineClear(px-1,py,px+aim,py)){
                 p.x=px;p.y=py;p.angle=0;return;
             }
         }
@@ -81,9 +83,8 @@ public final class ThrownDeployablesTest {
                 "Deployed wall must block line of sight");
             ArenaSystems.Player enemy=host.join(2);
             check(host.assignAccount(2,account('z')),"Attacker identity");
-            check(host.enrollFaction(2,CharacterRoster.Faction.THE_UNRAVELED)&&
-                faction!=ThrownDeployables.Faction.UNRAVELED ||
-                faction==ThrownDeployables.Faction.UNRAVELED,
+            check(host.enrollFaction(2,faction==ThrownDeployables.Faction.UNRAVELED?
+                CharacterRoster.Faction.THE_PENITENT:CharacterRoster.Faction.THE_UNRAVELED),
                 "Attacker faction registration failed");
             int oldHp=maker.hp,oldEnemy=enemy.hp;
             check(host.thrown.damage(2,landed.id(),500),"Enemy should destroy a deployed wall");

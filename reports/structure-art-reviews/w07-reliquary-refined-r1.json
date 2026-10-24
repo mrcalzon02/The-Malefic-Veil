@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "f157f6ac8f99e95e2864ef00211855b75c565904c4522b7ff7886e31b2356735",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 3,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Pump remains a plain box; loading tray is separated from the body and the magazine tube lacks a front support. Side/down shell motion does not follow a real loading slot."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r1/front.png",
+      "sha256": "0ef3c46490d79ee670fa5fe87ae695ef6e2a494ff3e5a222e83afdd8d2f1987b"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r1/rear.png",
+      "sha256": "3488c8669eab5db59770b4917e82000c2c40b46b8eb58b5bac73efcf5aa36aba"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r1/closeup.png",
+      "sha256": "2c9b3c2a1ddd779623d5efb2b1501f638b0f2da211ba5f1e3e3228c9de258e4b"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r1/clay.png",
+      "sha256": "8848208dadb04b73401638700ad49f8484653208efa6fb087fa12d585b7f328f"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r1/side.png",
+      "sha256": "0e0433e79c617149e90d2ecfdfec534858cbc7badae7f03ad42b519e1bcfb0b3"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r1/reload.png",
+      "sha256": "f7fc75947bc11c2a3c1d749eb1e95bf3d553912e63401fb2aa3a63833ca38cb2"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w07-reliquary-refined-r1/comparison.png",
+      "sha256": "74c0fb0bd852dc0ea12046086ba089a80fde877aae70eda3dabb1c82447d8cc5"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

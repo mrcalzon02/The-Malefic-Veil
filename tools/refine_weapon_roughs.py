@@ -63,6 +63,12 @@ for d in defs:
     def cylinder(name,center,r,length,axis='X',parent=receiver,band=1,sides=16):
         ai={'X':0,'Y':1,'Z':2}[axis];other={'X':(1,2),'Y':(2,0),'Z':(0,1)}[axis]
         return loft(name,[(center[ai]-length/2,center[other[0]],center[other[1]],r*.91,r*.91),(center[ai]-length/2+.002,center[other[0]],center[other[1]],r,r),(center[ai]+length/2-.002,center[other[0]],center[other[1]],r,r),(center[ai]+length/2,center[other[0]],center[other[1]],r*.91,r*.91)],axis,sides,parent,band)
+    def open_tube(name,x0,x1,y,z,outer,inner,parent=receiver,band=1):
+        rings=[(x0,outer*.98),(x0+.003,outer),(x1-.003,outer),(x1,outer*.98),(x1,inner),(x0,inner)];n=20;vv=[(x,y+math.cos(j*math.tau/n)*r,z+math.sin(j*math.tau/n)*r) for x,r in rings for j in range(n)];ff=[]
+        for k in range(len(rings)):
+            kk=(k+1)%len(rings)
+            for j in range(n):ff.append((k*n+j,k*n+(j+1)%n,kk*n+(j+1)%n,kk*n+j))
+        return mesh(name,vv,ff,parent,band)
     def beam(name,a,b,width,depth,parent=receiver,band=1):
         a=Vector(a);b=Vector(b);direction=(b-a).normalized();u=direction.cross(Vector((0,1,0)))
         if u.length<.01:u=direction.cross(Vector((0,0,1)))
@@ -232,9 +238,21 @@ for d in defs:
         beam('fixed_hinge_web',(.055,0,-.030),(.055,0,.003),.023,.056,receiver,0)
         cylinder('breech_hinge',(.145,0,-.025),.017,max(.18,ymax*2+.014),'Y',receiver,1);loading.append('breech_hinge')
     elif idx==6:
-        method='under-receiver shell loading gate';axis=(0,-.10,-.08)
-        shell('reload_shot_shell',(-.035,0,-.028),.080,.022)
-        box('loading_gate_frame',(-.025,0,-.041),(.108,.080,.015),band=1)
+        method='bottom loading gate; axial shell withdrawal then straight down through open tray';axis=(0,0,-.105)
+        remove(find('pump'));remove(find('shell_tube'))
+        tube=open_tube('shell_tube',.100,.450,0,-.045,.019,.0145)
+        cylinder('magazine_front_cap',(.453,0,-.045),.020,.012,'X',receiver,1)
+        neck=loft('loading_gate_frame',[(.025,0,-.025,.033,.045),(.135,0,-.025,.033,.045)],'X',8,receiver,0)
+        cut_box(neck,(.070,0,-.055),(.086,.034,.100));cut_box(find('receiver_chassis'),(.070,0,-.055),(.086,.034,.100))
+        cutter=cylinder('magazine_feed_channel',(.126,0,-.045),.0155,.080,'X',receiver,3,20);bpy.context.view_layer.objects.active=neck;m=neck.modifiers.new('Axial channel into magazine','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        pump=loft('pump',[(.185,0,-.045,.047,.035),(.202,0,-.045,.053,.038),(.335,0,-.045,.053,.038),(.355,0,-.045,.047,.035)],'X',8,action,3)
+        cutter=cylinder('pump_slide_clearance',(.270,0,-.045),.0205,.220,'X',receiver,3,20);bpy.context.view_layer.objects.active=pump;m=pump.modifiers.new('Pump sleeve around magazine tube','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        for side in(-1,1):
+            for x in(.213,.240,.267,.294,.321):cut_box(pump,(x,side*.048,-.045),(.006,.014,.028))
+        clamp=loft('front_tube_clamp',[(.414,0,-.005,.045,.085),(.436,0,-.005,.045,.085)],'X',8,receiver,1)
+        for z,radius in((.035,.032),(-.045,.018)):
+            cutter=cylinder('clamp_tube_cut',(.425,0,z),radius,.065,'X',receiver,3,20);bpy.context.view_layer.objects.active=clamp;m=clamp.modifiers.new('Clamped tube channel','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        mark(loft('reload_shot_shell',[(.117,0,-.045,.013,.013),(.123,0,-.045,.013,.013),(.125,0,-.045,.012,.012),(.183,0,-.045,.012,.012)],'X',20,ammo,4))
         loading.append('loading_gate_frame')
     elif idx in(7,8,17):
         method='removable fluted ammunition drum' if idx!=17 else 'rotary charge drum';axis=(0,-.25,0)
@@ -354,13 +372,21 @@ for d in defs:
                 if clip=='idle' and o==root:o.location.z+=.0015*math.sin(math.tau*t)
                 if clip in('fire','alternate'):
                     if o==root:o.location.x-=.012*pulse
-                    if o==action and d['mechanism'] in('slide','pump','bolt'):o.location.x-=.027*pulse
+                    if o==action and d['mechanism'] in('slide','pump','bolt'):o.location.x-=(.045 if idx==6 else .027)*pulse
                     if o==action and d['mechanism'] in('rotor','rings','disc','cylinder'):o.rotation_euler.x+=t*math.tau if d['mechanism']!='disc' else 0
                 if clip=='reload':
-                    if o==ammo:o.location+=Vector(axis)*(max(0,1-abs(t-.5)*4) if idx in(4,5) else pulse)
+                    if o==ammo:
+                        if idx==6:o.location+=Vector((-.088 if t in(.25,.5,.75) else 0,0,-.105 if t==.5 else 0))
+                        else:o.location+=Vector(axis)*(max(0,1-abs(t-.5)*4) if idx in(4,5) else pulse)
                     if o==action and idx in(4,5):o.rotation_euler.y+=1.02*pulse
                     if o==action and idx in(22,23):o.rotation_euler.y+=.22*pulse
                 for path in('location','rotation_euler','scale'):o.keyframe_insert(data_path=path,frame=frame)
+            if idx==6 and o==ammo:
+                for layer in act.layers:
+                    for strip in layer.strips:
+                        for bag in strip.channelbags:
+                            for curve in bag.fcurves:
+                                for key in curve.keyframe_points:key.interpolation='LINEAR'
             tr=o.animation_data.nla_tracks.new();tr.name=clip;tr.strips.new(clip,1,act);tr.mute=True;o.animation_data.action=None;o.matrix_basis=basis
     bpy.context.scene.frame_start=1;bpy.context.scene.frame_end=60;bpy.context.scene.frame_set(1)
     bpy.ops.object.select_all(action='DESELECT')

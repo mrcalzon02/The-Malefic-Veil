@@ -2,9 +2,9 @@
   "scope": "Art refinement packages; existing runtime arsenal and spawn/crafting rules unchanged.",
   "stop_rule": "Continue until handled or either usage window has 50% remaining.",
   "counts": {
-    "REFINED_PROTOTYPE": 5,
+    "REFINED_PROTOTYPE": 6,
     "REJECTED_REDESIGN_REQUIRED": 1,
-    "PENDING": 26
+    "PENDING": 25
   },
   "weapons": [
     {
@@ -58,7 +58,9 @@
       "weapon_id": "w07-reliquary",
       "name": "Reliquary",
       "access": "world pickup",
-      "status": "PENDING"
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w07-reliquary-finish-r3.glb",
+      "sha256": "0748df753b627de5a91bdb8a6e24a3ae18557451430fa0fa9f3f94071e34dae9"
     },
     {
       "weapon_id": "w08-furnace-organ",

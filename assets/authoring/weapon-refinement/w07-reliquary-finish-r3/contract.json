@@ -1,0 +1,50 @@
+{
+  "placement_kind": "snap-component",
+  "component_function": "handheld weapon assembly; no building placement or plot claim",
+  "local_bounds_z_up": [
+    [
+      -0.47319998931884766,
+      -0.0571999993622303,
+      -0.1870000023841858
+    ],
+    [
+      0.5119999904632568,
+      0.0571999993622303,
+      0.14699998092651367
+    ]
+  ],
+  "organic": false,
+  "continuous_surfaces": [],
+  "intentional_separate_meshes": [
+    "w07-reliquary__barrel",
+    "w07-reliquary__receiver_chassis",
+    "w07-reliquary__ejection_recess",
+    "w07-reliquary__upper_spine",
+    "w07-reliquary__receiver_service_panel_-1",
+    "w07-reliquary__panel_fastener_-1",
+    "w07-reliquary__receiver_service_panel_1",
+    "w07-reliquary__panel_fastener_1",
+    "w07-reliquary__grip_shell",
+    "w07-reliquary__trigger_guard",
+    "w07-reliquary__trigger",
+    "w07-reliquary__stock_upper",
+    "w07-reliquary__stock_lower",
+    "w07-reliquary__butt_pad",
+    "w07-reliquary__stock_socket",
+    "w07-reliquary__shell_tube",
+    "w07-reliquary__magazine_front_cap",
+    "w07-reliquary__loading_gate_frame",
+    "w07-reliquary__pump",
+    "w07-reliquary__front_tube_clamp",
+    "w07-reliquary__reload_shot_shell"
+  ],
+  "reload_method": "bottom loading gate; axial shell withdrawal then straight down through open tray",
+  "reload_objects": [
+    "reload_shot_shell"
+  ],
+  "loading_interfaces": [
+    "loading_gate_frame"
+  ],
+  "forbidden_name_tokens": [],
+  "isolated_atlas_cells": true
+}

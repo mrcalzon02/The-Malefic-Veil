@@ -1,0 +1,61 @@
+{
+  "asset_sha256": "0748df753b627de5a91bdb8a6e24a3ae18557451430fa0fa9f3f94071e34dae9",
+  "decision": "pass",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 4,
+    "silhouette": 4,
+    "reference_comparison": 4,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Actual final front/rear/closeup/clay/side/reload views inspected. Profiled grooved pump sleeve replaces the box; a bored front clamp seats on both barrel and magazine tube. The bottom-loading housing intersects and connects to the receiver.",
+    "Independent exported checks pass eleven shell reload poses against loading housing, tube, receiver and guard, plus five firing poses of the pump against its tube, receiver, housing, barrel and front clamp. Measured pump stroke is 45 mm; shell moves axially out of the tube before descending through the open tray.",
+    "Shared 1024 albedo/ORM uses coated body, steel tubes, patterned pump/grip and readable correctly oriented marks. Compared with previously viewed actual car/character calibration: modest low-poly refinement stage, with richer wear and runtime appearance still pending.",
+    "Shared first-eight world pickup. Component demonstration clips retain no hands, spring/follower simulation or loose-shell physics; this is not final production art or a gameplay integration change."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w07-reliquary-finish-r3/front.png",
+      "sha256": "9c84fc2f33eae8bed27892eed3c79a0194713e67e03501ec703f6d7949fde88c"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w07-reliquary-finish-r3/rear.png",
+      "sha256": "8419f520df5593606e4458ea2499a02d29d39361c903def3269fbf8e91ccf672"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w07-reliquary-finish-r3/closeup.png",
+      "sha256": "937d13d0f613422569ad2e95261dcfcb39f11b51b16a319c2ae6ba8be35fa0e2"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w07-reliquary-finish-r3/clay.png",
+      "sha256": "2c3de5c508c7be60d284bff4604c2d7dcd08ec950fd58d23e4363dab135270a6"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w07-reliquary-finish-r3/side.png",
+      "sha256": "b9c88908575a4026d6b3c7609e801a1b7b9da4a904adca1e44802d1904d972a1"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w07-reliquary-finish-r3/reload.png",
+      "sha256": "eab889f37241e260dbbeeb7a2f915f459323e501f74c20c422631018a07efd82"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w07-reliquary-finish-r3/comparison.png",
+      "sha256": "f4f01e604898c0d5889f2ef05fba028490e6d21dbf7422bc1f85578bb8a21500"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

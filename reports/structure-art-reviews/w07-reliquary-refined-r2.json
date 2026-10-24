@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "44b4b2ca4f87df7c56a4e559e172389a1303690b36a8353042d39821098a86b9",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 3,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Improved sleeve, tube support and loading port. Still needs the axial passage into the magazine and sufficient rear clearance for the pump stroke; corrected in r3."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r2/front.png",
+      "sha256": "e8bc99120cb375cd9c97f90a30d45982f8e758590acc9ec119fb4f4510a277f5"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r2/rear.png",
+      "sha256": "2bc9a16d0781ea3c358a4fd70cdc46dee08e851db06fa13b3177dec11702cab3"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r2/closeup.png",
+      "sha256": "37a7a9c0166525c7bf9f3c05ba62f2d1c53b76cea1c6bc52cf2a82b3b2cac5d7"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r2/clay.png",
+      "sha256": "5a501019aa8810f79f126c4243b526fd535d6e882e7a66b3b0115b2a4563c22d"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r2/side.png",
+      "sha256": "ab6a315a53dfad10ab8363718a087bd6633ff839f5779607d0b51e8095969c82"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w07-reliquary-refined-r2/reload.png",
+      "sha256": "33b7d746d639c8fa63e3c37513083fff2fab0a51fa9be2d423153aa8697c07f8"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w07-reliquary-refined-r2/comparison.png",
+      "sha256": "4feb399ee66b50e9cd77b5ab2a9545a3ca92b32f206be75ec9383d74516357c5"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

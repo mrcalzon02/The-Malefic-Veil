@@ -264,6 +264,7 @@ public final class GameplayMeshes {
         water.diamond(-.17,.12,.02,.09,.06,0x7A9C9B);
         meshes.put("resource-water",water.done());
 
+        meshes.putAll(ThrownDeployableMeshes.build());
         // Nine real, authored static GLBs are immediately available to the
         // common shaded-triangle renderer under stable airframe IDs. There are
         // deliberately no invented flight actors or aircraft-spawn shortcuts.

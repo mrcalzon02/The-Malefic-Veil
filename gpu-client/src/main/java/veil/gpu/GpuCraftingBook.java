@@ -264,7 +264,8 @@ public final class GpuCraftingBook implements AutoCloseable {
         if(record.kind()==CraftingRecipeIndex.Kind.FIELD){
             if(snapshot==null)return "HOST CRAFT STATE UNAVAILABLE";
             for(MaleficVeil.GpuCraftRecipe craft:snapshot.crafts())
-                if(record.key().equals("hand:"+craft.id()))
+                if(record.key().equals(craft.id().startsWith("field:")?
+                    "throw:"+craft.id().substring(6):"hand:"+craft.id()))
                     return craft.affordable()?"READY: HOST VALIDATES":
                         "BLOCKED: "+clipped(craft.description(),27);
             return "HOST RECIPE UNAVAILABLE";

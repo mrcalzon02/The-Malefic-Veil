@@ -325,6 +325,26 @@ public final class ThrownDeployableMeshes {
                         m.orb(0,1.10,0,.37,glow);
                     }
                 }
+                // Open wireframe hemispheres make the protective bubble visible
+                // without an opaque mesh hiding players or their bullets.
+                int segments=16;
+                for(int i=0;i<segments;i++){
+                    double a=i*Math.PI*2/segments,b=(i+1)*Math.PI*2/segments;
+                    for(int ring=0;ring<3;ring++){
+                        double height=.22+ring*.73;
+                        double radius=ring==2?1.50:ring==1?2.20:1.95;
+                        m.beam(Math.cos(a)*radius,height,Math.sin(a)*radius,
+                            Math.cos(b)*radius,height,Math.sin(b)*radius,.034,
+                            ring==1?glow:trim);
+                    }
+                }
+                for(int i=0;i<8;i++){
+                    double a=i*Math.PI/4;
+                    m.beam(Math.cos(a)*1.95,.22,Math.sin(a)*1.95,
+                        Math.cos(a)*2.20,.95,Math.sin(a)*2.20,.035,glow);
+                    m.beam(Math.cos(a)*2.20,.95,Math.sin(a)*2.20,
+                        Math.cos(a)*1.50,1.68,Math.sin(a)*1.50,.035,trim);
+                }
             }
         }
     }

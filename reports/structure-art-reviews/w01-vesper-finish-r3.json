@@ -1,0 +1,62 @@
+{
+  "asset_sha256": "a5af8a1260bf887320bc50e8c30b8d4f8b2c578f4083bc91674d6adb28e0812c",
+  "decision": "pass",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 4,
+    "silhouette": 4,
+    "reference_comparison": 4,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported renders",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Refined prototype review, not final production art or human approval. Front/rear/clay show a tapered slide and chassis, a bored forward barrel, joined grip shell, continuous open trigger guard and curved trigger blade. No separate grip ribs or sideways barrel disk.",
+    "Rear wall is visibly closed; independent exported-model rays measure 15.7\u201316.5 mm of rear grip wall at three sampled heights. Complete 144 mm magazine withdraws along the raked well; ten sampled reload poses have no grip/magazine surface intersections.",
+    "Front and rear receiver stencils read in their correct orientations. Coated blue-black body, exposed steel and patterned dark grip use a shared 1024 albedo plus linear roughness/metallic texture and padded per-part UV cells. Deliberately restrained wear; no normal map or high-poly detail claimed.",
+    "Compared actual private car-01, car-08, character-01 and character-17 render panels. Chamfered silhouette, recessed functional details, markings and consistent materials meet a modest refined-prototype stage. The references retain richer painted character/weathering detail; that remains a future art pass.",
+    "Vesper remains a shared first-eight world pickup. Neutral field-service design does not invent a mapping to Unraveled, Penitent or Begotten and uses no placeholder faction labels."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/front.png",
+      "sha256": "598c48b4fe8c6decc599bf94c9d49a8ee0cf284fc373a7425d8f099497ee5b02"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/rear.png",
+      "sha256": "bb0a185dd76ae95f030a517a83e8ce7e821335ca5f81aaef2df44092135b0ed1"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/closeup.png",
+      "sha256": "888f069277933db3ad84b1e2190472ae38d0daa2f31c15f79e87b7f0b16da6e2"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/clay.png",
+      "sha256": "ef76ab1fe1e8d9e3b20ae0d20c04fd4e681de1f15aee5b073ee0ca13a82cff45"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/side.png",
+      "sha256": "c9a38261485179d5bd007ee2b6893d63390de4b6a2c8b7de5aa5ea59b5724235"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/reload.png",
+      "sha256": "d976127108e3c045d4dfcec448771e3ec9e3d2d9a89b30c01a4186c8073d79c9"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w01-vesper-finish-r3/comparison.png",
+      "sha256": "ad33439a4c49e5e69de74e7f0e7e9688580ef8ab4983a4df363cba08318e6193"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "e332ddb5e940c2bec628fb7213eb286f04bf1e1e892bb5295893c476f45ebe03",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported renders",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Magazine well and raked reload are corrected, but unrefined rectangular slide is still scaffolding. Superseded by a profiled slide, cut serrations and actual ejection port."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r2/front.png",
+      "sha256": "4ce7bb5d9b5ef0256b1a37d58f568ce4688104473caa47e4e90837f6c110ab37"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r2/rear.png",
+      "sha256": "cb22e8882e712f0e55f65b9bad6428881d40cdab58f4dd1e8bb388a5ed30c49c"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r2/closeup.png",
+      "sha256": "ba3d7254e606659e2f29d2e0070e21a2d4a719ee54ff6c8bdf13f780866c2a81"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r2/clay.png",
+      "sha256": "e8cac550a4eadbcd2e12bda9aa0e143a6104a4716d39aa90714fb18cd103b915"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r2/side.png",
+      "sha256": "24605ba490ba972268d748b2c9207b8815b57c687c6231f30d3fd8e634cae798"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r2/reload.png",
+      "sha256": "fde8ae93842ca4c5d28ac016a08994aaf5bd33566f6f346a3575bd528159f8f3"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w01-vesper-mechanical-r2/comparison.png",
+      "sha256": "1e681d4a790960594c6672c5fe0d0a984d78a03d5c5db4788f7dabcb30781c47"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

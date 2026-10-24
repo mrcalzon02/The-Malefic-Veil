@@ -1,0 +1,41 @@
+{
+  "asset_sha256": "cee53fceee19c71140a099940be33697cf8e48127f9ec1e4b0055fd2aaa63fff",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 3,
+    "silhouette": 4,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex visual inspection",
+  "findings": [
+    "Opposite receiver stencil is mirrored; retained failed texture study."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3-stencil-study/front.png",
+      "sha256": "baa3c6ebd04cc485b96356d193503a9e384bd45400c6118f13a10e2664cb2bcf"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3-stencil-study/rear.png",
+      "sha256": "dd5a2cc96356e6896b4d8ab836b74dff80ead573d07a84049f9d4bb2d75bcce5"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3-stencil-study/closeup.png",
+      "sha256": "b21f114d4fc2a9385b03b1c125ba7b0c5927d528ebee1e837f7710e9fe22a2b4"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3-stencil-study/clay.png",
+      "sha256": "560ef53e58f93da579b1aa7ed660efe1912db518bf6958ba8775d03fcdb65040"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3-stencil-study/side.png",
+      "sha256": "7fd4b79b9716ca1a30234be12f41a6934c238d1bfa5ad77389772a511a18c067"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3-stencil-study/reload.png",
+      "sha256": "808b0b40a2ed271387a892091c4b05dbe48cefbf50b8c3b540ce83a8a7a379b8"
+    }
+  }
+}

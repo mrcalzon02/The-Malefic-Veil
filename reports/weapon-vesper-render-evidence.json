@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "a5af8a1260bf887320bc50e8c30b8d4f8b2c578f4083bc91674d6adb28e0812c",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/front.png",
+      "sha256": "598c48b4fe8c6decc599bf94c9d49a8ee0cf284fc373a7425d8f099497ee5b02"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/rear.png",
+      "sha256": "bb0a185dd76ae95f030a517a83e8ce7e821335ca5f81aaef2df44092135b0ed1"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/closeup.png",
+      "sha256": "888f069277933db3ad84b1e2190472ae38d0daa2f31c15f79e87b7f0b16da6e2"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/clay.png",
+      "sha256": "ef76ab1fe1e8d9e3b20ae0d20c04fd4e681de1f15aee5b073ee0ca13a82cff45"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/side.png",
+      "sha256": "c9a38261485179d5bd007ee2b6893d63390de4b6a2c8b7de5aa5ea59b5724235"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w01-vesper-finish-r3/reload.png",
+      "sha256": "d976127108e3c045d4dfcec448771e3ec9e3d2d9a89b30c01a4186c8073d79c9"
+    }
+  }
+}

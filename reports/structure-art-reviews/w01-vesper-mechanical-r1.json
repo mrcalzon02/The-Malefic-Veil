@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "812231e8074c3f145ec33fbd40a709790a3f182b97f3ada90b6b7cb8094819c7",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 2,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported renders",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Rear render reveals magazine cut through the rear grip wall. Collision sweep alone missed this missing surface. Rejected and rebuilt."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r1/front.png",
+      "sha256": "4d2b1d73bb96ef273c5cecf413df618d85e65f66fc098a5cf76eb67cecf1afe6"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r1/rear.png",
+      "sha256": "85cedf898749b8ac8277fc1a85fe0de1d03770422871ad9be0eca52735eeeb41"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r1/closeup.png",
+      "sha256": "f3a27a8866cb18cf5fe4ba5164699bba77fa1aed0546590333e864e802f90212"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r1/clay.png",
+      "sha256": "ecb6c7eced81897a86209fccd48b3e5308bf660d3028af5baa4b0bbc1d2256a1"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r1/side.png",
+      "sha256": "269fa72c08087599482c4f6ab5bcfabdc8f6190547336bd36a98f1355bc15f79"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w01-vesper-mechanical-r1/reload.png",
+      "sha256": "11bb1998e37349c417efd1218be7dd825569151ab32b2c9239ca5ec36139b8c9"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w01-vesper-mechanical-r1/comparison.png",
+      "sha256": "69ef3d6eb36d13f6cc375f68097e19f5d57db6aa055bcd7246d48615d0d96c10"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

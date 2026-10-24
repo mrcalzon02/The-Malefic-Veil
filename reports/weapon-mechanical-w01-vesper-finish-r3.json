@@ -1,0 +1,66 @@
+{
+  "asset_id": "w01-vesper-finish-r3",
+  "asset_sha256": "a5af8a1260bf887320bc50e8c30b8d4f8b2c578f4083bc91674d6adb28e0812c",
+  "barrel_axis_z_up": "+X",
+  "barrel_dimensions_m": [
+    0.1550000011920929,
+    0.04399999976158142,
+    0.04399999976158142
+  ],
+  "muzzle_socket_m": [
+    0.24799999594688416,
+    0.0,
+    0.03500000014901161
+  ],
+  "magazine_length_m": 0.1442499915137887,
+  "rear_grip_wall_thickness_m": [
+    0.015707105741725038,
+    0.016096517302669474,
+    0.0164859220535307
+  ],
+  "reload_travel_m": 0.2536760084072756,
+  "reload_surface_sweep": [
+    {
+      "frame": 1,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 4,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 8,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 16,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 23,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 30,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 38,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 46,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 54,
+      "grip_mag_surface_intersections": 0
+    },
+    {
+      "frame": 60,
+      "grip_mag_surface_intersections": 0
+    }
+  ],
+  "status": "PASS",
+  "limits": "Checks stated interfaces and poses; not hand IK, ammunition simulation or exhaustive collision proof."
+}

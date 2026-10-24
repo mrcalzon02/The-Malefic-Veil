@@ -1,0 +1,15 @@
+{
+  "id": "w01-vesper-finish-r3",
+  "source": "build/candidates/weapon-refinement/w01-vesper-mechanical-r3/w01-vesper-mechanical-r3.blend",
+  "asset_sha256": "a5af8a1260bf887320bc50e8c30b8d4f8b2c578f4083bc91674d6adb28e0812c",
+  "status": "UNREVIEWED",
+  "geometry_frozen_for_texturing": true,
+  "changes": [
+    "preserve measured barrel axis",
+    "cut magazine-sized clearance through grip and well",
+    "connected sights with open rear notch",
+    "grip grooves are subtracted geometry, no separate floating strips",
+    "profiled slide, cut cocking serrations, ejection port and curved trigger for r3 onward"
+  ],
+  "texture_bake": "1024 shared albedo and linear ORM, disjoint padded UV cells"
+}

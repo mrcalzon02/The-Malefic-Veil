@@ -1,0 +1,51 @@
+{
+  "w01-vesper-finish-r3": {
+    "placement_kind": "snap-component",
+    "component_function": "handheld assembly only; not a construction plot",
+    "local_bounds_z_up": [
+      [
+        -0.1440000046491623,
+        -0.04012842816114426,
+        -0.1712499965429306
+      ],
+      [
+        0.24199999463558197,
+        0.04012842816114426,
+        0.1179999966621399
+      ]
+    ],
+    "organic": false,
+    "continuous_surfaces": [],
+    "intentional_separate_meshes": [
+      "w01-vesper__grip_shell",
+      "w01-vesper__pistol_box_magazine_well",
+      "w01-vesper__pistol_box_magazine",
+      "w01-vesper__pistol_box_magazine_floorplate",
+      "w01-vesper__pistol_box_magazine_feed_lips",
+      "w01-vesper__front_sight",
+      "w01-vesper__rear_sight",
+      "w01-vesper__slide",
+      "w01-vesper__barrel",
+      "w01-vesper__receiver_chassis",
+      "w01-vesper__ejection_recess",
+      "w01-vesper__upper_spine",
+      "w01-vesper__receiver_service_panel_-1",
+      "w01-vesper__panel_fastener_-1",
+      "w01-vesper__receiver_service_panel_1",
+      "w01-vesper__panel_fastener_1",
+      "w01-vesper__trigger_guard",
+      "w01-vesper__trigger",
+      "w01-vesper__pistol_box_magazine_catch"
+    ],
+    "isolated_atlas_cells": true,
+    "reload_method": "complete box magazine withdraws along the raked grip well",
+    "reload_objects": [
+      "pistol_box_magazine",
+      "pistol_box_magazine_floorplate",
+      "pistol_box_magazine_feed_lips"
+    ],
+    "forbidden_name_tokens": [
+      "grip_channel"
+    ]
+  }
+}

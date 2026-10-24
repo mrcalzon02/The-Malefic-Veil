@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "d52c6def6fc0c6fdd1a574aa7190ba903920a8934dc13639d463c12aa803f8d8",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 2,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Lower bridge has an unsupported gap from the receiver and UV projection is incomplete. Firing index and swing-out hinge require separate pivots."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r2/front.png",
+      "sha256": "b294d73b81d28e9509668da6a63b8a3a87a5d0443846466a566ebf2fa72cc8aa"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r2/rear.png",
+      "sha256": "8c85fae1d09474f4ae7212ec25900079c7cebb334914e8e37fba2bdc741936dc"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r2/closeup.png",
+      "sha256": "eaa9335ffba5a6e7afa45e5bb22492772d28ce4e1dfcbfe28e953141d12b83da"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r2/clay.png",
+      "sha256": "d4c7da46f55e8e5afc9d39b05614314959cbcc7ed7e2f145d424f31c61934bf1"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r2/side.png",
+      "sha256": "6538bfa7e89ba41a363a340c8c0edb17d7fe34eb98f35592c26e2e1c9058f717"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r2/reload.png",
+      "sha256": "6bf313ed7acf84fbd7576b8100be676af5b2492554bf8de16d60b4e963e21676"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w02-ossuary-mechanical-r2/comparison.png",
+      "sha256": "4d78e5b6f0b6a1e8ad8a4313b2d0c807da7427985a98327944269bce7dbac464"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

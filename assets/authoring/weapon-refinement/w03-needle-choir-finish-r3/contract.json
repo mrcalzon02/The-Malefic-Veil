@@ -1,0 +1,58 @@
+{
+  "placement_kind": "snap-component",
+  "component_function": "handheld weapon assembly; no building placement or plot claim",
+  "local_bounds_z_up": [
+    [
+      -0.2707999904155731,
+      -0.08100000363588333,
+      -0.19899999690055847
+    ],
+    [
+      0.30200001192092896,
+      0.0571999993622303,
+      0.15899997544288635
+    ]
+  ],
+  "organic": false,
+  "continuous_surfaces": [],
+  "intentional_separate_meshes": [
+    "w03-needle-choir__barrel",
+    "w03-needle-choir__receiver_chassis",
+    "w03-needle-choir__ejection_recess",
+    "w03-needle-choir__upper_spine",
+    "w03-needle-choir__receiver_service_panel_-1",
+    "w03-needle-choir__panel_fastener_-1",
+    "w03-needle-choir__receiver_service_panel_1",
+    "w03-needle-choir__panel_fastener_1",
+    "w03-needle-choir__grip_shell",
+    "w03-needle-choir__trigger_guard",
+    "w03-needle-choir__trigger",
+    "w03-needle-choir__stock_upper",
+    "w03-needle-choir__stock_lower",
+    "w03-needle-choir__butt_pad",
+    "w03-needle-choir__stock_socket",
+    "w03-needle-choir__ballistic_box_magazine",
+    "w03-needle-choir__ballistic_box_magazine_floorplate",
+    "w03-needle-choir__ballistic_box_magazine_feed_lips",
+    "w03-needle-choir__ballistic_box_magazine_well",
+    "w03-needle-choir__ballistic_box_magazine_catch",
+    "w03-needle-choir__front_sight",
+    "w03-needle-choir__rear_sight",
+    "w03-needle-choir__visible_bolt_carrier",
+    "w03-needle-choir__charging_handle_stem",
+    "w03-needle-choir__charging_handle_knob",
+    "w03-needle-choir__profiled_foregrip",
+    "w03-needle-choir__foregrip_saddle"
+  ],
+  "reload_method": "detachable ballistic box magazine forward of trigger guard",
+  "reload_objects": [
+    "ballistic_box_magazine",
+    "ballistic_box_magazine_floorplate",
+    "ballistic_box_magazine_feed_lips"
+  ],
+  "loading_interfaces": [
+    "ballistic_box_magazine_well"
+  ],
+  "forbidden_name_tokens": [],
+  "isolated_atlas_cells": true
+}

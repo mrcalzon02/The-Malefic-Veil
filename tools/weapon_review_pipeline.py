@@ -9,7 +9,7 @@ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--id',required=Tr
 b=R/'build/candidates/weapon-refinement'/a.id
 if b.parent!=R/'build/candidates/weapon-refinement' or not (b/(a.id+'.glb')).is_file():raise ValueError('Unknown staged candidate')
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
-inputs=json.loads((b/'inspection-input.json').read_text());tools=['inspect_structure_quality.py','render_weapon_refinements.py','compose_weapon_review.py','check_vesper_mechanics.py']
+inputs=json.loads((b/'inspection-input.json').read_text());tools=['inspect_structure_quality.py','render_weapon_refinements.py','compose_weapon_review.py','check_vesper_mechanics.py','check_revolver_mechanics.py','check_box_magazine_mechanics.py']
 signature={r['path']:sha(R/r['path']) for r in inputs};signature.update({f:sha(R/'tools'/f) for f in tools});stamp=b/'review-pipeline-cache.json'
 inspection=R/'reports'/('weapon-'+a.id+'-inspection.json');gate=R/'reports'/('weapon-'+a.id+'-quality.json')
 def run(label,cmd):
@@ -23,6 +23,8 @@ if not cached:
     with ThreadPoolExecutor(max_workers=3) as pool:
         jobs=[pool.submit(run,'inspect',blender(tools[0],b/'inspection-input.json',inspection)),pool.submit(run,'render',blender(tools[1],'--id',a.id))]
         if a.id.startswith('w01-vesper-'):jobs.append(pool.submit(run,'mechanics',blender(tools[3],a.id)))
+        if a.id.startswith('w02-ossuary-') and 'refined-r1' not in a.id:jobs.append(pool.submit(run,'mechanics',blender(tools[4],a.id)))
+        if a.id.startswith(('w03-needle-choir-','w04-rivet-saint-')) and 'ballistic_box_magazine' in json.loads((b/'contract.json').read_text()).get('reload_objects',[]):jobs.append(pool.submit(run,'mechanics',blender(tools[5],a.id)))
         for job in jobs:job.result()
     image_python=a.image_python or str(Path.home()/'.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
     run('sheet',[image_python,'tools/'+tools[2],a.id]);stamp.write_text(json.dumps(signature,indent=2)+'\n')

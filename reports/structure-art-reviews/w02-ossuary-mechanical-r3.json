@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "8e11ec988a41dcf8e81d522089c06968bac672f80274770a3c4afcfea05ed443",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 2,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Exported reload sweep detects three cylinder/trigger-guard surface intersections already at frame 1. Third attempt retained as rejected; no texture bake or promotion. Redesign the trigger/guard and lower frame as a coordinated unit around the measured cylinder sweep."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r3/front.png",
+      "sha256": "78d530dca3ee2914d33f7149209b889be0a1b052bcce3c66742489a385d15592"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r3/rear.png",
+      "sha256": "835669111e88aa379cc9915ae85a1090791d6bd7f649f1b91d79fc82b40285e2"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r3/closeup.png",
+      "sha256": "6d1c1e61f3c8ec7588ad5bea32c0c5ed3ef0ba55390d89b6044f2aea1b9a251c"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r3/clay.png",
+      "sha256": "61d5f59a9f692de01f8b081102148529f683084560d21535289e53ba3b1a22e1"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r3/side.png",
+      "sha256": "5c241117837a887bb3a9105df9e32d7349da983a2767924c650d28d1ef84a57b"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w02-ossuary-mechanical-r3/reload.png",
+      "sha256": "fe9f2ca3a0d0f11a8a3d1b4bda259e1596f6aadd7b0d72eb1662c442648137c6"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w02-ossuary-mechanical-r3/comparison.png",
+      "sha256": "9a704cd59a2f5b6e4bb2b596e46bc4e8b54168d9c7e3f4694598b92bea0a3696"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

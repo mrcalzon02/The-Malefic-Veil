@@ -15,6 +15,7 @@ if '--ids' in args:defs=[d for d in defs if d['id'] in args[args.index('--ids')+
 records=[];contracts={};report=[]
 C=Matrix(((0,1,0,0),(0,0,1,0),(1,0,0,0),(0,0,0,1)));Ci=C.inverted()
 for d in defs:
+    idx=int(d['id'][1:3])-1
     ident=d['id']+'-refined-'+revision;out=BASE/ident;out.mkdir(exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     with bpy.data.libraries.load(str(R/'assets/game/arsenal/working-arsenal.blend'),link=False) as(src,dst):dst.collections=[d['id']]
@@ -116,13 +117,14 @@ for d in defs:
         beam('upper_spine',(lo.x+.02,0,hi.z+.004),(hi.x-.025,0,hi.z+.004),.022,.035,band=1)
         for side in(-1,1):
             panel=loft('receiver_service_panel_'+str(side),[(lo.x+L*.12,side*(W*.84+.003),z,.004,H*.55),(hi.x-L*.28,side*(W*.84+.003),z,.004,H*.62)],sides=4,band=0)
-            cylinder('panel_fastener_'+str(side),(lo.x+L*.18,side*(W*.90+.006),z),.008,.006,'Y',band=1,sides=8)
+            cylinder('panel_fastener_'+str(side),(lo.x+L*.18,side*(W*.84+.006),z),.008,.006,'Y',band=1,sides=8)
     # Palm-sized grip, not a flat slab, with a hollow straight insertion tunnel.
     old=find('grip');grip_bounds=None
     if old:
         lo,hi=bounds(old);grip_bounds=(lo,hi);height=hi.z-lo.z;top=(lo.x+hi.x)/2+.012;bottom=top-.022
         palm=loft('grip_shell',[(hi.z,top,0,(hi.x-lo.x)*.45,.031),(hi.z-height*.30,top-.008,0,.034,.032),(lo.z+.017,bottom,0,.034,.028),(lo.z,bottom,0,.037,.030)],'Z',8,band=3)
-        remove(old);cut_box(palm,(bottom+.006,0,lo.z+height*.30),(.038,.033,height*.83))
+        remove(old)
+        if idx==0:cut_box(palm,(bottom+.006,0,lo.z+height*.30),(.038,.033,height*.83))
         for side in(-1,1):
             for j in range(3):cut_box(palm,(bottom,side*.0275,lo.z+.030+j*.020),(.034,.007,.0035))
     # One continuous trigger guard with an open, comfortable finger space.
@@ -135,7 +137,7 @@ for d in defs:
         for j in range(n):
             k=(j+1)%n;faces.extend([(j,k,n+k,n+j),(2*n+j,3*n+j,3*n+k,2*n+k),(j,2*n+j,2*n+k,k),(n+j,n+k,3*n+k,3*n+j)])
         bevel(mesh('trigger_guard',verts,faces,band=3),.001)
-        beam('trigger',(rear+.031,0,top+.008),(rear+.039,0,top-.035),.008,.010,band=1)
+        tx=rear+.035;outline=[(tx-.004,top+.008),(tx+.004,top+.008),(tx+.007,top-.009),(tx+.004,top-.023),(tx-.004,top-.035),(tx-.012,top-.032),(tx-.004,top-.021),(tx-.001,top-.009)];vv=[(x,y,z) for y in(-.005,.005) for x,z in outline];nn=len(outline);ff=[tuple(range(nn-1,-1,-1)),tuple(nn+j for j in range(nn))];ff.extend((j,(j+1)%nn,(j+1)%nn+nn,j+nn) for j in range(nn));mesh('trigger',vv,ff,band=1)
     # Replace the wedge stock with a connected cheek support / lower strut / butt pad.
     old=find('stock')
     if old:
@@ -143,7 +145,8 @@ for d in defs:
         beam('stock_upper',(lo.x+.025,0,hi.z-.009),(hi.x+.005,0,hi.z-.009),.041,.052,band=3)
         beam('stock_lower',(lo.x+.026,0,lo.z+.014),(hi.x-.012,0,-.005),.022,.035,band=0)
         box('butt_pad',(lo.x+.014,0,(lo.z+hi.z)/2),(.032,.079,hi.z-lo.z+.018),band=3)
-        box('stock_socket',(hi.x-.012,0,.005),(.048,.075,.070),band=1)
+        socketx=bounds(find('receiver_chassis'))[0].x+.018
+        box('stock_socket',(socketx,0,.005),(.048,.075,.070),band=0)
     # Reload architecture is authored per family. Empty ammo groups are never accepted.
     family=d['silhouette'];idx=int(d['id'][1:3])-1;method='detachable magazine';axis=(0,0,-.25)
     for o in list(ammo.children):
@@ -162,7 +165,26 @@ for d in defs:
     def pack(name,x,y,z,size=(.12,.09,.17)):
         w,dep,h=size;magazine(name,x,y,z+h*.45,h,w,dep)
         for side in(-1,1):mark(box(name+'_pull_ear_'+str(side),(x,side*(dep*.52)+y,z-h*.40),(.044,.015,.032),ammo,1))
-    if idx==0:
+    if idx in(2,3):
+        magazine('ballistic_box_magazine',.079,0,-.018,.175,.065,.055)
+        method='detachable ballistic box magazine forward of trigger guard'
+        cut_box(find('ballistic_box_magazine_well'),(.079,0,-.026),(.066,.058,.068))
+        cut_box(find('receiver_chassis'),(.079,0,-.026),(.066,.058,.068))
+        spine=find('upper_spine');sl,sh=bounds(spine)
+        box('front_sight',(sh.x-.016,0,sh.z+.005),(.012,.009,.012),band=1)
+        rear=box('rear_sight',(sl.x+.016,0,sh.z+.005),(.017,.029,.014),band=1)
+        cut_box(rear,(sl.x+.016,0,sh.z+.011),(.023,.011,.014))
+        # The bolt and charging handle are seated inside the open ejection slot.
+        for side in(-1,1):cut_box(find('receiver_service_panel_'+str(side)),(.018,side*.050,.055),(.085,.025,.038))
+        box('visible_bolt_carrier',(.016,-.046,.055),(.070,.008,.025),action,1)
+        cylinder('charging_handle_stem',(.006,-.058,.055),.006,.023,'Y',action,1,12)
+        cylinder('charging_handle_knob',(.006,-.073,.055),.010,.012,'Y',action,3,12)
+        fore=find('short_foregrip') or find('foregrip')
+        if fore:
+            fl,fh=bounds(fore);fc=(fl+fh)/2;remove(fore)
+            loft('profiled_foregrip',[(fl.z,fc.x,0,.023,.025),(fl.z+.018,fc.x-.004,0,.025,.028),(fh.z,fc.x,0,.024,.028)],'Z',8,band=3)
+            box('foregrip_saddle',(fc.x,0,.004),(.060,.062,.029),band=0)
+    elif idx==0:
         lo,hi=grip_bounds;magazine('pistol_box_magazine',(lo.x+hi.x)/2-.004,0,hi.z-.020,.139,.034,.030)
         method='grip magazine; complete removable body and floorplate'
     elif idx==1:
@@ -324,6 +346,7 @@ for d in defs:
     pts=[o.matrix_world@v.co for o in col.objects if o.type=='MESH' for v in o.data.vertices];lo=[min(v[i] for v in pts) for i in range(3)];hi=[max(v[i] for v in pts) for i in range(3)]
     contracts[ident]={'placement_kind':'snap-component','component_function':'handheld weapon assembly; no building placement or plot claim','local_bounds_z_up':[[x-.002 for x in lo],[x+.002 for x in hi]],'organic':False,'continuous_surfaces':[],'intentional_separate_meshes':[o.name for o in col.objects if o.type=='MESH'],'reload_method':method,'reload_objects':reload_objects,'loading_interfaces':loading,'forbidden_name_tokens':[]}
     record={'id':ident,'path':path.relative_to(R).as_posix(),'category':'weapon-rough-candidate'};records.append(record)
+    (out/'contract.json').write_text(json.dumps(contracts[ident],indent=2)+'\n');(out/'contracts.json').write_text(json.dumps({ident:contracts[ident]},indent=2)+'\n');(out/'inspection-input.json').write_text(json.dumps(json.loads((R/'data/structure-quality-policy.json').read_text())['reference_sources']+[record],indent=2)+'\n')
     info={'id':ident,'source_weapon':d['id'],'source_glb_sha256':hashlib.sha256((R/'assets/game/arsenal'/f'{d["id"]}.glb').read_bytes()).hexdigest(),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'status':'UNREVIEWED','reload_method':method,'reload_objects':reload_objects,'loading_interfaces':loading,'new_texture_images':0}
     report.append(info);(out/'design-record.json').write_text(json.dumps(info,indent=2)+'\n');print('REFINED',ident,method,flush=True)
 (BASE/'inspection-input.json').write_text(json.dumps(records,indent=2)+'\n')

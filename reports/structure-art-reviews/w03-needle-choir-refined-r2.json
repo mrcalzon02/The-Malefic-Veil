@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "1e9688a682ba7115ba11d6e79a250af167d4dc4c5cfeb757d9b497bc9f98543d",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 3,
+    "silhouette": 3,
+    "reference_comparison": 3,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Magazine placement and visible bolt are improved, but excessive well cut removes its front/rear walls. Stock socket remains misplaced beneath the receiver. Repaired in revision 3."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r2/front.png",
+      "sha256": "15e59d3a998b4cafd93b176bac5189ff9758ff0ae015ecba9a369e1a761333b6"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r2/rear.png",
+      "sha256": "c0ddd1b5dd6d111008e176a734d6100f46e919b12759c8dbda119f99804f68ad"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r2/closeup.png",
+      "sha256": "9ec5b9e99e1a666ed35ce6eb3f08dd8e2741a64a2aecba0234f569591e848f06"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r2/clay.png",
+      "sha256": "c0720b2da831b88b306bd57dbe6fee0d6c85baa21a15ccf84445a0503df452fa"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r2/side.png",
+      "sha256": "772a06f43bec7edce0aa575c0f542a0033fa26b567e27dec87895a7f4c7cb14f"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r2/reload.png",
+      "sha256": "34908bb6ede0ca37c456259928ebb47b8858265aeadd645240309992527f6b5f"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w03-needle-choir-refined-r2/comparison.png",
+      "sha256": "204157528e2ae038428adcca408f29ada36fcac86ac3b0c7848798dde96c763f"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

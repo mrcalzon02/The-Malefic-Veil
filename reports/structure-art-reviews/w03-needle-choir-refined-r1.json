@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "0ccbe6265424e16cf7116b210447746afefb8a8dfade4c7c7e2b7d914b945199",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 3,
+    "material_coherence": 3,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex inspection of actual exported/reimported images and mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Wrong power cartridge occupies the ballistic weapon trigger space. Plain foregrip is unsupported beneath the barrel; no visible functional bolt."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r1/front.png",
+      "sha256": "d243ee94d8b7aac040252eee61c6624bc85a0939f25be3785b51fb3b1b118426"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r1/rear.png",
+      "sha256": "b5f3b27d7acd7b4456a880cd2f3d36e7eea897229d858996b9e64657b3c60558"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r1/closeup.png",
+      "sha256": "0d26f97eb91192069e8559924dd58815461cc843b1811647adc8a13f54a6c8c4"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r1/clay.png",
+      "sha256": "367f9f00d2cb0ab8060ad19302df13399ba376a4322c2d69aafaaec50215d029"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r1/side.png",
+      "sha256": "97812d3915df0d07a3605c7a6cc04eacd127a053466492e29b547d5d0bb95008"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w03-needle-choir-refined-r1/reload.png",
+      "sha256": "d7938a3ef3ef38d84caf72d4a6a602e0cc6029e078cd3bce54470445cda888db"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w03-needle-choir-refined-r1/comparison.png",
+      "sha256": "df285063b5d504061ca82bc720976c42a062ecb83ca802455536006a0944053d"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

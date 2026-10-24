@@ -1,0 +1,9 @@
+{
+  "weapon": "w02-ossuary",
+  "status": "REJECTED_REDESIGN_REQUIRED",
+  "attempts": 3,
+  "current_asset_sha256": "8e11ec988a41dcf8e81d522089c06968bac672f80274770a3c4afcfea05ed443",
+  "failure": "Cylinder/trigger-guard intersections: 3 at reload frame 1",
+  "next_design": "Reposition and reshape trigger guard/lower frame around full hinged-cylinder envelope; revalidate firing index separately from crane motion.",
+  "not_promoted": true
+}

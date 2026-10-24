@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "c5db9ca4a9396eac1f69a5474fa5b6fc630334badb2702c70ba4059b82ffa9cf",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w03-needle-choir-finish-r3/front.png",
+      "sha256": "bcbc741e2788c5e6380f5fdb255a8b2d71a3487ef065ff5520c795b9564e1c4e"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w03-needle-choir-finish-r3/rear.png",
+      "sha256": "0257b2891724d711b1542da37691cefe020ffead8b4ae63d8b3f33758c8ea426"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w03-needle-choir-finish-r3/closeup.png",
+      "sha256": "4a22458fd0d14a3bf9ea1051705b4d9d4223a6dde9ac43a3cf4ce862ec1adb8f"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w03-needle-choir-finish-r3/clay.png",
+      "sha256": "f6076ddabfbcc3765cd694782cdba26d5f6dd7d2c060f027cfa73635ec170df7"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w03-needle-choir-finish-r3/side.png",
+      "sha256": "5dba63c6e761bd725c4d9bbce6ebe409e4315521b84d6ab0b337995b4fd21325"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w03-needle-choir-finish-r3/reload.png",
+      "sha256": "27d74da3e70ec80ef7ea15b6601889a90f2b548b6596dc48626f2f9ab27905f8"
+    }
+  }
+}

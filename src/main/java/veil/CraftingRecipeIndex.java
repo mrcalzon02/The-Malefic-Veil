@@ -44,6 +44,18 @@ public final class CraftingRecipeIndex {
                     case WORKBENCH->Availability.PLAYABLE_WORKBENCH;
                 },recipe.station().name(),"STRANDED","ALL",0,0,ingredients,List.of()));
         }
+        // Deployable kits are item recipes; never add them as facility blueprints.
+        for(var bp:ThrownDeployables.catalog()){
+            Map<String,Integer> ingredients=new TreeMap<>();
+            bp.ingredients().forEach((item,quantity)->ingredients.put(item.name(),quantity));
+            rows.add(new Record("throw:"+bp.id(),label(bp.id()),bp.item().name(),1,
+                Kind.FIELD,switch(bp.station()){
+                    case HAND->Availability.PLAYABLE_HAND;
+                    case FIRE->Availability.PLAYABLE_FIRE;
+                    case WORKBENCH->Availability.PLAYABLE_WORKBENCH;
+                },bp.station().name(),"ENCAMPMENT",bp.faction().name(),
+                0,0,ingredients,List.of()));
+        }
         for(var job:CraftingEraRegistry.processes().values()){
             rows.add(new Record("process:"+job.id(),label(job.id()),job.output(),
                 job.quantity(),Kind.INDUSTRIAL,Availability.INDUSTRIAL_PLANNED,

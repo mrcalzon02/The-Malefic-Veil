@@ -11,6 +11,7 @@ public final class ArenaSystems {
     public final Vehicles vehicles;
     public final CargoHaulage cargo;
     public final ArsenalSystems arsenal;
+    public final ThrownDeployables thrown;
     public final boolean hardcore;
     public final FactionGroups factions=new FactionGroups();
     public final RaidProtection raidProtection=new RaidProtection(Long.getLong("veil.offlineGraceMinutes",30L));
@@ -121,6 +122,7 @@ public final class ArenaSystems {
         world=new World(seed);vehicles=new Vehicles(world);
         cargo=new CargoHaulage(world,vehicles);
         arsenal=new ArsenalSystems(this);
+        thrown=new ThrownDeployables(this);
     }
     public synchronized Player join(int id){
         if(players.containsKey(id))throw new IllegalArgumentException("duplicate peer");
@@ -210,7 +212,7 @@ public final class ArenaSystems {
     public static double opacity(double visibility){return clamp(visibility,0,1);}
     public static double transparencyPercent(double visibility){return (1-opacity(visibility))*100.0;}
     private boolean free(double x,double y){
-        if(!world.canWalk(x,y))return false;
+        if(!world.canWalk(x,y)||thrown.occupied(x,y))return false;
         for(Vehicles.State car:vehicles.states())
             if(car.hp()>0&&Math.hypot(car.x()-x,car.y()-y)<.90)return false;
         for(World.Device d:world.devices)
@@ -228,7 +230,7 @@ public final class ArenaSystems {
             if(Math.hypot(x+(tx-x)*t-d.x,y+(ty-y)*t-d.y)<
                 (d.kind==FIELD_BENCH?.43:.36))return false;
         }
-        return true;
+        return !thrown.blocksLine(x,y,tx,ty);
     }
     /** Crouch/sprint are intents; host caps actual movement to reject teleport attempts. */
     public synchronized boolean move(int id,double x,double y,double angle,int flags){
@@ -236,7 +238,7 @@ public final class ArenaSystems {
         if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(angle)||!free(x,y))return false;
         long elapsed=Math.max(0,clock-p.moveAt);
         double max=((flags&1)!=0?1.20:(flags&2)!=0?4.30:2.85)*p.progression.movementMultiplier()*arsenal.speed(p);
-        double permitted=.33+Math.min(elapsed,500)*max/1000;
+        double permitted=.33+Math.min(elapsed,500)*max*thrown.moveFactor(p)/1000;
         double distance=Math.hypot(x-p.x,y-p.y);
         if(distance>permitted)return false;
         int steps=Math.max(1,(int)Math.ceil(distance/.18));
@@ -261,11 +263,13 @@ public final class ArenaSystems {
         if((p.flags&2)!=0)v+=.29;
         if(clock-p.shotAt<250)v+=.38;
         if(p.classId==2&&p.shadeUntil>clock)v-=.72;
-        p.visibility=opacity(v);
+        p.visibility=opacity(v)*thrown.visibilityFactor(p);
     }
     public synchronized void damage(Player p,int hp,int sanity) {
         if(p==null||p.dead||clock<p.protectedUntil)return;
-        p.hp=Math.max(0,p.hp-Math.max(0,hp));
+        int effectiveHp=Math.max(0,hp);
+        effectiveHp-=thrown.absorb(p,effectiveHp);
+        p.hp=Math.max(0,p.hp-effectiveHp);
         p.sanity=Math.max(0,p.sanity-Math.max(0,sanity));
         p.lastHurt=clock;
         if(p.hp==0){
@@ -765,6 +769,7 @@ public final class ArenaSystems {
     public synchronized void advance(long ms){
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
         clock+=ms;
+        thrown.advance(ms);
         arsenal.advance(ms);
         vehicles.advance(ms);
         cargo.advance(ms);

@@ -15,7 +15,29 @@ public final class SurvivalCrafting {
         TENT_KIT, CRATE_KIT, FENCE_SECTION, STAKE_TRAP, NOISE_ALARM,
         // Always append: original item ordinals are retained for saves/network.
         FIREWOOD, RATIONS, CHARCOAL, COMPOST, CLOTH_ROLL, SMOKED_RATIONS,
-        MEAL_SACK, FIELD_CROPS, HERBAL_BUNDLE, FIRED_BRICKS
+        MEAL_SACK, FIELD_CROPS, HERBAL_BUNDLE, FIRED_BRICKS,
+        // Append-only save ordinals for 21 faction-crafted throwable items.
+        DEPLOY_UNRAVELED_WALL,
+        DEPLOY_UNRAVELED_BARRICADE,
+        DEPLOY_UNRAVELED_TURRET,
+        DEPLOY_UNRAVELED_HEALTH,
+        DEPLOY_UNRAVELED_AMMO,
+        DEPLOY_UNRAVELED_MIASMA,
+        DEPLOY_UNRAVELED_SHIELD,
+        DEPLOY_PENITENT_WALL,
+        DEPLOY_PENITENT_BARRICADE,
+        DEPLOY_PENITENT_TURRET,
+        DEPLOY_PENITENT_HEALTH,
+        DEPLOY_PENITENT_AMMO,
+        DEPLOY_PENITENT_MIASMA,
+        DEPLOY_PENITENT_SHIELD,
+        DEPLOY_BEGOTTEN_WALL,
+        DEPLOY_BEGOTTEN_BARRICADE,
+        DEPLOY_BEGOTTEN_TURRET,
+        DEPLOY_BEGOTTEN_HEALTH,
+        DEPLOY_BEGOTTEN_AMMO,
+        DEPLOY_BEGOTTEN_MIASMA,
+        DEPLOY_BEGOTTEN_SHIELD
     }
     public enum Station { HAND, FIRE, WORKBENCH }
     public record Recipe(String id,Station station,Map<Item,Integer> requires,
@@ -144,6 +166,20 @@ public final class SurvivalCrafting {
             items.put(part.getKey(),count(part.getKey())-part.getValue());
         items.merge(recipe.result(),recipe.quantity(),Integer::sum);
         return true;
+    }
+    /** Separate throwable equipment assembly: atomic material debit and item mint. */
+    public synchronized boolean craftEquipment(Map<Item,Integer> input,Item result,int quantity){
+        if(input==null||input.isEmpty()||result==null||quantity<1||quantity>8)return false;
+        long massAfter=mass()+(long)weight(result)*quantity;
+        for(var entry:input.entrySet()){
+            if(entry.getKey()==null||entry.getValue()==null||entry.getValue()<1||
+               entry.getValue()>100||count(entry.getKey())<entry.getValue())return false;
+            massAfter-=(long)weight(entry.getKey())*entry.getValue();
+        }
+        if(massAfter<0||massAfter>200)return false;
+        for(var entry:input.entrySet())
+            items.put(entry.getKey(),count(entry.getKey())-entry.getValue());
+        items.merge(result,quantity,Integer::sum);return true;
     }
     /** Host-authorized structural material debit. Never applies food effects. */
     public synchronized boolean debit(Item item,int quantity){

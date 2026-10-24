@@ -88,6 +88,17 @@ public final class ArsenalSystems {
         return new View(s.owned,s.selected,s.faction,s.factionLocked,s.clip,s.reserve,m,s.action,s.actionAt,
             Math.max(0,s.reloadEnd-host.time()),s.chargeAt<0?0:Math.max(0,mode(s.selected,s.chargeAlt).charge()-(host.time()-s.chargeAt)),s.heat,b==null?0:b.tier,s.researched);
     }}
+    /** Field dispensers restock only unaligned or matching-faction arsenal items. */
+    public int fieldRefill(int playerId,int faction,int units){
+        synchronized(host){
+            State s=state(playerId);
+            if(s==null||units<1||units>32||faction<0||faction>2)return 0;
+            int w=s.selected,manufacturer=get(w).faction();
+            if(manufacturer>=0&&manufacturer!=faction)return 0;
+            int granted=Math.min(units,Math.max(0,get(w).capacity()*8-s.reserve[w]));
+            s.reserve[w]+=granted;return granted;
+        }
+    }
     private Result pay(int id,int[] cost,boolean debit){
         State s=state(id);ArenaSystems.Player p=host.player(id);
         for(int i=0;i<9;i++)if((i==0?p.scrap:s.materials[i])<cost[i])return new Result(false,"NEED_"+MATERIALS[i].toUpperCase().replace(' ','_'));
@@ -203,13 +214,19 @@ public final class ArsenalSystems {
         List<Target> out=new ArrayList<>();for(ArenaSystems.Player p:host.roster())if(!p.dead&&(self||p.id!=owner))out.add(new Target(p,p.x,p.y,.33));
         for(World.Npc n:host.world.npcs)if(n.hp>0)out.add(new Target(n,n.x,n.y,.33));
         ArenaSystems.Player p=host.player(owner);
-        for(World.Device d:host.world.devices)if(d.hp>0&&p!=null&&d.ownerId!=owner&&!p.accountKey.equals(d.ownerKey))out.add(new Target(d,d.x,d.y,.38));return out;
+        for(World.Device d:host.world.devices)if(d.hp>0&&p!=null&&d.ownerId!=owner&&!p.accountKey.equals(d.ownerKey))out.add(new Target(d,d.x,d.y,.38));
+        for(ThrownDeployables.View v:host.thrown.views())
+            if(v.hp()>0&&!v.flying())out.add(new Target(v,v.x(),v.y(),.44));
+        return out;
     }
     private void hit(int owner,Target t,int amount,Kind kind){
         if(amount<=0)return;State s=state(owner);ArenaSystems.Player p=host.player(owner);if(p==null||p.dead)return;int actual=0;
         if(t.key instanceof ArenaSystems.Player v){int old=v.hp;host.damage(v,amount,1);actual=old-v.hp;if(v.dead&&old>0&&v.id!=owner){p.frags++;p.cash+=25;}}
         else if(t.key instanceof World.Npc n){int old=n.hp;n.hp=Math.max(0,n.hp-amount);actual=old-n.hp;if(old>0&&n.hp==0){p.frags++;p.cash+=25;}}
         else if(t.key instanceof World.Device d){int old=d.hp;host.damageDevice(owner,host.world.devices.indexOf(d),Math.min(250,amount),System.currentTimeMillis());actual=old-d.hp;}
+        else if(t.key instanceof ThrownDeployables.View v){
+            if(host.thrown.damage(owner,v.id(),Math.min(500,amount)))actual=Math.min(v.hp(),amount);
+        }
         if(s!=null)s.damage+=actual;if(kind==Kind.CRYO&&actual>0)chilled.put(t.key,host.time()+1800);
         if(actual>0)effect("HIT",t.x,t.y,t.x,t.y,.15,0,180);
     }

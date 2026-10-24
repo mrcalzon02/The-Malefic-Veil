@@ -10,6 +10,7 @@ import json
 import shutil
 import struct
 import subprocess
+import os
 from collections import Counter
 from pathlib import Path
 
@@ -18,17 +19,25 @@ DEST = ROOT / 'docs/asset-gallery'
 # Explicit authored-construction allowlist. Purchased source/reference media and
 # unrelated weapon source studies are deliberately outside the public archive.
 GROUPS = ('construction-plots', 'faction-structures', 'snap-kit',
-          'penitent-snap-kit', 'begotten-snap-kit', 'faction-foundations')
+          'penitent-snap-kit', 'begotten-snap-kit', 'faction-foundations', 'production-kit', 'material-refresh', 'weapon-refinement')
 LABELS = {'construction-plots': 'Construction plot guides',
           'faction-structures': 'Faction structures and earlier studies',
           'snap-kit': 'Unraveled snap construction',
           'penitent-snap-kit': 'Penitent snap construction',
           'begotten-snap-kit': 'Begotten snap construction',
-          'faction-foundations': 'Faction foundations and stairs'}
+          'faction-foundations': 'Faction foundations and stairs',
+          'production-kit': 'Production machinery and surface placeables',
+          'material-refresh': 'Construction material revision 2',
+          'weapon-refinement': 'Weapon refinement and retained failed studies'}
 
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def write_manifest(path,value):
+    temporary=path.with_suffix('.json.tmp')
+    temporary.write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
+    os.replace(temporary,path)
 
 
 def sources():
@@ -111,19 +120,29 @@ def collect():
 
 def build():
     records = collect()
+    previous = DEST / 'manifest.json'
+    old = json.loads(previous.read_text(encoding='utf-8')) if previous.exists() else {}
+    known={r['source']:r for r in old.get('images',[])}
+    recovered=[]
     for r in records:
         target = DEST / r['file']
         target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists() and r['source'] not in known and sha(target)!=r['sha256']:
+            # Recover PNGs copied by an interrupted synchronization before its
+            # manifest could be committed; never erase those test pixels.
+            digest=sha(target);archive=DEST/'images/history'/(digest+'.png');archive.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(target,archive)
+            prior=dict(r,file=archive.relative_to(DEST).as_posix(),sha256=digest,bytes=target.stat().st_size,status='SUPERSEDED_UNREVIEWED')
+            prior.pop('asset_sha256',None);prior.pop('render_sha256',None)
+            recovered.append(prior)
         if not target.exists() or sha(target) != r['sha256']:
             shutil.copyfile(ROOT / r['source'], target)
     # Images already recorded are retained as history when a source is renamed
     # or re-rendered. Changed renders are preserved by their content hash.
-    previous = DEST / 'manifest.json'
-    history = []
+    history = recovered
     if previous.exists():
         old = json.loads(previous.read_text(encoding='utf-8'))
         current = {r['source']: r for r in records}
-        history = old.get('history', [])
+        history += old.get('history', [])
         for r in old.get('images', []):
             new = current.get(r['source'])
             if not new or new['sha256'] != r['sha256']:
@@ -135,7 +154,7 @@ def build():
                     status_counts=dict(Counter(r['status'] for r in records)),
                     images=records, history=list(unique.values()),
                     review_note='ROUGH_STAGE_PASS is a hash-matched automated gate and agent art review; it does not mean final user approval. Overviews and earlier studies are not promoted by association.')
-    previous.write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+    write_manifest(previous,manifest)
     write_pages(manifest)
     return manifest
 
@@ -157,7 +176,7 @@ def sync():
                     shutil.copyfile(origin, target)
                     r['file'] = target.relative_to(DEST).as_posix()
                     r['status'] = 'SUPERSEDED_' + r['status']
-        previous.write_text(json.dumps(old, indent=2) + '\n', encoding='utf-8')
+        write_manifest(previous,old)
     return build()
 
 

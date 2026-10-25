@@ -4,8 +4,8 @@ from pathlib import Path
 
 def bake(scene,objects,out,stencil_path):
     # Mechanical geometry is frozen. Author materials, unwrap and bake disjoint UV tiles.
-    palette={0:(.070,.095,.115),1:(.28,.34,.37),3:(.020,.029,.033),4:(.39,.22,.075)}
-    finishes={0:(.46,.65),1:(.32,.90),3:(.82,.0),4:(.42,.80)}
+    palette={0:(.070,.095,.115),1:(.28,.34,.37),2:(.035,.28,.34),3:(.020,.029,.033),4:(.39,.22,.075)}
+    finishes={0:(.46,.65),1:(.32,.90),2:(.18,.35),3:(.82,.0),4:(.42,.80)}
     stencil=bpy.data.images.load(str(stencil_path))
     opposite_path=Path(stencil_path).with_name(Path(stencil_path).stem+'-opposite.png')
     opposite=bpy.data.images.load(str(opposite_path)) if opposite_path.exists() else stencil

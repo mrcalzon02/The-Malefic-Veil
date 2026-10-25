@@ -1,0 +1,62 @@
+{
+  "policy_version": 1,
+  "reference_baseline_valid": true,
+  "reference_results": {
+    "car-01": [],
+    "car-08": [],
+    "character-01": [],
+    "character-17": []
+  },
+  "reference_metrics": [
+    {
+      "id": "car-01",
+      "sha256": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+      "triangles": 438,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "car-08",
+      "sha256": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+      "triangles": 376,
+      "uv_coverage": 0.9981549554990697,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "character-01",
+      "sha256": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+      "triangles": 866,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    },
+    {
+      "id": "character-17",
+      "sha256": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1",
+      "triangles": 1163,
+      "uv_coverage": 1.0,
+      "textured_fraction": 1.0
+    }
+  ],
+  "results": [
+    {
+      "id": "w10-cautery-refined-r3",
+      "path": "build/candidates/weapon-refinement/w10-cautery-refined-r3/w10-cautery-refined-r3.glb",
+      "sha256": "17ca4ee0928cf6014560d075af1655cdb3332ff88c1162cbb617a6280d050c82",
+      "status": "REJECTED",
+      "technical_failures": [],
+      "art_failures": [
+        "ART_DIRECTION_REJECTED",
+        "ART_CRITERION_FAILED: surface_continuity",
+        "ART_CRITERION_FAILED: material_coherence",
+        "ART_CRITERION_FAILED: silhouette",
+        "ART_CRITERION_FAILED: reference_comparison",
+        "ART_CRITERION_FAILED: faction_identity"
+      ]
+    }
+  ],
+  "counts": {
+    "REJECTED": 1,
+    "ART_REVIEW_REQUIRED": 0,
+    "DELIVERY_ELIGIBLE": 0
+  }
+}

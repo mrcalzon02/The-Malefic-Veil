@@ -2,9 +2,9 @@
   "scope": "Art refinement packages; existing runtime arsenal and spawn/crafting rules unchanged.",
   "stop_rule": "Continue until handled or either usage window has 50% remaining.",
   "counts": {
-    "REFINED_PROTOTYPE": 8,
+    "REFINED_PROTOTYPE": 9,
     "REJECTED_REDESIGN_REQUIRED": 1,
-    "PENDING": 23
+    "PENDING": 22
   },
   "weapons": [
     {
@@ -82,7 +82,9 @@
       "weapon_id": "w10-cautery",
       "name": "Cautery",
       "access": "base/faction crafted",
-      "status": "PENDING"
+      "status": "REFINED_PROTOTYPE",
+      "asset": "assets/game/arsenal-refined-approved/w10-cautery-finish-shutter-r1.glb",
+      "sha256": "074916bfb9ea09ce8ff42beeaba0d4cefe703f79478661b29afdeb81e4057ac9"
     },
     {
       "weapon_id": "w11-prism-writ",

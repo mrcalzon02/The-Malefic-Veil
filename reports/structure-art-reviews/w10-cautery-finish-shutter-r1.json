@@ -1,0 +1,59 @@
+{
+  "asset_sha256": "074916bfb9ea09ce8ff42beeaba0d4cefe703f79478661b29afdeb81e4057ac9",
+  "decision": "pass",
+  "scores": {
+    "surface_continuity": 4,
+    "material_coherence": 4,
+    "silhouette": 4,
+    "reference_comparison": 4,
+    "faction_identity": 4
+  },
+  "reviewer": "Codex actual image inspection and exported mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Pass for refined prototype stage only. Inspected actual exported/reimported front, rear, closeup, clay, side and reload images plus private car/character comparison. Vented tapered emitter, recessed coaxial lens and protective lip replace slabs. Socket seats in receiver ahead of open trigger guard; removable cell includes contacts and graspable base. Top sights and shutter guides are seated. Dark coated body, steel optics/rails, patterned grip and bronze cell have baked padded albedo/ORM. Low-poly silhouette and material separation fit the prototype calibration; richer wear and beam VFX remain later work.",
+    "Final GLB passes ten sampled cell reload poses and five poses in each firing clip. External shutter travels on separate guides without intersecting receiver, barrel, shroud or guide rails. Cell withdraws approximately 260 mm and reseats. Four named animation clips retained. Neutral faction finish; Cautery remains base/faction crafted. Runtime replacement, hand IK and beam/heat simulation are not claimed."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/front.png",
+      "sha256": "40114fa5c2e60ccdccdb4d13ff90f7239a4502ba3788f6b6481a889e29b61671"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/rear.png",
+      "sha256": "9cd5f4ed7f4818f00f084a765cc5574057cdf515717b9e2ef0c400d3b4bf2bae"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/closeup.png",
+      "sha256": "fb05a04a35a442e3869e1b4409d61535b17d770dda56a90a00430a05cc625ed0"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/clay.png",
+      "sha256": "e6742e3da28c06054bd2ec47d0755bd45c4d31f248284db0b94bbf45babd2eb4"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/side.png",
+      "sha256": "df816b2ed257d6a5643662e6d29f6f352f1e8d7e1e45bf762b9ba503e04dc85a"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/reload.png",
+      "sha256": "343fa71f23bc618a3fc474b8c7b354744fdd7219afaf1872657f1855d39ade4d"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w10-cautery-finish-shutter-r1/comparison.png",
+      "sha256": "739eee511cdf34734037634361c081feb34cc5b3095abf1db17bdb0c166ab82a"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

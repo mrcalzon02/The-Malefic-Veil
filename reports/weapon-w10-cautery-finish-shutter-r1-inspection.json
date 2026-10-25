@@ -1,0 +1,2949 @@
+[
+  {
+    "id": "car-01",
+    "path": "assets/private/quality-references/cars/Car 01/Car.obj",
+    "category": "reference-hard-surface",
+    "drive_id": "1TeD9Nwo_79ZxL_7mSTZ6euz1M7SjqsX-",
+    "sha256": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "meshes": [
+      {
+        "name": "Car",
+        "triangles": 438,
+        "vertices": 249,
+        "uv_bounds": [
+          [
+            0.009999999776482582,
+            0.009990000165998936
+          ],
+          [
+            0.9982979893684387,
+            0.9904509782791138
+          ]
+        ],
+        "welded_vertices": 249,
+        "components": 14,
+        "largest_component_area_fraction": 0.8094808091178155,
+        "component_details": [
+          {
+            "area": 47.54286398960913,
+            "bounds": [
+              [
+                -1.2073659896850586,
+                -2.9807040691375732,
+                0.2889581322669983
+              ],
+              [
+                1.2073659896850586,
+                2.9524619579315186,
+                2.1352739334106445
+              ]
+            ]
+          },
+          {
+            "area": 1.9580272855436698,
+            "bounds": [
+              [
+                0.8590800166130066,
+                1.051785945892334,
+                -0.03912811726331711
+              ],
+              [
+                1.1327110528945923,
+                1.968940019607544,
+                0.8780258893966675
+              ]
+            ]
+          },
+          {
+            "area": 1.9580265329985642,
+            "bounds": [
+              [
+                0.8590800166130066,
+                -2.6143579483032227,
+                -0.039127837866544724
+              ],
+              [
+                1.1327110528945923,
+                -1.6972039937973022,
+                0.8780261874198914
+              ]
+            ]
+          },
+          {
+            "area": 1.9580263478418178,
+            "bounds": [
+              [
+                -1.1327120065689087,
+                -2.6143569946289062,
+                -0.039127837866544724
+              ],
+              [
+                -0.859080970287323,
+                -1.6972039937973022,
+                0.8780261874198914
+              ]
+            ]
+          },
+          {
+            "area": 1.9580262043001073,
+            "bounds": [
+              [
+                -1.1327110528945923,
+                1.05178701877594,
+                -0.03912811726331711
+              ],
+              [
+                -0.8590790033340454,
+                1.968940019607544,
+                0.8780258893966675
+              ]
+            ]
+          },
+          {
+            "area": 1.2797740708753125,
+            "bounds": [
+              [
+                -1.0882450342178345,
+                2.804517984390259,
+                0.48541679978370667
+              ],
+              [
+                1.0882450342178345,
+                3.003048896789551,
+                0.6254167556762695
+              ]
+            ]
+          },
+          {
+            "area": 1.2441719643521638,
+            "bounds": [
+              [
+                -1.1283559799194336,
+                -3.030205011367798,
+                0.4620722234249115
+              ],
+              [
+                1.1283559799194336,
+                -2.815042018890381,
+                0.6020722389221191
+              ]
+            ]
+          },
+          {
+            "area": 0.1600507812213593,
+            "bounds": [
+              [
+                -0.7623440027236938,
+                2.846153974533081,
+                0.4021647870540619
+              ],
+              [
+                -0.6576560139656067,
+                3.082115888595581,
+                0.6837887763977051
+              ]
+            ]
+          },
+          {
+            "area": 0.1600507812213593,
+            "bounds": [
+              [
+                0.6576560139656067,
+                2.846153974533081,
+                0.4021647870540619
+              ],
+              [
+                0.7623440027236938,
+                3.082115888595581,
+                0.6837887763977051
+              ]
+            ]
+          },
+          {
+            "area": 0.15618408498958083,
+            "bounds": [
+              [
+                -0.5746880173683167,
+                -3.068229913711548,
+                0.4021652042865753
+              ],
+              [
+                -0.4699999988079071,
+                -2.915940999984741,
+                0.6837892532348633
+              ]
+            ]
+          },
+          {
+            "area": 0.1561840849895808,
+            "bounds": [
+              [
+                0.4699999988079071,
+                -3.068229913711548,
+                0.4021652042865753
+              ],
+              [
+                0.5746880173683167,
+                -2.915940999984741,
+                0.6837892532348633
+              ]
+            ]
+          },
+          {
+            "area": 0.11107370223876957,
+            "bounds": [
+              [
+                -0.20999999344348907,
+                2.6877520084381104,
+                1.1296898126602173
+              ],
+              [
+                0.20999999344348907,
+                2.8806591033935547,
+                1.2343777418136597
+              ]
+            ]
+          },
+          {
+            "area": 0.06816411581483255,
+            "bounds": [
+              [
+                1.146723985671997,
+                -1.4625378847122192,
+                1.3341270685195923
+              ],
+              [
+                1.3505909442901611,
+                -1.3900668621063232,
+                1.5333491563796997
+              ]
+            ]
+          },
+          {
+            "area": 0.021916040247617407,
+            "bounds": [
+              [
+                1.1353189945220947,
+                -1.574272871017456,
+                1.2972501516342163
+              ],
+              [
+                1.2595770359039307,
+                -1.4342758655548096,
+                1.4404711723327637
+              ]
+            ]
+          }
+        ],
+        "surface_area": 58.73253998624386,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 8,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5718608169440242,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -1.2073659896850586,
+            -3.068229913711548,
+            -0.03912811726331711
+          ],
+          [
+            1.3505909442901611,
+            3.082115888595581,
+            2.1352739334106445
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "car.png",
+        "width": 128,
+        "height": 128,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 438,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "car-08",
+    "path": "assets/private/quality-references/cars/Car 08/Car8.obj",
+    "category": "reference-hard-surface",
+    "drive_id": "1TeD9Nwo_79ZxL_7mSTZ6euz1M7SjqsX-",
+    "sha256": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "meshes": [
+      {
+        "name": "Car8",
+        "triangles": 376,
+        "vertices": 219,
+        "uv_bounds": [
+          [
+            0.009999999776482582,
+            0.018434999510645866
+          ],
+          [
+            0.9769520163536072,
+            0.9797189831733704
+          ]
+        ],
+        "welded_vertices": 219,
+        "components": 13,
+        "largest_component_area_fraction": 0.8261678791404856,
+        "component_details": [
+          {
+            "area": 79.66492713295251,
+            "bounds": [
+              [
+                -1.3098570108413696,
+                -2.9606010913848877,
+                0.4825079143047333
+              ],
+              [
+                1.309857964515686,
+                3.571362018585205,
+                3.1957292556762695
+              ]
+            ]
+          },
+          {
+            "area": 3.0179074634939704,
+            "bounds": [
+              [
+                -1.2672079801559448,
+                -2.530555009841919,
+                -0.03883584961295128
+              ],
+              [
+                -0.9177929759025574,
+                -1.3998219966888428,
+                1.0918991565704346
+              ]
+            ]
+          },
+          {
+            "area": 3.0179071487289466,
+            "bounds": [
+              [
+                0.9177929759025574,
+                1.3999040126800537,
+                -0.03883514925837517
+              ],
+              [
+                1.2672079801559448,
+                2.53063702583313,
+                1.0918998718261719
+              ]
+            ]
+          },
+          {
+            "area": 3.0179050014004467,
+            "bounds": [
+              [
+                -1.2672079801559448,
+                1.3999049663543701,
+                -0.038836147636175156
+              ],
+              [
+                -0.9177929759025574,
+                2.53063702583313,
+                1.0918989181518555
+              ]
+            ]
+          },
+          {
+            "area": 3.0179044408379476,
+            "bounds": [
+              [
+                0.9177929759025574,
+                -2.530555009841919,
+                -0.03883485123515129
+              ],
+              [
+                1.2672079801559448,
+                -1.3998219966888428,
+                1.091900110244751
+              ]
+            ]
+          },
+          {
+            "area": 2.44681161217216,
+            "bounds": [
+              [
+                -1.3800040483474731,
+                -3.12477707862854,
+                0.4825212061405182
+              ],
+              [
+                1.3800050020217896,
+                -2.888489007949829,
+                0.7429842352867126
+              ]
+            ]
+          },
+          {
+            "area": 1.4592679437490952,
+            "bounds": [
+              [
+                -1.3098640441894531,
+                3.571357011795044,
+                0.4825117290019989
+              ],
+              [
+                1.3098640441894531,
+                3.767357110977173,
+                0.6428056955337524
+              ]
+            ]
+          },
+          {
+            "area": 0.2436348647422288,
+            "bounds": [
+              [
+                -1.583251953125,
+                -1.8414849042892456,
+                2.103992223739624
+              ],
+              [
+                -1.3730809688568115,
+                -1.7457808256149292,
+                2.4364962577819824
+              ]
+            ]
+          },
+          {
+            "area": 0.2436345405435439,
+            "bounds": [
+              [
+                1.3730820417404175,
+                -1.8414849042892456,
+                2.1039931774139404
+              ],
+              [
+                1.583251953125,
+                -1.7457808256149292,
+                2.4364962577819824
+              ]
+            ]
+          },
+          {
+            "area": 0.09214834633046437,
+            "bounds": [
+              [
+                1.3062169551849365,
+                -1.8144197463989258,
+                2.4361603260040283
+              ],
+              [
+                1.5078370571136475,
+                -1.7782707214355469,
+                2.8366003036499023
+              ]
+            ]
+          },
+          {
+            "area": 0.09214834191951413,
+            "bounds": [
+              [
+                -1.5078370571136475,
+                -1.8144197463989258,
+                2.436159133911133
+              ],
+              [
+                -1.3062169551849365,
+                -1.7782707214355469,
+                2.836599349975586
+              ]
+            ]
+          },
+          {
+            "area": 0.05642406294680548,
+            "bounds": [
+              [
+                -1.5078359842300415,
+                -1.8144198656082153,
+                1.8572241067886353
+              ],
+              [
+                -1.3062160015106201,
+                -1.7782708406448364,
+                2.106410264968872
+              ]
+            ]
+          },
+          {
+            "area": 0.05642394708807997,
+            "bounds": [
+              [
+                1.3062169551849365,
+                -1.8144198656082153,
+                1.8572241067886353
+              ],
+              [
+                1.5078359842300415,
+                -1.7782708406448364,
+                2.1064112186431885
+              ]
+            ]
+          }
+        ],
+        "surface_area": 96.42704484690563,
+        "uv_coverage": 0.9981549554990697,
+        "textured_fraction": 1.0,
+        "boundary_edges": 34,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5060240963855421,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -1.583251953125,
+            -3.12477707862854,
+            -0.038836147636175156
+          ],
+          [
+            1.583251953125,
+            3.767357110977173,
+            3.1957292556762695
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "Car8.png",
+        "width": 128,
+        "height": 128,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 376,
+    "uv_coverage": 0.9981549554990697,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "character-01",
+    "path": "assets/private/quality-references/characters/Characters_psx_1.2/Characters_psx_02/Models/No-Rig/Male/Character_01.fbx",
+    "category": "reference-character",
+    "drive_id": "1Dd6RWVvV1qUGT8G0Q1rATlHYSn3doXgU",
+    "sha256": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "meshes": [
+      {
+        "name": "Character_01",
+        "triangles": 866,
+        "vertices": 435,
+        "uv_bounds": [
+          [
+            0.010396064259111881,
+            0.010468002408742905
+          ],
+          [
+            0.9896989464759827,
+            0.9739059209823608
+          ]
+        ],
+        "welded_vertices": 435,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 1.9324491944280033,
+            "bounds": [
+              [
+                -0.18663141131401062,
+                -0.30898433923721313,
+                -0.006633335258811712
+              ],
+              [
+                0.15646596252918243,
+                0.30898553133010864,
+                1.7614996433258057
+              ]
+            ]
+          }
+        ],
+        "surface_area": 1.9324491944280033,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.015396458814472672,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.18663141131401062,
+            -0.30898433923721313,
+            -0.006633335258811712
+          ],
+          [
+            0.15646596252918243,
+            0.30898553133010864,
+            1.7614996433258057
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "Character_01",
+        "width": 512,
+        "height": 512,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 866,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "character-17",
+    "path": "assets/private/quality-references/characters/Characters_psx_1.2/Characters_psx_02/Models/No-Rig/Female/Character_17_Female_Police.fbx",
+    "category": "reference-character",
+    "drive_id": "1Dd6RWVvV1qUGT8G0Q1rATlHYSn3doXgU",
+    "sha256": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1",
+    "meshes": [
+      {
+        "name": "Character_17_Female_Police",
+        "triangles": 1163,
+        "vertices": 584,
+        "uv_bounds": [
+          [
+            0.011426248587667942,
+            0.011561336927115917
+          ],
+          [
+            0.9887404441833496,
+            0.9858493804931641
+          ]
+        ],
+        "welded_vertices": 584,
+        "components": 2,
+        "largest_component_area_fraction": 0.9948197360469289,
+        "component_details": [
+          {
+            "area": 1.7281693389336872,
+            "bounds": [
+              [
+                -0.13289521634578705,
+                -0.42145249247550964,
+                -0.0077260518446564674
+              ],
+              [
+                0.177993506193161,
+                0.4214527904987335,
+                1.6753178834915161
+              ]
+            ]
+          },
+          {
+            "area": 0.00899899047726379,
+            "bounds": [
+              [
+                -0.12620864808559418,
+                -0.026072431355714798,
+                1.5506950616836548
+              ],
+              [
+                -0.07199487835168839,
+                0.032227858901023865,
+                1.6119956970214844
+              ]
+            ]
+          }
+        ],
+        "surface_area": 1.7371683294109515,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 5,
+        "nonmanifold_edges": 8,
+        "normal_seam_fraction": 0.0,
+        "smooth_face_fraction": 1.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.13289521634578705,
+            -0.42145249247550964,
+            -0.0077260518446564674
+          ],
+          [
+            0.177993506193161,
+            0.4214527904987335,
+            1.6753178834915161
+          ]
+        ],
+        "properties": {}
+      }
+    ],
+    "images": [
+      {
+        "name": "Character_17_Female_Police",
+        "width": 512,
+        "height": 512,
+        "loaded": true,
+        "packed": false
+      }
+    ],
+    "triangles": 1163,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  },
+  {
+    "id": "w10-cautery-finish-shutter-r1",
+    "path": "build/candidates/weapon-refinement/w10-cautery-finish-shutter-r1/w10-cautery-finish-shutter-r1.glb",
+    "category": "weapon-rough-candidate",
+    "sha256": "074916bfb9ea09ce8ff42beeaba0d4cefe703f79478661b29afdeb81e4057ac9",
+    "meshes": [
+      {
+        "name": "w10-cautery__coolant_shutter",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.3369828462600708,
+            0.836982786655426
+          ],
+          [
+            0.4963504672050476,
+            0.9915685653686523
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.004275790351729728,
+            "bounds": [
+              [
+                0.2370000034570694,
+                -0.013500000350177288,
+                0.0820000022649765
+              ],
+              [
+                0.29100000858306885,
+                0.013500000350177288,
+                0.09200000017881393
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.004275790351729728,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.13636363636363635,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.2370000034570694,
+            -0.013500000350177288,
+            0.0820000022649765
+          ],
+          [
+            0.29100000858306885,
+            0.013500000350177288,
+            0.09200000017881393
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "coolant_shutter",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.8362630208333334,
+            0.4970703125,
+            0.9970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__cell_contact_-0.017",
+        "triangles": 92,
+        "vertices": 168,
+        "uv_bounds": [
+          [
+            0.3370576500892639,
+            0.5037242770195007
+          ],
+          [
+            0.49627572298049927,
+            0.6532353162765503
+          ]
+        ],
+        "welded_vertices": 48,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0005872685520197509,
+            "bounds": [
+              [
+                0.07717037200927734,
+                -0.021829629316926003,
+                -0.019500000402331352
+              ],
+              [
+                0.08682963252067566,
+                -0.012170370668172836,
+                -0.0044999998062849045
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0005872685520197509,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6086956521739131,
+        "smooth_face_fraction": 0.043478260869565216,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.07717037200927734,
+            -0.021829629316926003,
+            -0.019500000402331352
+          ],
+          [
+            0.08682963252067566,
+            -0.012170370668172836,
+            -0.0044999998062849045
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "cell_contact_-0.017",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.5029296875,
+            0.4970703125,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__cell_contact_0.017",
+        "triangles": 92,
+        "vertices": 168,
+        "uv_bounds": [
+          [
+            0.5037000179290771,
+            0.5037000179290771
+          ],
+          [
+            0.6629666686058044,
+            0.6484527587890625
+          ]
+        ],
+        "welded_vertices": 48,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0005872685520349326,
+            "bounds": [
+              [
+                0.07717037200927734,
+                0.012170370668172836,
+                -0.019500000402331352
+              ],
+              [
+                0.08682963252067566,
+                0.021829629316926003,
+                -0.0044999998062849045
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0005872685520349326,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6086956521739131,
+        "smooth_face_fraction": 0.043478260869565216,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.07717037200927734,
+            0.012170370668172836,
+            -0.019500000402331352
+          ],
+          [
+            0.08682963252067566,
+            0.021829629316926003,
+            -0.0044999998062849045
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "cell_contact_0.017",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.5029296875,
+            0.6637369791666666,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__power_cartridge",
+        "triangles": 60,
+        "vertices": 136,
+        "uv_bounds": [
+          [
+            0.1703660786151886,
+            0.3370327353477478
+          ],
+          [
+            0.3259426951408386,
+            0.4963005781173706
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.049722608504807336,
+            "bounds": [
+              [
+                0.03161019831895828,
+                -0.03353682532906532,
+                -0.2214999943971634
+              ],
+              [
+                0.1143897995352745,
+                0.03353682532906532,
+                -0.03150000050663948
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.049722608504807336,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5333333333333333,
+        "smooth_face_fraction": 0.03333333333333333,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.03161019831895828,
+            -0.03353682532906532,
+            -0.2214999943971634
+          ],
+          [
+            0.1143897995352745,
+            0.03353682532906532,
+            -0.03150000050663948
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "power_cartridge",
+          "refinement_stage": "geometry review",
+          "trim_band": 4,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.3362630208333333,
+            0.3304036458333333,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__power_cartridge_feed_lips",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.5035907030105591,
+            0.33692407608032227
+          ],
+          [
+            0.6630759239196777,
+            0.4625307321548462
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.009392883861532137,
+            "bounds": [
+              [
+                0.05400000140070915,
+                -0.0254100002348423,
+                -0.03200000151991844
+              ],
+              [
+                0.10999999940395355,
+                0.0254100002348423,
+                -0.013000000268220901
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.009392883861532137,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.05400000140070915,
+            -0.0254100002348423,
+            -0.03200000151991844
+          ],
+          [
+            0.10999999940395355,
+            0.0254100002348423,
+            -0.013000000268220901
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "power_cartridge_feed_lips",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.3362630208333333,
+            0.6637369791666666,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__power_cartridge_floorplate",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.3368910551071167,
+            0.3368910551071167
+          ],
+          [
+            0.49115070700645447,
+            0.4964423179626465
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.01888106460112015,
+            "bounds": [
+              [
+                0.028999999165534973,
+                -0.038279999047517776,
+                -0.22550000250339508
+              ],
+              [
+                0.11699999868869781,
+                0.038279999047517776,
+                -0.20749999582767487
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.01888106460112015,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.09090909090909091,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.028999999165534973,
+            -0.038279999047517776,
+            -0.22550000250339508
+          ],
+          [
+            0.11699999868869781,
+            0.038279999047517776,
+            -0.20749999582767487
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "power_cartridge_floorplate",
+          "refinement_stage": "geometry review",
+          "trim_band": 4,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.3362630208333333,
+            0.4970703125,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__power_cartridge_pull_ear_-1",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.003581203520298004,
+            0.503581166267395
+          ],
+          [
+            0.1482088416814804,
+            0.6630855202674866
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.00483579040082131,
+            "bounds": [
+              [
+                0.05999999865889549,
+                -0.04182000085711479,
+                -0.20900000631809235
+              ],
+              [
+                0.10400000214576721,
+                -0.026820000261068344,
+                -0.1770000010728836
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.00483579040082131,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.06818181818181818,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.05999999865889549,
+            -0.04182000085711479,
+            -0.20900000631809235
+          ],
+          [
+            0.10400000214576721,
+            -0.026820000261068344,
+            -0.1770000010728836
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "power_cartridge_pull_ear_-1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.5029296875,
+            0.16373697916666666,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__power_cartridge_pull_ear_1",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.1702478677034378,
+            0.503581166267395
+          ],
+          [
+            0.3148754835128784,
+            0.6630855202674866
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.00483579040082131,
+            "bounds": [
+              [
+                0.05999999865889549,
+                0.026820000261068344,
+                -0.20900000631809235
+              ],
+              [
+                0.10400000214576721,
+                0.04182000085711479,
+                -0.1770000010728836
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.00483579040082131,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.06818181818181818,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.05999999865889549,
+            0.026820000261068344,
+            -0.20900000631809235
+          ],
+          [
+            0.10400000214576721,
+            0.04182000085711479,
+            -0.1770000010728836
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "power_cartridge_pull_ear_1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "is_reload_object": true,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.5029296875,
+            0.3304036458333333,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__barrel",
+        "triangles": 240,
+        "vertices": 400,
+        "uv_bounds": [
+          [
+            0.8372730016708374,
+            0.503939688205719
+          ],
+          [
+            0.996060311794281,
+            0.63850998878479
+          ]
+        ],
+        "welded_vertices": 120,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.12396560725128193,
+            "bounds": [
+              [
+                0.10199999809265137,
+                -0.03200000151991844,
+                0.003000000026077032
+              ],
+              [
+                0.45399999618530273,
+                0.03200000151991844,
+                0.06700000166893005
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.12396560725128193,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.4444444444444444,
+        "smooth_face_fraction": 0.008333333333333333,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.10199999809265137,
+            -0.03200000151991844,
+            0.003000000026077032
+          ],
+          [
+            0.45399999618530273,
+            0.03200000151991844,
+            0.06700000166893005
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "barrel",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.5029296875,
+            0.9970703125,
+            0.6637369791666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__butt_pad",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.8369436860084534,
+            0.17027705907821655
+          ],
+          [
+            0.996389627456665,
+            0.3104681968688965
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.03597728923366087,
+            "bounds": [
+              [
+                -0.4252000153064728,
+                -0.039500001817941666,
+                -0.09851554036140442
+              ],
+              [
+                -0.39320001006126404,
+                0.039500001817941666,
+                0.04399999976158142
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.03597728923366087,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.09090909090909091,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.4252000153064728,
+            -0.039500001817941666,
+            -0.09851554036140442
+          ],
+          [
+            -0.39320001006126404,
+            0.039500001817941666,
+            0.04399999976158142
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "butt_pad",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.16959635416666666,
+            0.9970703125,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__coolant_guide_-1",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.0034337532706558704,
+            0.8367670774459839
+          ],
+          [
+            0.06759871542453766,
+            0.9965662360191345
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.004894450464693825,
+            "bounds": [
+              [
+                0.19949999451637268,
+                -0.023000000044703484,
+                0.07199999690055847
+              ],
+              [
+                0.31450000405311584,
+                -0.014999999664723873,
+                0.0860000029206276
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.004894450464693825,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.11363636363636363,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.19949999451637268,
+            -0.023000000044703484,
+            0.07199999690055847
+          ],
+          [
+            0.31450000405311584,
+            -0.014999999664723873,
+            0.0860000029206276
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "coolant_guide_-1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.8362630208333334,
+            0.16373697916666666,
+            0.9970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__coolant_guide_1",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.17010042071342468,
+            0.8367670774459839
+          ],
+          [
+            0.23426538705825806,
+            0.9965662360191345
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.004894450464693825,
+            "bounds": [
+              [
+                0.19949999451637268,
+                0.014999999664723873,
+                0.07199999690055847
+              ],
+              [
+                0.31450000405311584,
+                0.023000000044703484,
+                0.0860000029206276
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.004894450464693825,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.11363636363636363,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.19949999451637268,
+            0.014999999664723873,
+            0.07199999690055847
+          ],
+          [
+            0.31450000405311584,
+            0.023000000044703484,
+            0.0860000029206276
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "coolant_guide_1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.8362630208333334,
+            0.3304036458333333,
+            0.9970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__front_sight",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.6703180074691772,
+            0.6703180074691772
+          ],
+          [
+            0.8296819925308228,
+            0.8093703985214233
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0008188135384416995,
+            "bounds": [
+              [
+                0.08799999952316284,
+                -0.0044999998062849045,
+                0.1525000035762787
+              ],
+              [
+                0.10000000149011612,
+                0.0044999998062849045,
+                0.16949999332427979
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0008188135384416995,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.18181818181818182,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.08799999952316284,
+            -0.0044999998062849045,
+            0.1525000035762787
+          ],
+          [
+            0.10000000149011612,
+            0.0044999998062849045,
+            0.16949999332427979
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "front_sight",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.6695963541666666,
+            0.8304036458333333,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__grip_shell",
+        "triangles": 180,
+        "vertices": 348,
+        "uv_bounds": [
+          [
+            0.0038950059097260237,
+            0.17056167125701904
+          ],
+          [
+            0.15315790474414825,
+            0.32943832874298096
+          ]
+        ],
+        "welded_vertices": 92,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.04301872276174887,
+            "bounds": [
+              [
+                -0.182700052857399,
+                -0.02956414595246315,
+                -0.1850000023841858
+              ],
+              [
+                -0.08907772600650787,
+                0.02956414595246315,
+                -0.009999999776482582
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.04301872276174887,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.4777777777777778,
+        "smooth_face_fraction": 0.011111111111111112,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.182700052857399,
+            -0.02956414595246315,
+            -0.1850000023841858
+          ],
+          [
+            -0.08907772600650787,
+            0.02956414595246315,
+            -0.009999999776482582
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "grip_shell",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.16959635416666666,
+            0.16373697916666666,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__panel_fastener_-1",
+        "triangles": 60,
+        "vertices": 128,
+        "uv_bounds": [
+          [
+            0.5039308667182922,
+            0.003930807113647461
+          ],
+          [
+            0.6627358198165894,
+            0.15943372249603271
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.000594966078957492,
+            "bounds": [
+              [
+                -0.1525910347700119,
+                -0.05939999967813492,
+                0.047608960419893265
+              ],
+              [
+                -0.13780896365642548,
+                -0.05339999869465828,
+                0.06239103525876999
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.000594966078957492,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6222222222222222,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.1525910347700119,
+            -0.05939999967813492,
+            0.047608960419893265
+          ],
+          [
+            -0.13780896365642548,
+            -0.05339999869465828,
+            0.06239103525876999
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "panel_fastener_-1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.0029296875,
+            0.6637369791666666,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__panel_fastener_1",
+        "triangles": 60,
+        "vertices": 128,
+        "uv_bounds": [
+          [
+            0.8372474312782288,
+            0.003913998603820801
+          ],
+          [
+            0.9960860013961792,
+            0.15948331356048584
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0005949660793810946,
+            "bounds": [
+              [
+                -0.1525910347700119,
+                0.05339999869465828,
+                0.047608960419893265
+              ],
+              [
+                -0.13780896365642548,
+                0.05939999967813492,
+                0.06239103525876999
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0005949660793810946,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6222222222222222,
+        "smooth_face_fraction": 0.016666666666666666,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.1525910347700119,
+            0.05339999869465828,
+            0.047608960419893265
+          ],
+          [
+            -0.13780896365642548,
+            0.05939999967813492,
+            0.06239103525876999
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "panel_fastener_1",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.0029296875,
+            0.9970703125,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__power_cartridge_catch",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.8369683623313904,
+            0.33696842193603516
+          ],
+          [
+            0.996364951133728,
+            0.471230685710907
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0007796259942425558,
+            "bounds": [
+              [
+                0.10000000149011612,
+                -0.039500001817941666,
+                -0.06350000202655792
+              ],
+              [
+                0.1120000034570694,
+                -0.030500000342726707,
+                -0.04749999940395355
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0007796259942425558,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.09090909090909091,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.10000000149011612,
+            -0.039500001817941666,
+            -0.06350000202655792
+          ],
+          [
+            0.1120000034570694,
+            -0.030500000342726707,
+            -0.04749999940395355
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "power_cartridge_catch",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.3362630208333333,
+            0.9970703125,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__power_cartridge_well",
+        "triangles": 60,
+        "vertices": 120,
+        "uv_bounds": [
+          [
+            0.6706038117408752,
+            0.33727049827575684
+          ],
+          [
+            0.8027034997940063,
+            0.49606287479400635
+          ]
+        ],
+        "welded_vertices": 32,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.05455358243172014,
+            "bounds": [
+              [
+                0.03720000013709068,
+                -0.038279999047517776,
+                -0.05550000071525574
+              ],
+              [
+                0.12680000066757202,
+                0.038279999047517776,
+                0.014500000514090061
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.05455358243172014,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6666666666666666,
+        "smooth_face_fraction": 0.06666666666666667,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.03720000013709068,
+            -0.038279999047517776,
+            -0.05550000071525574
+          ],
+          [
+            0.12680000066757202,
+            0.038279999047517776,
+            0.014500000514090061
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "power_cartridge_well",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.3362630208333333,
+            0.8304036458333333,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__protective_emitter_lip",
+        "triangles": 240,
+        "vertices": 400,
+        "uv_bounds": [
+          [
+            0.17069381475448608,
+            0.6706938147544861
+          ],
+          [
+            0.3288707137107849,
+            0.8293061852455139
+          ]
+        ],
+        "welded_vertices": 120,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.022904022406079416,
+            "bounds": [
+              [
+                0.414000004529953,
+                -0.03700000047683716,
+                -0.0020000000949949026
+              ],
+              [
+                0.4620000123977661,
+                0.03700000047683716,
+                0.07199999690055847
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.022904022406079416,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5555555555555556,
+        "smooth_face_fraction": 0.016666666666666666,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.414000004529953,
+            -0.03700000047683716,
+            -0.0020000000949949026
+          ],
+          [
+            0.4620000123977661,
+            0.03700000047683716,
+            0.07199999690055847
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "protective_emitter_lip",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.6695963541666666,
+            0.3304036458333333,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__rear_sight",
+        "triangles": 68,
+        "vertices": 132,
+        "uv_bounds": [
+          [
+            0.8372583389282227,
+            0.6705916523933411
+          ],
+          [
+            0.9857490658760071,
+            0.8294084072113037
+          ]
+        ],
+        "welded_vertices": 36,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.002553696139855263,
+            "bounds": [
+              [
+                -0.17599999904632568,
+                -0.014000000432133675,
+                0.1525000035762787
+              ],
+              [
+                -0.15800000727176666,
+                0.014000000432133675,
+                0.16949999332427979
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.002553696139855263,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6470588235294118,
+        "smooth_face_fraction": 0.08823529411764706,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.17599999904632568,
+            -0.014000000432133675,
+            0.1525000035762787
+          ],
+          [
+            -0.15800000727176666,
+            0.014000000432133675,
+            0.16949999332427979
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "rear_sight",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.8362630208333334,
+            0.6695963541666666,
+            0.9970703125,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__receiver_chassis",
+        "triangles": 92,
+        "vertices": 187,
+        "uv_bounds": [
+          [
+            0.003946319688111544,
+            0.0039463043212890625
+          ],
+          [
+            0.16259995102882385,
+            0.16272032260894775
+          ]
+        ],
+        "welded_vertices": 48,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.1756122202007104,
+            "bounds": [
+              [
+                -0.20999999344348907,
+                -0.055432770401239395,
+                -0.028149157762527466
+              ],
+              [
+                0.15000000596046448,
+                0.055432770401239395,
+                0.13814915716648102
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.1756122202007104,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5289855072463768,
+        "smooth_face_fraction": 0.010869565217391304,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.20999999344348907,
+            -0.055432770401239395,
+            -0.028149157762527466
+          ],
+          [
+            0.15000000596046448,
+            0.055432770401239395,
+            0.13814915716648102
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "receiver_chassis",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.0029296875,
+            0.16373697916666666,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__receiver_service_panel_-1",
+        "triangles": 12,
+        "vertices": 24,
+        "uv_bounds": [
+          [
+            0.3369494378566742,
+            0.0036160945892333984
+          ],
+          [
+            0.4714348018169403,
+            0.16305053234100342
+          ]
+        ],
+        "welded_vertices": 8,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.03545268196966226,
+            "bounds": [
+              [
+                -0.16679999232292175,
+                -0.05622842535376549,
+                0.015543440356850624
+              ],
+              [
+                0.04920000582933426,
+                -0.05057157203555107,
+                0.09445655345916748
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.03545268196966226,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6666666666666666,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.16679999232292175,
+            -0.05622842535376549,
+            0.015543440356850624
+          ],
+          [
+            0.04920000582933426,
+            -0.05057157203555107,
+            0.09445655345916748
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "receiver_service_panel_-1",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.0029296875,
+            0.4970703125,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__receiver_service_panel_1",
+        "triangles": 12,
+        "vertices": 24,
+        "uv_bounds": [
+          [
+            0.670282781124115,
+            0.0036160945892333984
+          ],
+          [
+            0.8047681450843811,
+            0.16305053234100342
+          ]
+        ],
+        "welded_vertices": 8,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.03545268196966226,
+            "bounds": [
+              [
+                -0.16679999232292175,
+                0.05057157203555107,
+                0.015543440356850624
+              ],
+              [
+                0.04920000582933426,
+                0.05622842535376549,
+                0.09445655345916748
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.03545268196966226,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6666666666666666,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.16679999232292175,
+            0.05057157203555107,
+            0.015543440356850624
+          ],
+          [
+            0.04920000582933426,
+            0.05622842535376549,
+            0.09445655345916748
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "receiver_service_panel_1",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.0029296875,
+            0.8304036458333333,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__recessed_focusing_lens",
+        "triangles": 188,
+        "vertices": 358,
+        "uv_bounds": [
+          [
+            0.0035247551277279854,
+            0.6701914668083191
+          ],
+          [
+            0.1631418913602829,
+            0.8139816522598267
+          ]
+        ],
+        "welded_vertices": 96,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.003930973224973952,
+            "bounds": [
+              [
+                0.4350000023841858,
+                -0.022307509556412697,
+                0.012692490592598915
+              ],
+              [
+                0.4429999887943268,
+                0.022307509556412697,
+                0.05730750784277916
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.003930973224973952,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.425531914893617,
+        "smooth_face_fraction": 0.047872340425531915,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.4350000023841858,
+            -0.022307509556412697,
+            0.012692490592598915
+          ],
+          [
+            0.4429999887943268,
+            0.022307509556412697,
+            0.05730750784277916
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "recessed_focusing_lens",
+          "refinement_stage": "geometry review",
+          "trim_band": 2,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.6695963541666666,
+            0.16373697916666666,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__sight_mount_-0.167",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.33701732754707336,
+            0.6703506112098694
+          ],
+          [
+            0.49057480692863464,
+            0.8296493291854858
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.004579849125260468,
+            "bounds": [
+              [
+                -0.17949999868869781,
+                -0.01850000023841858,
+                0.13099999725818634
+              ],
+              [
+                -0.15449999272823334,
+                0.01850000023841858,
+                0.1550000011920929
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.004579849125260468,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.18181818181818182,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.17949999868869781,
+            -0.01850000023841858,
+            0.13099999725818634
+          ],
+          [
+            -0.15449999272823334,
+            0.01850000023841858,
+            0.1550000011920929
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "sight_mount_-0.167",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.6695963541666666,
+            0.4970703125,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__sight_mount_0.092",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.5036614537239075,
+            0.6703281402587891
+          ],
+          [
+            0.6623352766036987,
+            0.8296718597412109
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0045798497437616065,
+            "bounds": [
+              [
+                0.0794999971985817,
+                -0.01850000023841858,
+                0.13099999725818634
+              ],
+              [
+                0.10450000315904617,
+                0.01850000023841858,
+                0.1550000011920929
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0045798497437616065,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.0794999971985817,
+            -0.01850000023841858,
+            0.13099999725818634
+          ],
+          [
+            0.10450000315904617,
+            0.01850000023841858,
+            0.1550000011920929
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "sight_mount_0.092",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.6695963541666666,
+            0.6637369791666666,
+            0.8304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__stock_lower",
+        "triangles": 44,
+        "vertices": 102,
+        "uv_bounds": [
+          [
+            0.670322060585022,
+            0.17032206058502197
+          ],
+          [
+            0.7736795544624329,
+            0.329677939414978
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.024808749475073347,
+            "bounds": [
+              [
+                -0.3996303081512451,
+                -0.017500000074505806,
+                -0.08491174876689911
+              ],
+              [
+                -0.18276973068714142,
+                0.017500000074505806,
+                0.004396205767989159
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.024808749475073347,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.022727272727272728,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.3996303081512451,
+            -0.017500000074505806,
+            -0.08491174876689911
+          ],
+          [
+            -0.18276973068714142,
+            0.017500000074505806,
+            0.004396205767989159
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "stock_lower",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.16959635416666666,
+            0.8304036458333333,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__stock_socket",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.003654215717688203,
+            0.33698755502700806
+          ],
+          [
+            0.15563048422336578,
+            0.49634575843811035
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.0238729861989077,
+            "bounds": [
+              [
+                -0.21599999070167542,
+                -0.03750000149011612,
+                -0.029999999329447746
+              ],
+              [
+                -0.1679999977350235,
+                0.03750000149011612,
+                0.03999999910593033
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.0238729861989077,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.045454545454545456,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.21599999070167542,
+            -0.03750000149011612,
+            -0.029999999329447746
+          ],
+          [
+            -0.1679999977350235,
+            0.03750000149011612,
+            0.03999999910593033
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "stock_socket",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.0029296875,
+            0.3362630208333333,
+            0.16373697916666666,
+            0.4970703125
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__stock_upper",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.5037026405334473,
+            0.17036932706832886
+          ],
+          [
+            0.6447027921676636,
+            0.32963067293167114
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.04227550304984375,
+            "bounds": [
+              [
+                -0.39820000529289246,
+                -0.026000000536441803,
+                0.005499999970197678
+              ],
+              [
+                -0.16820000112056732,
+                0.026000000536441803,
+                0.04650000110268593
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.04227550304984375,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.39820000529289246,
+            -0.026000000536441803,
+            0.005499999970197678
+          ],
+          [
+            -0.16820000112056732,
+            0.026000000536441803,
+            0.04650000110268593
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "stock_upper",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.5029296875,
+            0.16959635416666666,
+            0.6637369791666666,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__trigger",
+        "triangles": 28,
+        "vertices": 48,
+        "uv_bounds": [
+          [
+            0.33706143498420715,
+            0.17039477825164795
+          ],
+          [
+            0.4833763837814331,
+            0.32960522174835205
+          ]
+        ],
+        "welded_vertices": 16,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.00176780150932346,
+            "bounds": [
+              [
+                -0.07449045777320862,
+                -0.004999999888241291,
+                -0.04399999976158142
+              ],
+              [
+                -0.055490460246801376,
+                0.004999999888241291,
+                -0.0010000000474974513
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.00176780150932346,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.5714285714285714,
+        "smooth_face_fraction": 0.07142857142857142,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.07449045777320862,
+            -0.004999999888241291,
+            -0.04399999976158142
+          ],
+          [
+            -0.055490460246801376,
+            0.004999999888241291,
+            -0.0010000000474974513
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "trigger",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.3362630208333333,
+            0.16959635416666666,
+            0.4970703125,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__trigger_guard",
+        "triangles": 140,
+        "vertices": 326,
+        "uv_bounds": [
+          [
+            0.1705448031425476,
+            0.1705448031425476
+          ],
+          [
+            0.3294551968574524,
+            0.32048267126083374
+          ]
+        ],
+        "welded_vertices": 70,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.013829958412948437,
+            "bounds": [
+              [
+                -0.1043817326426506,
+                -0.00800000037997961,
+                -0.0729999989271164
+              ],
+              [
+                0.008234819397330284,
+                0.00800000037997961,
+                -0.008999999612569809
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.013829958412948437,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.6619047619047619,
+        "smooth_face_fraction": 0.03571428571428571,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.1043817326426506,
+            -0.00800000037997961,
+            -0.0729999989271164
+          ],
+          [
+            0.008234819397330284,
+            0.00800000037997961,
+            -0.008999999612569809
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "trigger_guard",
+          "refinement_stage": "geometry review",
+          "trim_band": 3,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.16959635416666666,
+            0.3304036458333333,
+            0.3304036458333333
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__upper_spine",
+        "triangles": 44,
+        "vertices": 96,
+        "uv_bounds": [
+          [
+            0.17007394134998322,
+            0.003407299518585205
+          ],
+          [
+            0.23079071938991547,
+            0.1632593870162964
+          ]
+        ],
+        "welded_vertices": 24,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.03454075470165587,
+            "bounds": [
+              [
+                -0.1899999976158142,
+                -0.017500000074505806,
+                0.13099998235702515
+              ],
+              [
+                0.125,
+                0.017500000074505806,
+                0.15299999713897705
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.03454075470165587,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.7272727272727273,
+        "smooth_face_fraction": 0.0,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            -0.1899999976158142,
+            -0.017500000074505806,
+            0.13099998235702515
+          ],
+          [
+            0.125,
+            0.017500000074505806,
+            0.15299999713897705
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "upper_spine",
+          "refinement_stage": "geometry review",
+          "trim_band": 1,
+          "atlas_uv_cell": [
+            0.16959635416666666,
+            0.0029296875,
+            0.3304036458333333,
+            0.16373697916666666
+          ]
+        }
+      },
+      {
+        "name": "w10-cautery__vented_emitter_shroud",
+        "triangles": 416,
+        "vertices": 630,
+        "uv_bounds": [
+          [
+            0.6710548996925354,
+            0.5043882131576538
+          ],
+          [
+            0.8236197829246521,
+            0.662278413772583
+          ]
+        ],
+        "welded_vertices": 192,
+        "components": 1,
+        "largest_component_area_fraction": 1.0,
+        "component_details": [
+          {
+            "area": 0.14936381016326408,
+            "bounds": [
+              [
+                0.12200000137090683,
+                -0.04804173484444618,
+                -0.008422338403761387
+              ],
+              [
+                0.421999990940094,
+                0.04804173484444618,
+                0.07842233777046204
+              ]
+            ]
+          }
+        ],
+        "surface_area": 0.14936381016326408,
+        "uv_coverage": 1.0,
+        "textured_fraction": 1.0,
+        "boundary_edges": 0,
+        "nonmanifold_edges": 0,
+        "normal_seam_fraction": 0.4583333333333333,
+        "smooth_face_fraction": 0.009615384615384616,
+        "degenerate_triangles": 0,
+        "nonfinite_triangles": 0,
+        "bounds": [
+          [
+            0.12200000137090683,
+            -0.04804173484444618,
+            -0.008422338403761387
+          ],
+          [
+            0.421999990940094,
+            0.04804173484444618,
+            0.07842233777046204
+          ]
+        ],
+        "properties": {
+          "mechanical_role": "vented_emitter_shroud",
+          "refinement_stage": "geometry review",
+          "trim_band": 0,
+          "atlas_uv_cell": [
+            0.6695963541666666,
+            0.5029296875,
+            0.8304036458333333,
+            0.6637369791666666
+          ]
+        }
+      }
+    ],
+    "images": [
+      {
+        "name": "albedo",
+        "width": 1024,
+        "height": 1024,
+        "loaded": true,
+        "packed": true
+      },
+      {
+        "name": "orm",
+        "width": 1024,
+        "height": 1024,
+        "loaded": true,
+        "packed": true
+      }
+    ],
+    "triangles": 2744,
+    "uv_coverage": 1.0,
+    "textured_fraction": 1.0
+  }
+]

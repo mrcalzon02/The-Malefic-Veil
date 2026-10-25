@@ -27,7 +27,7 @@ Rebuild Vesper seed with Blender running `tools/refine_weapon_roughs.py -- --ids
 | Reliquary | Refined prototype r3, pump and bottom-loading checks passed |
 | Furnace Organ | Refined prototype r3, rotor/drum checks passed |
 | Hailstorm | Refined prototype r3, twin counter-rotor and guided drum checks passed |
-| Cautery | Pending individual mechanical review |
+| Cautery | Refined prototype shutter-r1, recessed optic, guided cell and cooling shutter checks passed |
 | Prism Writ | Pending individual mechanical review |
 | Longwake | Pending individual mechanical review |
 | Ion Psalm | Pending individual mechanical review |

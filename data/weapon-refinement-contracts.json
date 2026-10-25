@@ -453,5 +453,73 @@
     ],
     "forbidden_name_tokens": [],
     "isolated_atlas_cells": true
+  },
+  "w10-cautery-finish-shutter-r1": {
+    "placement_kind": "snap-component",
+    "component_function": "handheld weapon assembly; no building placement or plot claim",
+    "local_bounds_z_up": [
+      [
+        -0.4272000153064728,
+        -0.06139999967813492,
+        -0.22750000250339508
+      ],
+      [
+        0.4640000123977661,
+        0.06139999967813492,
+        0.1714999933242798
+      ]
+    ],
+    "organic": false,
+    "continuous_surfaces": [],
+    "intentional_separate_meshes": [
+      "w10-cautery__receiver_chassis",
+      "w10-cautery__upper_spine",
+      "w10-cautery__receiver_service_panel_-1",
+      "w10-cautery__panel_fastener_-1",
+      "w10-cautery__receiver_service_panel_1",
+      "w10-cautery__panel_fastener_1",
+      "w10-cautery__grip_shell",
+      "w10-cautery__trigger_guard",
+      "w10-cautery__trigger",
+      "w10-cautery__stock_upper",
+      "w10-cautery__stock_lower",
+      "w10-cautery__butt_pad",
+      "w10-cautery__stock_socket",
+      "w10-cautery__power_cartridge",
+      "w10-cautery__power_cartridge_floorplate",
+      "w10-cautery__power_cartridge_feed_lips",
+      "w10-cautery__power_cartridge_well",
+      "w10-cautery__power_cartridge_catch",
+      "w10-cautery__power_cartridge_pull_ear_-1",
+      "w10-cautery__power_cartridge_pull_ear_1",
+      "w10-cautery__cell_contact_-0.017",
+      "w10-cautery__cell_contact_0.017",
+      "w10-cautery__vented_emitter_shroud",
+      "w10-cautery__barrel",
+      "w10-cautery__recessed_focusing_lens",
+      "w10-cautery__protective_emitter_lip",
+      "w10-cautery__sight_mount_-0.167",
+      "w10-cautery__sight_mount_0.092",
+      "w10-cautery__front_sight",
+      "w10-cautery__rear_sight",
+      "w10-cautery__coolant_guide_-1",
+      "w10-cautery__coolant_guide_1",
+      "w10-cautery__coolant_shutter"
+    ],
+    "reload_method": "keyed forward power cell with recessed electrical contacts",
+    "reload_objects": [
+      "power_cartridge",
+      "power_cartridge_floorplate",
+      "power_cartridge_feed_lips",
+      "power_cartridge_pull_ear_-1",
+      "power_cartridge_pull_ear_1",
+      "cell_contact_-0.017",
+      "cell_contact_0.017"
+    ],
+    "loading_interfaces": [
+      "power_cartridge_well"
+    ],
+    "forbidden_name_tokens": [],
+    "isolated_atlas_cells": true
   }
 }

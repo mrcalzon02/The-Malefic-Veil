@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "1ddc7d0d92bbc89b0514d5384286511c136f48e6f26e62cd072ac39583674ed0",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "reviewer": "Codex actual image inspection and exported mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Rejected after actual six-view inspection: power cartridge occupies trigger space, top rail floats, cooling slabs lack engineered transitions. Retain as failed study."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r1/front.png",
+      "sha256": "78a975c1280f54e08b6fd82343838fc51e71ac914425e05271ecd31cef579f68"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r1/rear.png",
+      "sha256": "ea7b9ee29ceb96b7b807aa6710a51ad8d98ed8b2ba01350290f184e45b0c087a"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r1/closeup.png",
+      "sha256": "6e09250373e254311c0465cca0b6365f671b5ef161edfe221d6e9f471d105ef8"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r1/clay.png",
+      "sha256": "65ec51457e238134b3d0776c17933437bbbdd593a1f26bb1b34754d55695e6f1"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r1/side.png",
+      "sha256": "763ac27be3ea531364e572f6fc899baffa4e1a79bccda6e3b7822b8f9153dc70"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r1/reload.png",
+      "sha256": "9f122afc56e0fef22655c52324f98d8ec78fec1975dfd86de8dcc298e7ec71de"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w10-cautery-refined-r1/comparison.png",
+      "sha256": "fbeaf6820fe3e4d40a54451f1af5a9073903269b2b965d123939ec18f5b5b5c8"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

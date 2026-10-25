@@ -9,7 +9,7 @@ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--id',required=Tr
 b=R/'build/candidates/weapon-refinement'/a.id
 if b.parent!=R/'build/candidates/weapon-refinement' or not (b/(a.id+'.glb')).is_file():raise ValueError('Unknown staged candidate')
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
-inputs=json.loads((b/'inspection-input.json').read_text());tools=['inspect_structure_quality.py','render_weapon_refinements.py','compose_weapon_review.py','check_vesper_mechanics.py','check_revolver_mechanics.py','check_box_magazine_mechanics.py','check_break_action_mechanics.py','check_pump_mechanics.py','check_rotary_mechanics.py','check_twin_rotary_mechanics.py']
+inputs=json.loads((b/'inspection-input.json').read_text());tools=['inspect_structure_quality.py','render_weapon_refinements.py','compose_weapon_review.py','check_vesper_mechanics.py','check_revolver_mechanics.py','check_box_magazine_mechanics.py','check_break_action_mechanics.py','check_pump_mechanics.py','check_rotary_mechanics.py','check_twin_rotary_mechanics.py','check_energy_cell_mechanics.py']
 signature={r['path']:sha(R/r['path']) for r in inputs};signature.update({f:sha(R/'tools'/f) for f in tools});stamp=b/'review-pipeline-cache.json'
 inspection=R/'reports'/('weapon-'+a.id+'-inspection.json');gate=R/'reports'/('weapon-'+a.id+'-quality.json')
 def run(label,cmd):
@@ -29,6 +29,7 @@ if not cached:
         if a.id.startswith('w07-reliquary-') and 'front_tube_clamp' in ' '.join(json.loads((b/'contract.json').read_text()).get('intentional_separate_meshes',[])):jobs.append(pool.submit(run,'mechanics',blender(tools[7],a.id)))
         if a.id.startswith('w08-furnace-organ-') and 'fixed_rotor_bearing' in ' '.join(json.loads((b/'contract.json').read_text()).get('intentional_separate_meshes',[])):jobs.append(pool.submit(run,'mechanics',blender(tools[8],a.id)))
         if a.id.startswith('w09-hailstorm-') and 'gearcase_shoulder_0' in ' '.join(json.loads((b/'contract.json').read_text()).get('intentional_separate_meshes',[])):jobs.append(pool.submit(run,'mechanics',blender(tools[9],a.id)))
+        if a.id.startswith('w10-cautery-') and 'coolant_shutter' in ' '.join(json.loads((b/'contract.json').read_text()).get('intentional_separate_meshes',[])):jobs.append(pool.submit(run,'mechanics',blender(tools[10],a.id)))
         for job in jobs:job.result()
     image_python=a.image_python or str(Path.home()/'.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
     run('sheet',[image_python,'tools/'+tools[2],a.id]);stamp.write_text(json.dumps(signature,indent=2)+'\n')

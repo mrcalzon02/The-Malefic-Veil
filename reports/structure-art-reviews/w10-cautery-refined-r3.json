@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "17ca4ee0928cf6014560d075af1655cdb3332ff88c1162cbb617a6280d050c82",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "reviewer": "Codex actual image inspection and exported mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Rejected after actual six-view inspection and exported mechanical failure: cell socket is seated, but thin annular coolant sleeve intersects faceted barrel in firing poses. End this sleeve design after three attempts; redesign as an external guided shutter."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r3/front.png",
+      "sha256": "5e3edc6052e10bd567ffd92df14802092049230a8f1509787ca64b5eaaa94d64"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r3/rear.png",
+      "sha256": "c57b3c73be8fbdb9638227355e4748b058cdc6b40c84bb96a66bc5fc994aab42"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r3/closeup.png",
+      "sha256": "c78c558304fe5a7f33525d16b85f3e78d22fb09d35582b3bd92f3b1186c0d982"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r3/clay.png",
+      "sha256": "e9de4f1d722f0e51807434dc26a9f12380812ecaed87690c5aed8d308d74cdbf"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r3/side.png",
+      "sha256": "b955ef648a4c8e255b96f878491e0ca1cfdb4d1c92d35bd8c5cff43cd0870bcd"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r3/reload.png",
+      "sha256": "3d16f5804b77f91a5f60fa2422e2990f214013be12ad4aff9d565c8218faa1a0"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w10-cautery-refined-r3/comparison.png",
+      "sha256": "117bfb950a46944e65c843aa8f09f02659f69b239ffe495fcca859f5434c7cc9"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

@@ -119,8 +119,9 @@ for d in defs:
         remove(old)
         # Actual loading/ejection recess in the near side; the cover is separate machinery.
         portx=cx+L*.10;portz=z+H*.08
-        cut_box(new,(portx,cy-W,portz),(L*.21,W*.46,H*.50))
-        box('ejection_recess',(portx,cy-W*.83,portz),(L*.19,.003,H*.45),band=3)
+        if idx!=9:
+            cut_box(new,(portx,cy-W,portz),(L*.21,W*.46,H*.50))
+            box('ejection_recess',(portx,cy-W*.83,portz),(L*.19,.003,H*.45),band=3)
         beam('upper_spine',(lo.x+.02,0,hi.z+.004),(hi.x-.025,0,hi.z+.004),.022,.035,band=1)
         for side in(-1,1):
             panel=loft('receiver_service_panel_'+str(side),[(lo.x+L*.12,side*(W*.84+.003),z,.004,H*.55),(hi.x-L*.28,side*(W*.84+.003),z,.004,H*.62)],sides=4,band=0)
@@ -191,6 +192,37 @@ for d in defs:
             fl,fh=bounds(fore);fc=(fl+fh)/2;remove(fore)
             loft('profiled_foregrip',[(fl.z,fc.x,0,.023,.025),(fl.z+.018,fc.x-.004,0,.025,.028),(fh.z,fc.x,0,.024,.028)],'Z',8,band=3)
             box('foregrip_saddle',(fc.x,0,.004),(.060,.062,.029),band=0)
+    elif idx==9:
+        pack('power_cartridge',.082,0,-.117,(.080,.066,.19))
+        method='keyed forward power cell with recessed electrical contacts';axis=(0,0,-.26)
+        # Extend the hollow socket into the receiver rather than leaving a gap.
+        for v in find('power_cartridge_well').data.vertices:
+            if v.co.z>-.030:v.co.z+=.040
+        cut_box(find('power_cartridge_well'),(.082,0,-.038),(.083,.069,.085))
+        cut_box(find('receiver_chassis'),(.082,0,-.031),(.083,.069,.105))
+        for y in(-.017,.017):
+            mark(cylinder('cell_contact_'+str(y),(.082,y,-.012),.005,.015,'Z',ammo,1,12))
+        # Replace flat side slabs with one ventilated sleeve, seated behind a
+        # recessed lens and an axial protective lip. All parts retain +X aim.
+        for o in list(col.objects):
+            if role(o).startswith('laser_heat_rail_') or role(o)=='focusing_lens':remove(o)
+        shroud=loft('vented_emitter_shroud',[(.122,0,.035,.044,.043),(.153,0,.035,.052,.047),(.352,0,.035,.045,.042),(.422,0,.035,.037,.036)],sides=8,band=0)
+        cutter=cylinder('shroud_clearance',(.28,0,.035),.0335,.38,'X',receiver,3,24)
+        bpy.context.view_layer.objects.active=shroud;m=shroud.modifiers.new('Axial emitter clearance','BOOLEAN');m.operation='DIFFERENCE';m.solver='EXACT';m.object=cutter;bpy.ops.object.modifier_apply(modifier=m.name);generated.remove(cutter);remove(cutter)
+        for side in(-1,1):
+            for x in(.184,.225,.266,.307):cut_box(shroud,(x,side*.045,.036),(.020,.036,.027))
+        remove(find('barrel'));open_tube('barrel',.102,.454,0,.035,.032,.023,receiver,1)
+        cylinder('recessed_focusing_lens',(.439,0,.035),.0225,.008,'X',receiver,2,24)
+        open_tube('protective_emitter_lip',.414,.462,0,.035,.037,.023,receiver,1)
+        socket=find('muzzle_0_SOCKET');socket.parent=receiver;socket.matrix_parent_inverse=receiver.matrix_world.inverted();socket.matrix_basis=Matrix.Translation((.474,0,.035))
+        for v in find('upper_spine').data.vertices:v.co.z-=.007
+        for x in(-.167,.092):box('sight_mount_'+str(x),(x,0,.143),(.025,.037,.024),band=0)
+        box('front_sight',(.094,0,.161),(.012,.009,.017),band=1)
+        sight=box('rear_sight',(-.167,0,.161),(.018,.028,.017),band=1);cut_box(sight,(-.167,0,.168),(.026,.010,.016))
+        # Redesign: external guided shutter replaces the rejected thin annular
+        # sleeve. Coarse barrel facets no longer govern sliding clearance.
+        for side in(-1,1):box('coolant_guide_'+str(side),(.257,side*.019,.079),(.115,.008,.014),band=1)
+        box('coolant_shutter',(.264,0,.087),(.054,.027,.010),action,1)
     elif idx==0:
         lo,hi=grip_bounds;magazine('pistol_box_magazine',(lo.x+hi.x)/2-.004,0,hi.z-.020,.139,.034,.030)
         method='grip magazine; complete removable body and floorplate'
@@ -431,6 +463,7 @@ for d in defs:
                 if clip in('fire','alternate'):
                     if o==root:o.location.x-=.012*pulse
                     if o==action and d['mechanism'] in('slide','pump','bolt'):o.location.x-=(.045 if idx==6 else .027)*pulse
+                    if o==action and idx==9:o.location.x-=.018*pulse
                     if o==action and d['mechanism'] in('rotor','rings','disc','cylinder') and idx!=8:o.rotation_euler.x+=t*math.tau if d['mechanism']!='disc' else 0
                     if o in rotor_drivers:o.rotation_euler.x+=t*math.tau*o['spin_direction']
                 if clip=='reload':

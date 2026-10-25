@@ -1,0 +1,22 @@
+{
+  "weapon": "w10-cautery",
+  "rejected_design": "annular sliding coolant sleeve",
+  "attempts": [
+    {
+      "id": "w10-cautery-refined-r1",
+      "sha256": "1ddc7d0d92bbc89b0514d5384286511c136f48e6f26e62cd072ac39583674ed0",
+      "reason": "Rejected after actual six-view inspection: power cartridge occupies trigger space, top rail floats, cooling slabs lack engineered transitions. Retain as failed study."
+    },
+    {
+      "id": "w10-cautery-refined-r2",
+      "sha256": "231c9cc5576e7846f180bfc0174e64ab3c0198ff24c3763b87af880079fa0c46",
+      "reason": "Rejected after actual six-view inspection and exported mechanical failure: cell socket visibly detached from receiver. Shaped emitter and recessed lens improve silhouette, but docking is not acceptable."
+    },
+    {
+      "id": "w10-cautery-refined-r3",
+      "sha256": "17ca4ee0928cf6014560d075af1655cdb3332ff88c1162cbb617a6280d050c82",
+      "reason": "Rejected after actual six-view inspection and exported mechanical failure: cell socket is seated, but thin annular coolant sleeve intersects faceted barrel in firing poses. End this sleeve design after three attempts; redesign as an external guided shutter."
+    }
+  ],
+  "redesign": "External guided coolant shutter; no tolerance dependency on barrel facets. Independent first redesign attempt passed exported mechanics."
+}

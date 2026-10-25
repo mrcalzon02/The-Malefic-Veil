@@ -1,0 +1,58 @@
+{
+  "asset_sha256": "231c9cc5576e7846f180bfc0174e64ab3c0198ff24c3763b87af880079fa0c46",
+  "decision": "reject",
+  "scores": {
+    "surface_continuity": 2,
+    "material_coherence": 2,
+    "silhouette": 2,
+    "reference_comparison": 2,
+    "faction_identity": 2
+  },
+  "reviewer": "Codex actual image inspection and exported mechanical evidence",
+  "review_stage": "refined weapon prototype",
+  "findings": [
+    "Rejected after actual six-view inspection and exported mechanical failure: cell socket visibly detached from receiver. Shaped emitter and recessed lens improve silhouette, but docking is not acceptable."
+  ],
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r2/front.png",
+      "sha256": "b15262b90e76a0ec9808674ea38e8ac89f140456c71071ba1cc06323037f08b4"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r2/rear.png",
+      "sha256": "987c68ac5ec7c1735723dbd8a80651ff0ac69c1c8746309eb365e6fc3106e75a"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r2/closeup.png",
+      "sha256": "4f9043535bb212bbd4a44814d4c2b181fde47dbefb5a4a1e623758e5179d3b19"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r2/clay.png",
+      "sha256": "0b96dca87191fb58ffed864bae60fd49f02387e3e8e166dec74fcb0c0b53811b"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r2/side.png",
+      "sha256": "c72b114c178368174a62ec048e3a12f766e6af12e95e7a9d67979d8577d18387"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w10-cautery-refined-r2/reload.png",
+      "sha256": "e4e714e7214be9c6141796ddc0ed57ece3d4eead4e1a062daebd16132243c8d2"
+    },
+    "comparison": {
+      "path": "build/candidates/weapon-refinement/w10-cautery-refined-r2/comparison.png",
+      "sha256": "f929c601966516fbfb2ac1df7806d64ab00adb3defcbf0fd46bf9c5394eea24e"
+    }
+  },
+  "compared_reference_ids": [
+    "car-01",
+    "car-08",
+    "character-01",
+    "character-17"
+  ],
+  "reference_sha256": {
+    "car-01": "88de04afe087cd95c1eef048cb97aa1e1207d337a1c5b0b0a2f9a83579963a83",
+    "car-08": "bc4a5f30ab8cf0057cf9fc33a72abb8af57908eba05d8cbd1d900ecf6c706b74",
+    "character-01": "d8c8f0696d883f7282fc22de3f7fd0057e89050fc54bc700e33599b611938624",
+    "character-17": "052c0c8fd7b31e627647e571f57ae109dc06d260cee39d3a1bd0a2c79c6a13c1"
+  }
+}

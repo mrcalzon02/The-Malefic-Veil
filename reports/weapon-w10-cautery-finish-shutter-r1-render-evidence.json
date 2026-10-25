@@ -1,0 +1,29 @@
+{
+  "asset_sha256": "074916bfb9ea09ce8ff42beeaba0d4cefe703f79478661b29afdeb81e4057ac9",
+  "renders": {
+    "front": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/front.png",
+      "sha256": "40114fa5c2e60ccdccdb4d13ff90f7239a4502ba3788f6b6481a889e29b61671"
+    },
+    "rear": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/rear.png",
+      "sha256": "9cd5f4ed7f4818f00f084a765cc5574057cdf515717b9e2ef0c400d3b4bf2bae"
+    },
+    "closeup": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/closeup.png",
+      "sha256": "fb05a04a35a442e3869e1b4409d61535b17d770dda56a90a00430a05cc625ed0"
+    },
+    "clay": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/clay.png",
+      "sha256": "e6742e3da28c06054bd2ec47d0755bd45c4d31f248284db0b94bbf45babd2eb4"
+    },
+    "side": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/side.png",
+      "sha256": "df816b2ed257d6a5643662e6d29f6f352f1e8d7e1e45bf762b9ba503e04dc85a"
+    },
+    "reload": {
+      "path": "previews/weapon-refinement/w10-cautery-finish-shutter-r1/reload.png",
+      "sha256": "343fa71f23bc618a3fc474b8c7b354744fdd7219afaf1872657f1855d39ade4d"
+    }
+  }
+}

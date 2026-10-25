@@ -299,7 +299,7 @@ public final class LanServer implements AutoCloseable {
     static String fieldPacket(ThrownDeployables.View f){
         return "FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+f.z()+"|"+
             f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0)+"|"+f.heading()+"|"+f.ageMs()+"|"+
-            f.operationAgeMs()+"|"+f.damageAgeMs()+"|"+f.aimYaw()+"|"+f.aimPitch()+"|"+f.ammoStock();
+            f.operationAgeMs()+"|"+f.damageAgeMs()+"|"+f.aimYaw()+"|"+f.aimPitch()+"|"+f.ammoStock()+"|"+(f.tracking()?1:0);
     }
     private void serve(Socket socket){
         Peer peer=new Peer();peer.id=id();peer.socket=socket;

@@ -30,6 +30,10 @@ LABELS = {'field-medic-r1': 'Field Medic repair study', 'field-pilots-r1': 'Depl
           'material-refresh': 'Construction material revision 2',
           'weapon-refinement': 'Weapon refinement and retained failed studies'}
 
+FIELD_REVISIONS=tuple('field-medic-r'+str(i) for i in range(2,8))+tuple('field-pilots-r'+str(i) for i in range(7,10))
+GROUPS=FIELD_REVISIONS+GROUPS
+LABELS.update({revision:revision.replace('-', ' ').title()+' — review required' for revision in FIELD_REVISIONS})
+
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()

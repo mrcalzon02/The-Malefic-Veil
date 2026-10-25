@@ -9,7 +9,7 @@ public final class FieldPilotAnimationTest {
     private static void check(boolean condition,String message){if(!condition)throw new AssertionError(message);}
     @SuppressWarnings("unchecked")
     public static void main(String[] args)throws Exception{
-        Path folder=Path.of(args.length==0?"build/candidates/field-pilots-r4":args[0]);
+        Path folder=Path.of(args.length==0?"build/candidates/field-pilots-r9":args[0]);
         var ids=args.length>1?List.of(args[1]):List.of("sentry-mki","censer-of-dread","regeneration-heart");
         for(String id:ids){
             byte[] bytes=Files.readAllBytes(folder.resolve(id).resolve(id+".glb"));
@@ -18,6 +18,16 @@ public final class FieldPilotAnimationTest {
             ByteBuffer file=ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
             int length=file.getInt(12);byte[] json=Arrays.copyOfRange(bytes,20,20+length);
             var doc=(Map<String,Object>)new GlbMesh.Parser(new String(json,java.nio.charset.StandardCharsets.UTF_8).trim()).parse();
+            check(rig.hasFieldCoordinateContract(),"Missing runtime coordinate contract: "+id);
+            for(var mesh:(List<Map<String,Object>>)doc.get("meshes"))
+                for(var primitive:(List<Map<String,Object>>)mesh.get("primitives")){
+                    var attributes=(Map<String,Object>)primitive.get("attributes");
+                    check(!attributes.containsKey("NORMAL")&&!attributes.containsKey("TANGENT"),"Runtime normal/tangent attributes returned: "+id);
+                    for(var morph:(List<Map<String,Object>>)primitive.getOrDefault("targets",List.of()))
+                        check(!morph.containsKey("NORMAL")&&!morph.containsKey("TANGENT"),"Morph normal/tangent attributes returned: "+id);
+                }
+            for(var material:(List<Map<String,Object>>)doc.get("materials"))
+                check(!material.containsKey("normalTexture"),"Runtime normal map returned: "+id);
             var nodes=(List<Map<String,Object>>)doc.get("nodes");
             for(var clip:(List<Map<String,Object>>)doc.get("animations")){
                 var channels=(List<Map<String,Object>>)clip.get("channels");check(!channels.isEmpty(),"Empty clip: "+id+" "+clip.get("name"));

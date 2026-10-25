@@ -1,10 +1,11 @@
-# Resume checkpoint — 50% usage cutoff
+# Active field development checkpoint
 
-User confirmed the 5-hour allowance controls the cutoff. The account tool reported 50% used / 50% remaining; design stopped at that point. No production completion is claimed.
+The earlier 50% pause ended when the user resumed work. The current goal remains active; the last five-hour allowance check showed 32% used / 68% remaining. Stop at 50% used, as requested.
 
-- Censer r6: 3,496 triangles, no root-scale tracks, deployment ground check passed. No intersections in 31 sampled satellite-bowl vs main-bowl/basket/slide pairs. Packing depth is still approximately 0.593 m. Source and renders: build/candidates/field-pilots-r6 and previews/field-pilots-r6. Current review remains pending.
-- Field Medic r1: new hollow clamshell, retained cartridges/tools, folding trays, pump and injector arm; 2,326 triangles. Runtime motion check FAILS: minimum deployment Y approximately -0.0225 m. The lid/panel alignment also needs repair. Do not promote. Source: tools/refine_field_medic.py. Candidate: build/candidates/field-medic-r1.
-- Sentry and Regeneration Heart remain the r4 refinement studies. No pilot is runtime-approved.
-- Authoritative status: data/field-deployable-asset-index.json. Next action: repair Field Medic packing/ground clearance/lid alignment, then inspect actual exports and continue remaining 17 redesigns.
+Current candidates: Field Medic r7; Sentry, Censer and Regeneration Heart r9. All four use canonical coordinates, omit normals/tangents and normal maps, and contain offline form/AO shading in the existing 256 px color atlas. Actual GPU evidence uses the production upload path and shader. No production approval is claimed.
 
-This is a durable local checkpoint, not a claim that code or candidate assets were published or merged.
+Medic floor, lid, nested support, injector stowage and hose continuity repairs pass their declared checks. Turret aim now follows authoritative targets between attacks, with a replicated tracking flag. All role effects and collision begin only after unfolding. Current evidence: reports/current-field-audit.md and .json. The authoritative 21-item index records four pilots and 17 redesigns outstanding.
+
+Next: dedicated FIELD packet/late-join regression; resolve remaining material/organic surface defects and packing exceptions; continue independent deployable redesigns. Persistent damage/destruction and live-world acceptance remain outstanding. The broader product inventory is reports/product-model-audit-roadmap.md; 406 stored GLBs include variants and do not constitute 406 certified assets.
+
+Workspace: build/field-deployables-main beneath the authoring checkout. Branch codex/field-deployables. Keep this checkout separate from arsenal-prototypes authoring work and private references.

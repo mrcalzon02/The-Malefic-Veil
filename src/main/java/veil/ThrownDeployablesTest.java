@@ -78,7 +78,14 @@ public final class ThrownDeployablesTest {
             var landed=host.thrown.views().get(0);
             check(!landed.flying()&&landed.remainingMs()==ThrownDeployables.LIFETIME_MS,
                 "One-hour countdown must begin on landing");
-            check(host.thrown.occupied(landed.x(),landed.y()),"Wall is not solid cover");
+            check(landed.state()==ThrownDeployables.State.IMPACT,"Landing must enter impact animation");
+            check(!host.thrown.occupied(landed.x(),landed.y()),"Packed impact capsule became invisible full-size cover");
+            check(!host.thrown.blocksLine(landed.x()-2,landed.y(),landed.x()+2,landed.y()),"Unfolding cover blocks fire before visible activation");
+            host.advance(1000);host.advance(ThrownDeployables.ACTIVATION_MS-1001);
+            check(!host.thrown.occupied(landed.x(),landed.y()),"Cover activated before unfolding finished");
+            host.advance(1);
+            check(host.thrown.views().get(0).state()!=ThrownDeployables.State.DEPLOYING,"Activation boundary is still deploying");
+            check(host.thrown.occupied(landed.x(),landed.y()),"Completed wall is not solid cover");
             check(host.thrown.blocksLine(landed.x()-2,landed.y(),landed.x()+2,landed.y()),
                 "Deployed wall must block line of sight");
             ArenaSystems.Player enemy=host.join(2);

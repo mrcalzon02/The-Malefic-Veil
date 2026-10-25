@@ -1,0 +1,137 @@
+{
+  "status": "SCOPED_CHECKS_ONLY_ART_AND_GAMEPLAY_PENDING",
+  "render_contract": "design/FIELD_RENDER_CONTRACT.md",
+  "pilots": [
+    {
+      "id": "thrown-unraveled-turret",
+      "pilot": "sentry-mki",
+      "asset_sha256": "ab034bdf786a03181b853833b68f16df635b7ecb1c439c9841bb9c5f67392277",
+      "triangles": 2556,
+      "runtime_normal_attributes": 0,
+      "normal_maps": 0,
+      "vertex_floats": 9,
+      "texture_size": [
+        256,
+        256
+      ],
+      "evidence": [
+        {
+          "kind": "gpu_upload_and_pose",
+          "report": "previews/field-pilots-r9/sentry-mki/gpu/gpu-audit.json",
+          "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
+        }
+      ],
+      "production_complete": false,
+      "remaining": [
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance",
+        "Packing width 0.511 m slightly exceeds the 0.5 m target"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-health",
+      "pilot": "field-medic",
+      "asset_sha256": "3d151b13b97c29a57c95b2fe689c08ccf0181f85de4a650f8c42cfe30632c48d",
+      "triangles": 2876,
+      "runtime_normal_attributes": 0,
+      "normal_maps": 0,
+      "vertex_floats": 9,
+      "texture_size": [
+        256,
+        256
+      ],
+      "evidence": [
+        {
+          "kind": "gpu_upload_and_pose",
+          "report": "previews/field-medic-r7/field-medic/gpu/gpu-audit.json",
+          "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
+        },
+        {
+          "kind": "attachments",
+          "report": "reports/field-medic-r7-attachments.json",
+          "status": "PASS_SCOPED_SOCKET_CONTINUITY"
+        },
+        {
+          "kind": "clearance",
+          "report": "reports/field-medic-r7-clearance.json",
+          "status": "PASS_DECLARED_PAIRS"
+        }
+      ],
+      "production_complete": false,
+      "remaining": [
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance"
+      ]
+    },
+    {
+      "id": "thrown-penitent-miasma",
+      "pilot": "censer-of-dread",
+      "asset_sha256": "9a699e282e7ba212cf417bb8c5b3febee6b60636e8230903096b81bbc9c813ff",
+      "triangles": 3496,
+      "runtime_normal_attributes": 0,
+      "normal_maps": 0,
+      "vertex_floats": 9,
+      "texture_size": [
+        256,
+        256
+      ],
+      "evidence": [
+        {
+          "kind": "gpu_upload_and_pose",
+          "report": "previews/field-pilots-r9/censer-of-dread/gpu/gpu-audit.json",
+          "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
+        },
+        {
+          "kind": "motion-inspection",
+          "report": "reports/field-pilots-r9-motion-inspection.json",
+          "status": "NO_INTERSECTIONS_IN_SAMPLED_PAIRS"
+        }
+      ],
+      "production_complete": false,
+      "remaining": [
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance",
+        "Packing depth 0.593 m exceeds the 0.5 m target"
+      ]
+    },
+    {
+      "id": "thrown-begotten-health",
+      "pilot": "regeneration-heart",
+      "asset_sha256": "017b62d5ab410640edb8005e8524c67b6905515e7a4b26b70756969c9b224b09",
+      "triangles": 3004,
+      "runtime_normal_attributes": 0,
+      "normal_maps": 0,
+      "vertex_floats": 9,
+      "texture_size": [
+        256,
+        256
+      ],
+      "evidence": [
+        {
+          "kind": "gpu_upload_and_pose",
+          "report": "previews/field-pilots-r9/regeneration-heart/gpu/gpu-audit.json",
+          "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
+        },
+        {
+          "kind": "clearance",
+          "report": "reports/field-pilots-r9-clearance.json",
+          "status": "PASS_DECLARED_PAIRS"
+        }
+      ],
+      "production_complete": false,
+      "remaining": [
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance",
+        "Organic surface/color transitions and sparse dark atlas samples still need inspection"
+      ]
+    }
+  ]
+}

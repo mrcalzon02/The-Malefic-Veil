@@ -47,6 +47,10 @@ public final class AnimatedGlb {
             }
         }catch(IOException e){throw e;}catch(RuntimeException e){throw new IOException("Malformed animated GLB",e);}
     }
+    public boolean hasFieldCoordinateContract(){
+        var asset=obj(root.get("asset"));var extras=obj(asset.getOrDefault("extras",Map.of()));
+        return "+Y".equals(extras.get("runtime_up"))&&"-Z".equals(extras.get("runtime_front"));
+    }
     public Set<String> clips(){Set<String>s=new LinkedHashSet<>();for(var a:maps(root.get("animations")))s.add(String.valueOf(a.get("name")));return Set.copyOf(s);}
     private double[] array(Object value,double... defaults){
         if(value==null)return defaults.clone();List<?> l=(List<?>)value;

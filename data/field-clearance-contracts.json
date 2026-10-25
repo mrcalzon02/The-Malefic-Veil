@@ -1,0 +1,22 @@
+{
+  "field-medic": {
+    "rules": [
+      {
+        "id": "injector-versus-case",
+        "moving": ["articulated_injector_support", "injector_elbow", "injector_reservoir", "patient_contact_cup", "injector_pushrod", "injector_thumb_plate"],
+        "obstacles": ["case_floor_*", "front_retaining_lip", "rear_hinge_rail", "case_side_*", "back_lid_shell", "cream_inner_instrument_panel"],
+        "relation": "separate"
+      }
+    ]
+  },
+  "regeneration-heart": {
+    "rules": [
+      {
+        "id": "bone-cradle-attached-to-tissue",
+        "moving": ["load_bearing_cradle_*"],
+        "obstacles": ["CardiovascularSurface"],
+        "relation": "attached"
+      }
+    ]
+  }
+}

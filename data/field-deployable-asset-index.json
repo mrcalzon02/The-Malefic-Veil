@@ -5,8 +5,8 @@
   "counts": {
     "total": 21,
     "production_complete": 0,
-    "refined_pilots": 3,
-    "candidate_repair_required": 1,
+    "refined_pilots": 4,
+    "candidate_repair_required": 0,
     "redesign_required": 17
   },
   "items": [
@@ -94,149 +94,44 @@
         "DESTROYED"
       ],
       "remaining": [
-        "Further visual refinement and full motion/packing-clearance review",
-        "Persistent damage, deterioration and runtime destruction",
-        "GPU gameplay/event integration and validation",
-        "Final purpose/art acceptance"
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance",
+        "Packing width 0.511 m slightly exceeds the 0.5 m target"
       ],
-      "candidate": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.glb",
-      "asset_sha256": "b890081d91212adb0cfa47a69acb69fcc92caeb8e1bc129d4bd08fa06236926f",
+      "candidate": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki.glb",
+      "asset_sha256": "ab034bdf786a03181b853833b68f16df635b7ecb1c439c9841bb9c5f67392277",
       "triangles": 2556,
-      "modeling_source": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.blend",
-      "animated_source": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki-animated.blend",
+      "modeling_source": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki.blend",
+      "animated_source": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki-animated.blend",
       "renders": {
-        "front": {
-          "path": "previews/field-pilots-r4/sentry-mki/front.png",
-          "sha256": "31e1fb5e98d3130c21cf163e3c4c79bb6892a1d42e23cf447c9288a4c7c26d2e"
+        "active": {
+          "path": "previews/field-pilots-r9/sentry-mki/gpu/active.png",
+          "sha256": "cc5b218af00ca0be2b5bdf507cafe152c3fd856a3272f97d4d80a73b777eda4c"
         },
-        "rear": {
-          "path": "previews/field-pilots-r4/sentry-mki/rear.png",
-          "sha256": "1c19e4f66e241af92b43d12149a4a74d738c5de0654a9eec8a14bb8827dff033"
+        "packed": {
+          "path": "previews/field-pilots-r9/sentry-mki/gpu/packed.png",
+          "sha256": "5f522f5e40f431af2106a353c4ccbb2921aa97bbe30860397a03f3da3322495d"
         },
-        "closeup": {
-          "path": "previews/field-pilots-r4/sentry-mki/closeup.png",
-          "sha256": "544189125a8be699d4d15b80b58f6457479fa2ed1653bfef0c4607f1c9c26eb7"
+        "deploying": {
+          "path": "previews/field-pilots-r9/sentry-mki/gpu/deploying.png",
+          "sha256": "1b470b3bd0f6a1767ee4ee20c9c970c8c11a9d5779391a79f556e3a422a910d2"
         },
-        "clay": {
-          "path": "previews/field-pilots-r4/sentry-mki/clay.png",
-          "sha256": "a172efec360027e4ba782fb67aeea220c3ba879291c0838c07ca21ab4ed51588"
+        "operating": {
+          "path": "previews/field-pilots-r9/sentry-mki/gpu/operating.png",
+          "sha256": "8a28ae2d2f1eee46dcb617b09a9ecc8c2f349bd6f9412580c7298f5534702a1c"
         }
       },
-      "animation_sequences": {
-        "DEPLOYING": [
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-00.png",
-            "time_s": 0.0,
-            "sha256": "dd7cbae5418425d4545b36cd5a117a692955819a79327c616619d18021eda9d6"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-01.png",
-            "time_s": 0.16666666666666666,
-            "sha256": "20b44b7bc9f1a4f40f82093e62e7bbcee7cc8ff9d23ef645f1cc4ade346db39e"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-02.png",
-            "time_s": 0.3333333333333333,
-            "sha256": "9b65659f2b51d61b69cb4793d8575cb81ab65b1044969514c30fc4cd005cd5cc"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-03.png",
-            "time_s": 0.5,
-            "sha256": "856ee793a8a6683ad93792ad464685ce5f0bf1183b97be8e5b524ab4b35af778"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-04.png",
-            "time_s": 0.6666666666666666,
-            "sha256": "2f49e3719f877402d4da6dc1b1b2ad8a8ea825e9a19a29a264bd266ca432cba1"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-05.png",
-            "time_s": 0.8333333333333334,
-            "sha256": "b55a19386a47c9003ac598f6c51390fae49725bde9a4b892d1bcf2f210d1a8ab"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-06.png",
-            "time_s": 1.0,
-            "sha256": "421b5077fd5def609b4830dcf4c0c7948a04d67b43cc6e2dbd5824c316b9b733"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-07.png",
-            "time_s": 1.1666666666666667,
-            "sha256": "8a3948f34eb3f9497e1b2f2b957c038a47825a83a630cbd5d6b21e445d014fac"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-08.png",
-            "time_s": 1.3333333333333333,
-            "sha256": "ba144cc7ea7b3c5bd67b0738d92d1a14e31d069fb6dc2eed07ac93171a562149"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/deploying-09.png",
-            "time_s": 1.5,
-            "sha256": "7cf68680dd1e4ad55bff225f494ac8030c30adcf080f13c8396e5372757d139f"
-          }
-        ],
-        "OPERATING": [
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-00.png",
-            "time_s": 0.0,
-            "sha256": "ce2465f4e3e61fa348fff578691dc4fd911282312370847846448583a0781681"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-01.png",
-            "time_s": 0.07222222222222223,
-            "sha256": "bf1987d751558bc2d8622395bb7f2c72b9ec7f5c6777947d8d4ef2509cad0357"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-02.png",
-            "time_s": 0.14444444444444446,
-            "sha256": "2337d323c733c1e8150d2d0f99ee5662f9624280bc8649d106df8eea21c81729"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-03.png",
-            "time_s": 0.21666666666666667,
-            "sha256": "3113675ecdc548693288a8db9cc9d185fa1b70ab6cfa9ab6dffa40314c8c16bd"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-04.png",
-            "time_s": 0.2888888888888889,
-            "sha256": "faac473fe73bfc6198fd16f312493939ec094beb82b685310a0862f664917a96"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-05.png",
-            "time_s": 0.3611111111111111,
-            "sha256": "be33005e5bf89d1f7016e5def6eb95d9490074bed52f509e60c1d90c37313094"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-06.png",
-            "time_s": 0.43333333333333335,
-            "sha256": "9759b89c42cd09198353e43987a2c40035814da0ed496769566c68d67c523867"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-07.png",
-            "time_s": 0.5055555555555555,
-            "sha256": "64d6f04bb97a49c726b3e8ef512addf51624a00d59f912371e06280feaf9b255"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-08.png",
-            "time_s": 0.5777777777777778,
-            "sha256": "b8deb174e8a2de648272717d3b60ab2afea563133df5820a099b5b3edb2286aa"
-          },
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/operating-09.png",
-            "time_s": 0.65,
-            "sha256": "fc4350303f5c38cf7b19dde55a7f06724e44a6973f3034d85c55ab6de03d5205"
-          }
-        ],
-        "PACKED": [
-          {
-            "path": "previews/field-pilots-r4/sentry-mki/packed-00.png",
-            "time_s": 0.0,
-            "sha256": "215167c557cf2d9c8cc317fdddbe5fe7da05dbbff0f1b4e2f33014aa949f88cf"
-          }
-        ]
-      },
-      "technical_review": "reports/field-pilot-technical-review.json",
-      "refinement_review": "reports/field-pilot-refinement-review.md"
+      "technical_review": "reports/current-field-audit.json",
+      "refinement_review": "reports/current-field-audit.md",
+      "superseded_candidates": [
+        {
+          "candidate": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.glb",
+          "asset_sha256": "b890081d91212adb0cfa47a69acb69fcc92caeb8e1bc129d4bd08fa06236926f",
+          "status": "REFINED_PILOT_REVIEW_REQUIRED"
+        }
+      ]
     },
     {
       "index": 4,
@@ -244,7 +139,7 @@
       "name": "Field Medic",
       "faction": "unraveled",
       "role": "health",
-      "status": "CANDIDATE_REPAIR_REQUIRED",
+      "status": "REFINED_PILOT_REVIEW_REQUIRED",
       "production_complete": false,
       "purpose_review": "reports/field-deployables-purpose-review.md",
       "rejected_candidate": "build/candidates/field-deployables/thrown-unraveled-health/thrown-unraveled-health.glb",
@@ -260,16 +155,43 @@
         "DESTROYED"
       ],
       "remaining": [
-        "Deployment penetrates ground by approximately 0.0225 m: repair the folding/lift mechanism",
-        "Packed envelope 0.425 x 0.572 x 0.513 m requires further packing work",
-        "Repair lid/panel alignment and inspect hose routing",
-        "Visual review, persistent damage and runtime integration"
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance"
       ],
-      "candidate": "build/candidates/field-medic-r1/field-medic/field-medic.glb",
-      "asset_sha256": "946fa5ee52c268c83335269e4e8000cd1661f3a93d07224c92e11c56a4b2f79e",
-      "triangles": 2326,
-      "modeling_source": "build/candidates/field-medic-r1/field-medic/field-medic.blend",
-      "technical_review": "reports/medic-r1-inspection.json"
+      "candidate": "build/candidates/field-medic-r7/field-medic/field-medic.glb",
+      "asset_sha256": "3d151b13b97c29a57c95b2fe689c08ccf0181f85de4a650f8c42cfe30632c48d",
+      "triangles": 2876,
+      "modeling_source": "build/candidates/field-medic-r7/field-medic/field-medic.blend",
+      "technical_review": "reports/current-field-audit.json",
+      "superseded_candidates": [
+        {
+          "candidate": "build/candidates/field-medic-r1/field-medic/field-medic.glb",
+          "asset_sha256": "946fa5ee52c268c83335269e4e8000cd1661f3a93d07224c92e11c56a4b2f79e",
+          "status": "CANDIDATE_REPAIR_REQUIRED"
+        }
+      ],
+      "animated_source": "build/candidates/field-medic-r7/field-medic/field-medic-animated.blend",
+      "refinement_review": "reports/current-field-audit.md",
+      "renders": {
+        "active": {
+          "path": "previews/field-medic-r7/field-medic/gpu/active.png",
+          "sha256": "102628f84290e750f6cdee6793c920a3e2f2eaea8e21f24285e660cb299edce8"
+        },
+        "packed": {
+          "path": "previews/field-medic-r7/field-medic/gpu/packed.png",
+          "sha256": "a4554d14a5ebb07d64db048317dc783b1bb3a21eaf128714ce2d39945a77c4ad"
+        },
+        "deploying": {
+          "path": "previews/field-medic-r7/field-medic/gpu/deploying.png",
+          "sha256": "eb61290e7f20819df94e1d7d0d726648269d1b388d3f02df4de8b957b07887ae"
+        },
+        "operating": {
+          "path": "previews/field-medic-r7/field-medic/gpu/operating.png",
+          "sha256": "477047702845c92431edd53b128f196cd0f46c5771814ad596ff40d89a52a8be"
+        }
+      }
     },
     {
       "index": 5,
@@ -541,150 +463,45 @@
         "DESTROYED"
       ],
       "remaining": [
-        "Packed envelope approximately 0.549 x 0.499 x 0.593 m; further compactness work needed",
-        "Tested 31 samples of selected vessel/frame pairs; this is not a full internal-clearance proof",
-        "Materials, host-driven smoke, damage and runtime destruction",
-        "GPU gameplay integration and final art acceptance"
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance",
+        "Packing depth 0.593 m exceeds the 0.5 m target"
       ],
-      "candidate": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.glb",
-      "asset_sha256": "fefa40ea06b3b9c86e1085d1c55de8811a1bb3d8c1cbfbbc0f794b96dbf35796",
+      "candidate": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread.glb",
+      "asset_sha256": "9a699e282e7ba212cf417bb8c5b3febee6b60636e8230903096b81bbc9c813ff",
       "triangles": 3496,
-      "modeling_source": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.blend",
-      "animated_source": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread-animated.blend",
+      "modeling_source": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread.blend",
+      "animated_source": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread-animated.blend",
       "renders": {
-        "front": {
-          "path": "previews/field-pilots-r6/censer-of-dread/front.png",
-          "sha256": "e9b1b18f049b21fe1df4714378d736e5848db7ba1eafbc3d41a0f106623b3d3f"
+        "active": {
+          "path": "previews/field-pilots-r9/censer-of-dread/gpu/active.png",
+          "sha256": "e053f27738e97867844fb5a31bd4a1ff25397dd01d84675c38f25465f6cf9ace"
         },
-        "rear": {
-          "path": "previews/field-pilots-r6/censer-of-dread/rear.png",
-          "sha256": "ed96662fe38c0f8efe496ded4ba8474080380565b7893ea79dbc18c4c93a896c"
+        "packed": {
+          "path": "previews/field-pilots-r9/censer-of-dread/gpu/packed.png",
+          "sha256": "ee76081b3c59efe72eed6d4b4b3abedd6ce054b3a1e59088a513b9706fe97c8a"
         },
-        "closeup": {
-          "path": "previews/field-pilots-r6/censer-of-dread/closeup.png",
-          "sha256": "f9a4cd66a90cae663de46d00a1e0faa0da04b2451cb735feb9bc936b7d215756"
+        "deploying": {
+          "path": "previews/field-pilots-r9/censer-of-dread/gpu/deploying.png",
+          "sha256": "379327b3da5885b5841e9e4ffc5d6c9833db12a649237978efa833f1f78a0dff"
         },
-        "clay": {
-          "path": "previews/field-pilots-r6/censer-of-dread/clay.png",
-          "sha256": "841ef0f31b5cbd780dde66ec218282f1f203196a1958ea83ea710683966a5330"
+        "operating": {
+          "path": "previews/field-pilots-r9/censer-of-dread/gpu/operating.png",
+          "sha256": "ab37b10edaab5419a8030406755e9ff35c8da7c759ab2d7ec16b5183fbab8fb5"
         }
       },
-      "animation_sequences": {
-        "DEPLOYING": [
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-00.png",
-            "time_s": 0.0,
-            "sha256": "35202c52ea92ad5d1d4c758c9c8da189fa90a1a522e1ffa7b16a1382b0c776bb"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-01.png",
-            "time_s": 0.16666666666666666,
-            "sha256": "de706972014e5529e8f3d698421f17a64a266210a1c8b596bf5e413ed0c4d89c"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-02.png",
-            "time_s": 0.3333333333333333,
-            "sha256": "91dd2473dc59ede722cd61076c2c365f47b0b613ce7d9a2b49365f7e812afb8d"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-03.png",
-            "time_s": 0.5,
-            "sha256": "0a102a0d714719194c7c2e191fbbe559e73a5abd3b456b7b004017e9b7cc1527"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-04.png",
-            "time_s": 0.6666666666666666,
-            "sha256": "363749539006c0f155ebe5fd703ca1fa030d3f08dbe6a095c259247d47256b70"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-05.png",
-            "time_s": 0.8333333333333334,
-            "sha256": "c43cb65c5476b5932ce7032e7bfa51ec664345d98af387de091610698dcb988a"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-06.png",
-            "time_s": 1.0,
-            "sha256": "763a3ea35c51b81cb60de39834c626e982db2106f1550c27dacdc5eac4cc72a3"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-07.png",
-            "time_s": 1.1666666666666667,
-            "sha256": "87dab4141989601b56e1da9c990ea25bff5bc18cc7b7ce42b890fd0118d37082"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-08.png",
-            "time_s": 1.3333333333333333,
-            "sha256": "f40b04c86ae84c43a8f46d33a4c593eae4494454cdec4bd5539d4bc884743164"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/deploying-09.png",
-            "time_s": 1.5,
-            "sha256": "0f4832646b907174ed93bad29b51a8365c67f71937fa127e9030a77601d7ba6f"
-          }
-        ],
-        "OPERATING": [
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-00.png",
-            "time_s": 0.0,
-            "sha256": "8c9ca7773bc1c3eb093fc77ca430ddf648d52e68a69feb62dd8ce93e27a486f5"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-01.png",
-            "time_s": 0.07222222222222223,
-            "sha256": "195ce01b5e06d793b3bd19c6b79aea88ede21e9d270100d2638ef13552dfedad"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-02.png",
-            "time_s": 0.14444444444444446,
-            "sha256": "a33b16ed5f29032e9b71d6b4b54574ee03c16fc0ab45d0e9b2cd1b296c0d60b9"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-03.png",
-            "time_s": 0.21666666666666667,
-            "sha256": "2c9ad54887ea4dcda73703467e7629a340949e7bfa3b2169663e8d6d71b16c72"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-04.png",
-            "time_s": 0.2888888888888889,
-            "sha256": "6aafe39a2dc7de98789eef4b978866a8914f352cc0d8c4fb863540bb10b644a8"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-05.png",
-            "time_s": 0.3611111111111111,
-            "sha256": "6e385f9d2162d77db3254f396090bf53d2635e09f4f515006f9e51510d1c8483"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-06.png",
-            "time_s": 0.43333333333333335,
-            "sha256": "69e226776f363c976daadd2d7a90c7add4f27cd95957e64cd24b67449110cfa1"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-07.png",
-            "time_s": 0.5055555555555555,
-            "sha256": "c9910763ab0415ff39ae1bb967830f3155c629df1489868af8628ec339adfe76"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-08.png",
-            "time_s": 0.5777777777777778,
-            "sha256": "83d315f0e962adac16e2b4d73d74bb211ac709f66c01403057e9c8bcb5578fe7"
-          },
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/operating-09.png",
-            "time_s": 0.65,
-            "sha256": "f2ab66a7ef8bd8e8a6ed481ca8ad0756efc6910f701ef3dea8fab90d36890799"
-          }
-        ],
-        "PACKED": [
-          {
-            "path": "previews/field-pilots-r6/censer-of-dread/packed-00.png",
-            "time_s": 0.0,
-            "sha256": "85aead57c94c354fa8815eede4f3a171918c208f9250fcd4e5934a288cfb4ee5"
-          }
-        ]
-      },
-      "technical_review": "reports/censer-r6-inspection.json",
-      "refinement_review": "reports/field-pilot-refinement-review.md",
-      "motion_inspection": "reports/field-pilots-r6-motion-inspection.json"
+      "technical_review": "reports/current-field-audit.json",
+      "refinement_review": "reports/current-field-audit.md",
+      "motion_inspection": "reports/field-pilots-r6-motion-inspection.json",
+      "superseded_candidates": [
+        {
+          "candidate": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.glb",
+          "asset_sha256": "fefa40ea06b3b9c86e1085d1c55de8811a1bb3d8c1cbfbbc0f794b96dbf35796",
+          "status": "REFINED_PILOT_REVIEW_REQUIRED"
+        }
+      ]
     },
     {
       "index": 14,
@@ -832,149 +649,44 @@
         "DESTROYED"
       ],
       "remaining": [
-        "Further visual refinement and full motion/packing-clearance review",
-        "Persistent damage, deterioration and runtime destruction",
-        "GPU gameplay/event integration and validation",
-        "Final purpose/art acceptance"
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and destruction integration",
+        "Live world gameplay and multiplayer acceptance",
+        "Organic surface/color transitions and sparse dark atlas samples still need inspection"
       ],
-      "candidate": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart.glb",
-      "asset_sha256": "03868e68d67267fdb0475d75b3465d259ac8153ee8c68b93e9e2fd771c26d668",
+      "candidate": "build/candidates/field-pilots-r9/regeneration-heart/regeneration-heart.glb",
+      "asset_sha256": "017b62d5ab410640edb8005e8524c67b6905515e7a4b26b70756969c9b224b09",
       "triangles": 3004,
-      "modeling_source": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart.blend",
-      "animated_source": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart-animated.blend",
+      "modeling_source": "build/candidates/field-pilots-r9/regeneration-heart/regeneration-heart.blend",
+      "animated_source": "build/candidates/field-pilots-r9/regeneration-heart/regeneration-heart-animated.blend",
       "renders": {
-        "front": {
-          "path": "previews/field-pilots-r4/regeneration-heart/front.png",
-          "sha256": "5b200f57278c02da6e256a2554ff9736a499d566dbe7ab6e34e40c7d1392b0ee"
+        "active": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/active.png",
+          "sha256": "db723101e90984a9d1afd726aee4227c5f95e3928a9152c9355642d21248cd5a"
         },
-        "rear": {
-          "path": "previews/field-pilots-r4/regeneration-heart/rear.png",
-          "sha256": "1a3bb912f10a4c16404218b8ddf7adc9897fcfe925eb8ab12b17ebbde552a146"
+        "packed": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/packed.png",
+          "sha256": "f25b3929b7e9094715e5966b739fbacc57a401c465e7448a9a2e6a5661ff23b6"
         },
-        "closeup": {
-          "path": "previews/field-pilots-r4/regeneration-heart/closeup.png",
-          "sha256": "ba94946e2110342ae676eaf96d4f1714dcfb33fc6af1b01889cfe7a7880820f8"
+        "deploying": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/deploying.png",
+          "sha256": "434c1470c0e8abed90f0e5701f2053bf29558f26db3767918ca3b6bee87752ff"
         },
-        "clay": {
-          "path": "previews/field-pilots-r4/regeneration-heart/clay.png",
-          "sha256": "7030c5462f8555219e68d776c63292cf0a5105105f57333c693eae1c40a179f0"
+        "operating": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/operating.png",
+          "sha256": "282a73c80e91e7d4e2826e0530c13fcdd52a4c3347e43dd9041358cc73f2bd9e"
         }
       },
-      "animation_sequences": {
-        "DEPLOYING": [
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-00.png",
-            "time_s": 0.0,
-            "sha256": "2a4d0a747d6eb1d507a99e5c61d4f500fb81b5859901d6ed5bc1b45b020602c5"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-01.png",
-            "time_s": 0.16666666666666666,
-            "sha256": "2df924eb66b30f3f14667b1a67499e6dad4f28148708d70e3383654bcc642ffd"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-02.png",
-            "time_s": 0.3333333333333333,
-            "sha256": "0fe8f7288c7a36d684cb3afd7ba6d096f99cf8f76fa783dfe923a15752c94a5d"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-03.png",
-            "time_s": 0.5,
-            "sha256": "b661c01ab7d47996a774b256083be86c2479b6b271591736e70d11b16ae1ec7e"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-04.png",
-            "time_s": 0.6666666666666666,
-            "sha256": "687a65d75e9617f0475372d7a42cd0705e66114201ba94910e40e78d4f379cae"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-05.png",
-            "time_s": 0.8333333333333334,
-            "sha256": "ff8a93b7a9ee1049cb852a5d4b4c4b30810c390bc050708705ab1b9823e49a9b"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-06.png",
-            "time_s": 1.0,
-            "sha256": "1b84bff7d9ff9bcc5d123d0e9216a860e31714dadb6eea2145ab84619d0ce6d1"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-07.png",
-            "time_s": 1.1666666666666667,
-            "sha256": "9020c7ead3d3eace4677a24be62bb1cc127f530db030d87ac92dbd8696f6b964"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-08.png",
-            "time_s": 1.3333333333333333,
-            "sha256": "0c82d9c41070d92c922f5ce1e2744f5f5b2faa8250802304465a412a79829ad7"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/deploying-09.png",
-            "time_s": 1.5,
-            "sha256": "d4e6840a83ec6419c7467a3cf66b3d35ca70413a55811178a1e8fde304668b65"
-          }
-        ],
-        "OPERATING": [
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-00.png",
-            "time_s": 0.0,
-            "sha256": "e73db5f1b2f63e7ea8122b53944b464e97f30e8a59b2e5d7c26d7f7065bc4e3a"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-01.png",
-            "time_s": 0.07222222222222223,
-            "sha256": "bac3dfa0079415da6c8c1e5c2ae7497dcff76970cad48ff8305f82da7367f410"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-02.png",
-            "time_s": 0.14444444444444446,
-            "sha256": "d704ab07927d482cc3551300971cf7f6002ae247e2615d963549f1c0e10e4dce"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-03.png",
-            "time_s": 0.21666666666666667,
-            "sha256": "a71598368cf78c00b946284a72124de65352fd05712aeb6bf7fa55e41e97d954"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-04.png",
-            "time_s": 0.2888888888888889,
-            "sha256": "62ee3ecacf6e73069db594d831863539f5b3e77490e42ac7cddeba706dd5f780"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-05.png",
-            "time_s": 0.3611111111111111,
-            "sha256": "e9468fe305e8fc538457496cf2512ba53984ca0143df97716003aa8ec3e69275"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-06.png",
-            "time_s": 0.43333333333333335,
-            "sha256": "4ddb87bba6daf2d75bfb194f3c07fc8d7119828ae6fa8a77b96544f29afb1a10"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-07.png",
-            "time_s": 0.5055555555555555,
-            "sha256": "578f1d9cee3bcfa358be6479ec256b9ef95d7cc9d3a12804e06c88664f066b04"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-08.png",
-            "time_s": 0.5777777777777778,
-            "sha256": "ba30a3199b21fc58e82be6f18ea401c4001865c8e8bfd16b60d5642ac1b10431"
-          },
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/operating-09.png",
-            "time_s": 0.65,
-            "sha256": "4eca0ccefafa3e2dcbe1fd356953538bdf5674cce851b6ab86e786b47aef602a"
-          }
-        ],
-        "PACKED": [
-          {
-            "path": "previews/field-pilots-r4/regeneration-heart/packed-00.png",
-            "time_s": 0.0,
-            "sha256": "f5f2595c9160ac6c519bd208b25bb90ca707056013f4ce498695e4f675dc87be"
-          }
-        ]
-      },
-      "technical_review": "reports/field-pilot-technical-review.json",
-      "refinement_review": "reports/field-pilot-refinement-review.md"
+      "technical_review": "reports/current-field-audit.json",
+      "refinement_review": "reports/current-field-audit.md",
+      "superseded_candidates": [
+        {
+          "candidate": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart.glb",
+          "asset_sha256": "03868e68d67267fdb0475d75b3465d259ac8153ee8c68b93e9e2fd771c26d668",
+          "status": "REFINED_PILOT_REVIEW_REQUIRED"
+        }
+      ]
     },
     {
       "index": 19,

@@ -10,7 +10,7 @@ sys.path.insert(0,str(Path(__file__).parent))
 import build_field_deployables as b
 
 ROOT=Path(__file__).resolve().parents[1]
-REVISION=sys.argv[sys.argv.index('--revision')+1] if '--revision' in sys.argv else 'field-pilots-r4'
+REVISION=sys.argv[sys.argv.index('--revision')+1] if '--revision' in sys.argv else 'field-pilots-r9'
 OUT=ROOT/'build/candidates'/REVISION
 LOOP_SIDES=4
 PREVIEW=ROOT/'previews/field-pilots-r4'
@@ -333,6 +333,7 @@ def cardiac_keys(o):
 
 def write_clips(path,pilot):
     raw=path.read_bytes();length=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+length]);off=20+length;n=struct.unpack_from('<I',raw,off)[0];binary=bytearray(raw[off+8:off+8+n]);doc['animations']=[]
+    doc['asset'].setdefault('extras',{}).update(authoring_up='+Z',authoring_front='-Y',runtime_up='+Y',runtime_front='-Z',runtime_normals=False,baked_form_lighting=bool(bpy.context.scene.get('baked_form_lighting')))
     def accessor(values,width):
         while len(binary)%4:binary.append(0)
         start=len(binary)
@@ -346,15 +347,33 @@ def write_clips(path,pilot):
         q=Quaternion(Vector(axis),angle);convert=Quaternion((1,0,0),-math.pi/2);q=convert@q@convert.inverted();return [q.x,q.y,q.z,q.w]
     durations={'ACTIVE':2.,'PACKED':1.,'THROWN':.7,'IMPACT':.15,'DEPLOYING':1.5,'OPERATING':.65,'DAMAGED':.45,'EXPIRING':1.,'DESTROYED':.8}
     for clip,duration in durations.items():
-        anim=dict(name=clip,samplers=[],channels=[]);fractions=[0,.15,.35,.55,.75,1];time=accessor([[f*duration] for f in fractions],1)
+        anim=dict(name=clip,samplers=[],channels=[]);fractions=[i/20 for i in range(21)] if pilot=='field-medic' else [0,.15,.35,.55,.75,1];time=accessor([[f*duration] for f in fractions],1)
         def track(node,path,values):
             width=1 if path=='weights' else len(values[0]);sampler=len(anim['samplers']);anim['samplers'].append(dict(input=time,output=accessor(values,width),interpolation='LINEAR'));anim['channels'].append(dict(sampler=sampler,target=dict(node=node,path=path)))
         for i,node in enumerate(doc['nodes']):
             name=node.get('name','');motion=MOTION.get(name);base=node.get('translation',[0,0,0]);rotation=node.get('rotation',[0,0,0,1])
             if name=='DeployRoot':
-                if clip=='THROWN':track(i,'rotation',[quaternion((1,.2,0),f*math.pi*1.4) for f in fractions])
+                if clip=='THROWN':
+                    values=[];rest=Quaternion((rotation[3],rotation[0],rotation[1],rotation[2]))
+                    for f in fractions:
+                        spin=quaternion((1,.2,0),f*math.pi*1.4);combined=rest@Quaternion((spin[3],spin[0],spin[1],spin[2]));values.append([combined.x,combined.y,combined.z,combined.w])
+                    track(i,'rotation',values)
                 elif clip=='IMPACT':track(i,'translation',[[0,.04*math.sin(f*math.pi),0] for f in fractions])
                 continue
+            if name=='PharmaceuticalHose':
+                angles=node['extras']['fold_angles'];values=[]
+                for f in fractions:
+                    angle=math.pi/2 if clip in ('PACKED','THROWN','IMPACT') else math.pi/2*(1-f*f*(3-2*f)) if clip=='DEPLOYING' else math.pi/2*f if clip=='DESTROYED' else 0
+                    weights=[0.]*len(angles)
+                    if angle>0:
+                        for target,upper in enumerate(angles):
+                            lower=angles[target+1] if target+1<len(angles) else 0
+                            if lower<=angle<=upper+1e-8:
+                                alpha=(angle-lower)/(upper-lower);weights[target]=alpha
+                                if target+1<len(angles):weights[target+1]=1-alpha
+                                break
+                    values.extend([[w] for w in weights])
+                track(i,'weights',values)
             if name=='CardiovascularSurface':
                 values=[]
                 for f in fractions:
@@ -416,11 +435,14 @@ def build():
         for child in list(bpy.data.objects['DeployRoot'].children):child.location.z-=lowest
         bpy.context.view_layer.update()
         meshes=b.unwrap_bake(identifier)
+        from bake_field_lighting import bake
+        bake(meshes,b.MATS,identifier)
         for o in meshes:
             if o.get('add_cardiac_morphs'):cardiac_keys(o)
         dest=OUT/identifier;dest.mkdir(parents=True,exist_ok=True)
         bpy.ops.wm.save_as_mainfile(filepath=str(dest/(identifier+'.blend')))
-        glb=dest/(identifier+'.glb');bpy.ops.export_scene.gltf(filepath=str(glb),export_format='GLB',export_yup=True,export_animations=False,export_morph=True,export_morph_normal=False,export_try_sparse_sk=False,export_extras=True)
+        bpy.data.objects['DeployRoot'].rotation_euler[2]=math.pi;bpy.context.view_layer.update()
+        glb=dest/(identifier+'.glb');bpy.ops.export_scene.gltf(filepath=str(glb),export_format='GLB',export_yup=True,export_animations=False,export_morph=True,export_normals=False,export_morph_normal=False,export_try_sparse_sk=False,export_extras=True)
         write_clips(glb,identifier)
         pts=[o.matrix_world@v.co for o in meshes for v in o.data.vertices]
         bounds=[[min(p[k] for p in pts) for k in range(3)],[max(p[k] for p in pts) for k in range(3)]]

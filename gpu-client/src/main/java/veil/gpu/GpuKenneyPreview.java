@@ -345,6 +345,17 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
             models.put(id,List.copyOf(geometry));
     }
+    // Package-scoped audit seam: exercise the actual production upload and draw layout
+    // without loading unrelated city/source packs or promoting candidate assets.
+    void uploadAuditPose(GlbMesh source){uploadGeometry("field-audit",source,1);}
+    void drawAuditPose(ShaderProgram program){
+        for(GpuModel model:models.get("field-audit")){
+            model.mesh.setInstanceData(new float[]{0,0,0,1,1,0});
+            program.bind();program.setUniformi("u_textured",model.texture==null?0:1);
+            program.setUniformi("u_diffuse",0);if(model.texture!=null)model.texture.bind(0);
+            model.mesh.render(program,GL20.GL_TRIANGLES,0,model.vertexCount);
+        }
+    }
     @Override public void create() {
         if(Gdx.gl30==null)throw new IllegalStateException("GPU client requires OpenGL 3.3 instancing");
         world=gameplay==null?new World(seed):gameplay.gpuWorld();

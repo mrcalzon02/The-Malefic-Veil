@@ -25,12 +25,12 @@ public final class NetLink implements AutoCloseable {
         double x,double y,double angle,double visibility){}
     public record DeviceEvent(int index,int kind,double x,double y,int hp){}
     public record FieldEvent(int id,int blueprint,double x,double y,double height,int hp,long remaining,
-        boolean flying,double heading,long age,long operationAge,long damageAge,double aimYaw,double aimPitch,int stock,long receivedNanos){
+        boolean flying,double heading,long age,long operationAge,long damageAge,double aimYaw,double aimPitch,int stock,boolean tracking,long receivedNanos){
         public ThrownDeployables.View view(){
             long elapsed=Math.max(0,Math.min(250,(System.nanoTime()-receivedNanos)/1_000_000));
             return new ThrownDeployables.View(id,blueprint,x,y,height,heading,hp,
                 Math.max(0,remaining-(flying?0:elapsed)),flying,age+elapsed,
-                operationAge<0?-1:operationAge+elapsed,damageAge<0?-1:damageAge+elapsed,aimYaw,aimPitch,stock);
+                operationAge<0?-1:operationAge+elapsed,damageAge<0?-1:damageAge+elapsed,aimYaw,aimPitch,stock,tracking);
         }
     }
     public record FieldBurst(double x,double y,int faction){}
@@ -212,12 +212,12 @@ public final class NetLink implements AutoCloseable {
                                 if(s.length==3)harvestResults.add(s[1]+"|"+s[2]);
                             }
                             case "FIELD" -> {
-                                if(s.length==16){
+                                if(s.length==16||s.length==17){
                                     FieldEvent field=new FieldEvent(Integer.parseInt(s[1]),Integer.parseInt(s[2]),
                                         Double.parseDouble(s[3]),Double.parseDouble(s[4]),Double.parseDouble(s[5]),
                                         Integer.parseInt(s[6]),Long.parseLong(s[7]),s[8].equals("1"),Double.parseDouble(s[9]),Long.parseLong(s[10]),
                                         Long.parseLong(s[11]),Long.parseLong(s[12]),Double.parseDouble(s[13]),
-                                        Double.parseDouble(s[14]),Integer.parseInt(s[15]),System.nanoTime());
+                                        Double.parseDouble(s[14]),Integer.parseInt(s[15]),s.length==17&&s[16].equals("1"),System.nanoTime());
                                     if(field.hp()>0)activeFields.put(field.id(),field);
                                     else activeFields.remove(field.id());
                                 }

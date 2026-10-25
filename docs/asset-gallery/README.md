@@ -1,6 +1,6 @@
 # Construction test image gallery
 
-1665 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
+1705 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
 
 Private car/character reference renders and comparison panels containing them are excluded. Earlier studies remain visible; gallery inclusion does not imply approval.
 
@@ -62,7 +62,7 @@ Update and publish from the authoring workspace after each render batch: `python
 
 ## Weapon refinement and retained failed studies
 
-309 images · [Full image index](weapon-refinement.md)
+349 images · [Full image index](weapon-refinement.md)
 
 [![Weapon refinement and retained failed studies](images/weapon-refinement/checkpoint-01/overview.png)](weapon-refinement.md)
 

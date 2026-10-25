@@ -1,0 +1,41 @@
+[
+  {
+    "id": "censer-of-dread",
+    "asset_sha256": "7bf86ac714dc46b81cf1e744106262dbe997968d952bade350bf0f497163b913",
+    "samples": 31,
+    "scope": "Satellite bowl surfaces against main bowl, incense basket, support slides, feet and other satellite bowls",
+    "intersections": [
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "bronze_censer_bowl"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "bronze_censer_bowl"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "bronze_censer_bowl"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_0",
+        "obstacle": "bronze_censer_bowl"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_1",
+        "obstacle": "bronze_censer_bowl"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "satellite_bowl_2",
+        "obstacle": "bronze_censer_bowl"
+      }
+    ],
+    "status": "INTERSECTIONS_FOUND"
+  }
+]

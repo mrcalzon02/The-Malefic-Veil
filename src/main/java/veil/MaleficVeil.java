@@ -224,8 +224,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         return result;
     }
     private void addFieldVisual(java.util.List<UrbanScene.ModelInstance> result,ThrownDeployables.View f){
-        var bp=ThrownDeployables.blueprint(f.blueprint());if(bp==null||f.hp()<=0)return;
+        var bp=ThrownDeployables.blueprint(f.blueprint());if(bp==null)return;
         GlbMesh pose=fieldAssets.pose(f);
+        if(f.hp()<=0&&pose==null)return; // Unanimated placeholders have only the harmless burst.
         String key=pose==null?bp.mesh():"field-pose-"+f.id();
         if(pose!=null)fieldPoses.put(key,pose);
         result.add(new UrbanScene.ModelInstance(key,f.x(),f.y(),f.heading(),

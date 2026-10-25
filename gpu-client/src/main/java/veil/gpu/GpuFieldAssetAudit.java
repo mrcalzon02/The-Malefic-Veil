@@ -24,8 +24,8 @@ public final class GpuFieldAssetAudit extends ApplicationAdapter {
     private int frame;
     private int[] rest;
     private final List<String> evidence=new ArrayList<>();
-    private final String[] clips={"ACTIVE","PACKED","DEPLOYING","OPERATING"};
-    private final double[] times={0,0,.75,.20};
+    private final String[] clips={"ACTIVE","PACKED","DEPLOYING","OPERATING","THROWN","IMPACT","DAMAGED","EXPIRING","DESTROYED"};
+    private final double[] times={0,0,.75,.20,.35,.07,.20,.5,.40};
     private GpuFieldAssetAudit(Path source,Path output){
         this.source=source.toAbsolutePath();this.output=output.toAbsolutePath();
         id=source.getFileName().toString().replaceFirst("\\.glb$","");

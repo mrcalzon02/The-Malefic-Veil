@@ -218,8 +218,7 @@ public final class NetLink implements AutoCloseable {
                                         Integer.parseInt(s[6]),Long.parseLong(s[7]),s[8].equals("1"),Double.parseDouble(s[9]),Long.parseLong(s[10]),
                                         Long.parseLong(s[11]),Long.parseLong(s[12]),Double.parseDouble(s[13]),
                                         Double.parseDouble(s[14]),Integer.parseInt(s[15]),s.length==17&&s[16].equals("1"),System.nanoTime());
-                                    if(field.hp()>0)activeFields.put(field.id(),field);
-                                    else activeFields.remove(field.id());
+                                    activeFields.put(field.id(),field); // hp=0 retains host-timed collapse until FIELD_GONE.
                                 }
                             }
                             case "FIELD_GONE" -> {

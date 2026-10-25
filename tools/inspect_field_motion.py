@@ -20,12 +20,20 @@ for record in json.loads((revision/'manifest.json').read_text()):
     for sample in range(31):
         time=sample/20.;pose(doc,blob,'DEPLOYING',time)
         bowls=[o for o in bpy.context.scene.objects if o.type=='MESH' and o.name.startswith('satellite_bowl')]
-        obstacles=[o for o in bpy.context.scene.objects if o.type=='MESH' and (o.name in ('bronze_censer_bowl','inner_incense_basket') or o.name.startswith(('outer_iron_channel','middle_iron_slide','inner_iron_slide')))]
+        obstacles=[o for o in bpy.context.scene.objects if o.type=='MESH' and (o.name in ('bronze_censer_bowl','inner_incense_basket') or o.name.startswith(('outer_iron_channel','middle_iron_slide','inner_iron_slide','curved_iron_foot','engraved_bowl_band','cast_bowl_rib','pierced_lid_rib')))]
         if not bowls or not obstacles:raise ValueError('Missing declared Censer vessel/support groups')
         trees={o.name:BVHTree.FromPolygons([o.matrix_world@v.co for v in o.data.vertices],[tuple(p.vertices) for p in o.data.polygons],all_triangles=False,epsilon=0) for o in bowls+obstacles}
         for bowl in bowls:
-            for obstacle in obstacles:
+            for obstacle in obstacles+bowls:
+                if obstacle==bowl:continue
                 if trees[bowl.name].overlap(trees[obstacle.name]):failures.append(dict(time_s=time,vessel=bowl.name,obstacle=obstacle.name))
-    results.append(dict(id=record['id'],asset_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),samples=31,scope='Satellite bowl surfaces against main bowl, incense basket, and support slides',intersections=failures,status='INTERSECTIONS_FOUND' if failures else 'NO_INTERSECTIONS_IN_SAMPLED_PAIRS'))
+        # The central bowl must also clear the structure; checking only satellites
+        # can falsely bless a narrower frame that cuts through the main vessel.
+        central=[o for o in obstacles if o.name=='bronze_censer_bowl' or o.name.startswith(('engraved_bowl_band','cast_bowl_rib'))]
+        structure=[o for o in obstacles if o.name.startswith(('outer_iron_channel','middle_iron_slide','inner_iron_slide','curved_iron_foot'))]
+        for vessel in central:
+            for member in structure:
+                if trees[vessel.name].overlap(trees[member.name]):failures.append(dict(time_s=time,vessel=vessel.name,obstacle=member.name))
+    results.append(dict(id=record['id'],asset_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),samples=31,scope='Satellite bowl surfaces against main bowl/bands/ribs, lid ribs, incense basket, support slides, feet and other satellite bowls; central bowl/bands/ribs against support slides and feet',intersections=failures,status='INTERSECTIONS_FOUND' if failures else 'NO_INTERSECTIONS_IN_SAMPLED_PAIRS'))
     print('MOTION_INSPECTION',record['id'],len(failures),flush=True)
 (ROOT/'reports'/(REVISION+'-motion-inspection.json')).write_text(json.dumps(results,indent=2)+'\n')

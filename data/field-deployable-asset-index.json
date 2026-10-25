@@ -96,31 +96,50 @@
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance",
-        "Packing width 0.511 m slightly exceeds the 0.5 m target"
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression"
       ],
-      "candidate": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki.glb",
-      "asset_sha256": "ab034bdf786a03181b853833b68f16df635b7ecb1c439c9841bb9c5f67392277",
+      "candidate": "build/candidates/field-pilots-r10/sentry-mki/sentry-mki.glb",
+      "asset_sha256": "41926018b56b7e609f9f6b60ba6f1c047763f52e185e45aa3d8c68c83aba6be3",
       "triangles": 2556,
-      "modeling_source": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki.blend",
-      "animated_source": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki-animated.blend",
+      "modeling_source": "build/candidates/field-pilots-r10/sentry-mki/sentry-mki.blend",
+      "animated_source": "build/candidates/field-pilots-r10/sentry-mki/sentry-mki-animated.blend",
       "renders": {
         "active": {
-          "path": "previews/field-pilots-r9/sentry-mki/gpu/active.png",
-          "sha256": "cc5b218af00ca0be2b5bdf507cafe152c3fd856a3272f97d4d80a73b777eda4c"
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/active.png",
+          "sha256": "43e9634bcd5635b6615f8f4e97725ccc953009f00455bfe98195375bfa2f914f"
         },
         "packed": {
-          "path": "previews/field-pilots-r9/sentry-mki/gpu/packed.png",
-          "sha256": "5f522f5e40f431af2106a353c4ccbb2921aa97bbe30860397a03f3da3322495d"
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/packed.png",
+          "sha256": "b3c982d7cf22e7bbd2b9ff518d05471d8fad1a442485178df7bc00b800936be9"
         },
         "deploying": {
-          "path": "previews/field-pilots-r9/sentry-mki/gpu/deploying.png",
-          "sha256": "1b470b3bd0f6a1767ee4ee20c9c970c8c11a9d5779391a79f556e3a422a910d2"
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/deploying.png",
+          "sha256": "3d82cb75b590add814d92c45bd92fe7b4657d3260e35c1b6276bfbdd7d3f2940"
         },
         "operating": {
-          "path": "previews/field-pilots-r9/sentry-mki/gpu/operating.png",
-          "sha256": "8a28ae2d2f1eee46dcb617b09a9ecc8c2f349bd6f9412580c7298f5534702a1c"
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/operating.png",
+          "sha256": "9fce98f4aa7908f6293af3005356ba4ebd0a906b5a8bfeb44005f2fd6114aeea"
+        },
+        "thrown": {
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/thrown.png",
+          "sha256": "16f7bafaef46c539b6bd6f0c4bd9c6d83006964da738e9fe040311d540aed2a2"
+        },
+        "impact": {
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/impact.png",
+          "sha256": "fb609911a0c2e54aea81c45e0505aac12261d1bd01b46f197e27468f252c5f1f"
+        },
+        "damaged": {
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/damaged.png",
+          "sha256": "f81c98c431173c8ee96c14f511373e73b66d0efddc71b5be68d1df9c0632072b"
+        },
+        "expiring": {
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/expiring.png",
+          "sha256": "fb3504a43c4e7759f8f1b60827fe894e6601ec78a4e19fc51d81b9429ca7de78"
+        },
+        "destroyed": {
+          "path": "previews/field-pilots-r10/sentry-mki/gpu/destroyed.png",
+          "sha256": "da9cfab4792b91bb1bb466c68f44c98946cffc3c647ffb5f7eefd96b50ad3631"
         }
       },
       "technical_review": "reports/current-field-audit.json",
@@ -129,6 +148,11 @@
         {
           "candidate": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.glb",
           "asset_sha256": "b890081d91212adb0cfa47a69acb69fcc92caeb8e1bc129d4bd08fa06236926f",
+          "status": "REFINED_PILOT_REVIEW_REQUIRED"
+        },
+        {
+          "candidate": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki.glb",
+          "asset_sha256": "ab034bdf786a03181b853833b68f16df635b7ecb1c439c9841bb9c5f67392277",
           "status": "REFINED_PILOT_REVIEW_REQUIRED"
         }
       ]
@@ -157,8 +181,8 @@
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance"
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression"
       ],
       "candidate": "build/candidates/field-medic-r7/field-medic/field-medic.glb",
       "asset_sha256": "3d151b13b97c29a57c95b2fe689c08ccf0181f85de4a650f8c42cfe30632c48d",
@@ -190,6 +214,26 @@
         "operating": {
           "path": "previews/field-medic-r7/field-medic/gpu/operating.png",
           "sha256": "477047702845c92431edd53b128f196cd0f46c5771814ad596ff40d89a52a8be"
+        },
+        "thrown": {
+          "path": "previews/field-medic-r7/field-medic/gpu/thrown.png",
+          "sha256": "73f570b11df8d96a1bcf51ce690b5c8bbce8f20e9fe2f4c045fbca3fbdad7b01"
+        },
+        "impact": {
+          "path": "previews/field-medic-r7/field-medic/gpu/impact.png",
+          "sha256": "d79c9d906a6e0b268d7a16a6cd909c4de2038110018bfb8708a33a5e93cfdf10"
+        },
+        "damaged": {
+          "path": "previews/field-medic-r7/field-medic/gpu/damaged.png",
+          "sha256": "2654b09c0a14cb70c4b9b8af958e32283b6aff7d6bddd88a94e51636cc1746a3"
+        },
+        "expiring": {
+          "path": "previews/field-medic-r7/field-medic/gpu/expiring.png",
+          "sha256": "102628f84290e750f6cdee6793c920a3e2f2eaea8e21f24285e660cb299edce8"
+        },
+        "destroyed": {
+          "path": "previews/field-medic-r7/field-medic/gpu/destroyed.png",
+          "sha256": "eb61290e7f20819df94e1d7d0d726648269d1b388d3f02df4de8b957b07887ae"
         }
       }
     },
@@ -465,31 +509,51 @@
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance",
-        "Packing depth 0.593 m exceeds the 0.5 m target"
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression",
+        "Packing approximately 0.557 x 0.557 x 0.499 m still exceeds the 0.5 m target"
       ],
-      "candidate": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread.glb",
-      "asset_sha256": "9a699e282e7ba212cf417bb8c5b3febee6b60636e8230903096b81bbc9c813ff",
+      "candidate": "build/candidates/field-pilots-r13/censer-of-dread/censer-of-dread.glb",
+      "asset_sha256": "192e57a340887f8927365cd1a12d2fd229520cbbc99bb5568314cacd457f3219",
       "triangles": 3496,
-      "modeling_source": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread.blend",
-      "animated_source": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread-animated.blend",
+      "modeling_source": "build/candidates/field-pilots-r13/censer-of-dread/censer-of-dread.blend",
+      "animated_source": "build/candidates/field-pilots-r13/censer-of-dread/censer-of-dread-animated.blend",
       "renders": {
         "active": {
-          "path": "previews/field-pilots-r9/censer-of-dread/gpu/active.png",
-          "sha256": "e053f27738e97867844fb5a31bd4a1ff25397dd01d84675c38f25465f6cf9ace"
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/active.png",
+          "sha256": "871bf39583b1fbe6fad4bb90f402277a255acb030ec53266f749e586d80e52d9"
         },
         "packed": {
-          "path": "previews/field-pilots-r9/censer-of-dread/gpu/packed.png",
-          "sha256": "ee76081b3c59efe72eed6d4b4b3abedd6ce054b3a1e59088a513b9706fe97c8a"
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/packed.png",
+          "sha256": "94a49d6d927a5db97baf3ff9d09231b2b9c005ac6f841b264b91d3ac357039a5"
         },
         "deploying": {
-          "path": "previews/field-pilots-r9/censer-of-dread/gpu/deploying.png",
-          "sha256": "379327b3da5885b5841e9e4ffc5d6c9833db12a649237978efa833f1f78a0dff"
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/deploying.png",
+          "sha256": "6d5d0bc9ed7f781657c52b55ac54d020358e5895b3ca3a13552f4a4658eeb85f"
         },
         "operating": {
-          "path": "previews/field-pilots-r9/censer-of-dread/gpu/operating.png",
-          "sha256": "ab37b10edaab5419a8030406755e9ff35c8da7c759ab2d7ec16b5183fbab8fb5"
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/operating.png",
+          "sha256": "a0c6e9dc05b1afa34f41b7f78c8cc83e24f470bee48ccb7fd97039c82d58aa7b"
+        },
+        "thrown": {
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/thrown.png",
+          "sha256": "aeaedfad712f625b775e7c371c052beb5beb3277c9760bc6c343f56adab2a991"
+        },
+        "impact": {
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/impact.png",
+          "sha256": "ca58f87f11df302cccb95bbb8596371f905bd0ff8703a260c3f73ffe7e06f55e"
+        },
+        "damaged": {
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/damaged.png",
+          "sha256": "77ed903bb7f615a2b34de970a6a9cf6157492c4d7bf36a0b2864fa55ae4b6189"
+        },
+        "expiring": {
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/expiring.png",
+          "sha256": "3db12945f46549c4ad8eda389c004b3785d4262734b8ed8ac1fa47d8a5d21b16"
+        },
+        "destroyed": {
+          "path": "previews/field-pilots-r13/censer-of-dread/gpu/destroyed.png",
+          "sha256": "d8b92901e8703fc1e44dac8ccf492283880cadfe1f3f6de97fb6f804e1b97c39"
         }
       },
       "technical_review": "reports/current-field-audit.json",
@@ -499,6 +563,11 @@
         {
           "candidate": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.glb",
           "asset_sha256": "fefa40ea06b3b9c86e1085d1c55de8811a1bb3d8c1cbfbbc0f794b96dbf35796",
+          "status": "REFINED_PILOT_REVIEW_REQUIRED"
+        },
+        {
+          "candidate": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread.glb",
+          "asset_sha256": "9a699e282e7ba212cf417bb8c5b3febee6b60636e8230903096b81bbc9c813ff",
           "status": "REFINED_PILOT_REVIEW_REQUIRED"
         }
       ]
@@ -651,8 +720,8 @@
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance",
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression",
         "Organic surface/color transitions and sparse dark atlas samples still need inspection"
       ],
       "candidate": "build/candidates/field-pilots-r9/regeneration-heart/regeneration-heart.glb",
@@ -676,6 +745,26 @@
         "operating": {
           "path": "previews/field-pilots-r9/regeneration-heart/gpu/operating.png",
           "sha256": "282a73c80e91e7d4e2826e0530c13fcdd52a4c3347e43dd9041358cc73f2bd9e"
+        },
+        "thrown": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/thrown.png",
+          "sha256": "6f1b5581ba85f1d7fe2292c5155944a1600fb0f492e5580589107a891a0dc7fc"
+        },
+        "impact": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/impact.png",
+          "sha256": "e4cc4407b4a3b6b3c115ff8fe5d37fa4f389c4a88f9c762ac04dd27769596306"
+        },
+        "damaged": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/damaged.png",
+          "sha256": "2e0cc34cac17ccd87f8661996f581ce819e9f55ed0957027a0f6e0d63fcbff35"
+        },
+        "expiring": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/expiring.png",
+          "sha256": "b44353c7123bda974282f661753bde4544cae5ae7ac2c05d1440e005a97eabac"
+        },
+        "destroyed": {
+          "path": "previews/field-pilots-r9/regeneration-heart/gpu/destroyed.png",
+          "sha256": "d889c9f191027b29a18a42d332d3468752bed17dabf57a3200f9af4ca7d47b11"
         }
       },
       "technical_review": "reports/current-field-audit.json",

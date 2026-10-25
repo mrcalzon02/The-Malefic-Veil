@@ -1,6 +1,6 @@
 # Construction test image gallery
 
-698 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
+736 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
 
 Private car/character reference renders and comparison panels containing them are excluded. Earlier studies remain visible; gallery inclusion does not imply approval.
 
@@ -44,7 +44,7 @@ Update and publish from the authoring workspace after each render batch: `python
 
 ## Field Medic R7 — review required
 
-4 images Ã‚Â· [Full image index](field-medic-r7.md)
+9 images Ã‚Â· [Full image index](field-medic-r7.md)
 
 [![Field Medic R7 — review required](images/field-medic-r7/field-medic/gpu/active.png)](field-medic-r7.md)
 
@@ -62,9 +62,21 @@ Update and publish from the authoring workspace after each render batch: `python
 
 ## Field Pilots R9 — review required
 
-12 images Ã‚Â· [Full image index](field-pilots-r9.md)
+27 images Ã‚Â· [Full image index](field-pilots-r9.md)
 
 [![Field Pilots R9 — review required](images/field-pilots-r9/censer-of-dread/gpu/active.png)](field-pilots-r9.md)
+
+## Field Pilots R10 — review required
+
+9 images Ã‚Â· [Full image index](field-pilots-r10.md)
+
+[![Field Pilots R10 — review required](images/field-pilots-r10/sentry-mki/gpu/active.png)](field-pilots-r10.md)
+
+## Field Pilots R13 — review required
+
+9 images Ã‚Â· [Full image index](field-pilots-r13.md)
+
+[![Field Pilots R13 — review required](images/field-pilots-r13/censer-of-dread/gpu/active.png)](field-pilots-r13.md)
 
 ## Field Medic repair study
 

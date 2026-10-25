@@ -1,0 +1,12 @@
+[
+  {
+    "id": "field-medic",
+    "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\build\\candidates\\field-medic-r4\\field-medic\\field-medic.glb",
+    "category": "candidate",
+    "faction": "unraveled",
+    "role": "health",
+    "sha256": "5c1e91a9ab453c18edb9d9322d404327b7f6d3acb1d45c6fe0626775ceba27fc",
+    "triangles": 2876,
+    "status": "REVIEW_REQUIRED"
+  }
+]

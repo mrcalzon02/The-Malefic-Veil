@@ -5,7 +5,7 @@
     {
       "id": "thrown-unraveled-turret",
       "pilot": "sentry-mki",
-      "asset_sha256": "ab034bdf786a03181b853833b68f16df635b7ecb1c439c9841bb9c5f67392277",
+      "asset_sha256": "41926018b56b7e609f9f6b60ba6f1c047763f52e185e45aa3d8c68c83aba6be3",
       "triangles": 2556,
       "runtime_normal_attributes": 0,
       "normal_maps": 0,
@@ -17,17 +17,21 @@
       "evidence": [
         {
           "kind": "gpu_upload_and_pose",
-          "report": "previews/field-pilots-r9/sentry-mki/gpu/gpu-audit.json",
+          "report": "previews/field-pilots-r10/sentry-mki/gpu/gpu-audit.json",
           "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
+        },
+        {
+          "kind": "packing",
+          "report": "reports/field-pilots-r10-packing.json",
+          "status": "MEASURED_ENVELOPE"
         }
       ],
       "production_complete": false,
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance",
-        "Packing width 0.511 m slightly exceeds the 0.5 m target"
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression"
       ]
     },
     {
@@ -63,14 +67,14 @@
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance"
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression"
       ]
     },
     {
       "id": "thrown-penitent-miasma",
       "pilot": "censer-of-dread",
-      "asset_sha256": "9a699e282e7ba212cf417bb8c5b3febee6b60636e8230903096b81bbc9c813ff",
+      "asset_sha256": "192e57a340887f8927365cd1a12d2fd229520cbbc99bb5568314cacd457f3219",
       "triangles": 3496,
       "runtime_normal_attributes": 0,
       "normal_maps": 0,
@@ -82,22 +86,27 @@
       "evidence": [
         {
           "kind": "gpu_upload_and_pose",
-          "report": "previews/field-pilots-r9/censer-of-dread/gpu/gpu-audit.json",
+          "report": "previews/field-pilots-r13/censer-of-dread/gpu/gpu-audit.json",
           "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
         },
         {
           "kind": "motion-inspection",
-          "report": "reports/field-pilots-r9-motion-inspection.json",
+          "report": "reports/field-pilots-r13-motion-inspection.json",
           "status": "NO_INTERSECTIONS_IN_SAMPLED_PAIRS"
+        },
+        {
+          "kind": "packing",
+          "report": "reports/field-pilots-r13-packing.json",
+          "status": "MEASURED_ENVELOPE"
         }
       ],
       "production_complete": false,
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance",
-        "Packing depth 0.593 m exceeds the 0.5 m target"
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression",
+        "Packing approximately 0.557 x 0.557 x 0.499 m still exceeds the 0.5 m target"
       ]
     },
     {
@@ -122,14 +131,19 @@
           "kind": "clearance",
           "report": "reports/field-pilots-r9-clearance.json",
           "status": "PASS_DECLARED_PAIRS"
+        },
+        {
+          "kind": "packing",
+          "report": "reports/field-pilots-r9-packing.json",
+          "status": "MEASURED_ENVELOPE"
         }
       ],
       "production_complete": false,
       "remaining": [
         "Purpose/art acceptance and final surface refinement",
         "Full articulation/packing clearance beyond declared pairs",
-        "Persistent damage, deterioration and destruction integration",
-        "Live world gameplay and multiplayer acceptance",
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression",
         "Organic surface/color transitions and sparse dark atlas samples still need inspection"
       ]
     }

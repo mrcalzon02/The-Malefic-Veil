@@ -1,0 +1,23 @@
+[
+  {
+    "id": "regeneration-heart",
+    "asset_sha256": "03868e68d67267fdb0475d75b3465d259ac8153ee8c68b93e9e2fd771c26d668",
+    "tested_pair_samples": 292,
+    "scope": {
+      "rules": [
+        {
+          "id": "bone-cradle-attached-to-tissue",
+          "moving": [
+            "load_bearing_cradle_*"
+          ],
+          "obstacles": [
+            "CardiovascularSurface"
+          ],
+          "relation": "attached"
+        }
+      ]
+    },
+    "failures": [],
+    "status": "PASS_DECLARED_PAIRS"
+  }
+]

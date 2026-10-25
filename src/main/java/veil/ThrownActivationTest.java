@@ -82,6 +82,16 @@ public final class ThrownActivationTest {
                     check(supplied.operationAgeMs()==0,"Successful supply event absent");
                 }
             }
+            enemy.dead=false;enemy.hp=100;
+            if(bp.role()==ThrownDeployables.Role.SHIELD)check(host.thrown.absorb(maker,1000)>0,"Shield exhaustion failed");
+            else check(host.thrown.damage(2,landed.id(),500),"Host destruction failed "+bp.id());
+            var dying=host.thrown.views().get(0);int makerHp=maker.hp,enemyHp=enemy.hp,dyingStock=dying.ammoStock();
+            check(dying.state()==ThrownDeployables.State.DESTROYED&&!dying.tracking(),"Death did not disable active state "+bp.id());
+            check(!host.thrown.occupied(landed.x(),landed.y())&&host.thrown.absorb(maker,10)==0,"Dead cover/shield remained active "+bp.id());
+            tick(host,ThrownDeployables.DESTROY_MS-1);
+            check(host.thrown.views().size()==1&&host.thrown.views().get(0).damageAgeMs()==ThrownDeployables.DESTROY_MS-1,"Collapse host clock incorrect "+bp.id());
+            check(host.thrown.views().get(0).ammoStock()==dyingStock&&maker.hp==makerHp&&enemy.hp==enemyHp,"Dead entity still applies an effect "+bp.id());
+            tick(host,1);check(host.thrown.views().isEmpty()&&host.thrown.drainRemoved().size()==1&&host.thrown.drainBursts().size()==1,"Collapse termination/event count incorrect "+bp.id());
             tested++;
         }
         System.out.println("ThrownActivationTest OK: "+tested+" real recipes/throws, landing lifetime, no premature effects/collision, active role effects and successful-operation events");

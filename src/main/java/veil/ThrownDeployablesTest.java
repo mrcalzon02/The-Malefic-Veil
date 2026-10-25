@@ -96,9 +96,11 @@ public final class ThrownDeployablesTest {
             int oldHp=maker.hp,oldEnemy=enemy.hp;
             check(host.thrown.damage(2,landed.id(),500),"Enemy should destroy a deployed wall");
             host.advance(100);
-            check(host.thrown.views().isEmpty(),"Destroyed field entity still blocking the world");
-            check(host.thrown.drainBursts().size()==1&&host.thrown.drainRemoved().size()==1,
-                "Harmless destruction burst or removal notification missing");
+            check(host.thrown.views().get(0).state()==ThrownDeployables.State.DESTROYED,"Authored collapse disappeared before rendering");
+            check(!host.thrown.occupied(landed.x(),landed.y())&&!host.thrown.blocksLine(landed.x()-2,landed.y(),landed.x()+2,landed.y()),"Destroyed field entity still blocking the world");
+            check(host.thrown.drainBursts().size()==1&&host.thrown.drainRemoved().isEmpty(),"Harmless burst must precede collapse removal");
+            host.advance(ThrownDeployables.DESTROY_MS-100);
+            check(host.thrown.views().isEmpty()&&host.thrown.drainRemoved().size()==1&&host.thrown.drainBursts().isEmpty(),"Collapse did not end once at host deadline");
             check(maker.hp==oldHp&&enemy.hp==oldEnemy,
                 "Removal explosion damaged a nearby player");
         }
@@ -113,8 +115,11 @@ public final class ThrownDeployablesTest {
         clock.setAccessible(true);
         clock.setLong(host,ThrownDeployables.LIFETIME_MS+701);
         host.thrown.advance(1);
-        check(host.thrown.views().isEmpty()&&host.thrown.drainBursts().size()==1,
-            "Expired one-hour kit must burst and vanish");
+        check(host.thrown.views().get(0).state()==ThrownDeployables.State.DESTROYED&&host.thrown.drainBursts().size()==1,
+            "Expired one-hour kit must burst and collapse");
+        check(!host.thrown.occupied(host.thrown.views().get(0).x(),host.thrown.views().get(0).y()),"Expired kit still has collision");
+        clock.setLong(host,host.time()+ThrownDeployables.DESTROY_MS);host.thrown.advance(1);
+        check(host.thrown.views().isEmpty(),"Expired collapse persisted beyond host deadline");
         check(host.player(1).hp==safeHp,"Expiration must never deal radial damage");
         System.out.println("ThrownDeployablesTest OK: 21 meshes, 3 economies, host flight, cover, damage and expiry");
     }

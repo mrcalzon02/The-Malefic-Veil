@@ -11,6 +11,7 @@ public final class ThrownDeployables {
     public static final int MAX_ACTIVE=84, MAX_OWNED=12;
     public static final long IMPACT_MS=150, DEPLOY_MS=1500;
     public static final long ACTIVATION_MS=IMPACT_MS+DEPLOY_MS;
+    public static final long DESTROY_MS=800;
     public static final double SHIELD_RADIUS=2.4, MIASMA_RADIUS=3.0;
     public enum State { PACKED, THROWN, IMPACT, DEPLOYING, ACTIVE, OPERATING, DAMAGED, EXPIRING, DESTROYED }
     public enum Role { WALL, BARRICADE, TURRET, HEALTH, AMMO, MIASMA, SHIELD }
@@ -25,6 +26,7 @@ public final class ThrownDeployables {
                        int hp,long remainingMs,boolean flying,long ageMs,long operationAgeMs,
                        long damageAgeMs,double aimYaw,double aimPitch,int ammoStock,boolean tracking) {
         public State state(){
+            if(hp<=0)return State.DESTROYED;
             if(flying)return State.THROWN;
             if(ageMs<IMPACT_MS)return State.IMPACT;
             if(ageMs<IMPACT_MS+DEPLOY_MS)return State.DEPLOYING;
@@ -92,7 +94,7 @@ public final class ThrownDeployables {
         String ownerKey;
         Blueprint blueprint;
         double x,y,z,fromX,fromY,toX,toY,heading;
-        long launchedAt,landedAt=-1,expiresAt,nextPulse,operatedAt=-1,damagedAt=-1;
+        long launchedAt,landedAt=-1,expiresAt,nextPulse,operatedAt=-1,damagedAt=-1,destroyedAt=-1;
         double aimYaw,aimPitch;
         boolean flying=true,tracking;
         ArenaSystems.Player aimedPlayer;World.Npc aimedNpc;
@@ -180,12 +182,12 @@ public final class ThrownDeployables {
     public List<View> views(){
         synchronized(host){
             List<View> result=new ArrayList<>();
-            for(Entity e:entities.values())if(e.hp>0)
+            for(Entity e:entities.values())
                 result.add(new View(e.id,e.blueprint.index(),e.x,e.y,e.z,e.heading,
                     e.hp,e.flying?LIFETIME_MS:Math.max(0,e.expiresAt-host.time()),e.flying,
                     host.time()-(e.flying?e.launchedAt:e.landedAt),
                     e.operatedAt<0?-1:host.time()-e.operatedAt,
-                    e.damagedAt<0?-1:host.time()-e.damagedAt,e.aimYaw,e.aimPitch,e.ammoStock,e.tracking));
+                    e.destroyedAt>=0?host.time()-e.destroyedAt:e.damagedAt<0?-1:host.time()-e.damagedAt,e.aimYaw,e.aimPitch,e.ammoStock,e.tracking));
             return List.copyOf(result);
         }
     }
@@ -264,7 +266,7 @@ public final class ThrownDeployables {
                    Math.hypot(e.x-p.x,e.y-p.y)>SHIELD_RADIUS)continue;
                 int saved=Math.min(e.hp,Math.max(1,(int)Math.ceil(incoming*
                     switch(e.blueprint.faction()){case UNRAVELED->.80;case PENITENT->.65;case BEGOTTEN->.55;})));
-                e.hp-=saved;e.damagedAt=host.time();return saved;
+                e.hp-=saved;e.damagedAt=host.time();if(e.hp<=0)destroy(e);return saved;
             }
             return 0;
         }
@@ -277,8 +279,13 @@ public final class ThrownDeployables {
             if(attacker==null||attacker.dead||e==null||e.hp<=0||damage<1||damage>500||
                e.ownerKey.equals(attacker.accountKey)||
                host.factions.allied(e.ownerKey,attacker.accountKey))return false;
-            e.hp=Math.max(0,e.hp-damage);e.damagedAt=host.time();return true;
+            e.hp=Math.max(0,e.hp-damage);e.damagedAt=host.time();if(e.hp<=0)destroy(e);return true;
         }
+    }
+    private void destroy(Entity e){
+        if(e.destroyedAt>=0)return;
+        e.hp=0;e.destroyedAt=host.time();e.tracking=false;e.aimedPlayer=null;e.aimedNpc=null;
+        bursts.add(new Burst(e.x,e.y,e.blueprint.faction().ordinal()));
     }
     private void updateTurretAim(Entity e){
         Blueprint b=e.blueprint;
@@ -369,9 +376,10 @@ public final class ThrownDeployables {
             Iterator<Entity> it=entities.values().iterator();
             while(it.hasNext()){
                 Entity e=it.next();
-                if(e.hp<=0||!e.flying&&now>=e.expiresAt){
-                    bursts.add(new Burst(e.x,e.y,e.blueprint.faction().ordinal()));
-                    removed.add(e.id);it.remove();continue;
+                if(e.destroyedAt<0&&(e.hp<=0||!e.flying&&now>=e.expiresAt))destroy(e);
+                if(e.destroyedAt>=0){
+                    if(now-e.destroyedAt>=DESTROY_MS){removed.add(e.id);it.remove();}
+                    continue;
                 }
                 if(e.flying){
                     double t=Math.min(1,(now-e.launchedAt)/700.0);

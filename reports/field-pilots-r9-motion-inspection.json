@@ -3,8 +3,1079 @@
     "id": "censer-of-dread",
     "asset_sha256": "9a699e282e7ba212cf417bb8c5b3febee6b60636e8230903096b81bbc9c813ff",
     "samples": 31,
-    "scope": "Satellite bowl surfaces against main bowl, incense basket, and support slides",
-    "intersections": [],
-    "status": "NO_INTERSECTIONS_IN_SAMPLED_PAIRS"
+    "scope": "Satellite bowl surfaces against main bowl/bands/ribs, lid ribs, incense basket, support slides, feet and other satellite bowls; central bowl/bands/ribs against support slides and feet",
+    "intersections": [
+      {
+        "time_s": 0.0,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.0,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.05,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.1,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.15,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.2,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.25,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.3,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.35,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.4,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.45,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_0"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_1"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "curved_iron_foot_2"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.5,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.55,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "engraved_bowl_band_0.52",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.6,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.65,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.7,
+        "vessel": "engraved_bowl_band_0.65",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.75,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.8,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.85,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_0"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_1"
+      },
+      {
+        "time_s": 0.9,
+        "vessel": "bronze_censer_bowl",
+        "obstacle": "outer_iron_channel_2"
+      }
+    ],
+    "status": "INTERSECTIONS_FOUND"
   }
 ]

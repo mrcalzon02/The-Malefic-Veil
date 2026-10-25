@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "39b5d6bdb9fd84452659aecf6ef3151c88bffa6164931be73c954a74f97c68c0",
+  "renders": {
+    "front": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\front.png",
+      "sha256": "d0572d3b24141d4ced82e3c38d2d6312d9eb7f647020e315b571887ef4ae83ec"
+    },
+    "rear": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\rear.png",
+      "sha256": "e34c7bc86ba1843d9fdfdaefa2d1e516dae82b0d314be1806a481c7f6479b0d0"
+    },
+    "closeup": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\closeup.png",
+      "sha256": "e6a30b0eb050066624c6a64b79d29c93d6b12a036a513563fdd54b33b658b776"
+    },
+    "clay": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\clay.png",
+      "sha256": "968b4f032a22c546c9e2556d90700675373936c26af1e6f3ba32eccdf40b26f4"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "43da57fd81ad73ac7c99801be52bcc416fd6db7ed9bb55a4e4e758bfc2ceedc7"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "22b5c3bf6a028e51c4d2aecf384be22a81947c7f548e4ad8f91f48796bc90a04"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "6cf56cc971f850bfa9deb8b5a14ebd3685da4e17cc3094043bb3b8ea212cfdba"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "ee5746d56afbbf812be22a9f8f15d062008f49e21d8f713080441c892a072fd6"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "dde949a06e3287856642c0fa01cf198888582e93f1cf67b2f0d392d10aa46748"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "ff1a3895fa6d964800f708669f23fa88a8071d004076b50cac06bcf2e3e29665"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "828df62e04eae537ba7a260c97c48c7c2972fe7b4f7f8bebcc0d8a6f2287dc74"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "797fb40dc77bd8150a9e66896c2583927e2707437cf02e9f4c726d2db692d91c"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "3245f5f96642d4358bba931ee06af8a8e2c069c6ccde9f51b4eb70d65b1a5ab5"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "236533c4a7aff59a4c23e0201c6f08f234ec11b691132de5b0181c7a8b832257"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-00.png",
+        "time_s": 0.0,
+        "sha256": "55490147b3a1edc87dbe723cd3e79ae5683e0e6e9d52204b2733577bdf9344f7"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "a2595edb23a393380298a28bc4829c741c2b02510e8121862a1d15d1a7331b8a"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "67b2c7e616db87e2d76d80a8987f50c74bf890e4719734c32bc71ca41816f2b9"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "932f5d82c0bcb0c9ea66a7dfcf6b518ebf7bb1e32e20683d3c8abf0e037c3c84"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "1d6fa3025739ea2095fa8eb1d64a860eb30a730153360bf92a3c1f2750a8f21f"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "f8bf2499255c4a0369f696d2aa9eb0c1386768208a7396ff595c2d3ba03ffb8b"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "db7bcd8b4ea0e48ecef8c787160bf70c316327ef89beaf90608553ec900db430"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "151bf6429b924ffe983d05cf74088131783c5230ee13a4531201322c6b1f2782"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "2121230a53244ff5a620c7dde63e27061f71515fc7795fe9995d4440d2c87df6"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\operating-09.png",
+        "time_s": 0.65,
+        "sha256": "ce209e6ccc03810fa7857180ac769eea89f05371ffd6a2afe2fe4ccf333a5a3b"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\sentry-mki\\packed-00.png",
+        "time_s": 0.0,
+        "sha256": "adbde0551c459b7ccfbc67947778fa083ec7d3189714681e4e2ab10b112ac816"
+      }
+    ]
+  }
+}

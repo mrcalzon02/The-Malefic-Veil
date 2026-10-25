@@ -1,0 +1,33 @@
+[
+  {
+    "id": "field-medic",
+    "asset_sha256": "d98dadd68f1613ff12bc3fe47d9f7254c848f312fe9111ed6b8c3eb93fdb670d",
+    "tested_pair_samples": 8760,
+    "scope": {
+      "rules": [
+        {
+          "id": "injector-versus-case",
+          "moving": [
+            "articulated_injector_support",
+            "injector_elbow",
+            "injector_reservoir",
+            "patient_contact_cup",
+            "injector_pushrod",
+            "injector_thumb_plate"
+          ],
+          "obstacles": [
+            "case_floor_*",
+            "front_retaining_lip",
+            "rear_hinge_rail",
+            "case_side_*",
+            "back_lid_shell",
+            "cream_inner_instrument_panel"
+          ],
+          "relation": "separate"
+        }
+      ]
+    },
+    "failures": [],
+    "status": "PASS_DECLARED_PAIRS"
+  }
+]

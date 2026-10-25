@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "f50aa82d67a2bdf490bf343b1659f80d018e6f506b3f82968b9cdc8e8b600f23",
+  "renders": {
+    "front": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\front.png",
+      "sha256": "48745911c5076c473c97a7d94398c80cd55b27527d8cc567c99dd4994e0bd952"
+    },
+    "rear": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\rear.png",
+      "sha256": "316e91ff9051e4864d067cdbfd526d4214c38f9b76c9ae68a2dff0b3b86318df"
+    },
+    "closeup": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\closeup.png",
+      "sha256": "77059601e1c5806fe65aa2877852a8a9111cf87c426dbe4b4d74cfce4089f547"
+    },
+    "clay": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\clay.png",
+      "sha256": "d11bc133392b92183a2f69ada7778c944d0f302e95fe640bb6f710b7715a3280"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "96c01d379c99cd2f02eedf8015b6193514eee4672ee1e22df84f9b5838a5636e"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "1ef9e1a5fe4b8cf70e3eb7ac4be30cd9549e5b2c4f8a5fb909bfc1d5d7110afe"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "c7a346628a3ac3e015b01c1efb6779283c2499affa76701f4c7afd174ec25885"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "be644aea04a080fc35e8db8cfc94ddb5fc3cc480d59729afc08d2eb08e4307df"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "c208d063c80acc7e69b318ef5d5b3445441a19d38181c6dd73970578cad68af4"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "5b16ea9fa98ecccab3e22d57177548c51349c8247d67e5373ba77cdf2f6a9ff2"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "12e89c06971e4676e87819cf1751e08578586644a07454944aae6acd32ad90b3"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "291f3c9587cbb494060c2affb1eee540e1c48bee616c13e5f0274de022dd614d"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "0c765465054a3106a3fa862b709a3c0f753bafd0cc3ace91d0a69a43308b28c1"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "b547be2a441590221edeaff80ba67567f6825ed7fa116d8830d9c551814335ed"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-00.png",
+        "time_s": 0.0,
+        "sha256": "17f86d726353e353b6f55eeea5a2a82df7618ee0b2025ec7682d9e7fa8d64b70"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "1f8a5307b04893c31bf9be6e89d8bba55e81ac2bc250bcc6e08cfd47803c4eb4"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "dd95409c26dd73012079e8250e51bebf66a30587e20f8fd1c5d4355b71c5ba18"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "5320caaa3a25e13576c90cba252f98af1bf7f9a5166b5fa02b06e46f4ca6e433"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "4f623b130edccfd11f68acbaa7ae30cd6114f463a9a8df89336eb2a6b6352bb8"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "3eccce7ded1608219df2def31e5c1949a0e1ceed3c07c402002f41c0f0e41e0f"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "5f74e1dee9d6831611aad7325cca660003e13dd2520dc0c2852a1f5af6cde10e"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "acd81af8410259b523ba63c49e1ce4f47783f5ba6e22dc1c7d8e6e6074fc942f"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "72af805ae710cf84a50e6ae69cb97b5b4574af914eb33bbda68850fb739735ce"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\operating-09.png",
+        "time_s": 0.65,
+        "sha256": "4d42dabf919043c577b91cf6e2a3ea2116854128fc53597e6e36f1c2a4b91d71"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\censer-of-dread\\packed-00.png",
+        "time_s": 0.0,
+        "sha256": "17c2238fa9ea0ac438dddeafd49b8824c08ee1a498e452d580b6476418b68c38"
+      }
+    ]
+  }
+}

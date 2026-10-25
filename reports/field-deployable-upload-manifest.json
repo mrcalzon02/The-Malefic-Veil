@@ -1,7 +1,662 @@
 {
-  "status": "WORK_IN_PROGRESS",
+  "status": "PAUSED_AT_USER_REQUEST_WORK_IN_PROGRESS",
   "production_complete": 0,
   "files": [
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-ammo/thrown-begotten-ammo.blend",
+      "bytes": 334504,
+      "sha256": "17de0cb3152c87233be4f5ab1de6b1c3b0ea205458a16feb5a96c51716f4ca77"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-ammo/thrown-begotten-ammo.glb",
+      "bytes": 145696,
+      "sha256": "fd080b0789599877fd318f746bfee807768856c8f913d4d40b2b7f57cb1fda79"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-barricade/thrown-begotten-barricade.blend",
+      "bytes": 341811,
+      "sha256": "fd0707832a96cbe02419b92fc7841988cd2ea3da59aff280dba19b2da24e3e3c"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-barricade/thrown-begotten-barricade.glb",
+      "bytes": 165020,
+      "sha256": "2d3be76c644ae190dcea073fe04d4afda23a065645c0ce660b3caa416af01d5c"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-health/thrown-begotten-health.blend",
+      "bytes": 327104,
+      "sha256": "28fc547aa986abc81caad95e86b506ad89fc3f80a2447e2862f6c31db3c97131"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-health/thrown-begotten-health.glb",
+      "bytes": 137304,
+      "sha256": "5baf610ad017a1cb736b6ff8403c2d6194e540d9b3ee4bed7825cd91eebe7d32"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-miasma/thrown-begotten-miasma.blend",
+      "bytes": 329918,
+      "sha256": "578a39761d86c3265afe7e9eb7aa75c29b47970ec3a73eb5cb0fa6a60c5aaad6"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-miasma/thrown-begotten-miasma.glb",
+      "bytes": 139772,
+      "sha256": "935828ece00e1d07b4f83be2faaf89cc2088ae35b60ecbeb81a9ea9dd5062c6e"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-shield/thrown-begotten-shield.blend",
+      "bytes": 334768,
+      "sha256": "07af922fca3965865e34d823568c2e59fe9b8db4e98c441b3469ff2e90757d15"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-shield/thrown-begotten-shield.glb",
+      "bytes": 151040,
+      "sha256": "130dd4defe24292fbdd5f811d98a754463805c5579de6e2e6d9a50bd2a5d8dad"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-turret/thrown-begotten-turret.blend",
+      "bytes": 330836,
+      "sha256": "3d1f888ab2c0026097b6e2230dede7ce98e03cd3936160f2704d456f80cf6edb"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-turret/thrown-begotten-turret.glb",
+      "bytes": 136732,
+      "sha256": "f9774fdd96e376df3254157295acd0caa71e9c4f6f20f0d2d1eecd2c49d73458"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-wall/thrown-begotten-wall.blend",
+      "bytes": 343324,
+      "sha256": "c5ca486a468dcf339ff5e23f78a3947776fe4913cf0bc21a32af0a7ce8277662"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-begotten-wall/thrown-begotten-wall.glb",
+      "bytes": 163296,
+      "sha256": "04bc86d4f6b07d2045ce9d1d7967f9bb39e912b4ecd33e9fad69b3abda26e719"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-ammo/thrown-penitent-ammo.blend",
+      "bytes": 349299,
+      "sha256": "bd7d625576000f8694c740108dbb4fbe2e85c953780914966296865f191949af"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-ammo/thrown-penitent-ammo.glb",
+      "bytes": 226328,
+      "sha256": "e6d07dd175d257308b335ef9d90e236f9834e9f70878b6b10f75487c028881d0"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-barricade/thrown-penitent-barricade.blend",
+      "bytes": 335668,
+      "sha256": "afb45fa5cc4a3703badd14aba760fd9878bfb08177adb09373b9cdfa71647105"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-barricade/thrown-penitent-barricade.glb",
+      "bytes": 194180,
+      "sha256": "adad6926a31c7ed1c2eb8455c642498e4c6bf27b16830081cd390995f924d9af"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-health/thrown-penitent-health.blend",
+      "bytes": 343543,
+      "sha256": "5e2e1a27ae75c1a4a2f155d6280db4c2a3e39fb919534a63a973fa69600a082b"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-health/thrown-penitent-health.glb",
+      "bytes": 211580,
+      "sha256": "46b0acfe983123fcf85651286d082ca9d2adf2466a8166bbdafb06b66c46eea8"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-miasma/thrown-penitent-miasma.blend",
+      "bytes": 344958,
+      "sha256": "996122b9678cff7c3c1f889d4d3a91c21f76baf8aadf29f2ed4e7d59461f2ece"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-miasma/thrown-penitent-miasma.glb",
+      "bytes": 221860,
+      "sha256": "34682feb3a00699f69d7f770f29ae197692fad3ad98fc16a2b58abc3ce1a693c"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-shield/thrown-penitent-shield.blend",
+      "bytes": 358575,
+      "sha256": "476162bdc2ac786f39ac8c02370356bfe0f27a5cdcb412f5e2ede179371db181"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-shield/thrown-penitent-shield.glb",
+      "bytes": 248088,
+      "sha256": "f82cdc7e367483dda875faa89ac518924c317ffdb414867543d2a41266ecd8b5"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-turret/thrown-penitent-turret.blend",
+      "bytes": 349577,
+      "sha256": "07d51a47fa838e897e1371b72dd5589267deb7f5153d3446214877eaf9af3fe2"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-turret/thrown-penitent-turret.glb",
+      "bytes": 235656,
+      "sha256": "99969e98d814db4c4b7a2e2cc7ed879cbbceb55a128f7ee921e6ad280efc836f"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-wall/thrown-penitent-wall.blend",
+      "bytes": 345024,
+      "sha256": "094a6fb0e63b251c3f196a23e1c54138a52d50eecb69bbfeb9f6578bf848397d"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-penitent-wall/thrown-penitent-wall.glb",
+      "bytes": 221784,
+      "sha256": "66ddee9025bdd469414ece8724947dedbe6c1e3d082da5766bba6fa0b6e4b53c"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-ammo/thrown-unraveled-ammo.blend",
+      "bytes": 331089,
+      "sha256": "e202796be1388ee9bbf6e82189eca921b04b511eb95ded33096adaf42e5415b1"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-ammo/thrown-unraveled-ammo.glb",
+      "bytes": 192564,
+      "sha256": "d88be3fae51e1d8e5de849d78f6c12e4b68c7d48de72e3c5b4cd78f3c68ce32e"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-barricade/thrown-unraveled-barricade.blend",
+      "bytes": 313199,
+      "sha256": "78ecf06ec4a06938a4e04cf7d5b9c16dd761b2f82d53798ad4d9be4fd7d57d90"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-barricade/thrown-unraveled-barricade.glb",
+      "bytes": 158540,
+      "sha256": "73b7a24a6b98f1e21bfe7dd5fb1958567ec7d8a027cac177da025d941b5e29b5"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-health/thrown-unraveled-health.blend",
+      "bytes": 322367,
+      "sha256": "7add5013b71dd711f2f34fc2abd9c394b24371bc585cab40f1d50240417ca21b"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-health/thrown-unraveled-health.glb",
+      "bytes": 176400,
+      "sha256": "78fb9a2aaa1ee8e997ff0be11b68a37d6921d54a772322a3cf0237a2bc63767c"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-miasma/thrown-unraveled-miasma.blend",
+      "bytes": 322877,
+      "sha256": "577afbcafa91685a008b97e2623e37e6b7c0863ed79e630f59688cd4058dc1cd"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-miasma/thrown-unraveled-miasma.glb",
+      "bytes": 186572,
+      "sha256": "173de9eb4f048730989fccbc3f081cd21a575eb0ccab36edecfa5896e7bfb642"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-shield/thrown-unraveled-shield.blend",
+      "bytes": 338693,
+      "sha256": "2f446a404fa21e0ff776eb3aa937b44e3bbb41cdf2ca1cdefa8737a3c0452e40"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-shield/thrown-unraveled-shield.glb",
+      "bytes": 214268,
+      "sha256": "9e4aa13ff8d4043c9181869def8be1351807673df4e0055e1f98ebe77e08d459"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-turret/thrown-unraveled-turret.blend",
+      "bytes": 324103,
+      "sha256": "3c1e1685ee8fec7a261e82bac163a9502a137f1b79a8d655953c2b20d737e644"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-turret/thrown-unraveled-turret.glb",
+      "bytes": 182508,
+      "sha256": "94356bd540e94ce27d2756bc099719b0dd616f6c3b34eb9f5d5e9913340aa7db"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-wall/thrown-unraveled-wall.blend",
+      "bytes": 320113,
+      "sha256": "e5e228da96d7e54daac7b7f9987f7b876245c656cb16155c4c98446fd80c9459"
+    },
+    {
+      "path": "build/candidates/field-deployables/thrown-unraveled-wall/thrown-unraveled-wall.glb",
+      "bytes": 184788,
+      "sha256": "0a6887a260d6b12f46971a0950cc7ffce02323e464d963f4a495320f7c30cef1"
+    },
+    {
+      "path": "build/candidates/field-medic-r1/field-medic/field-medic.blend",
+      "bytes": 680883,
+      "sha256": "e49b2f4a85ba5516e1f80ea4d97f17ea1e2f0e0eb8a47ec5f652aba046607dd1"
+    },
+    {
+      "path": "build/candidates/field-medic-r1/field-medic/field-medic.glb",
+      "bytes": 281480,
+      "sha256": "946fa5ee52c268c83335269e4e8000cd1661f3a93d07224c92e11c56a4b2f79e"
+    },
+    {
+      "path": "build/candidates/field-medic-r2/field-medic/field-medic.blend",
+      "bytes": 697710,
+      "sha256": "94d170627145cfbbf7cc0eefe8b7256fc5e4c96525dab491c3037100581f1e63"
+    },
+    {
+      "path": "build/candidates/field-medic-r2/field-medic/field-medic.glb",
+      "bytes": 386324,
+      "sha256": "aaf679475aad75c6a3f027d203d6b8069c6bbf371f7a0ac6a9fc4661e1c159f9"
+    },
+    {
+      "path": "build/candidates/field-medic-r3/field-medic/field-medic.blend",
+      "bytes": 700870,
+      "sha256": "bc0b0d7080c0a39bb8040e93da9a5d5624d3f0d8f008dac2acdc4c7f32066a44"
+    },
+    {
+      "path": "build/candidates/field-medic-r3/field-medic/field-medic.glb",
+      "bytes": 406376,
+      "sha256": "d95ccce7e0753e80e1ae35f9ea0787cb74bc8ddf1c2985c455a059e021b603b6"
+    },
+    {
+      "path": "build/candidates/field-medic-r4/field-medic/field-medic-animated.blend",
+      "bytes": 290771,
+      "sha256": "5e0b7120f85421e54e6ae7af5352e8504d3bc5aa996b1aac5aa6138d3b0f65f9"
+    },
+    {
+      "path": "build/candidates/field-medic-r4/field-medic/field-medic.blend",
+      "bytes": 702528,
+      "sha256": "094bbf2825f4a73e4b989ad9bd4f9a389d34263c74a21704fb546b4ae694cf63"
+    },
+    {
+      "path": "build/candidates/field-medic-r4/field-medic/field-medic.glb",
+      "bytes": 409832,
+      "sha256": "5c1e91a9ab453c18edb9d9322d404327b7f6d3acb1d45c6fe0626775ceba27fc"
+    },
+    {
+      "path": "build/candidates/field-medic-r5/field-medic/field-medic-animated.blend",
+      "bytes": 291324,
+      "sha256": "f652b927f98097d6ad281daaa20796f835c00cbada47df9e14d87a65c43cba02"
+    },
+    {
+      "path": "build/candidates/field-medic-r5/field-medic/field-medic.blend",
+      "bytes": 702393,
+      "sha256": "65c456af656d66d56ed8fb8f112a15a5dcc0b2b4c11c4e49fb47075e80e33a41"
+    },
+    {
+      "path": "build/candidates/field-medic-r5/field-medic/field-medic.glb",
+      "bytes": 409980,
+      "sha256": "d98dadd68f1613ff12bc3fe47d9f7254c848f312fe9111ed6b8c3eb93fdb670d"
+    },
+    {
+      "path": "build/candidates/field-medic-r6/field-medic/field-medic.blend",
+      "bytes": 716206,
+      "sha256": "b64ec46dbf20f0d990636f86e85de574b93cd817e1f33d5d43783e320249cbc5"
+    },
+    {
+      "path": "build/candidates/field-medic-r6/field-medic/field-medic.glb",
+      "bytes": 422444,
+      "sha256": "75d2d0b7539b40a7f3bc103adb89ee85f2a3047e5859c54f20ec9dfaad8abf3b"
+    },
+    {
+      "path": "build/candidates/field-medic-r7/field-medic/field-medic-animated.blend",
+      "bytes": 324957,
+      "sha256": "6e8e9413ad29cedfade765f7ed83974d633d3e55b83c7438f51e9f801915661e"
+    },
+    {
+      "path": "build/candidates/field-medic-r7/field-medic/field-medic.blend",
+      "bytes": 728016,
+      "sha256": "c0a2c003ef9e8a7f5743be9b5c34f95c6bf2e4007a973a8d1e31f03f19727d0d"
+    },
+    {
+      "path": "build/candidates/field-medic-r7/field-medic/field-medic.glb",
+      "bytes": 312912,
+      "sha256": "3d151b13b97c29a57c95b2fe689c08ccf0181f85de4a650f8c42cfe30632c48d"
+    },
+    {
+      "path": "build/candidates/field-pilots-r1/censer-of-dread/censer-of-dread.blend",
+      "bytes": 714776,
+      "sha256": "d689342977f2fd5e084be5616e5bfad469b99086aa1a5574024124367cfa53e7"
+    },
+    {
+      "path": "build/candidates/field-pilots-r1/censer-of-dread/censer-of-dread.glb",
+      "bytes": 552748,
+      "sha256": "63eb23cdba835ffa93980ff64e8e5ff5a5908c4c47fdf8ba95bf6eb7452e7a5a"
+    },
+    {
+      "path": "build/candidates/field-pilots-r1/regeneration-heart/regeneration-heart.blend",
+      "bytes": 785811,
+      "sha256": "f784a31d31c55a927f84c08aad8f02f5ef27d051d265b287c4e4b3e8838f36a4"
+    },
+    {
+      "path": "build/candidates/field-pilots-r1/regeneration-heart/regeneration-heart.glb",
+      "bytes": 318716,
+      "sha256": "8f8d6c7e3678bf628464fdbdf01bb17f83b2e7e0992ca6f55aaefd704ac336ab"
+    },
+    {
+      "path": "build/candidates/field-pilots-r1/sentry-mki/sentry-mki.blend",
+      "bytes": 691615,
+      "sha256": "3c5fa52e69d8525ba62f4f54018c5b73eb1881171a8c6b387cc9f8813459c52d"
+    },
+    {
+      "path": "build/candidates/field-pilots-r1/sentry-mki/sentry-mki.glb",
+      "bytes": 309144,
+      "sha256": "94c37c520b793c28f2249977cd504718ac68eb4c10bc5f9cf2dbe3aa4581bf60"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/censer-of-dread/censer-of-dread-animated.blend",
+      "bytes": 394817,
+      "sha256": "6ed34615095ebd39a360d5523aed525b3f2409a573ac1c56f31be1743108c27c"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/censer-of-dread/censer-of-dread.blend",
+      "bytes": 741715,
+      "sha256": "fcd11e828242efd8942981cb046093cbf1e6195c5f79dd0e001100864e4714e7"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/censer-of-dread/censer-of-dread.glb",
+      "bytes": 483512,
+      "sha256": "7bf86ac714dc46b81cf1e744106262dbe997968d952bade350bf0f497163b913"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/regeneration-heart/regeneration-heart-animated.blend",
+      "bytes": 357164,
+      "sha256": "d5d63646dd6d4c9938490e220c6f3b0cc114bf1bc84941aca433bd24854f0954"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/regeneration-heart/regeneration-heart.blend",
+      "bytes": 822406,
+      "sha256": "a6d82b611ee33dcdb6607318e4035f51390249121e451f05e4fd26e755f0a428"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/regeneration-heart/regeneration-heart.glb",
+      "bytes": 319320,
+      "sha256": "017b62d5ab410640edb8005e8524c67b6905515e7a4b26b70756969c9b224b09"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/sentry-mki/sentry-mki-animated.blend",
+      "bytes": 292908,
+      "sha256": "9772e4df49d31b775683b7cf3194902df6a260a881e304f9c935069f581bc6af"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/sentry-mki/sentry-mki.blend",
+      "bytes": 714074,
+      "sha256": "905ebcc6dc12a6a7f51f9714250c2ed3cc7d8115585bbdf601a06cb5175e860f"
+    },
+    {
+      "path": "build/candidates/field-pilots-r10/sentry-mki/sentry-mki.glb",
+      "bytes": 253472,
+      "sha256": "41926018b56b7e609f9f6b60ba6f1c047763f52e185e45aa3d8c68c83aba6be3"
+    },
+    {
+      "path": "build/candidates/field-pilots-r11/censer-of-dread/censer-of-dread.blend",
+      "bytes": 738166,
+      "sha256": "fe334162120e1885634a766d24893ddd160131a567a530172f84015482235037"
+    },
+    {
+      "path": "build/candidates/field-pilots-r11/censer-of-dread/censer-of-dread.glb",
+      "bytes": 480468,
+      "sha256": "606c6e806fc7d75eba1940a80e11d5ad427a095f8c84c5d2019a9768e8f651d9"
+    },
+    {
+      "path": "build/candidates/field-pilots-r12/censer-of-dread/censer-of-dread.blend",
+      "bytes": 738404,
+      "sha256": "ce564b6793263b6823d7a1c27acb8648c545c5e26a333defac6add881b086019"
+    },
+    {
+      "path": "build/candidates/field-pilots-r12/censer-of-dread/censer-of-dread.glb",
+      "bytes": 478860,
+      "sha256": "5d429be21c3040133137138590f45e57fd25a142d232dec0fcb2dd61b8d28f43"
+    },
+    {
+      "path": "build/candidates/field-pilots-r13/censer-of-dread/censer-of-dread-animated.blend",
+      "bytes": 391921,
+      "sha256": "13799272779e65265ff6d785a315e4579d8bc8c2df858848986fc0c54d4f11f9"
+    },
+    {
+      "path": "build/candidates/field-pilots-r13/censer-of-dread/censer-of-dread.blend",
+      "bytes": 735363,
+      "sha256": "0f40ee339db0dd8c04c6017adc68d94f3cbaa6d21076d33274a788d5c2520e10"
+    },
+    {
+      "path": "build/candidates/field-pilots-r13/censer-of-dread/censer-of-dread.glb",
+      "bytes": 477640,
+      "sha256": "192e57a340887f8927365cd1a12d2fd229520cbbc99bb5568314cacd457f3219"
+    },
+    {
+      "path": "build/candidates/field-pilots-r2/censer-of-dread/censer-of-dread.blend",
+      "bytes": 750933,
+      "sha256": "90a4a2dc1a4b96fd07d2efcf57f3de0b90cece97313ec5e395e6efabcb4604a7"
+    },
+    {
+      "path": "build/candidates/field-pilots-r2/censer-of-dread/censer-of-dread.glb",
+      "bytes": 762380,
+      "sha256": "45888833f8f8e830767e9f591d47c948283f04c36a53103172fbe78663290777"
+    },
+    {
+      "path": "build/candidates/field-pilots-r2/regeneration-heart/regeneration-heart.blend",
+      "bytes": 797188,
+      "sha256": "63d20eaed88a94c4a2a497dea06cc65a58c71bbe148f24060b4854b433898812"
+    },
+    {
+      "path": "build/candidates/field-pilots-r2/regeneration-heart/regeneration-heart.glb",
+      "bytes": 341240,
+      "sha256": "120cc2dec7967f725424d22621634850f7ccef14b0d716dda5b803eb60b04f17"
+    },
+    {
+      "path": "build/candidates/field-pilots-r2/sentry-mki/sentry-mki.blend",
+      "bytes": 691829,
+      "sha256": "851df04aadb55343250a7e690749a113fb488e8b1c3c3c9312ff8296e2237c6e"
+    },
+    {
+      "path": "build/candidates/field-pilots-r2/sentry-mki/sentry-mki.glb",
+      "bytes": 307424,
+      "sha256": "123943a5ae70ff8e355d8385118a0f696d821b09ce69031977263252aaf41646"
+    },
+    {
+      "path": "build/candidates/field-pilots-r3/censer-of-dread/censer-of-dread.blend",
+      "bytes": 737784,
+      "sha256": "fd7b067207ff5fd4abdbdd6a4f7c1cb51ee3f2fcabc55a484ca2db2d0f5b2009"
+    },
+    {
+      "path": "build/candidates/field-pilots-r3/censer-of-dread/censer-of-dread.glb",
+      "bytes": 671120,
+      "sha256": "607d6a5503a76bece482a55717ab8471d9a72d5f02e05569f42b8768ec6aae1e"
+    },
+    {
+      "path": "build/candidates/field-pilots-r3/regeneration-heart/regeneration-heart.blend",
+      "bytes": 809492,
+      "sha256": "7f63eb8c78a3bdf221ff1d092f80678a8b9a5c341295e982dcfed6dde4b0a191"
+    },
+    {
+      "path": "build/candidates/field-pilots-r3/regeneration-heart/regeneration-heart.glb",
+      "bytes": 351092,
+      "sha256": "4b692c858589476cbae27e61f01a9a71e072e0a1c1af96aa69f392cd16a17074"
+    },
+    {
+      "path": "build/candidates/field-pilots-r3/sentry-mki/sentry-mki.blend",
+      "bytes": 690663,
+      "sha256": "f1e92bbc854b340f068798db4fdb773f77fbdc8911c9a5f5c31bc63a7a03cc9c"
+    },
+    {
+      "path": "build/candidates/field-pilots-r3/sentry-mki/sentry-mki.glb",
+      "bytes": 302648,
+      "sha256": "3bd281643515e10f8f02980e8b760aa8714560efa95103f4a4ef159921838482"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/censer-of-dread/censer-of-dread-animated.blend",
+      "bytes": 421573,
+      "sha256": "87b61766ceec63e1ecdd5032806449064a1d49afcb4666092ba5606f11a0a79d"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/censer-of-dread/censer-of-dread.blend",
+      "bytes": 743482,
+      "sha256": "790ea193dbf09b4fe9b56f96199ab6cad7c0e9eb6a6b9f12dcb3bc5f9799f7c8"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/censer-of-dread/censer-of-dread.glb",
+      "bytes": 669692,
+      "sha256": "1b2f6f77f282a5da78b56c8439bac424caf51ffe25831dd68cea7d52cec3c64b"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart-animated.blend",
+      "bytes": 357440,
+      "sha256": "9bcba0285c3b7cad578be93bbfe67598ee1876f8e76988fc8f6d5cfa6757803e"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart.blend",
+      "bytes": 793747,
+      "sha256": "79dd29134a01df0df0a94348fa20d4808c2aa2349dd8d1ab618cc7e309545d9c"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart.glb",
+      "bytes": 326752,
+      "sha256": "03868e68d67267fdb0475d75b3465d259ac8153ee8c68b93e9e2fd771c26d668"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki-animated.blend",
+      "bytes": 268415,
+      "sha256": "a0629abe8351978f1fcf914c2c8b35b59a65c8b3badba09a0ba5c726d7a4761c"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.blend",
+      "bytes": 692284,
+      "sha256": "612bd7eb3c7258fbf1a6ed161fe3bbb8063b3a332a1216bd357e15fd06933be0"
+    },
+    {
+      "path": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.glb",
+      "bytes": 310976,
+      "sha256": "b890081d91212adb0cfa47a69acb69fcc92caeb8e1bc129d4bd08fa06236926f"
+    },
+    {
+      "path": "build/candidates/field-pilots-r5/censer-of-dread/censer-of-dread.blend",
+      "bytes": 729076,
+      "sha256": "d1be150ee6d473d774553977de5e95a89d80046ccfaeb53361f8eb1a4dce76c7"
+    },
+    {
+      "path": "build/candidates/field-pilots-r5/censer-of-dread/censer-of-dread.glb",
+      "bytes": 620872,
+      "sha256": "ddf673981b61772a4f9969dcc528bbcab11ea0b4454b3660a51789cda7fd077a"
+    },
+    {
+      "path": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread-animated.blend",
+      "bytes": 391546,
+      "sha256": "274a7c93365f4685dceaa87b95f55aa0187f7b7003ff5ded5b75a154b62927d0"
+    },
+    {
+      "path": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.blend",
+      "bytes": 722641,
+      "sha256": "f64a277fccdfebfa4cbd158ef22055a237f3df5d35892fe23a237cf473976068"
+    },
+    {
+      "path": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.glb",
+      "bytes": 608656,
+      "sha256": "fefa40ea06b3b9c86e1085d1c55de8811a1bb3d8c1cbfbbc0f794b96dbf35796"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/censer-of-dread/censer-of-dread-animated.blend",
+      "bytes": 391691,
+      "sha256": "a79f278612dc653e13a6c7526653fa530072ad38fa2759b3fce9bc4af797f809"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/censer-of-dread/censer-of-dread.blend",
+      "bytes": 722683,
+      "sha256": "7129224a78fe8da09123ef3a2be3ff1039077b39077cd08f94eeff5b1ef8955c"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/censer-of-dread/censer-of-dread.glb",
+      "bytes": 608792,
+      "sha256": "f50aa82d67a2bdf490bf343b1659f80d018e6f506b3f82968b9cdc8e8b600f23"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/regeneration-heart/regeneration-heart-animated.blend",
+      "bytes": 357497,
+      "sha256": "b8ad0cfe0791a976d2b90a0f56da506df0214c40fbb56700f4b70d46aaf60849"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/regeneration-heart/regeneration-heart.blend",
+      "bytes": 793730,
+      "sha256": "32b120741615b01647191878ba979ea9441d2ddead6faa2a998d2f3cd1ea4c99"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/regeneration-heart/regeneration-heart.glb",
+      "bytes": 326888,
+      "sha256": "b9936191da6e073ab787c106337c467d2d26145f08b823eae76e3e57e044d2ff"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/sentry-mki/sentry-mki-animated.blend",
+      "bytes": 269597,
+      "sha256": "3458d620fcb4ba79457c1af33b7b33aa45e90d9ec21cff8220d4b7dd81a9ecdc"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/sentry-mki/sentry-mki.blend",
+      "bytes": 692216,
+      "sha256": "3a7166ca845a90bcff08706ed262289f30d5a95ea40a0f63e31ec686c6d0bbce"
+    },
+    {
+      "path": "build/candidates/field-pilots-r7/sentry-mki/sentry-mki.glb",
+      "bytes": 311112,
+      "sha256": "39b5d6bdb9fd84452659aecf6ef3151c88bffa6164931be73c954a74f97c68c0"
+    },
+    {
+      "path": "build/candidates/field-pilots-r8/censer-of-dread/censer-of-dread.blend",
+      "bytes": 724006,
+      "sha256": "3b041d9eb4543ec16462b109c1ae22034e5d603f6dfc555496d152ef434b6287"
+    },
+    {
+      "path": "build/candidates/field-pilots-r8/censer-of-dread/censer-of-dread.glb",
+      "bytes": 609528,
+      "sha256": "7175511fdcb346a0d50105ecda223f9614c5b0d8d865eded80a8f152e857a660"
+    },
+    {
+      "path": "build/candidates/field-pilots-r8/regeneration-heart/regeneration-heart.blend",
+      "bytes": 814418,
+      "sha256": "49d0918971f31f6d0fe8acf89fcdbe294a42754cd71f116acef40335a82e82b7"
+    },
+    {
+      "path": "build/candidates/field-pilots-r8/regeneration-heart/regeneration-heart.glb",
+      "bytes": 347544,
+      "sha256": "d9d7e6ea8467bef91ec8e1372cb115cdfe53bc9f3b4dff7adefa2f17ebc830c7"
+    },
+    {
+      "path": "build/candidates/field-pilots-r8/sentry-mki/sentry-mki.blend",
+      "bytes": 695676,
+      "sha256": "4f03cf30049bba63372b7bceb527ed4264336c04761ddd4386e0585d3fa0be7a"
+    },
+    {
+      "path": "build/candidates/field-pilots-r8/sentry-mki/sentry-mki.glb",
+      "bytes": 314124,
+      "sha256": "b46be355b6789a1c7b3eb0a37d940a6b01cce6cd8d9c098fabbdfc600d28c91b"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread-animated.blend",
+      "bytes": 393009,
+      "sha256": "f31ca4961887e69385d4aa6dcf42e9fd8cd530b569ac365440bfa88bbca2b47e"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread.blend",
+      "bytes": 737219,
+      "sha256": "2234233d6d7c6a2d86f2dd874ebe18cb6332100051b5ab746f85c5d1012e585d"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/censer-of-dread/censer-of-dread.glb",
+      "bytes": 480588,
+      "sha256": "9a699e282e7ba212cf417bb8c5b3febee6b60636e8230903096b81bbc9c813ff"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/regeneration-heart/regeneration-heart-animated.blend",
+      "bytes": 356830,
+      "sha256": "f05baf2b31098e1a3bbab238ea122dd1b2b074226fb258e6659fe9346fcee52b"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/regeneration-heart/regeneration-heart.blend",
+      "bytes": 822392,
+      "sha256": "acf1b68de91d55a211ff77bdb8c9734ef61ddffa933dd43903870bfd2294e39e"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/regeneration-heart/regeneration-heart.glb",
+      "bytes": 319320,
+      "sha256": "017b62d5ab410640edb8005e8524c67b6905515e7a4b26b70756969c9b224b09"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki-animated.blend",
+      "bytes": 293055,
+      "sha256": "c12a4945094db78a97fe0dc9f0c432664a3c2a4e501138752d5cc81fa7ca3e9e"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki.blend",
+      "bytes": 714128,
+      "sha256": "fd37f4d5a7a6a40c3058c10d3fb0cb50027f1335d5bf83c2015f08581882876b"
+    },
+    {
+      "path": "build/candidates/field-pilots-r9/sentry-mki/sentry-mki.glb",
+      "bytes": 253676,
+      "sha256": "ab034bdf786a03181b853833b68f16df635b7ecb1c439c9841bb9c5f67392277"
+    },
     {
       "path": "previews/field-deployables/clay-roster.png",
       "bytes": 489989,
@@ -568,6 +1223,611 @@
       "sha256": "5063058b5a07192eba06980ac290cf2f6d10a4ae49ba5823757d2cb99cb197db"
     },
     {
+      "path": "previews/field-medic-r2/field-medic/clay.png",
+      "bytes": 430240,
+      "sha256": "cbd09fbc63790a09b80743d12d69309304224a473e382829f135c3eb8f9e42d1"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/closeup.png",
+      "bytes": 445888,
+      "sha256": "5c6b003f64cff9b555d2d0993103fa1177d5a095dbbc322f27242282e9bb13f1"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-00.png",
+      "bytes": 113452,
+      "sha256": "a40152b773c70c1469461ddb0fe57d5b448717583c117f56a83a218bae5f6e1d"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-01.png",
+      "bytes": 114260,
+      "sha256": "0aae2df260f1aed57a38b7ba064b1386f32f6efb237314a160f0a2bd871f22aa"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-02.png",
+      "bytes": 116076,
+      "sha256": "8e8b451c65f6f4d27668ae15d71f4e83b3142ce3af7a9d699e3fef94a4c6b659"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-03.png",
+      "bytes": 118369,
+      "sha256": "bc9f7851fa169c5a43e2d002bbcd8ea2d04e000ec8f50990779591a6179be211"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-04.png",
+      "bytes": 120733,
+      "sha256": "942125e89910dc5eff0d82a1476611e07f4d1b49965b535f8a860cbf6bd8358b"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-05.png",
+      "bytes": 122061,
+      "sha256": "42f5dabeeda4098179f458bb4d673ad220d276eb5084beae55099cd2cd4d6473"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-06.png",
+      "bytes": 122564,
+      "sha256": "031750de88449d0907584b7834e4eb5003864bcd82e2b8150f1cc3810ce72b67"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-07.png",
+      "bytes": 122821,
+      "sha256": "2ab95b0678f1652cc7dd87a9d553426a36b3db8c2b2fd3713a5cb83389ff7cf8"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-08.png",
+      "bytes": 122733,
+      "sha256": "b788b6606b52b964b4c87fa600b526a09da02024e6a10ab6b1986ad68d3dbcac"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/deploying-09.png",
+      "bytes": 122819,
+      "sha256": "8ae91357865445f15d0c090d2deec1bd194cfa31dbdd2f3d480b5195ec89c0cc"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/front.png",
+      "bytes": 439093,
+      "sha256": "b6e3dcb3b57ee10883d9726907a414432f212498e24f2fdd817e809c50c43922"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-00.png",
+      "bytes": 122819,
+      "sha256": "8ae91357865445f15d0c090d2deec1bd194cfa31dbdd2f3d480b5195ec89c0cc"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-01.png",
+      "bytes": 122886,
+      "sha256": "6775b9949454f0c0ee00a909e10e3b33c826ea5fcfefd2cc43e5bac1bb68448c"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-02.png",
+      "bytes": 122778,
+      "sha256": "0f0272b4f44c686ebf8f3535b6673817aca258e189afac7aa3abb135089dc77f"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-03.png",
+      "bytes": 122816,
+      "sha256": "720ff7542f8df9ba47b62a4db1714e703a9b62d6741b53b9f7aa28c048a3f81d"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-04.png",
+      "bytes": 122788,
+      "sha256": "4a2f0c8547bd68a8da89128e8129dbb155f14a95c2e4cf71a73c3229e9be2df1"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-05.png",
+      "bytes": 122841,
+      "sha256": "b9f92f72a8a151fc13106ce431ccd7953c3d03aea93d879cd1168bbef09bd77c"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-06.png",
+      "bytes": 122799,
+      "sha256": "4c9da67a1b1cc519bf45fad3f039461507988953b6f0cd47c0237e280f626147"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-07.png",
+      "bytes": 122791,
+      "sha256": "321724ca00169bbd8363ad975275aa30223ccb87fc598cbd95e925a139032526"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-08.png",
+      "bytes": 122795,
+      "sha256": "18a9afd85167105684e8f7b77149d0284d3bf21edf2040d833c9a33558cff9b3"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/operating-09.png",
+      "bytes": 122819,
+      "sha256": "ce822b4119328010b5d404e2f64fa93fe700fe6abf2930c1a9d8e7a3f003f746"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/packed-00.png",
+      "bytes": 113452,
+      "sha256": "463b3729359a131b9b6a091c32c1b841042455050c7748bef8a32ba1e33aa064"
+    },
+    {
+      "path": "previews/field-medic-r2/field-medic/rear.png",
+      "bytes": 416628,
+      "sha256": "f8ac390700e71d06bf4c0e2fc4b8c3441aa86e24526612160206455b825f475a"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/clay.png",
+      "bytes": 430452,
+      "sha256": "724e359832f928a4be351bf74549552bc04334a4b6db0f5ac0cd6bca0807e3a7"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/closeup.png",
+      "bytes": 445975,
+      "sha256": "4cab9b5e795f8df52fba9b97fd94f610508ddf85650eade5c4d65216d31adf09"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-00.png",
+      "bytes": 113026,
+      "sha256": "83e02667ef6de51eabfcb5d8704425fcc4c6b0118ff947cdc45ead8272e1f8e1"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-01.png",
+      "bytes": 114019,
+      "sha256": "5f8c1feaef29f03c6e0619a296c302f065235feee35d9780468ff24c76e0cd83"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-02.png",
+      "bytes": 115596,
+      "sha256": "10e10a76af644a37a69fe34aab529f0214e497c4914c2dc4736c65c311a5b529"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-03.png",
+      "bytes": 117869,
+      "sha256": "f462313ec5b1ba86646548998587aa752b5b641b5f8498e8910cd9a5c848d88d"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-04.png",
+      "bytes": 120043,
+      "sha256": "95f6b82a8a787cdc90525c68aa59f844a9125f50b0a48f174caa5c955d759dea"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-05.png",
+      "bytes": 122075,
+      "sha256": "a8c54921ca8b65ad35f3e8e6457c61724e63b305ea151f4dd89577e3b9f10dc9"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-06.png",
+      "bytes": 122822,
+      "sha256": "d9f5ab71cf47d3b51876d26250ac8a4ab65f4762416b343f2bc4205c9cc3bc50"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-07.png",
+      "bytes": 123016,
+      "sha256": "e3bfd845457ffef6411e01f2f7d6d45a3347d7734a7369eb7e06d10610cc3179"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-08.png",
+      "bytes": 122859,
+      "sha256": "0643fc67779137a1ace3b960a0282e3c09fa2052c8528feb6be0d4b420ff4596"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/deploying-09.png",
+      "bytes": 122459,
+      "sha256": "793c9bed7662fa1416baa8a7417258dcef48343eda9e4a5eebd72738ee6b54d7"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/front.png",
+      "bytes": 438563,
+      "sha256": "a11569c9ffbfc20e38fb9c5b63059ec41fb91ff4c7f8be44bfce5b1693f89a7d"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-00.png",
+      "bytes": 122459,
+      "sha256": "793c9bed7662fa1416baa8a7417258dcef48343eda9e4a5eebd72738ee6b54d7"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-01.png",
+      "bytes": 122712,
+      "sha256": "eb0a832a6ddd6bb20d7f17658958233f87278298d430b5c5bde9e9704b426797"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-02.png",
+      "bytes": 122611,
+      "sha256": "deb6c485a0be3d957673273de35463ff5f2155268008e94c74cf8ec8db9d0c2b"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-03.png",
+      "bytes": 122551,
+      "sha256": "2e4b29a506964e6984804a5506f8ea8a80a56b0593d1e9f15df7f50453eaa644"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-04.png",
+      "bytes": 122534,
+      "sha256": "3b81fea978dd37533cda11a967796248a4c2c4e5a04104952a72ac57be454130"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-05.png",
+      "bytes": 122332,
+      "sha256": "3a735d8a7c2e94160840b73feeabde72ecbfabde3783de975f88315a1f63b2eb"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-06.png",
+      "bytes": 122409,
+      "sha256": "99a4cae707e7ce3d1724a082ce13d38b06201e460a6cecb39eea0348d3513070"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-07.png",
+      "bytes": 122429,
+      "sha256": "2d3286a20c71ced307c7f0ba9e113459c4623096f4bb876f8cb915e3ea974640"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-08.png",
+      "bytes": 122405,
+      "sha256": "13b1cb7132bfd0510833862ac46c63876a5b1c28751d6db0892547fb4abe41d3"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/operating-09.png",
+      "bytes": 122459,
+      "sha256": "d4b82d73b84967217e9c1625c32ced718e10aceee8a8c1cab20586c2696b0719"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/packed-00.png",
+      "bytes": 113026,
+      "sha256": "221c8cdf10974875e894b060a2ee621675280dda7da0bf7e7de22710908e4be8"
+    },
+    {
+      "path": "previews/field-medic-r3/field-medic/rear.png",
+      "bytes": 417493,
+      "sha256": "8b5191da9a275a4835d0391bd1efd18269301564ccdb15e76106084e881d3511"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/clay.png",
+      "bytes": 430313,
+      "sha256": "dfafb36d013db76956f6352ce9ea8c3ba2f30f477ecbaa4741aff8d86ec0d4b2"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/closeup.png",
+      "bytes": 446005,
+      "sha256": "8c780397d4ab369b12cf7256939c31cc5d5dd988af2a523b6c1ff3dee5a8380d"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-00.png",
+      "bytes": 113207,
+      "sha256": "7506e47e446d1c8a503c33fa8b5fec31516861e63292f624959c59b00bfa1830"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-01.png",
+      "bytes": 114143,
+      "sha256": "6e403cac9e3fb7b4876bd3128327dfde6d928e99b51abe3844dcbe199715ff95"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-02.png",
+      "bytes": 115897,
+      "sha256": "89f05a1ab6cfbae41a58d09fa80b63c814593daa02df7e2198b1314f34f27d02"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-03.png",
+      "bytes": 118119,
+      "sha256": "606280beec8a91544a38c0fce49682b678b6dde8969b721f437bd2998cf22747"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-04.png",
+      "bytes": 120222,
+      "sha256": "2a3d346950cb7807f4844fdad5e2d116c262be1c9e4e71885e233559030dc1e8"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-05.png",
+      "bytes": 121909,
+      "sha256": "215b0da8dd827aa55d545889bcb1efd0f823db061fa7dcd4c017af4b89ddc4a5"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-06.png",
+      "bytes": 122960,
+      "sha256": "4d597435b7a615e3e57bba6f9bb1eaad5e93ec04c3a6626e9427d7f5ca6a852d"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-07.png",
+      "bytes": 123118,
+      "sha256": "4570e358dd613c1b8195b156b5cad14360d98ebefbebd96b005e4dbf77613fcb"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-08.png",
+      "bytes": 122803,
+      "sha256": "e42f5f33645a52cf6cb5828ee257dff6a49f036df904a315bfa2753785a7d51f"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/deploying-09.png",
+      "bytes": 122608,
+      "sha256": "78733f0b871bd3e06a5a740f05867920260cfea4cecfcc5fc4cf23c43a071b2f"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/front.png",
+      "bytes": 438639,
+      "sha256": "56bf972505c09c418afef6d013590383eb6781772cb59dbaa877cc998f2d09b9"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-00.png",
+      "bytes": 122608,
+      "sha256": "dd388384408646dddc3662b76b4a7e7a16c71fdf96eaba5335505ca546f04113"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-01.png",
+      "bytes": 122718,
+      "sha256": "90ac09143266bff424004e9c47d8c038d3a886d76dd94ca6aa8dd1bfbc998277"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-02.png",
+      "bytes": 122475,
+      "sha256": "419a8d90503d03cdae27f9074b43dd1b8d5ae1fbd2789fedfa931a134f232deb"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-03.png",
+      "bytes": 122691,
+      "sha256": "e9559bb953318a4dc9b060a4fb4fc9e365392096f78ad70c1fb0e2dc0e3de328"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-04.png",
+      "bytes": 122532,
+      "sha256": "a76e84825f03b083ac970f15fe663965abc27e41f5d782f1e20d55ad7f8e7ce8"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-05.png",
+      "bytes": 122678,
+      "sha256": "13a856d5b238d11210a03b5e5c3f878a7833e2a579235842c7085fd09f196d61"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-06.png",
+      "bytes": 122671,
+      "sha256": "bde9b54d5bfa578df059a9619b2a9bfddabc7e30797d0db7ca95c35f92eab617"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-07.png",
+      "bytes": 122712,
+      "sha256": "c8ac56917b5d3020c8b2968df3f6c0603e0e27586eb261e75c17fb5645da4528"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-08.png",
+      "bytes": 122730,
+      "sha256": "250125d59244a9772bf7167ae551b675daa8a35adbaee10b292b7e7a5180bcae"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/operating-09.png",
+      "bytes": 122608,
+      "sha256": "db54ee4b7dfc0eb98aac74eac737204d5ef2fd21263290c2dbd943d928a7d850"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/packed-00.png",
+      "bytes": 113207,
+      "sha256": "55c07fdc01c0f53bd4dcc516304e174d5d5c127224ec36b144005d42c93980c3"
+    },
+    {
+      "path": "previews/field-medic-r4/field-medic/rear.png",
+      "bytes": 416730,
+      "sha256": "c78dfbfabe6f68282f76e5713eca5127c6f50b27d9ecd7e89afa0ff087a8e2e4"
+    },
+    {
+      "path": "previews/field-medic-r4/gpu-audit/active.png",
+      "bytes": 15270,
+      "sha256": "3106cb4ee64465f23fb7349d50817f78c2d4e88dddae7736a6fa39471010b120"
+    },
+    {
+      "path": "previews/field-medic-r4/gpu-audit/deploying.png",
+      "bytes": 15596,
+      "sha256": "4122bbf86564c0ecd6bc2d21713067be2f1df049bb37080b3dc0c194ebc0b859"
+    },
+    {
+      "path": "previews/field-medic-r4/gpu-audit/operating.png",
+      "bytes": 15220,
+      "sha256": "da8a549ebe88d47996e3d084fdd97ed1b330668f46daaed6c0d1c5f49451841c"
+    },
+    {
+      "path": "previews/field-medic-r4/gpu-audit/packed.png",
+      "bytes": 10969,
+      "sha256": "31f04a02397e646c22fc938ce61e5ae093e437e41bde1208ff4a255d891ffd0a"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/clay.png",
+      "bytes": 430359,
+      "sha256": "932360ea1e620e9b2b10219439e4ad09cb108a7938b7fd3d2351c8c07121aebc"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/closeup.png",
+      "bytes": 446133,
+      "sha256": "bdc27cc897882c633326b5e67c1d7ad0c9a7957e3656d392a65ec0fb2a2af85c"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-00.png",
+      "bytes": 112985,
+      "sha256": "6e1c13a16d638a3c91233cba742b05ea097bf12daf672f293a0b251d5562dc8a"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-01.png",
+      "bytes": 114367,
+      "sha256": "b1aa20745de5a020ed3bb0e4ca01da3c87ec2d53a599293b3148253db3a76a81"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-02.png",
+      "bytes": 116125,
+      "sha256": "d82e81ef99d2389c2afdd5f263d1c49fbe10bfd30f34c1d41df42775dda49b02"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-03.png",
+      "bytes": 118017,
+      "sha256": "4fec3da8d165e0fbe3e5c6627e7d75d908df56b3ef15cd9a6bef88d453be249a"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-04.png",
+      "bytes": 120291,
+      "sha256": "080be1cfe34810f8fe2b0a14388d56126fa8212cd3034b8618e599c6b3d6ea7a"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-05.png",
+      "bytes": 121904,
+      "sha256": "5410bc6b4e4f7eabd2a9f6128f28425b4d9f9c0979fbd890d2053be7d7dbf9d4"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-06.png",
+      "bytes": 123089,
+      "sha256": "cc53c82d72584b2c76dc6cf4c085f67755546cc5b8d0976f1f320b7f01bc1634"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-07.png",
+      "bytes": 122977,
+      "sha256": "9a4e674c0c241c7a9499ff6795700340070cbedf30cef79bc4e51eba9c68c402"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-08.png",
+      "bytes": 123086,
+      "sha256": "918787bc382caa577d1f2bffc343b13671a89f9d2d8c9b957ead8938e1d5b726"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/deploying-09.png",
+      "bytes": 122971,
+      "sha256": "2699307f5cab7f25fad4b25de4a254a507d6ba79d5b982b79dc13d572d673447"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/front.png",
+      "bytes": 438634,
+      "sha256": "d10f5e5ce9845f8c3cd6b8f99d48b39a50d2965e5e7b3bb0fbcb697f30740891"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-00.png",
+      "bytes": 122971,
+      "sha256": "0fa30b6953d52941d7c0aabead5ff4ec45e658a6b3227effa6aa076375e97c66"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-01.png",
+      "bytes": 122793,
+      "sha256": "2a56e1b814d977fe9bc24368f246f140786f74116d6aa39da446c30973774081"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-02.png",
+      "bytes": 122653,
+      "sha256": "b752aab486f7a5a2c4dd44bcc78da5284471f92aeeae4c205ff790c37837ee69"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-03.png",
+      "bytes": 122590,
+      "sha256": "d1f3c45fd3d70f72af9ca8a9e3a4937adca7fdfdfde2dfbc647e726be5ca36c3"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-04.png",
+      "bytes": 122886,
+      "sha256": "88d32ef51ddddad363999308b9005cbb00250747b1d9c21198f1da168ba85dd3"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-05.png",
+      "bytes": 122978,
+      "sha256": "e11f0665c8688cbab9c45cc803540bfddcb3f87af8a62c3c2786d659ea5f9e80"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-06.png",
+      "bytes": 122886,
+      "sha256": "811f1850f774cfd0c269b376cc0586ddbbe9de8b5277c21ec73ea24b8a911535"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-07.png",
+      "bytes": 123007,
+      "sha256": "4dd6a7dea1901eadcde3c6d64dcdefafad5a8fbd328511b48772e44a8416f806"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-08.png",
+      "bytes": 122989,
+      "sha256": "dfeb27df72f9dad0a97259b23918a30959630f3588889704cb8a033b09ab6405"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/operating-09.png",
+      "bytes": 122971,
+      "sha256": "03695bf11eaab659dee9e0926321c03ecb1e81ebf2654e789e4c458354bed57d"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/packed-00.png",
+      "bytes": 112985,
+      "sha256": "34c8b55f1ff145bf59e787845f2aca6b5380ba100ed5761dd3d23daa7c36cd87"
+    },
+    {
+      "path": "previews/field-medic-r5/field-medic/rear.png",
+      "bytes": 416878,
+      "sha256": "41faf282e32fe25b5342adb037a4293765792a54a7220f3560c3d0da58155373"
+    },
+    {
+      "path": "previews/field-medic-r5/gpu-audit/active.png",
+      "bytes": 15988,
+      "sha256": "ef9369f1ce1360ba4e5f397a1a3467e1de76886d4573215f304faa332765c752"
+    },
+    {
+      "path": "previews/field-medic-r5/gpu-audit/deploying.png",
+      "bytes": 16272,
+      "sha256": "c48d3cd505ba771509dafac05bab9922bb29b74639143a89b59d1dd78ecaa357"
+    },
+    {
+      "path": "previews/field-medic-r5/gpu-audit/operating.png",
+      "bytes": 15987,
+      "sha256": "ea42fe0e2c2456fcfa45d3f801a1e0558325030e83e888d1ad906b284ba758d9"
+    },
+    {
+      "path": "previews/field-medic-r5/gpu-audit/packed.png",
+      "bytes": 12460,
+      "sha256": "4e0af13193f530df3790d738268aebd9f8df2333a5ff5abce9ca6853f58f005c"
+    },
+    {
+      "path": "previews/field-medic-r6/field-medic/gpu/active.png",
+      "bytes": 20556,
+      "sha256": "3ab84549a8009fc248ac914ad4d2630a10e696d62c56b5577367e9c017ed0fa7"
+    },
+    {
+      "path": "previews/field-medic-r6/field-medic/gpu/deploying.png",
+      "bytes": 21240,
+      "sha256": "c06b0e1b801c362449df1e70ef47328581c393efd6c191352b87e0907465b47b"
+    },
+    {
+      "path": "previews/field-medic-r6/field-medic/gpu/operating.png",
+      "bytes": 20582,
+      "sha256": "293a40307c3387df36d1f3679bf5a383689d4194e26443ef4d91fa40373a9f29"
+    },
+    {
+      "path": "previews/field-medic-r6/field-medic/gpu/packed.png",
+      "bytes": 14517,
+      "sha256": "2112f620745992d24ab737880f450ee0f86f14a3c7ac59986bd9e832e2f775c9"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/active.png",
+      "bytes": 21476,
+      "sha256": "102628f84290e750f6cdee6793c920a3e2f2eaea8e21f24285e660cb299edce8"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/damaged.png",
+      "bytes": 21800,
+      "sha256": "2654b09c0a14cb70c4b9b8af958e32283b6aff7d6bddd88a94e51636cc1746a3"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/deploying.png",
+      "bytes": 21994,
+      "sha256": "eb61290e7f20819df94e1d7d0d726648269d1b388d3f02df4de8b957b07887ae"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/destroyed.png",
+      "bytes": 21994,
+      "sha256": "eb61290e7f20819df94e1d7d0d726648269d1b388d3f02df4de8b957b07887ae"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/expiring.png",
+      "bytes": 21476,
+      "sha256": "102628f84290e750f6cdee6793c920a3e2f2eaea8e21f24285e660cb299edce8"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/impact.png",
+      "bytes": 16978,
+      "sha256": "d79c9d906a6e0b268d7a16a6cd909c4de2038110018bfb8708a33a5e93cfdf10"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/operating.png",
+      "bytes": 21504,
+      "sha256": "477047702845c92431edd53b128f196cd0f46c5771814ad596ff40d89a52a8be"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/packed.png",
+      "bytes": 16942,
+      "sha256": "a4554d14a5ebb07d64db048317dc783b1bb3a21eaf128714ce2d39945a77c4ad"
+    },
+    {
+      "path": "previews/field-medic-r7/field-medic/gpu/thrown.png",
+      "bytes": 19341,
+      "sha256": "73f570b11df8d96a1bcf51ce690b5c8bbce8f20e9fe2f4c045fbca3fbdad7b01"
+    },
+    {
       "path": "previews/field-pilots-r1/censer-of-dread/clay.png",
       "bytes": 421874,
       "sha256": "12be2e06fa175c1d138c78607e8e2a87e0c523d3f6ac967e6e67f7116cceb2a8"
@@ -941,6 +2201,96 @@
       "path": "previews/field-pilots-r1/sentry-mki/rear.png",
       "bytes": 435379,
       "sha256": "ae07835c89422d139c8293350f3ba4d56adf4f54856e3ac0624689e8b93136f3"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/active.png",
+      "bytes": 25440,
+      "sha256": "43e9634bcd5635b6615f8f4e97725ccc953009f00455bfe98195375bfa2f914f"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/damaged.png",
+      "bytes": 25438,
+      "sha256": "f81c98c431173c8ee96c14f511373e73b66d0efddc71b5be68d1df9c0632072b"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/deploying.png",
+      "bytes": 23671,
+      "sha256": "3d82cb75b590add814d92c45bd92fe7b4657d3260e35c1b6276bfbdd7d3f2940"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/destroyed.png",
+      "bytes": 23534,
+      "sha256": "da9cfab4792b91bb1bb466c68f44c98946cffc3c647ffb5f7eefd96b50ad3631"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/expiring.png",
+      "bytes": 25451,
+      "sha256": "fb3504a43c4e7759f8f1b60827fe894e6601ec78a4e19fc51d81b9429ca7de78"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/impact.png",
+      "bytes": 17749,
+      "sha256": "fb609911a0c2e54aea81c45e0505aac12261d1bd01b46f197e27468f252c5f1f"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/operating.png",
+      "bytes": 25089,
+      "sha256": "9fce98f4aa7908f6293af3005356ba4ebd0a906b5a8bfeb44005f2fd6114aeea"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/packed.png",
+      "bytes": 17894,
+      "sha256": "b3c982d7cf22e7bbd2b9ff518d05471d8fad1a442485178df7bc00b800936be9"
+    },
+    {
+      "path": "previews/field-pilots-r10/sentry-mki/gpu/thrown.png",
+      "bytes": 21406,
+      "sha256": "16f7bafaef46c539b6bd6f0c4bd9c6d83006964da738e9fe040311d540aed2a2"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/active.png",
+      "bytes": 22881,
+      "sha256": "871bf39583b1fbe6fad4bb90f402277a255acb030ec53266f749e586d80e52d9"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/damaged.png",
+      "bytes": 22969,
+      "sha256": "77ed903bb7f615a2b34de970a6a9cf6157492c4d7bf36a0b2864fa55ae4b6189"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/deploying.png",
+      "bytes": 21250,
+      "sha256": "6d5d0bc9ed7f781657c52b55ac54d020358e5895b3ca3a13552f4a4658eeb85f"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/destroyed.png",
+      "bytes": 21095,
+      "sha256": "d8b92901e8703fc1e44dac8ccf492283880cadfe1f3f6de97fb6f804e1b97c39"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/expiring.png",
+      "bytes": 22863,
+      "sha256": "3db12945f46549c4ad8eda389c004b3785d4262734b8ed8ac1fa47d8a5d21b16"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/impact.png",
+      "bytes": 15806,
+      "sha256": "ca58f87f11df302cccb95bbb8596371f905bd0ff8703a260c3f73ffe7e06f55e"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/operating.png",
+      "bytes": 23601,
+      "sha256": "a0c6e9dc05b1afa34f41b7f78c8cc83e24f470bee48ccb7fd97039c82d58aa7b"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/packed.png",
+      "bytes": 15990,
+      "sha256": "94a49d6d927a5db97baf3ff9d09231b2b9c005ac6f841b264b91d3ac357039a5"
+    },
+    {
+      "path": "previews/field-pilots-r13/censer-of-dread/gpu/thrown.png",
+      "bytes": 18360,
+      "sha256": "aeaedfad712f625b775e7c371c052beb5beb3277c9760bc6c343f56adab2a991"
     },
     {
       "path": "previews/field-pilots-r2/censer-of-dread/clay.png",
@@ -1763,11 +3113,6 @@
       "sha256": "4b8087670e7573c4a8b2b32a30d01c5e4dffd9c5ab22d0b4dab9c4839c7d0e0c"
     },
     {
-      "path": "previews/field-pilots-r4/censer-of-dread/deploying.gif",
-      "bytes": 528466,
-      "sha256": "388eaac93d78104818d52da3414a2849c22686655690c89aec3d20675cf0d2a6"
-    },
-    {
       "path": "previews/field-pilots-r4/censer-of-dread/front.png",
       "bytes": 467354,
       "sha256": "67e34c44b7ee1ed8d9a9dfe7f82c3d8ba8260d805352862b9878e007f842b7d4"
@@ -1826,11 +3171,6 @@
       "path": "previews/field-pilots-r4/censer-of-dread/operating-sequence.png",
       "bytes": 399337,
       "sha256": "11ad8601c8a8c588dbea8de4b5875ff02b0c275951ce2d59c7ca91d5f6cfe15f"
-    },
-    {
-      "path": "previews/field-pilots-r4/censer-of-dread/operating.gif",
-      "bytes": 565911,
-      "sha256": "1ba3965471c1103050accfea90b5f06a5524ff8e626638e74422095b3cbef328"
     },
     {
       "path": "previews/field-pilots-r4/censer-of-dread/packed-00.png",
@@ -1913,11 +3253,6 @@
       "sha256": "8f36e3a6600e437709c4938d1f82426d6705fc62d56c4b215953eb0e4b73ac1c"
     },
     {
-      "path": "previews/field-pilots-r4/regeneration-heart/deploying.gif",
-      "bytes": 515295,
-      "sha256": "fe2379233d25c1f3c3f6ed4aecc89027650e32c634d5e3b836ca1b7b67219808"
-    },
-    {
       "path": "previews/field-pilots-r4/regeneration-heart/front.png",
       "bytes": 470814,
       "sha256": "5b200f57278c02da6e256a2554ff9736a499d566dbe7ab6e34e40c7d1392b0ee"
@@ -1976,11 +3311,6 @@
       "path": "previews/field-pilots-r4/regeneration-heart/operating-sequence.png",
       "bytes": 362026,
       "sha256": "81114135e039225314e86669a0533b8a455acd2624234eb7857ce346ed1d670a"
-    },
-    {
-      "path": "previews/field-pilots-r4/regeneration-heart/operating.gif",
-      "bytes": 443590,
-      "sha256": "f7e0fecd066510fcabb996b2db06bc083b2c529bf2c9cd27f5a4f90bc5cf4350"
     },
     {
       "path": "previews/field-pilots-r4/regeneration-heart/packed-00.png",
@@ -2058,11 +3388,6 @@
       "sha256": "e6f6a24ce4358761818cbdcd68b91db22a0bf06d8afcd649afee230c2508dfe7"
     },
     {
-      "path": "previews/field-pilots-r4/sentry-mki/deploying.gif",
-      "bytes": 522765,
-      "sha256": "c3b10dfe643f1e167264237005a00f7f86541cdc89e3c283b6cc6154757f100c"
-    },
-    {
       "path": "previews/field-pilots-r4/sentry-mki/front.png",
       "bytes": 435684,
       "sha256": "31e1fb5e98d3130c21cf163e3c4c79bb6892a1d42e23cf447c9288a4c7c26d2e"
@@ -2121,11 +3446,6 @@
       "path": "previews/field-pilots-r4/sentry-mki/operating-sequence.png",
       "bytes": 170822,
       "sha256": "d785ff41f6a150ddf99238102a64e0a67be01095bbc185cf6cb69c789cf0320c"
-    },
-    {
-      "path": "previews/field-pilots-r4/sentry-mki/operating.gif",
-      "bytes": 492806,
-      "sha256": "149137d1fb7463e2b51af1793e417d2f5fb25b6cf5a81d29a43466ca7fea12e0"
     },
     {
       "path": "previews/field-pilots-r4/sentry-mki/packed-00.png",
@@ -2388,384 +3708,634 @@
       "sha256": "ed96662fe38c0f8efe496ded4ba8474080380565b7893ea79dbc18c4c93a896c"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-ammo/thrown-begotten-ammo.blend",
-      "bytes": 334504,
-      "sha256": "17de0cb3152c87233be4f5ab1de6b1c3b0ea205458a16feb5a96c51716f4ca77"
+      "path": "previews/field-pilots-r7/censer-of-dread/clay.png",
+      "bytes": 452308,
+      "sha256": "d11bc133392b92183a2f69ada7778c944d0f302e95fe640bb6f710b7715a3280"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-ammo/thrown-begotten-ammo.glb",
-      "bytes": 145696,
-      "sha256": "fd080b0789599877fd318f746bfee807768856c8f913d4d40b2b7f57cb1fda79"
+      "path": "previews/field-pilots-r7/censer-of-dread/closeup.png",
+      "bytes": 480825,
+      "sha256": "77059601e1c5806fe65aa2877852a8a9111cf87c426dbe4b4d74cfce4089f547"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-barricade/thrown-begotten-barricade.blend",
-      "bytes": 341811,
-      "sha256": "fd0707832a96cbe02419b92fc7841988cd2ea3da59aff280dba19b2da24e3e3c"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-00.png",
+      "bytes": 117537,
+      "sha256": "96c01d379c99cd2f02eedf8015b6193514eee4672ee1e22df84f9b5838a5636e"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-barricade/thrown-begotten-barricade.glb",
-      "bytes": 165020,
-      "sha256": "2d3be76c644ae190dcea073fe04d4afda23a065645c0ce660b3caa416af01d5c"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-01.png",
+      "bytes": 118267,
+      "sha256": "1ef9e1a5fe4b8cf70e3eb7ac4be30cd9549e5b2c4f8a5fb909bfc1d5d7110afe"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-health/thrown-begotten-health.blend",
-      "bytes": 327104,
-      "sha256": "28fc547aa986abc81caad95e86b506ad89fc3f80a2447e2862f6c31db3c97131"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-02.png",
+      "bytes": 119385,
+      "sha256": "c7a346628a3ac3e015b01c1efb6779283c2499affa76701f4c7afd174ec25885"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-health/thrown-begotten-health.glb",
-      "bytes": 137304,
-      "sha256": "5baf610ad017a1cb736b6ff8403c2d6194e540d9b3ee4bed7825cd91eebe7d32"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-03.png",
+      "bytes": 120402,
+      "sha256": "be644aea04a080fc35e8db8cfc94ddb5fc3cc480d59729afc08d2eb08e4307df"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-miasma/thrown-begotten-miasma.blend",
-      "bytes": 329918,
-      "sha256": "578a39761d86c3265afe7e9eb7aa75c29b47970ec3a73eb5cb0fa6a60c5aaad6"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-04.png",
+      "bytes": 122809,
+      "sha256": "c208d063c80acc7e69b318ef5d5b3445441a19d38181c6dd73970578cad68af4"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-miasma/thrown-begotten-miasma.glb",
-      "bytes": 139772,
-      "sha256": "935828ece00e1d07b4f83be2faaf89cc2088ae35b60ecbeb81a9ea9dd5062c6e"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-05.png",
+      "bytes": 126212,
+      "sha256": "5b16ea9fa98ecccab3e22d57177548c51349c8247d67e5373ba77cdf2f6a9ff2"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-shield/thrown-begotten-shield.blend",
-      "bytes": 334768,
-      "sha256": "07af922fca3965865e34d823568c2e59fe9b8db4e98c441b3469ff2e90757d15"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-06.png",
+      "bytes": 129560,
+      "sha256": "12e89c06971e4676e87819cf1751e08578586644a07454944aae6acd32ad90b3"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-shield/thrown-begotten-shield.glb",
-      "bytes": 151040,
-      "sha256": "130dd4defe24292fbdd5f811d98a754463805c5579de6e2e6d9a50bd2a5d8dad"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-07.png",
+      "bytes": 130802,
+      "sha256": "291f3c9587cbb494060c2affb1eee540e1c48bee616c13e5f0274de022dd614d"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-turret/thrown-begotten-turret.blend",
-      "bytes": 330836,
-      "sha256": "3d1f888ab2c0026097b6e2230dede7ce98e03cd3936160f2704d456f80cf6edb"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-08.png",
+      "bytes": 131340,
+      "sha256": "0c765465054a3106a3fa862b709a3c0f753bafd0cc3ace91d0a69a43308b28c1"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-turret/thrown-begotten-turret.glb",
-      "bytes": 136732,
-      "sha256": "f9774fdd96e376df3254157295acd0caa71e9c4f6f20f0d2d1eecd2c49d73458"
+      "path": "previews/field-pilots-r7/censer-of-dread/deploying-09.png",
+      "bytes": 130747,
+      "sha256": "b547be2a441590221edeaff80ba67567f6825ed7fa116d8830d9c551814335ed"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-wall/thrown-begotten-wall.blend",
-      "bytes": 343324,
-      "sha256": "c5ca486a468dcf339ff5e23f78a3947776fe4913cf0bc21a32af0a7ce8277662"
+      "path": "previews/field-pilots-r7/censer-of-dread/front.png",
+      "bytes": 463601,
+      "sha256": "48745911c5076c473c97a7d94398c80cd55b27527d8cc567c99dd4994e0bd952"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-begotten-wall/thrown-begotten-wall.glb",
-      "bytes": 163296,
-      "sha256": "04bc86d4f6b07d2045ce9d1d7967f9bb39e912b4ecd33e9fad69b3abda26e719"
+      "path": "previews/field-pilots-r7/censer-of-dread/gpu-audit/active.png",
+      "bytes": 18309,
+      "sha256": "2eee3adfc9bf1b3eafb1364ce999bb40d018ea608fdfec9664eaf071eb0d6cbd"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-ammo/thrown-penitent-ammo.blend",
-      "bytes": 349299,
-      "sha256": "bd7d625576000f8694c740108dbb4fbe2e85c953780914966296865f191949af"
+      "path": "previews/field-pilots-r7/censer-of-dread/gpu-audit/deploying.png",
+      "bytes": 15858,
+      "sha256": "00908de9a0bdf163e460b340c42c8a4982a2c0b13a0693f88bbd538b6e15d491"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-ammo/thrown-penitent-ammo.glb",
-      "bytes": 226328,
-      "sha256": "e6d07dd175d257308b335ef9d90e236f9834e9f70878b6b10f75487c028881d0"
+      "path": "previews/field-pilots-r7/censer-of-dread/gpu-audit/operating.png",
+      "bytes": 18735,
+      "sha256": "3aaaed64538f3c471469fc5caeea9d0db1b2a9750ef37f213c6f93c745555530"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-barricade/thrown-penitent-barricade.blend",
-      "bytes": 335668,
-      "sha256": "afb45fa5cc4a3703badd14aba760fd9878bfb08177adb09373b9cdfa71647105"
+      "path": "previews/field-pilots-r7/censer-of-dread/gpu-audit/packed.png",
+      "bytes": 11986,
+      "sha256": "8582d4e2adf27c79ce6f9b60c274dce03014cc544d5ad1e61f278852778d7c32"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-barricade/thrown-penitent-barricade.glb",
-      "bytes": 194180,
-      "sha256": "adad6926a31c7ed1c2eb8455c642498e4c6bf27b16830081cd390995f924d9af"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-00.png",
+      "bytes": 130747,
+      "sha256": "17f86d726353e353b6f55eeea5a2a82df7618ee0b2025ec7682d9e7fa8d64b70"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-health/thrown-penitent-health.blend",
-      "bytes": 343543,
-      "sha256": "5e2e1a27ae75c1a4a2f155d6280db4c2a3e39fb919534a63a973fa69600a082b"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-01.png",
+      "bytes": 131134,
+      "sha256": "1f8a5307b04893c31bf9be6e89d8bba55e81ac2bc250bcc6e08cfd47803c4eb4"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-health/thrown-penitent-health.glb",
-      "bytes": 211580,
-      "sha256": "46b0acfe983123fcf85651286d082ca9d2adf2466a8166bbdafb06b66c46eea8"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-02.png",
+      "bytes": 131591,
+      "sha256": "dd95409c26dd73012079e8250e51bebf66a30587e20f8fd1c5d4355b71c5ba18"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-miasma/thrown-penitent-miasma.blend",
-      "bytes": 344958,
-      "sha256": "996122b9678cff7c3c1f889d4d3a91c21f76baf8aadf29f2ed4e7d59461f2ece"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-03.png",
+      "bytes": 131475,
+      "sha256": "5320caaa3a25e13576c90cba252f98af1bf7f9a5166b5fa02b06e46f4ca6e433"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-miasma/thrown-penitent-miasma.glb",
-      "bytes": 221860,
-      "sha256": "34682feb3a00699f69d7f770f29ae197692fad3ad98fc16a2b58abc3ce1a693c"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-04.png",
+      "bytes": 130985,
+      "sha256": "4f623b130edccfd11f68acbaa7ae30cd6114f463a9a8df89336eb2a6b6352bb8"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-shield/thrown-penitent-shield.blend",
-      "bytes": 358575,
-      "sha256": "476162bdc2ac786f39ac8c02370356bfe0f27a5cdcb412f5e2ede179371db181"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-05.png",
+      "bytes": 130702,
+      "sha256": "3eccce7ded1608219df2def31e5c1949a0e1ceed3c07c402002f41c0f0e41e0f"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-shield/thrown-penitent-shield.glb",
-      "bytes": 248088,
-      "sha256": "f82cdc7e367483dda875faa89ac518924c317ffdb414867543d2a41266ecd8b5"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-06.png",
+      "bytes": 130577,
+      "sha256": "5f74e1dee9d6831611aad7325cca660003e13dd2520dc0c2852a1f5af6cde10e"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-turret/thrown-penitent-turret.blend",
-      "bytes": 349577,
-      "sha256": "07d51a47fa838e897e1371b72dd5589267deb7f5153d3446214877eaf9af3fe2"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-07.png",
+      "bytes": 130398,
+      "sha256": "acd81af8410259b523ba63c49e1ce4f47783f5ba6e22dc1c7d8e6e6074fc942f"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-turret/thrown-penitent-turret.glb",
-      "bytes": 235656,
-      "sha256": "99969e98d814db4c4b7a2e2cc7ed879cbbceb55a128f7ee921e6ad280efc836f"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-08.png",
+      "bytes": 130533,
+      "sha256": "72af805ae710cf84a50e6ae69cb97b5b4574af914eb33bbda68850fb739735ce"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-wall/thrown-penitent-wall.blend",
-      "bytes": 345024,
-      "sha256": "094a6fb0e63b251c3f196a23e1c54138a52d50eecb69bbfeb9f6578bf848397d"
+      "path": "previews/field-pilots-r7/censer-of-dread/operating-09.png",
+      "bytes": 130747,
+      "sha256": "4d42dabf919043c577b91cf6e2a3ea2116854128fc53597e6e36f1c2a4b91d71"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-penitent-wall/thrown-penitent-wall.glb",
-      "bytes": 221784,
-      "sha256": "66ddee9025bdd469414ece8724947dedbe6c1e3d082da5766bba6fa0b6e4b53c"
+      "path": "previews/field-pilots-r7/censer-of-dread/packed-00.png",
+      "bytes": 117537,
+      "sha256": "17c2238fa9ea0ac438dddeafd49b8824c08ee1a498e452d580b6476418b68c38"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-ammo/thrown-unraveled-ammo.blend",
-      "bytes": 331089,
-      "sha256": "e202796be1388ee9bbf6e82189eca921b04b511eb95ded33096adaf42e5415b1"
+      "path": "previews/field-pilots-r7/censer-of-dread/rear.png",
+      "bytes": 460155,
+      "sha256": "316e91ff9051e4864d067cdbfd526d4214c38f9b76c9ae68a2dff0b3b86318df"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-ammo/thrown-unraveled-ammo.glb",
-      "bytes": 192564,
-      "sha256": "d88be3fae51e1d8e5de849d78f6c12e4b68c7d48de72e3c5b4cd78f3c68ce32e"
+      "path": "previews/field-pilots-r7/regeneration-heart/clay.png",
+      "bytes": 443368,
+      "sha256": "b52d735adb2ca9799c1d122e68d984a8e61a3f896b0555d6caf6491ec8269f33"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-barricade/thrown-unraveled-barricade.blend",
-      "bytes": 313199,
-      "sha256": "78ecf06ec4a06938a4e04cf7d5b9c16dd761b2f82d53798ad4d9be4fd7d57d90"
+      "path": "previews/field-pilots-r7/regeneration-heart/closeup.png",
+      "bytes": 482950,
+      "sha256": "f844a5579f43e2b23aa12162fd738b77ac6003748b5b77340cd92317b37a045a"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-barricade/thrown-unraveled-barricade.glb",
-      "bytes": 158540,
-      "sha256": "73b7a24a6b98f1e21bfe7dd5fb1958567ec7d8a027cac177da025d941b5e29b5"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-00.png",
+      "bytes": 113157,
+      "sha256": "55a12ba6abcf8d641d47403599940806e8dd314d06661b222eb2e02bf7708446"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-health/thrown-unraveled-health.blend",
-      "bytes": 322367,
-      "sha256": "7add5013b71dd711f2f34fc2abd9c394b24371bc585cab40f1d50240417ca21b"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-01.png",
+      "bytes": 113768,
+      "sha256": "3b370d76343dc501e60021bf2b179321ebe1905cb965da27165c082adbc2453a"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-health/thrown-unraveled-health.glb",
-      "bytes": 176400,
-      "sha256": "78fb9a2aaa1ee8e997ff0be11b68a37d6921d54a772322a3cf0237a2bc63767c"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-02.png",
+      "bytes": 114974,
+      "sha256": "9b5c40e1c579d081076630d53aefb66f7ab37fd050ff30c6998d56ef0ccf161c"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-miasma/thrown-unraveled-miasma.blend",
-      "bytes": 322877,
-      "sha256": "577afbcafa91685a008b97e2623e37e6b7c0863ed79e630f59688cd4058dc1cd"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-03.png",
+      "bytes": 116731,
+      "sha256": "6eed54d082c4e779b8df968fedf890611d07a74f902ab2b34a2984588b997132"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-miasma/thrown-unraveled-miasma.glb",
-      "bytes": 186572,
-      "sha256": "173de9eb4f048730989fccbc3f081cd21a575eb0ccab36edecfa5896e7bfb642"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-04.png",
+      "bytes": 119833,
+      "sha256": "47b898651fbdc6b8b897c244cb37c0c68ba1b29c197e37317b9b265749f0a8be"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-shield/thrown-unraveled-shield.blend",
-      "bytes": 338693,
-      "sha256": "2f446a404fa21e0ff776eb3aa937b44e3bbb41cdf2ca1cdefa8737a3c0452e40"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-05.png",
+      "bytes": 124276,
+      "sha256": "d7ab72a52336adfccf36d2fd5935a44827cd58851231531433c0c3466c16c3ed"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-shield/thrown-unraveled-shield.glb",
-      "bytes": 214268,
-      "sha256": "9e4aa13ff8d4043c9181869def8be1351807673df4e0055e1f98ebe77e08d459"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-06.png",
+      "bytes": 126597,
+      "sha256": "10f61a2d5b2fabafb4cdc2caf9e8e12aa4b16c659ca2b296a7dcfea5514d4444"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-turret/thrown-unraveled-turret.blend",
-      "bytes": 324103,
-      "sha256": "3c1e1685ee8fec7a261e82bac163a9502a137f1b79a8d655953c2b20d737e644"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-07.png",
+      "bytes": 129367,
+      "sha256": "f7ae6a0b768580ca370af3e04e08097da46ceefa97b2c2f5414b97c01e84e728"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-turret/thrown-unraveled-turret.glb",
-      "bytes": 182508,
-      "sha256": "94356bd540e94ce27d2756bc099719b0dd616f6c3b34eb9f5d5e9913340aa7db"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-08.png",
+      "bytes": 131064,
+      "sha256": "02ae7099a63b845a0a144e8184153b06341a93e7673b1eee07358bd7e6db2b14"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-wall/thrown-unraveled-wall.blend",
-      "bytes": 320113,
-      "sha256": "e5e228da96d7e54daac7b7f9987f7b876245c656cb16155c4c98446fd80c9459"
+      "path": "previews/field-pilots-r7/regeneration-heart/deploying-09.png",
+      "bytes": 132696,
+      "sha256": "2dbb9308ad8082fa3dc47323277cb31af03dff485e6cdd5086abeb6a28678d4f"
     },
     {
-      "path": "build/candidates/field-deployables/thrown-unraveled-wall/thrown-unraveled-wall.glb",
-      "bytes": 184788,
-      "sha256": "0a6887a260d6b12f46971a0950cc7ffce02323e464d963f4a495320f7c30cef1"
+      "path": "previews/field-pilots-r7/regeneration-heart/front.png",
+      "bytes": 470649,
+      "sha256": "083cd23e5e9cd47b9b23fce35ecd7b1ce4385975b5393619ae769eb93c591e56"
     },
     {
-      "path": "build/candidates/field-pilots-r1/censer-of-dread/censer-of-dread.blend",
-      "bytes": 714776,
-      "sha256": "d689342977f2fd5e084be5616e5bfad469b99086aa1a5574024124367cfa53e7"
+      "path": "previews/field-pilots-r7/regeneration-heart/gpu-audit/active.png",
+      "bytes": 24169,
+      "sha256": "646cb9f679b60ef204786adce46cfd97eb1e08da2f614f1dd0243bb24266b489"
     },
     {
-      "path": "build/candidates/field-pilots-r1/censer-of-dread/censer-of-dread.glb",
-      "bytes": 552748,
-      "sha256": "63eb23cdba835ffa93980ff64e8e5ff5a5908c4c47fdf8ba95bf6eb7452e7a5a"
+      "path": "previews/field-pilots-r7/regeneration-heart/gpu-audit/deploying.png",
+      "bytes": 17547,
+      "sha256": "932a0ac1b92db6ac91b8e25e19a43f2d43f338637f9b09b7bef15e93c4addd19"
     },
     {
-      "path": "build/candidates/field-pilots-r1/regeneration-heart/regeneration-heart.blend",
-      "bytes": 785811,
-      "sha256": "f784a31d31c55a927f84c08aad8f02f5ef27d051d265b287c4e4b3e8838f36a4"
+      "path": "previews/field-pilots-r7/regeneration-heart/gpu-audit/operating.png",
+      "bytes": 23939,
+      "sha256": "c8f6efadf0cf828ce4fd9d4df8a8237ba3029bb5cdbe652803c8291a437931b3"
     },
     {
-      "path": "build/candidates/field-pilots-r1/regeneration-heart/regeneration-heart.glb",
-      "bytes": 318716,
-      "sha256": "8f8d6c7e3678bf628464fdbdf01bb17f83b2e7e0992ca6f55aaefd704ac336ab"
+      "path": "previews/field-pilots-r7/regeneration-heart/gpu-audit/packed.png",
+      "bytes": 12234,
+      "sha256": "543cb91bc9f0bf53f48d0032305ca22d4ecf64c56d4d276eaf5607f5836d0635"
     },
     {
-      "path": "build/candidates/field-pilots-r1/sentry-mki/sentry-mki.blend",
-      "bytes": 691615,
-      "sha256": "3c5fa52e69d8525ba62f4f54018c5b73eb1881171a8c6b387cc9f8813459c52d"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-00.png",
+      "bytes": 132696,
+      "sha256": "2dbb9308ad8082fa3dc47323277cb31af03dff485e6cdd5086abeb6a28678d4f"
     },
     {
-      "path": "build/candidates/field-pilots-r1/sentry-mki/sentry-mki.glb",
-      "bytes": 309144,
-      "sha256": "94c37c520b793c28f2249977cd504718ac68eb4c10bc5f9cf2dbe3aa4581bf60"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-01.png",
+      "bytes": 132408,
+      "sha256": "b27d9b73e326681e2e54cf2e2fd5444d7997a35bbc440caa682362d2d1f05bc6"
     },
     {
-      "path": "build/candidates/field-pilots-r2/censer-of-dread/censer-of-dread.blend",
-      "bytes": 750933,
-      "sha256": "90a4a2dc1a4b96fd07d2efcf57f3de0b90cece97313ec5e395e6efabcb4604a7"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-02.png",
+      "bytes": 132379,
+      "sha256": "a491a81d6a2fd0b4ad740286151fb19267422791ea7a58c9bf698f42bb01b266"
     },
     {
-      "path": "build/candidates/field-pilots-r2/censer-of-dread/censer-of-dread.glb",
-      "bytes": 762380,
-      "sha256": "45888833f8f8e830767e9f591d47c948283f04c36a53103172fbe78663290777"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-03.png",
+      "bytes": 132364,
+      "sha256": "f09ffc4ee0c810f5fb8266caaf0c4df3bee19cf444f387b819e8672b612b8edb"
     },
     {
-      "path": "build/candidates/field-pilots-r2/regeneration-heart/regeneration-heart.blend",
-      "bytes": 797188,
-      "sha256": "63d20eaed88a94c4a2a497dea06cc65a58c71bbe148f24060b4854b433898812"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-04.png",
+      "bytes": 132438,
+      "sha256": "65f8e68b39937fef3fad871911e9f362988957d724daf1276b40a3791032cb24"
     },
     {
-      "path": "build/candidates/field-pilots-r2/regeneration-heart/regeneration-heart.glb",
-      "bytes": 341240,
-      "sha256": "120cc2dec7967f725424d22621634850f7ccef14b0d716dda5b803eb60b04f17"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-05.png",
+      "bytes": 132349,
+      "sha256": "8d777b19189fa88c6998263a531fcfa17c1c3980d5289491c94497ce64045550"
     },
     {
-      "path": "build/candidates/field-pilots-r2/sentry-mki/sentry-mki.blend",
-      "bytes": 691829,
-      "sha256": "851df04aadb55343250a7e690749a113fb488e8b1c3c3c9312ff8296e2237c6e"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-06.png",
+      "bytes": 132962,
+      "sha256": "c22bbb7fa3ec8b39564f961486e8a235350892bf51b80204cf3940b72f213dde"
     },
     {
-      "path": "build/candidates/field-pilots-r2/sentry-mki/sentry-mki.glb",
-      "bytes": 307424,
-      "sha256": "123943a5ae70ff8e355d8385118a0f696d821b09ce69031977263252aaf41646"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-07.png",
+      "bytes": 132696,
+      "sha256": "3672f9209897eda9c31d44b6658d0f994dc34a863960b55431378e2904d642c0"
     },
     {
-      "path": "build/candidates/field-pilots-r3/censer-of-dread/censer-of-dread.blend",
-      "bytes": 737784,
-      "sha256": "fd7b067207ff5fd4abdbdd6a4f7c1cb51ee3f2fcabc55a484ca2db2d0f5b2009"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-08.png",
+      "bytes": 132696,
+      "sha256": "80f52f2444c3b4fe2a48217aa51ed26e30117514ecccf983f4904f082a31f2ea"
     },
     {
-      "path": "build/candidates/field-pilots-r3/censer-of-dread/censer-of-dread.glb",
-      "bytes": 671120,
-      "sha256": "607d6a5503a76bece482a55717ab8471d9a72d5f02e05569f42b8768ec6aae1e"
+      "path": "previews/field-pilots-r7/regeneration-heart/operating-09.png",
+      "bytes": 132696,
+      "sha256": "07539e528eb7de54fcb9017100bd8441bea6f9374bdaf320969cf31abaee223a"
     },
     {
-      "path": "build/candidates/field-pilots-r3/regeneration-heart/regeneration-heart.blend",
-      "bytes": 809492,
-      "sha256": "7f63eb8c78a3bdf221ff1d092f80678a8b9a5c341295e982dcfed6dde4b0a191"
+      "path": "previews/field-pilots-r7/regeneration-heart/packed-00.png",
+      "bytes": 113157,
+      "sha256": "b7d71ecbbd21f490f7da529659725ddfa17945a4ae78778c28c5dd3282f25f69"
     },
     {
-      "path": "build/candidates/field-pilots-r3/regeneration-heart/regeneration-heart.glb",
-      "bytes": 351092,
-      "sha256": "4b692c858589476cbae27e61f01a9a71e072e0a1c1af96aa69f392cd16a17074"
+      "path": "previews/field-pilots-r7/regeneration-heart/rear.png",
+      "bytes": 446354,
+      "sha256": "e012a9ecf837fab1210352041ec75abcb50a4008b1bf591881a4300653e2d7d7"
     },
     {
-      "path": "build/candidates/field-pilots-r3/sentry-mki/sentry-mki.blend",
-      "bytes": 690663,
-      "sha256": "f1e92bbc854b340f068798db4fdb773f77fbdc8911c9a5f5c31bc63a7a03cc9c"
+      "path": "previews/field-pilots-r7/sentry-mki/clay.png",
+      "bytes": 426999,
+      "sha256": "968b4f032a22c546c9e2556d90700675373936c26af1e6f3ba32eccdf40b26f4"
     },
     {
-      "path": "build/candidates/field-pilots-r3/sentry-mki/sentry-mki.glb",
-      "bytes": 302648,
-      "sha256": "3bd281643515e10f8f02980e8b760aa8714560efa95103f4a4ef159921838482"
+      "path": "previews/field-pilots-r7/sentry-mki/closeup.png",
+      "bytes": 441957,
+      "sha256": "e6a30b0eb050066624c6a64b79d29c93d6b12a036a513563fdd54b33b658b776"
     },
     {
-      "path": "build/candidates/field-pilots-r4/censer-of-dread/censer-of-dread-animated.blend",
-      "bytes": 421573,
-      "sha256": "87b61766ceec63e1ecdd5032806449064a1d49afcb4666092ba5606f11a0a79d"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-00.png",
+      "bytes": 113571,
+      "sha256": "43da57fd81ad73ac7c99801be52bcc416fd6db7ed9bb55a4e4e758bfc2ceedc7"
     },
     {
-      "path": "build/candidates/field-pilots-r4/censer-of-dread/censer-of-dread.blend",
-      "bytes": 743482,
-      "sha256": "790ea193dbf09b4fe9b56f96199ab6cad7c0e9eb6a6b9f12dcb3bc5f9799f7c8"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-01.png",
+      "bytes": 114312,
+      "sha256": "22b5c3bf6a028e51c4d2aecf384be22a81947c7f548e4ad8f91f48796bc90a04"
     },
     {
-      "path": "build/candidates/field-pilots-r4/censer-of-dread/censer-of-dread.glb",
-      "bytes": 669692,
-      "sha256": "1b2f6f77f282a5da78b56c8439bac424caf51ffe25831dd68cea7d52cec3c64b"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-02.png",
+      "bytes": 115576,
+      "sha256": "6cf56cc971f850bfa9deb8b5a14ebd3685da4e17cc3094043bb3b8ea212cfdba"
     },
     {
-      "path": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart-animated.blend",
-      "bytes": 357440,
-      "sha256": "9bcba0285c3b7cad578be93bbfe67598ee1876f8e76988fc8f6d5cfa6757803e"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-03.png",
+      "bytes": 116431,
+      "sha256": "ee5746d56afbbf812be22a9f8f15d062008f49e21d8f713080441c892a072fd6"
     },
     {
-      "path": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart.blend",
-      "bytes": 793747,
-      "sha256": "79dd29134a01df0df0a94348fa20d4808c2aa2349dd8d1ab618cc7e309545d9c"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-04.png",
+      "bytes": 117261,
+      "sha256": "dde949a06e3287856642c0fa01cf198888582e93f1cf67b2f0d392d10aa46748"
     },
     {
-      "path": "build/candidates/field-pilots-r4/regeneration-heart/regeneration-heart.glb",
-      "bytes": 326752,
-      "sha256": "03868e68d67267fdb0475d75b3465d259ac8153ee8c68b93e9e2fd771c26d668"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-05.png",
+      "bytes": 118394,
+      "sha256": "ff1a3895fa6d964800f708669f23fa88a8071d004076b50cac06bcf2e3e29665"
     },
     {
-      "path": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki-animated.blend",
-      "bytes": 268415,
-      "sha256": "a0629abe8351978f1fcf914c2c8b35b59a65c8b3badba09a0ba5c726d7a4761c"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-06.png",
+      "bytes": 119747,
+      "sha256": "828df62e04eae537ba7a260c97c48c7c2972fe7b4f7f8bebcc0d8a6f2287dc74"
     },
     {
-      "path": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.blend",
-      "bytes": 692284,
-      "sha256": "612bd7eb3c7258fbf1a6ed161fe3bbb8063b3a332a1216bd357e15fd06933be0"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-07.png",
+      "bytes": 119872,
+      "sha256": "797fb40dc77bd8150a9e66896c2583927e2707437cf02e9f4c726d2db692d91c"
     },
     {
-      "path": "build/candidates/field-pilots-r4/sentry-mki/sentry-mki.glb",
-      "bytes": 310976,
-      "sha256": "b890081d91212adb0cfa47a69acb69fcc92caeb8e1bc129d4bd08fa06236926f"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-08.png",
+      "bytes": 120849,
+      "sha256": "3245f5f96642d4358bba931ee06af8a8e2c069c6ccde9f51b4eb70d65b1a5ab5"
     },
     {
-      "path": "build/candidates/field-pilots-r5/censer-of-dread/censer-of-dread.blend",
-      "bytes": 729076,
-      "sha256": "d1be150ee6d473d774553977de5e95a89d80046ccfaeb53361f8eb1a4dce76c7"
+      "path": "previews/field-pilots-r7/sentry-mki/deploying-09.png",
+      "bytes": 120863,
+      "sha256": "236533c4a7aff59a4c23e0201c6f08f234ec11b691132de5b0181c7a8b832257"
     },
     {
-      "path": "build/candidates/field-pilots-r5/censer-of-dread/censer-of-dread.glb",
-      "bytes": 620872,
-      "sha256": "ddf673981b61772a4f9969dcc528bbcab11ea0b4454b3660a51789cda7fd077a"
+      "path": "previews/field-pilots-r7/sentry-mki/front.png",
+      "bytes": 435719,
+      "sha256": "d0572d3b24141d4ced82e3c38d2d6312d9eb7f647020e315b571887ef4ae83ec"
     },
     {
-      "path": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread-animated.blend",
-      "bytes": 391546,
-      "sha256": "274a7c93365f4685dceaa87b95f55aa0187f7b7003ff5ded5b75a154b62927d0"
+      "path": "previews/field-pilots-r7/sentry-mki/gpu-audit/active.png",
+      "bytes": 19481,
+      "sha256": "d3a40bc9541bfaac932d8988ddd1d35a273c29211f574d980540a5662638c902"
     },
     {
-      "path": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.blend",
-      "bytes": 722641,
-      "sha256": "f64a277fccdfebfa4cbd158ef22055a237f3df5d35892fe23a237cf473976068"
+      "path": "previews/field-pilots-r7/sentry-mki/gpu-audit/deploying.png",
+      "bytes": 18297,
+      "sha256": "2ea69f3fef06b0d9ccde5fed7036377a51ef576c9a97c8048e71ed96fb4f7a0d"
     },
     {
-      "path": "build/candidates/field-pilots-r6/censer-of-dread/censer-of-dread.glb",
-      "bytes": 608656,
-      "sha256": "fefa40ea06b3b9c86e1085d1c55de8811a1bb3d8c1cbfbbc0f794b96dbf35796"
+      "path": "previews/field-pilots-r7/sentry-mki/gpu-audit/operating.png",
+      "bytes": 19213,
+      "sha256": "c50ba549374f2867988a199d4165599888fc73f6dca215d0186cfb1907ad2cf3"
     },
     {
-      "path": "build/candidates/field-medic-r1/field-medic/field-medic.blend",
-      "bytes": 680883,
-      "sha256": "e49b2f4a85ba5516e1f80ea4d97f17ea1e2f0e0eb8a47ec5f652aba046607dd1"
+      "path": "previews/field-pilots-r7/sentry-mki/gpu-audit/packed.png",
+      "bytes": 14210,
+      "sha256": "b28360af7db60a2edfdb0d023b35a210b708f694790fcb85e088abdc46067fdc"
     },
     {
-      "path": "build/candidates/field-medic-r1/field-medic/field-medic.glb",
-      "bytes": 281480,
-      "sha256": "946fa5ee52c268c83335269e4e8000cd1661f3a93d07224c92e11c56a4b2f79e"
+      "path": "previews/field-pilots-r7/sentry-mki/operating-00.png",
+      "bytes": 120863,
+      "sha256": "55490147b3a1edc87dbe723cd3e79ae5683e0e6e9d52204b2733577bdf9344f7"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-01.png",
+      "bytes": 120709,
+      "sha256": "a2595edb23a393380298a28bc4829c741c2b02510e8121862a1d15d1a7331b8a"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-02.png",
+      "bytes": 120481,
+      "sha256": "67b2c7e616db87e2d76d80a8987f50c74bf890e4719734c32bc71ca41816f2b9"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-03.png",
+      "bytes": 120614,
+      "sha256": "932f5d82c0bcb0c9ea66a7dfcf6b518ebf7bb1e32e20683d3c8abf0e037c3c84"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-04.png",
+      "bytes": 120540,
+      "sha256": "1d6fa3025739ea2095fa8eb1d64a860eb30a730153360bf92a3c1f2750a8f21f"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-05.png",
+      "bytes": 120710,
+      "sha256": "f8bf2499255c4a0369f696d2aa9eb0c1386768208a7396ff595c2d3ba03ffb8b"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-06.png",
+      "bytes": 120788,
+      "sha256": "db7bcd8b4ea0e48ecef8c787160bf70c316327ef89beaf90608553ec900db430"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-07.png",
+      "bytes": 120671,
+      "sha256": "151bf6429b924ffe983d05cf74088131783c5230ee13a4531201322c6b1f2782"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-08.png",
+      "bytes": 120691,
+      "sha256": "2121230a53244ff5a620c7dde63e27061f71515fc7795fe9995d4440d2c87df6"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/operating-09.png",
+      "bytes": 120671,
+      "sha256": "ce209e6ccc03810fa7857180ac769eea89f05371ffd6a2afe2fe4ccf333a5a3b"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/packed-00.png",
+      "bytes": 113571,
+      "sha256": "adbde0551c459b7ccfbc67947778fa083ec7d3189714681e4e2ab10b112ac816"
+    },
+    {
+      "path": "previews/field-pilots-r7/sentry-mki/rear.png",
+      "bytes": 428418,
+      "sha256": "e34c7bc86ba1843d9fdfdaefa2d1e516dae82b0d314be1806a481c7f6479b0d0"
+    },
+    {
+      "path": "previews/field-pilots-r8/censer-of-dread/gpu/active.png",
+      "bytes": 20956,
+      "sha256": "0d65e6bc4da9e56e08dad7f3c72980d85f510d18b224b9dcc784d19b40cb6cb1"
+    },
+    {
+      "path": "previews/field-pilots-r8/censer-of-dread/gpu/deploying.png",
+      "bytes": 18000,
+      "sha256": "01530677b761796a3241ecc9170c9975219d30f059f830eed2b17b898ac4116f"
+    },
+    {
+      "path": "previews/field-pilots-r8/censer-of-dread/gpu/operating.png",
+      "bytes": 21541,
+      "sha256": "f61d0e5b0812e1c1c729fc0a40a8963a56cb7bcb60969f4264b0d04ed4d0257c"
+    },
+    {
+      "path": "previews/field-pilots-r8/censer-of-dread/gpu/packed.png",
+      "bytes": 13679,
+      "sha256": "ddd27bf0811c36d0ff4aa66e9d465dee1e7d3f5460ed112abe9d7999a1eed2bd"
+    },
+    {
+      "path": "previews/field-pilots-r8/regeneration-heart/gpu/active.png",
+      "bytes": 35995,
+      "sha256": "babbaa646835ba224cf446924d24565b3bc595e5c9175d472d1062899978b10b"
+    },
+    {
+      "path": "previews/field-pilots-r8/regeneration-heart/gpu/deploying.png",
+      "bytes": 25021,
+      "sha256": "8e9dade8affce298dbd441c0ac129d9c3247cb7228be3d47b294a4515195da88"
+    },
+    {
+      "path": "previews/field-pilots-r8/regeneration-heart/gpu/operating.png",
+      "bytes": 35754,
+      "sha256": "273909104d2d73c1e32d045ccd83e496f828e052ebb29dedfd0f4b683d23300c"
+    },
+    {
+      "path": "previews/field-pilots-r8/regeneration-heart/gpu/packed.png",
+      "bytes": 15476,
+      "sha256": "bc6b08796dd4fc7b2eb048a74f68ab0423824b88e77db14029f35fef6df23895"
+    },
+    {
+      "path": "previews/field-pilots-r8/sentry-mki/gpu/active.png",
+      "bytes": 22231,
+      "sha256": "cfb376e3eb4e55e56f6b0ff4b48abf50dfbb244d741c312798cae2a1a2279753"
+    },
+    {
+      "path": "previews/field-pilots-r8/sentry-mki/gpu/deploying.png",
+      "bytes": 20476,
+      "sha256": "6541a46fba42e2f8f52cb84451121cea8555da1345b4a090a4966d050529f57b"
+    },
+    {
+      "path": "previews/field-pilots-r8/sentry-mki/gpu/operating.png",
+      "bytes": 21915,
+      "sha256": "4e5ebe6b3b972f04fe8324e7508f3d0eda4524f1086843114f6bb4b4a5116b60"
+    },
+    {
+      "path": "previews/field-pilots-r8/sentry-mki/gpu/packed.png",
+      "bytes": 15671,
+      "sha256": "01c1a5f7d239a4c1a568209e9d833e85dad73daca2a1b1838f33933a3cbcd4a7"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/active.png",
+      "bytes": 24584,
+      "sha256": "e053f27738e97867844fb5a31bd4a1ff25397dd01d84675c38f25465f6cf9ace"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/damaged.png",
+      "bytes": 24627,
+      "sha256": "ad2c3c34f1629667e5fd3fe97f19c3eb0d828b63cd77bdb6727f815ad3fe9929"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/deploying.png",
+      "bytes": 21014,
+      "sha256": "379327b3da5885b5841e9e4ffc5d6c9833db12a649237978efa833f1f78a0dff"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/destroyed.png",
+      "bytes": 21185,
+      "sha256": "7f71906b35cf008dfb42fc007d71f6ae541960318378e30c7a797d36a5915625"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/expiring.png",
+      "bytes": 24541,
+      "sha256": "4b02560d96d68a0d96b79bd31d52f013f6d3286d7ecb4eb86ca6b6aa2cb81387"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/impact.png",
+      "bytes": 15735,
+      "sha256": "ab8d8ba0d89d448e7baa77660c766cf74da9a320504eb5172c319253d82a8110"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/operating.png",
+      "bytes": 25211,
+      "sha256": "ab37b10edaab5419a8030406755e9ff35c8da7c759ab2d7ec16b5183fbab8fb5"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/packed.png",
+      "bytes": 15653,
+      "sha256": "ee76081b3c59efe72eed6d4b4b3abedd6ce054b3a1e59088a513b9706fe97c8a"
+    },
+    {
+      "path": "previews/field-pilots-r9/censer-of-dread/gpu/thrown.png",
+      "bytes": 18049,
+      "sha256": "bf746a3d72feaf748dc0993c9054e5b8d4584b2dccf7ac83fd6b450b057c6b3b"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/active.png",
+      "bytes": 37268,
+      "sha256": "db723101e90984a9d1afd726aee4227c5f95e3928a9152c9355642d21248cd5a"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/damaged.png",
+      "bytes": 37247,
+      "sha256": "2e0cc34cac17ccd87f8661996f581ce819e9f55ed0957027a0f6e0d63fcbff35"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/deploying.png",
+      "bytes": 25889,
+      "sha256": "434c1470c0e8abed90f0e5701f2053bf29558f26db3767918ca3b6bee87752ff"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/destroyed.png",
+      "bytes": 31668,
+      "sha256": "d889c9f191027b29a18a42d332d3468752bed17dabf57a3200f9af4ca7d47b11"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/expiring.png",
+      "bytes": 36915,
+      "sha256": "b44353c7123bda974282f661753bde4544cae5ae7ac2c05d1440e005a97eabac"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/impact.png",
+      "bytes": 15811,
+      "sha256": "e4cc4407b4a3b6b3c115ff8fe5d37fa4f389c4a88f9c762ac04dd27769596306"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/operating.png",
+      "bytes": 37103,
+      "sha256": "282a73c80e91e7d4e2826e0530c13fcdd52a4c3347e43dd9041358cc73f2bd9e"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/packed.png",
+      "bytes": 15807,
+      "sha256": "f25b3929b7e9094715e5966b739fbacc57a401c465e7448a9a2e6a5661ff23b6"
+    },
+    {
+      "path": "previews/field-pilots-r9/regeneration-heart/gpu/thrown.png",
+      "bytes": 16429,
+      "sha256": "6f1b5581ba85f1d7fe2292c5155944a1600fb0f492e5580589107a891a0dc7fc"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/active.png",
+      "bytes": 25584,
+      "sha256": "cc5b218af00ca0be2b5bdf507cafe152c3fd856a3272f97d4d80a73b777eda4c"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/damaged.png",
+      "bytes": 25679,
+      "sha256": "597dcb1a1c0aedc0bdcb7736fcec05c671cc155124a4e0208fe492e64b21e04c"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/deploying.png",
+      "bytes": 23766,
+      "sha256": "1b470b3bd0f6a1767ee4ee20c9c970c8c11a9d5779391a79f556e3a422a910d2"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/destroyed.png",
+      "bytes": 23714,
+      "sha256": "1e01a7c6266e29e47296dccd5b99d63bf1c0c1bae0d4e7ac3aafbd6536e9f365"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/expiring.png",
+      "bytes": 25563,
+      "sha256": "975cb22804e5c2da0abc7ff861c05da6a84697d14bd5b09f49a636dcfe80a8b9"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/impact.png",
+      "bytes": 17892,
+      "sha256": "770a9bdd123da6999ac2e9e8b39704bc2502b12e9328dd118884e81fe6a09836"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/operating.png",
+      "bytes": 25257,
+      "sha256": "8a28ae2d2f1eee46dcb617b09a9ecc8c2f349bd6f9412580c7298f5534702a1c"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/packed.png",
+      "bytes": 18035,
+      "sha256": "5f522f5e40f431af2106a353c4ccbb2921aa97bbe30860397a03f3da3322495d"
+    },
+    {
+      "path": "previews/field-pilots-r9/sentry-mki/gpu/thrown.png",
+      "bytes": 21290,
+      "sha256": "e92c541235b1c750a90185b5a6f8175e7d47ed57788f61bd3ae1ea39210afcc9"
     }
   ]
 }

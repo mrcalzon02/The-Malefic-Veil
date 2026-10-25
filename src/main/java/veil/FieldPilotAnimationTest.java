@@ -60,6 +60,15 @@ public final class FieldPilotAnimationTest {
             }
             if(id.equals("sentry-mki"))
                 check(!rest.triangles().equals(rig.pose("ACTIVE",0,1,.2).triangles()),"Host aim ignored");
+            int blueprint=switch(id){case "sentry-mki"->2;case "field-medic"->3;case "censer-of-dread"->12;case "regeneration-heart"->17;default->throw new IllegalArgumentException(id);};
+            var bp=ThrownDeployables.blueprint(blueprint);
+            Path fixture=Path.of("build/audit-field-loading",id);Path staged=fixture.resolve("assets/game/field-deployables-approved");
+            Files.createDirectories(staged);Files.write(staged.resolve(bp.mesh()+".glb"),bytes);
+            var loader=new FieldDeployableAssets(fixture); // Isolated test fixture; never promotes into game assets.
+            var dying=new ThrownDeployables.View(1,blueprint,0,0,0,0,0,0,false,123456,-1,400,0,0,0,false);
+            var collapse=loader.pose(dying);
+            check(collapse.triangles().equals(rig.pose("DESTROYED",.4,0,0).triangles()),"Runtime collapse clock differs from host destruction age: "+id);
+            check(!collapse.triangles().equals(rest.triangles()),"Destroyed pose frozen at ACTIVE: "+id);
         }
         System.out.println("FieldPilotAnimationTest OK: exported TRS/morph evaluation, nonempty unique-channel clips, no root scale, finite deployment, texture coverage and host aim");
     }

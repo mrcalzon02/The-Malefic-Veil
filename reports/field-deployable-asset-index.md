@@ -1,6 +1,6 @@
 # Field deployable asset index
 
-Active development. Stop condition: 50% remaining in the selected five-hour allowance.
+Paused at the user request. Resume only on instruction; the five-hour 50% cutoff remains the next usage limit.
 
 21 required: 0 production complete, 4 refined pilots awaiting review, 17 awaiting independent redesign.
 

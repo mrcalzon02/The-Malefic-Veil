@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "5c1e91a9ab453c18edb9d9322d404327b7f6d3acb1d45c6fe0626775ceba27fc",
+  "renders": {
+    "front": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\front.png",
+      "sha256": "56bf972505c09c418afef6d013590383eb6781772cb59dbaa877cc998f2d09b9"
+    },
+    "rear": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\rear.png",
+      "sha256": "c78dfbfabe6f68282f76e5713eca5127c6f50b27d9ecd7e89afa0ff087a8e2e4"
+    },
+    "closeup": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\closeup.png",
+      "sha256": "8c780397d4ab369b12cf7256939c31cc5d5dd988af2a523b6c1ff3dee5a8380d"
+    },
+    "clay": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\clay.png",
+      "sha256": "dfafb36d013db76956f6352ce9ea8c3ba2f30f477ecbaa4741aff8d86ec0d4b2"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "7506e47e446d1c8a503c33fa8b5fec31516861e63292f624959c59b00bfa1830"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "6e403cac9e3fb7b4876bd3128327dfde6d928e99b51abe3844dcbe199715ff95"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "89f05a1ab6cfbae41a58d09fa80b63c814593daa02df7e2198b1314f34f27d02"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "606280beec8a91544a38c0fce49682b678b6dde8969b721f437bd2998cf22747"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "2a3d346950cb7807f4844fdad5e2d116c262be1c9e4e71885e233559030dc1e8"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "215b0da8dd827aa55d545889bcb1efd0f823db061fa7dcd4c017af4b89ddc4a5"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "4d597435b7a615e3e57bba6f9bb1eaad5e93ec04c3a6626e9427d7f5ca6a852d"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "4570e358dd613c1b8195b156b5cad14360d98ebefbebd96b005e4dbf77613fcb"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "e42f5f33645a52cf6cb5828ee257dff6a49f036df904a315bfa2753785a7d51f"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "78733f0b871bd3e06a5a740f05867920260cfea4cecfcc5fc4cf23c43a071b2f"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-00.png",
+        "time_s": 0.0,
+        "sha256": "dd388384408646dddc3662b76b4a7e7a16c71fdf96eaba5335505ca546f04113"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "90ac09143266bff424004e9c47d8c038d3a886d76dd94ca6aa8dd1bfbc998277"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "419a8d90503d03cdae27f9074b43dd1b8d5ae1fbd2789fedfa931a134f232deb"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "e9559bb953318a4dc9b060a4fb4fc9e365392096f78ad70c1fb0e2dc0e3de328"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "a76e84825f03b083ac970f15fe663965abc27e41f5d782f1e20d55ad7f8e7ce8"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "13a856d5b238d11210a03b5e5c3f878a7833e2a579235842c7085fd09f196d61"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "bde9b54d5bfa578df059a9619b2a9bfddabc7e30797d0db7ca95c35f92eab617"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "c8ac56917b5d3020c8b2968df3f6c0603e0e27586eb261e75c17fb5645da4528"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "250125d59244a9772bf7167ae551b675daa8a35adbaee10b292b7e7a5180bcae"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\operating-09.png",
+        "time_s": 0.65,
+        "sha256": "db54ee4b7dfc0eb98aac74eac737204d5ef2fd21263290c2dbd943d928a7d850"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-medic-r4\\field-medic\\packed-00.png",
+        "time_s": 0.0,
+        "sha256": "55c07fdc01c0f53bd4dcc516304e174d5d5c127224ec36b144005d42c93980c3"
+      }
+    ]
+  }
+}

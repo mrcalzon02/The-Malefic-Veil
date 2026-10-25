@@ -1,0 +1,23 @@
+[
+  {
+    "id": "sentry-mki",
+    "samples": 31,
+    "scope": "Satellite bowl surfaces against main bowl, incense basket, and support slides",
+    "intersections": [],
+    "status": "NO_INTERSECTIONS_IN_SAMPLED_PAIRS"
+  },
+  {
+    "id": "censer-of-dread",
+    "samples": 31,
+    "scope": "Satellite bowl surfaces against main bowl, incense basket, and support slides",
+    "intersections": [],
+    "status": "NO_INTERSECTIONS_IN_SAMPLED_PAIRS"
+  },
+  {
+    "id": "regeneration-heart",
+    "samples": 31,
+    "scope": "Satellite bowl surfaces against main bowl, incense basket, and support slides",
+    "intersections": [],
+    "status": "NO_INTERSECTIONS_IN_SAMPLED_PAIRS"
+  }
+]

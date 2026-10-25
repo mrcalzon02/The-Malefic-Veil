@@ -27,7 +27,7 @@ public final class FieldDeployableAssets {
         double seconds=switch(view.state()){
             case THROWN -> view.ageMs()/1000.;case IMPACT -> view.ageMs()/1000.;
             case DEPLOYING -> (view.ageMs()-ThrownDeployables.IMPACT_MS)/1000.;
-            case OPERATING -> view.operationAgeMs()/1000.;case DAMAGED -> view.damageAgeMs()/1000.;
+            case OPERATING -> view.operationAgeMs()/1000.;case DAMAGED,DESTROYED -> view.damageAgeMs()/1000.;
             case EXPIRING -> view.ageMs()%1000/1000.;default -> view.ageMs()%2000/1000.;};
         if(ThrownDeployables.blueprint(view.blueprint()).role()==ThrownDeployables.Role.TURRET&&view.tracking()&&view.state()==ThrownDeployables.State.ACTIVE){
             clip="OPERATING";seconds=.65; // Hold the aimed resting mechanism between real attacks.

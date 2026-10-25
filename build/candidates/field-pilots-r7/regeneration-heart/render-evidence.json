@@ -1,0 +1,134 @@
+{
+  "asset_sha256": "b9936191da6e073ab787c106337c467d2d26145f08b823eae76e3e57e044d2ff",
+  "renders": {
+    "front": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\front.png",
+      "sha256": "083cd23e5e9cd47b9b23fce35ecd7b1ce4385975b5393619ae769eb93c591e56"
+    },
+    "rear": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\rear.png",
+      "sha256": "e012a9ecf837fab1210352041ec75abcb50a4008b1bf591881a4300653e2d7d7"
+    },
+    "closeup": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\closeup.png",
+      "sha256": "f844a5579f43e2b23aa12162fd738b77ac6003748b5b77340cd92317b37a045a"
+    },
+    "clay": {
+      "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\clay.png",
+      "sha256": "b52d735adb2ca9799c1d122e68d984a8e61a3f896b0555d6caf6491ec8269f33"
+    }
+  },
+  "sequences": {
+    "DEPLOYING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-00.png",
+        "time_s": 0.0,
+        "sha256": "55a12ba6abcf8d641d47403599940806e8dd314d06661b222eb2e02bf7708446"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-01.png",
+        "time_s": 0.16666666666666666,
+        "sha256": "3b370d76343dc501e60021bf2b179321ebe1905cb965da27165c082adbc2453a"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-02.png",
+        "time_s": 0.3333333333333333,
+        "sha256": "9b5c40e1c579d081076630d53aefb66f7ab37fd050ff30c6998d56ef0ccf161c"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-03.png",
+        "time_s": 0.5,
+        "sha256": "6eed54d082c4e779b8df968fedf890611d07a74f902ab2b34a2984588b997132"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-04.png",
+        "time_s": 0.6666666666666666,
+        "sha256": "47b898651fbdc6b8b897c244cb37c0c68ba1b29c197e37317b9b265749f0a8be"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-05.png",
+        "time_s": 0.8333333333333334,
+        "sha256": "d7ab72a52336adfccf36d2fd5935a44827cd58851231531433c0c3466c16c3ed"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-06.png",
+        "time_s": 1.0,
+        "sha256": "10f61a2d5b2fabafb4cdc2caf9e8e12aa4b16c659ca2b296a7dcfea5514d4444"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-07.png",
+        "time_s": 1.1666666666666667,
+        "sha256": "f7ae6a0b768580ca370af3e04e08097da46ceefa97b2c2f5414b97c01e84e728"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-08.png",
+        "time_s": 1.3333333333333333,
+        "sha256": "02ae7099a63b845a0a144e8184153b06341a93e7673b1eee07358bd7e6db2b14"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\deploying-09.png",
+        "time_s": 1.5,
+        "sha256": "2dbb9308ad8082fa3dc47323277cb31af03dff485e6cdd5086abeb6a28678d4f"
+      }
+    ],
+    "OPERATING": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-00.png",
+        "time_s": 0.0,
+        "sha256": "2dbb9308ad8082fa3dc47323277cb31af03dff485e6cdd5086abeb6a28678d4f"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-01.png",
+        "time_s": 0.07222222222222223,
+        "sha256": "b27d9b73e326681e2e54cf2e2fd5444d7997a35bbc440caa682362d2d1f05bc6"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-02.png",
+        "time_s": 0.14444444444444446,
+        "sha256": "a491a81d6a2fd0b4ad740286151fb19267422791ea7a58c9bf698f42bb01b266"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-03.png",
+        "time_s": 0.21666666666666667,
+        "sha256": "f09ffc4ee0c810f5fb8266caaf0c4df3bee19cf444f387b819e8672b612b8edb"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-04.png",
+        "time_s": 0.2888888888888889,
+        "sha256": "65f8e68b39937fef3fad871911e9f362988957d724daf1276b40a3791032cb24"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-05.png",
+        "time_s": 0.3611111111111111,
+        "sha256": "8d777b19189fa88c6998263a531fcfa17c1c3980d5289491c94497ce64045550"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-06.png",
+        "time_s": 0.43333333333333335,
+        "sha256": "c22bbb7fa3ec8b39564f961486e8a235350892bf51b80204cf3940b72f213dde"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-07.png",
+        "time_s": 0.5055555555555555,
+        "sha256": "3672f9209897eda9c31d44b6658d0f994dc34a863960b55431378e2904d642c0"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-08.png",
+        "time_s": 0.5777777777777778,
+        "sha256": "80f52f2444c3b4fe2a48217aa51ed26e30117514ecccf983f4904f082a31f2ea"
+      },
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\operating-09.png",
+        "time_s": 0.65,
+        "sha256": "07539e528eb7de54fcb9017100bd8441bea6f9374bdaf320969cf31abaee223a"
+      }
+    ],
+    "PACKED": [
+      {
+        "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\previews\\field-pilots-r7\\regeneration-heart\\packed-00.png",
+        "time_s": 0.0,
+        "sha256": "b7d71ecbbd21f490f7da529659725ddfa17945a4ae78778c28c5dd3282f25f69"
+      }
+    ]
+  }
+}

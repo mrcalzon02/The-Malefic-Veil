@@ -1,0 +1,64 @@
+[
+  {
+    "id": "field-medic",
+    "asset_sha256": "aaf679475aad75c6a3f027d203d6b8069c6bbf371f7a0ac6a9fc4661e1c159f9",
+    "socket_tolerance_m": 0.004,
+    "measurements": [
+      {
+        "clip": "ACTIVE",
+        "samples": 61,
+        "case_error_m": 4.16500117164066e-09,
+        "injector_error_m": 1.4901161193847656e-08
+      },
+      {
+        "clip": "PACKED",
+        "samples": 61,
+        "case_error_m": 1.5472292644750466e-08,
+        "injector_error_m": 2.1073424255447017e-08
+      },
+      {
+        "clip": "THROWN",
+        "samples": 61,
+        "case_error_m": 6.322027276634104e-08,
+        "injector_error_m": 8.971687092477304e-08
+      },
+      {
+        "clip": "IMPACT",
+        "samples": 61,
+        "case_error_m": 5.974998672435225e-08,
+        "injector_error_m": 6.322027276634104e-08
+      },
+      {
+        "clip": "DEPLOYING",
+        "samples": 61,
+        "case_error_m": 1.192820269360048e-07,
+        "injector_error_m": 0.0003091056823379006
+      },
+      {
+        "clip": "OPERATING",
+        "samples": 61,
+        "case_error_m": 4.16500117164066e-09,
+        "injector_error_m": 1.4901161193847656e-08
+      },
+      {
+        "clip": "DAMAGED",
+        "samples": 61,
+        "case_error_m": 1.2082295287453643e-07,
+        "injector_error_m": 1.812804499357408e-07
+      },
+      {
+        "clip": "EXPIRING",
+        "samples": 61,
+        "case_error_m": 1.197320124506071e-07,
+        "injector_error_m": 1.2013700229374393e-07
+      },
+      {
+        "clip": "DESTROYED",
+        "samples": 61,
+        "case_error_m": 1.192820269360048e-07,
+        "injector_error_m": 0.0004438203045111175
+      }
+    ],
+    "status": "PASS_SCOPED_SOCKET_CONTINUITY"
+  }
+]

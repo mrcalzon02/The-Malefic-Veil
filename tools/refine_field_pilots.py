@@ -10,7 +10,7 @@ sys.path.insert(0,str(Path(__file__).parent))
 import build_field_deployables as b
 
 ROOT=Path(__file__).resolve().parents[1]
-REVISION=sys.argv[sys.argv.index('--revision')+1] if '--revision' in sys.argv else 'field-pilots-r9'
+REVISION=sys.argv[sys.argv.index('--revision')+1] if '--revision' in sys.argv else 'field-pilots-r14'
 OUT=ROOT/'build/candidates'/REVISION
 LOOP_SIDES=4
 PREVIEW=ROOT/'previews/field-pilots-r4'
@@ -134,9 +134,9 @@ def sentry():
     pitch=joint('AimPitch',(0,0,.825),yaw,pack_move=(0,.075,0))
     profile('receiver_casting',[(-.20,.79),(-.20,.88),(-.13,.94),(.11,.94),(.17,.88),(.17,.80),(.09,.765),(-.12,.765)],.25,'X',0,pitch)
     # Separate feed drum on the port side and a short guided belt entering the breech.
-    lathe('ammunition_drum',[(0,-.06),(.105,-.06),(.12,-.045),(.12,.035),(.10,.05),(0,.05)],0,pitch,12,(-.205,.065,.835),'X')
-    loop('drum_reinforcing_lip',(-.26,.065,.835),.102,.009,2,pitch,(1,0,0),12)
-    pin('drum_axle',(-.268,.065,.835),2,pitch,r=.025)
+    lathe('ammunition_drum',[(0,-.06),(.105,-.06),(.12,-.045),(.12,.035),(.10,.05),(0,.05)],0,pitch,12,(-.185,.065,.835),'X')
+    loop('drum_reinforcing_lip',(-.24,.065,.835),.102,.009,2,pitch,(1,0,0),12)
+    pin('drum_axle',(-.248,.065,.835),2,pitch,r=.025)
     feed=joint('FeedIndex',(-.17,.024,.94),pitch,operation=('advance',(.026,0,0)))
     for i in range(5):
         x=-.17+i*.026;b.strut('linked_feed_round_%d'%i,(x,.07,.945),(x,-.015,.945),.012,2,feed)
@@ -191,32 +191,32 @@ def censer():
     # A low iron cradle with three bent support branches, no cabinet or power pedestal.
     lathe('reliquary_cradle',[(0,.035),(.14,.035),(.19,.07),(.19,.15),(.15,.18),(.11,.18)],1,root,10)
     for i in range(3):
-        a=i*math.tau/3+math.pi/6;c,s=math.cos(a),math.sin(a)
-        leg=joint('IronLeg_%d'%i,(c*.12,s*.12,.13),root,pack_axis=(-s,c,0),pack_angle=-1.25)
-        b.tube('curved_iron_foot_%d'%i,[(c*.12,s*.12,.13),(c*.27,s*.27,.12),(c*.40,s*.40,.055),(c*.46,s*.46,.05)],[.027,.032,.026,.016],0,leg,6)
-        for k in range(2):pin('foot_rivet_%d_%d'%(i,k),(c*(.16+k*.05),s*(.16+k*.05),.15),1,leg,r=.012)
+        a=i*math.tau/3+math.pi/12;c,s=math.cos(a),math.sin(a)
+        leg=joint('IronLeg_%d'%i,(c*.21,s*.21,.13),root,pack_axis=(-s,c,0),pack_angle=-1.55)
+        b.tube('curved_iron_foot_%d'%i,[(c*.21,s*.21,.13),(c*.27,s*.27,.12),(c*.40,s*.40,.055),(c*.46,s*.46,.05)],[.027,.032,.026,.016],0,leg,6)
+        for k in range(2):pin('foot_rivet_%d_%d'%(i,k),(c*(.235+k*.04),s*(.235+k*.04),.15),1,leg,r=.012)
     lower=joint('CanopySlideLower',(0,0,.30),root,pack_move=(0,0,-.33))
     lift=joint('CanopySlideUpper',(0,0,.70),lower,pack_move=(0,0,-.33))
     for i in range(3):
-        a=i*math.tau/3+math.pi/6;c,s=math.cos(a),math.sin(a)
+        a=i*math.tau/3+math.pi/12;c,s=math.cos(a),math.sin(a)
         # Nested iron channels have visible overlapping sleeves and bronze retaining collars.
-        b.tube('outer_iron_channel_%d'%i,[(c*.11,s*.11,.14),(c*.21,s*.21,.29),(c*.24,s*.24,.46)],[.035,.035,.034],0,root,6)
-        b.tube('middle_iron_slide_%d'%i,[(c*.24,s*.24,.42),(c*.24,s*.24,.64),(c*.24,s*.24,.81)],[.026,.026,.025],0,lower,6)
-        b.tube('inner_iron_slide_%d'%i,[(c*.24,s*.24,.76),(c*.24,s*.24,.98),(c*.14,s*.14,1.12),(0,0,1.16)],[.018,.018,.019,.016],0,lift,6)
+        b.tube('outer_iron_channel_%d'%i,[(c*.24,s*.24,.14),(c*.24,s*.24,.29),(c*.24,s*.24,.46)],[.020,.020,.020],0,root,6)
+        b.tube('middle_iron_slide_%d'%i,[(c*.24,s*.24,.42),(c*.24,s*.24,.64),(c*.24,s*.24,.81)],[.016,.016,.015],0,lower,6)
+        b.tube('inner_iron_slide_%d'%i,[(c*.24,s*.24,.76),(c*.24,s*.24,.98),(c*.14,s*.14,1.12),(0,0,1.16)],[.012,.012,.013,.010],0,lift,6)
         for z,r,parent in ((.45,.24,root),(.80,.24,lower)):
-            loop('slide_retaining_collar_%d_%s'%(i,z),(c*r,s*r,z),.038,.009,1,parent,(0,0,1),8)
+            loop('slide_retaining_collar_%d_%s'%(i,z),(c*r,s*r,z),.035,.007,1,parent,(0,0,1),8)
     loop('suspension_eye',(0,0,1.15),.030,.009,1,lift,(0,1,0),10)
     pendulum=joint('CenserPendulum',(0,0,1.17),lift,pack_move=(0,0,.30),idle=('rot',(1,0,0),.055),operation=('rot',(1,0,0),.11))
     for i in range(3):
         a=i*math.tau/3;c,s=math.cos(a),math.sin(a)
         chain('main_chain_%d'%i,(c*.025,s*.025,1.15),(c*.15,s*.15,.78),8,pendulum)
     # Hollow turned bowl: inner wall and vented lid are actual surfaces.
-    lathe('bronze_censer_bowl',[(0,.43),(.075,.43),(.15,.47),(.205,.57),(.205,.66),(.17,.72),(.15,.72),(.183,.65),(.182,.58),(.13,.50),(.06,.47),(0,.47)],1,pendulum,12)
+    lathe('bronze_censer_bowl',[(r*.95,z) for r,z in [(0,.43),(.075,.43),(.15,.47),(.205,.57),(.205,.66),(.17,.72),(.15,.72),(.183,.65),(.182,.58),(.13,.50),(.06,.47),(0,.47)]],1,pendulum,12)
     for z,r in ((.52,.17),(.65,.205),(.72,.163)):
-        loop('engraved_bowl_band_%s'%z,(0,0,z),r,.009,2,pendulum,(0,0,1),10)
+        loop('engraved_bowl_band_%s'%z,(0,0,z),r*.95,.009,2,pendulum,(0,0,1),10)
     for i in range(6):
         a=i*math.tau/6;c,s=math.cos(a),math.sin(a)
-        b.tube('cast_bowl_rib_%d'%i,[(c*.08,s*.08,.45),(c*.168,s*.168,.53),(c*.209,s*.209,.62),(c*.165,s*.165,.72)],[.012,.014,.013,.009],0,pendulum,5)
+        b.tube('cast_bowl_rib_%d'%i,[(x*.95,y*.95,z) for x,y,z in [(c*.08,s*.08,.45),(c*.168,s*.168,.53),(c*.209,s*.209,.62),(c*.165,s*.165,.72)]],[.012,.014,.013,.009],0,pendulum,5)
     for side in (-1,1):
         lid=joint('VentedLid_%s'%side,(side*.15,0,.72),pendulum,operation=('open',(0,1,0),side*.28))
         # Open sectors between curved ribs make genuine emission apertures.
@@ -229,13 +229,13 @@ def censer():
     # Smaller hanging reliquaries have lids, vessels and chains, rather than colored beads.
     for i in range(3):
         a=i*math.tau/3+math.pi/6;c,s=math.cos(a),math.sin(a)
-        pendant=joint('SatelliteCenser_%d'%i,(c*.27,s*.27,.88),lift,pack_move=(.165*math.cos(a+math.pi/3)-.27*c,.165*math.sin(a+math.pi/3)-.27*s,.30),pack_axis=(0,0,1),pack_angle=math.pi/3,idle=('rot',(c,s,0),.08),operation=('rot',(c,s,0),.16))
+        pendant=joint('SatelliteCenser_%d'%i,(c*.27,s*.27,.88),lift,pack_move=(.145*math.cos(a+math.pi/4)-.27*c,.145*math.sin(a+math.pi/4)-.27*s,.30),pack_axis=(0,0,1),pack_angle=math.pi/4,idle=('rot',(c,s,0),.08),operation=('rot',(c,s,0),.16))
         MOTION[pendant.name]['satellite_angle']=a
         chain('satellite_chain_%d'%i,(c*.28,s*.28,.87),(c*.34,s*.34,.60),5,pendant)
         dish=joint('SatelliteDish_%d'%i,(c*.34,s*.34,.56),pendant,pack_axis=(-s,c,0),pack_angle=math.pi/2)
         lathe('satellite_bowl_%d'%i,[(0,-.020),(.040,-.020),(.075,.005),(.075,.020),(.060,.020),(.035,-.005),(0,-.005)],1,dish,6,(c*.34,s*.34,.56))
         for k in range(4):
-            angle=k*math.pi/2;b.strut('satellite_lid_%d_%d'%(i,k),(c*.34+.055*math.cos(angle),s*.34+.055*math.sin(angle),.58),(c*.34,s*.34,.60),.008,0,dish)
+            angle=k*math.pi/2;b.strut('satellite_lid_%d_%d'%(i,k),(c*.34+.047*math.cos(angle),s*.34+.047*math.sin(angle),.58),(c*.34,s*.34,.60),.008,0,dish)
     # Folded cloth banner attached to the front cradle with visible retaining pins.
     verts=[(-.065,-.178,.19),(0,-.192,.20),(.065,-.178,.19),(-.06,-.19,.055),(0,-.205,.035),(.06,-.19,.055)]
     mesh=bpy.data.meshes.new('folded_votive_cloth');mesh.from_pydata(verts,[],[(0,1,4,3),(1,2,5,4)]);mesh.update();o=bpy.data.objects.new('folded_votive_cloth',mesh);bpy.context.collection.objects.link(o);b.finish(o,o.name,3,root)
@@ -392,8 +392,8 @@ def write_clips(path,pilot):
                 for f in fractions:
                     angular=max(0,min(1,(f-.35)/.65));angular=angular*angular*(3-2*angular)
                     radial=min(1,f/.35);radial=radial*radial*(3-2*radial)
-                    radius=.165+.125*radial if f<=.35 else .29-.02*angular
-                    theta=angle+math.pi/3*(1-angular)
+                    radius=.145+.145*radial if f<=.35 else .29-.02*angular
+                    theta=angle+math.pi/4*(1-angular)
                     delta=cv((radius*math.cos(theta)-.27*math.cos(angle),radius*math.sin(theta)-.27*math.sin(angle),.30*(1-f*f*(3-2*f))))
                     values.append([base[k]+delta[k] for k in range(3)])
                 track(i,'translation',values)

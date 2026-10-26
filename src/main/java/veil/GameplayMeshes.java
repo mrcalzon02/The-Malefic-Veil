@@ -15,7 +15,14 @@ public final class GameplayMeshes {
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
     public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire","device-field-workbench","device-field-storage",
         "facility-unraveled-scrap-outpost","facility-penitent-votive-altar",
-        "facility-begotten-brood-nest"};
+        "facility-begotten-brood-nest",
+        "facility-claim-heart","facility-hand-workshop","facility-dry-store",
+        "facility-cooking-hearth","facility-rain-catcher","facility-cargo-laydown",
+        "facility-forager-garden","facility-compost-yard","facility-herb-plot",
+        "facility-charcoal-kiln","facility-stone-furnace","facility-forge",
+        "facility-freight-bay","facility-materials-recycler",
+        "facility-unraveled-machinist-bay","facility-penitent-reliquary",
+        "facility-begotten-spore-basin"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -260,6 +267,145 @@ public final class GameplayMeshes {
         brood.diamond(-.56,.93,-.29,.22,.44,0x8B707B);
         brood.diamond(.49,.99,.25,.19,.50,0x9D7476);
         meshes.put(DEVICE[10],brood.done());
+
+
+        // Permanent common wilderness infrastructure. These are actual
+        // triangulated PSX world models with differing physical silhouettes,
+        // never field throwables or emoji/sprite substitutes.
+        for(int index=11;index<=24;index++){
+            Model site=new Model();
+            int timber=0x765b3c,stone=0x706f69,metal=0x5c6670;
+            site.box(0,.14,0,2.18,.24,1.78,index>=20?stone:timber);
+            switch(index){
+                case 11 -> { // claim heart, ownership hub with 3 standing posts
+                    site.box(0,.90,0,.29,1.55,.29,timber);
+                    site.box(0,1.68,0,.85,.19,.78,0x99845A);
+                    for(int side:new int[]{-1,1})
+                        site.box(side*.87,.65,0,.17,1.17,.19,0x877653);
+                    site.diamond(0,1.91,0,.29,.49,0xBEA673);
+                }
+                case 12 -> { // hand workshop, framing table, saw and tool rack
+                    site.box(0,.82,0,1.72,.17,.92,0xA58B59);
+                    for(int sign:new int[]{-1,1})
+                        site.box(sign*.73,.43,0,.12,.78,.81,timber);
+                    site.box(-.51,1.00,0,.15,.17,.39,metal);
+                    site.box(.41,1.03,.06,.57,.06,.09,0xBBB2A0);
+                }
+                case 13 -> { // storage building: back wall, high shelf, boxes
+                    site.box(0,.80,.60,2.02,1.32,.19,0x746344);
+                    for(int sign:new int[]{-1,1})
+                        site.box(sign*.83,.73,0,.16,1.34,1.65,timber);
+                    for(int y=0;y<2;y++)
+                        site.box(0,.44+y*.55,-.25,1.75,.13,.70,0x9B774E);
+                }
+                case 14 -> { // cooking hearth chimney and firebox
+                    site.box(0,.46,0,1.50,.65,1.25,stone);
+                    site.box(.46,1.34,.29,.37,1.55,.39,0x584D43);
+                    site.box(-.26,.77,-.53,.55,.24,.18,0xAD533B);
+                    site.diamond(-.27,.94,-.49,.20,.41,0xE6A855);
+                }
+                case 15 -> { // rain catcher, tilted open trough and gutter
+                    site.box(0,.96,0,1.79,.18,1.62,metal);
+                    for(int side:new int[]{-1,1})
+                        site.box(side*.79,.65,0,.14,1.05,1.54,0x9B8467);
+                    site.box(0,1.14,.68,2.03,.15,.19,0x939FB1);
+                    site.box(0,1.13,-.62,1.98,.13,.17,0x697F9E);
+                }
+                case 16 -> { // cargo laydown, pallets and lifting rail
+                    site.box(-.42,.41,0,.96,.39,1.14,timber);
+                    site.box(.52,.48,0,.82,.65,.79,0x736344);
+                    site.box(0,1.16,.70,2.10,.16,.19,metal);
+                    site.box(-.86,.76,.70,.15,1.16,.18,metal);
+                }
+                case 17 -> { // living forager garden raised beds
+                    for(int row=-1;row<=1;row++){
+                        site.box(row*.58,.37,0,.37,.22,1.53,0x76543E);
+                        for(int i=-1;i<=1;i++)
+                            site.diamond(row*.58,.56,i*.42,.14,.36,0x487852);
+                    }
+                }
+                case 18 -> { // compost yard mounds and tool frame
+                    for(int sign:new int[]{-1,1})
+                        site.diamond(sign*.52,.60,0,.52,.89,0x61573B);
+                    site.box(0,1.11,.66,2.01,.15,.18,timber);
+                }
+                case 19 -> { // herb bed and trellis
+                    for(int side:new int[]{-1,1}){
+                        site.box(side*.50,.41,0,.55,.20,1.40,0x6E5945);
+                        for(int j=-1;j<=1;j++)
+                            site.diamond(side*.50,.67,j*.42,.13,.46,0x507C66);
+                    }
+                    site.box(0,1.40,.65,1.96,.13,.13,0xA39876);
+                }
+                case 20 -> { // charcoal kiln: sealed drum with exhaust
+                    site.barrel(0,.85,0,.64,1.28,0x494743);
+                    site.box(.56,1.53,0,.29,.99,.32,metal);
+                    site.box(0,1.38,-.57,1.22,.17,.23,0x5E5147);
+                }
+                case 21 -> { // stone furnace, chimney and orange forge mouth
+                    site.box(0,.87,0,1.65,1.43,1.46,stone);
+                    site.box(.57,1.83,.37,.48,.95,.48,0x585852);
+                    site.box(0,.65,-.76,.71,.58,.15,0xD9824A);
+                    site.box(0,1.18,-.76,.86,.13,.24,0x45474B);
+                }
+                case 22 -> { // shared salvage forge, vent and anvil
+                    site.box(-.51,.77,.12,.92,1.25,1.22,0x625B55);
+                    site.box(.55,.75,0,.78,.38,1.04,metal);
+                    site.box(.55,1.01,0,1.08,.19,.36,0x969391);
+                    site.box(-.64,1.75,.48,.31,.80,.31,0x3E4448);
+                }
+                case 23 -> { // freight bay, raised platform + hoist beam
+                    site.box(0,.48,.21,2.13,.42,1.22,stone);
+                    for(int side:new int[]{-1,1})
+                        site.box(side*.88,1.38,.61,.14,2.00,.18,metal);
+                    site.box(0,2.29,.61,2.08,.15,.20,0x96917D);
+                    site.box(.31,1.65,.60,.10,.97,.12,0xE2AE63);
+                }
+                case 24 -> { // industrial material sorter dual jaws
+                    site.box(-.65,.83,0,.71,1.18,1.04,metal);
+                    site.box(.55,.93,.10,.72,1.26,.78,0x9A875E);
+                    site.box(0,1.72,.17,1.92,.14,.34,0xAF8757);
+                    site.barrel(0,1.02,-.45,.23,.65,0x7F898C);
+                }
+                default -> throw new IllegalStateException("Missing infrastructure mesh");
+            }
+            meshes.put(DEVICE[index],site.done());
+        }
+
+        // Explicitly faction-owned second-era geometry, not one cosmetic
+        // universal machine with a different icon.
+        Model machinist=new Model();
+        machinist.box(0,.25,0,2.45,.39,1.95,0x454F5B);
+        machinist.box(-.67,.93,.20,.88,.97,1.01,0x687480);
+        machinist.box(.58,.73,0,1.13,.54,1.33,0xA2804F);
+        machinist.barrel(-.55,1.53,-.16,.32,.83,0xB1A063);
+        machinist.box(.50,1.51,-.12,.31,1.23,.32,0x445561);
+        machinist.box(0,2.03,.18,1.94,.16,.30,0xC18A4A);
+        meshes.put(DEVICE[25],machinist.done());
+
+        Model reliquary=new Model();
+        reliquary.box(0,.21,0,2.46,.35,2.01,0x4F4650);
+        reliquary.box(0,.72,0,1.54,.70,1.14,0x84707D);
+        reliquary.box(0,1.12,0,1.77,.15,1.39,0xA18B80);
+        for(int side:new int[]{-1,1}){
+            reliquary.box(side*.99,1.28,.32,.26,1.98,.30,0x605463);
+            reliquary.diamond(side*.99,2.31,.32,.21,.39,0xC7A06F);
+        }
+        reliquary.diamond(0,1.51,0,.45,.82,0xA96E8C);
+        reliquary.box(0,1.92,.15,.78,.11,.13,0xB9A16B);
+        meshes.put(DEVICE[26],reliquary.done());
+
+        Model sporeBasin=new Model();
+        sporeBasin.box(0,.15,0,2.65,.27,2.14,0x4E3A44);
+        sporeBasin.box(0,.51,0,2.12,.52,1.83,0x754D5B);
+        sporeBasin.diamond(0,1.10,0,.86,1.01,0xB16B79);
+        for(int limb=0;limb<6;limb++){
+            double rad=limb*Math.PI/3;
+            sporeBasin.diamond(Math.cos(rad)*.91,.77,Math.sin(rad)*.75,
+                .26,.75,0x9B6072);
+        }
+        sporeBasin.diamond(0,1.73,0,.31,.67,0xC6A18B);
+        meshes.put(DEVICE[27],sporeBasin.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

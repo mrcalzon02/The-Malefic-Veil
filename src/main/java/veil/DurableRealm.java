@@ -156,7 +156,8 @@ public final class DurableRealm {
                    owner.isEmpty()))||
                    (!active&&!process.isEmpty())||
                    elapsed<0||elapsed>max||finished<0||finished>1000000||
-                   (recipe==null&&(active||elapsed!=0||finished!=0))||
+                   (recipe==null&&(active||elapsed!=0||
+                    (finished!=0&&ArenaSystems.firstProcess(kind)==null)))||
                    (!active&&elapsed!=0)||(active&&hp==0))
                     throw new IOException("Corrupt faction production receipt");
                 devices.add(new DeviceSave(kind,x,y,hp,owner,tier,Map.copyOf(stock),

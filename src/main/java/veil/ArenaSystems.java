@@ -545,6 +545,22 @@ public final class ArenaSystems {
             default -> null;
         };
     }
+    public static String firstProcess(int kind){
+        return switch(kind){
+            case UNRAVELED_SCRAP_OUTPOST -> "unraveled-recover-scrap";
+            case PENITENT_VOTIVE_ALTAR -> "penitent-weave-ritual";
+            case BEGOTTEN_BROOD_NEST -> "begotten-mix-slurry";
+            default -> null;
+        };
+    }
+    private static Map<SurvivalCrafting.Item,Integer> processInputs(int kind){
+        var recipe=CraftingEraRegistry.process(firstProcess(kind));
+        EnumMap<SurvivalCrafting.Item,Integer> materials=
+            new EnumMap<>(SurvivalCrafting.Item.class);
+        for(var item:recipe.inputs().entrySet())
+            materials.put(SurvivalCrafting.Item.valueOf(item.getKey()),item.getValue());
+        return materials;
+    }
     private static Map<SurvivalCrafting.Item,Integer> facilityMaterialCost(int kind){
         String id=factionFacility(kind);
         if(id==null)return Map.of();
@@ -739,6 +755,78 @@ public final class ArenaSystems {
                 return d.storage.snapshot();
         return Map.of();
     }
+    /** Begin one real faction-only recipe using existing physical crate stock.
+     * The order and input debit are both in the world ledger, ensuring a
+     * crash cannot independently reissue previously spent materials. */
+    public synchronized boolean startFactionBatch(int playerId){
+        Player p=players.get(playerId);
+        if(p==null||p.dead||vehicles.carDrivenBy(playerId)>=0||
+           !p.accountKey.startsWith("acct_"))return false;
+        for(World.Device device:world.devices){
+            int kind=device.kind;
+            if(device.hp<=0||firstProcess(kind)==null||
+               device.productionActive||
+               !p.accountKey.equals(device.ownerKey)||
+               factions.faction(p.accountKey)!=facilityFaction(kind)||
+               Math.hypot(p.x-device.x,p.y-device.y)>2.6||
+               !world.lineClear(p.x,p.y,device.x,device.y))continue;
+            Map<SurvivalCrafting.Item,Integer> inputs=processInputs(kind);
+            for(World.Device crate:world.devices){
+                if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
+                   !p.accountKey.equals(crate.ownerKey)||
+                   Math.hypot(crate.x-device.x,crate.y-device.y)>5.5)continue;
+                if(!crate.storage.consume(inputs))continue;
+                device.productionMs=0;
+                device.productionActive=true;
+                breakGrace(p);
+                p.progression.reward(CharacterProgression.Skill.ENGINEERING,12,clock,3500);
+                return true;
+            }
+        }
+        return false;
+    }
+    /** All three factory processors have their own progression constraints:
+     * mechanical unattended operation; staffed shared Penitent liturgy;
+     * biologically vulnerable Begotten maturation. */
+    private void advanceFactionBatch(World.Device device,long ms){
+        if(device.hp<=0||!device.productionActive)return;
+        String id=firstProcess(device.kind);
+        if(id==null)return;
+        var process=CraftingEraRegistry.process(id);
+        long required=process.seconds()*1000L;
+        long gain=switch(device.kind){
+            case UNRAVELED_SCRAP_OUTPOST -> ms;  // fuel already consumed by start
+            case PENITENT_VOTIVE_ALTAR -> {
+                int witnesses=0;
+                for(Player p:players.values()){
+                    if(!p.dead&&factions.faction(p.accountKey)==
+                       CharacterRoster.Faction.THE_PENITENT&&
+                       factions.allied(p.accountKey,device.ownerKey)&&
+                       Math.hypot(p.x-device.x,p.y-device.y)<=3.5&&
+                       world.lineClear(p.x,p.y,device.x,device.y))
+                        witnesses++;
+                }
+                yield ms*Math.min(3,witnesses); // no ritual without participants
+            }
+            case BEGOTTEN_BROOD_NEST -> ms; // living gestation, damage disrupts
+            default -> 0;
+        };
+        device.productionMs=Math.min(required,device.productionMs+gain);
+        if(device.productionMs<required)return;
+        SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(process.output());
+        for(World.Device crate:world.devices){
+            if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
+               !device.ownerKey.equals(crate.ownerKey)||
+               Math.hypot(device.x-crate.x,device.y-crate.y)>5.5)continue;
+            if(!crate.storage.delivered(item,process.quantity()))continue;
+            device.productionActive=false;
+            device.productionMs=0;
+            device.productionCompleted++;
+            return;
+        }
+        // Completed production waits for physical storage capacity: no
+        // material appears from thin air or off-screen remote transactions.
+    }
     /** All base PvP damage passes through this gate, including future explosives. */
     public synchronized boolean damageDevice(int attackerId,int deviceIndex,int amount,long utcMillis){
         Player attacker=players.get(attackerId);
@@ -751,6 +839,14 @@ public final class ArenaSystems {
            raidProtection.protectedOffline(device.ownerKey,utcMillis))return false;
         device.hp=Math.max(0,device.hp-amount);
         if(device.hp==0&&device.kind==STORAGE_CRATE)device.storage.destroy();
+        if(device.kind==BEGOTTEN_BROOD_NEST&&device.productionActive)
+            device.productionMs=Math.max(0,device.productionMs-amount*1000L);
+        if(device.kind==PENITENT_VOTIVE_ALTAR&&device.productionActive)
+            device.productionMs=0; // sacred rite must begin its chant again
+        if(device.hp==0){
+            device.productionActive=false;
+            device.productionMs=0;
+        }
         return true;
     }
     /** Scores current threats for each selectable spawn without secretly denying chosen risk. */
@@ -990,6 +1086,7 @@ public final class ArenaSystems {
         }
         for(World.Device d:world.devices){
             if(d.hp<=0)continue;
+            if(firstProcess(d.kind)!=null)advanceFactionBatch(d,ms);
             d.cooldown=Math.max(0,d.cooldown-ms/1000.0);
             if(d.kind==HEALTH_STATION&&clock%500<ms)for(Player p:players.values()){
                 if(!p.dead&&Math.hypot(p.x-d.x,p.y-d.y)<2){

@@ -50,6 +50,11 @@ public final class World {
         public String ownerKey;
         public double cooldown;
         public final CampStockpile storage=new CampStockpile();
+        // Durable active batch, not a shared factory inventory. Each faction
+        // below has its own distinct processor and operating conditions.
+        public boolean productionActive;
+        public long productionMs;
+        public int productionCompleted;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }
     public World(long seed) {

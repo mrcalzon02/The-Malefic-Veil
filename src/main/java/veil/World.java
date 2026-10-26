@@ -53,6 +53,7 @@ public final class World {
         // Durable active batch, not a shared factory inventory. Each faction
         // below has its own distinct processor and operating conditions.
         public boolean productionActive;
+        public String productionRecipeId="";
         public long productionMs;
         public int productionCompleted;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}

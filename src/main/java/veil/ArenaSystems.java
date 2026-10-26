@@ -583,11 +583,22 @@ public final class ArenaSystems {
             case UNRAVELED_SCRAP_OUTPOST -> "unraveled-recover-scrap";
             case PENITENT_VOTIVE_ALTAR -> "penitent-weave-ritual";
             case BEGOTTEN_BROOD_NEST -> "begotten-mix-slurry";
+            case COOKING_HEARTH -> "split-firewood";
+            case FORAGER_GARDEN -> "grow-field-crops";
+            case COMPOST_YARD -> "compost-ferment";
+            case HERB_PLOT -> "grow-medicinals";
+            case CHARCOAL_KILN -> "charcoal-burn";
+            case STONE_FURNACE -> "firebrick-batch";
+            case FORGE -> "iron-bloom";
+            case MATERIALS_RECYCLER -> "sort-mineral-feed";
+            case UNRAVELED_MACHINIST_BAY -> "unraveled-make-bearings";
+            case PENITENT_RELIQUARY -> "penitent-engrave-reliquary";
+            case BEGOTTEN_SPORE_BASIN -> "begotten-culture-spores";
             default -> null;
         };
     }
-    private static Map<SurvivalCrafting.Item,Integer> processInputs(int kind){
-        var recipe=CraftingEraRegistry.process(firstProcess(kind));
+    private static Map<SurvivalCrafting.Item,Integer> processInputs(String processId){
+        var recipe=CraftingEraRegistry.process(processId);
         EnumMap<SurvivalCrafting.Item,Integer> materials=
             new EnumMap<>(SurvivalCrafting.Item.class);
         for(var item:recipe.inputs().entrySet())
@@ -817,24 +828,43 @@ public final class ArenaSystems {
      * The order and input debit are both in the world ledger, ensuring a
      * crash cannot independently reissue previously spent materials. */
     public synchronized boolean startFactionBatch(int playerId){
+        return startFactionBatch(playerId,null);
+    }
+    /** Select a concrete registered recipe and matching PHYSICAL facility;
+     * the host, not the menu, determines ownership, faction, cost and range. */
+    public synchronized boolean startFactionBatch(int playerId,String requestedRecipe){
         Player p=players.get(playerId);
         if(p==null||p.dead||vehicles.carDrivenBy(playerId)>=0||
            !p.accountKey.startsWith("acct_"))return false;
+        if(requestedRecipe!=null&&(requestedRecipe.length()>80||
+           !requestedRecipe.matches("[a-z0-9-]+")))return false;
         for(World.Device device:world.devices){
             int kind=device.kind;
-            if(device.hp<=0||firstProcess(kind)==null||
+            String processId=requestedRecipe==null?firstProcess(kind):requestedRecipe;
+            var process=CraftingEraRegistry.process(processId);
+            if(device.hp<=0||process==null||
+               !process.facility().equals(factionFacility(kind))||
                device.productionActive||
                !p.accountKey.equals(device.ownerKey)||
-               factions.faction(p.accountKey)!=facilityFaction(kind)||
+               (facilityFaction(kind)!=null&&
+                factions.faction(p.accountKey)!=facilityFaction(kind))||
+               (process.faction()!=CraftingEraRegistry.Faction.ALL&&
+                factions.faction(p.accountKey)!=switch(process.faction()){
+                    case UNRAVELED -> CharacterRoster.Faction.THE_UNRAVELED;
+                    case PENITENT -> CharacterRoster.Faction.THE_PENITENT;
+                    case BEGOTTEN -> CharacterRoster.Faction.THE_BEGOTTEN;
+                    default -> null;
+                })||
                Math.hypot(p.x-device.x,p.y-device.y)>2.6||
                !world.lineClear(p.x,p.y,device.x,device.y))continue;
-            Map<SurvivalCrafting.Item,Integer> inputs=processInputs(kind);
+            Map<SurvivalCrafting.Item,Integer> inputs=processInputs(processId);
             for(World.Device crate:world.devices){
                 if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
                    !p.accountKey.equals(crate.ownerKey)||
                    Math.hypot(crate.x-device.x,crate.y-device.y)>5.5)continue;
                 if(!crate.storage.consume(inputs))continue;
                 device.productionMs=0;
+                device.productionRecipeId=processId;
                 device.productionActive=true;
                 breakGrace(p);
                 p.progression.reward(CharacterProgression.Skill.ENGINEERING,12,clock,3500);
@@ -848,13 +878,13 @@ public final class ArenaSystems {
      * biologically vulnerable Begotten maturation. */
     private void advanceFactionBatch(World.Device device,long ms){
         if(device.hp<=0||!device.productionActive)return;
-        String id=firstProcess(device.kind);
-        if(id==null)return;
+        String id=device.productionRecipeId;
         var process=CraftingEraRegistry.process(id);
+        if(process==null||!process.facility().equals(factionFacility(device.kind)))
+            throw new IllegalStateException("Invalid faction work order on world device");
         long required=process.seconds()*1000L;
         long gain=switch(device.kind){
-            case UNRAVELED_SCRAP_OUTPOST -> ms;  // fuel already consumed by start
-            case PENITENT_VOTIVE_ALTAR -> {
+            case PENITENT_VOTIVE_ALTAR,PENITENT_RELIQUARY -> {
                 int witnesses=0;
                 for(Player p:players.values()){
                     if(!p.dead&&factions.faction(p.accountKey)==
@@ -866,8 +896,11 @@ public final class ArenaSystems {
                 }
                 yield ms*Math.min(3,witnesses); // no ritual without participants
             }
-            case BEGOTTEN_BROOD_NEST -> ms; // living gestation, damage disrupts
-            default -> 0;
+            // All other salvage and cultivation equipment has a physical
+            // stocked facility and independently registered batch ingredients.
+            // Purely Begotten and Unraveled sites run unattended, while rites
+            // remain witness-dependent even at the higher tier.
+            default -> ms;
         };
         device.productionMs=Math.min(required,device.productionMs+gain);
         if(device.productionMs<required)return;
@@ -878,6 +911,7 @@ public final class ArenaSystems {
                Math.hypot(device.x-crate.x,device.y-crate.y)>5.5)continue;
             if(!crate.storage.delivered(item,process.quantity()))continue;
             device.productionActive=false;
+            device.productionRecipeId="";
             device.productionMs=0;
             device.productionCompleted++;
             return;
@@ -893,11 +927,17 @@ public final class ArenaSystems {
             if(d.hp<=0||firstProcess(d.kind)==null||
                !p.accountKey.equals(d.ownerKey)||
                Math.hypot(p.x-d.x,p.y-d.y)>3.0)continue;
-            long duration=CraftingEraRegistry.process(firstProcess(d.kind)).seconds();
-            return d.productionActive?
-                "RUNNING_"+(d.productionMs/1000)+"_OF_"+duration+"_SECONDS":
-                "IDLE_COMPLETED_"+d.productionCompleted;
+            if(!d.productionActive)continue;
+            var process=CraftingEraRegistry.process(d.productionRecipeId);
+            long duration=process.seconds();
+            return "RUNNING_"+d.productionRecipeId+"_"+
+                (d.productionMs/1000)+"_OF_"+duration+"_SECONDS";
         }
+        for(World.Device d:world.devices)
+            if(d.hp>0&&firstProcess(d.kind)!=null&&
+               p.accountKey.equals(d.ownerKey)&&
+               Math.hypot(p.x-d.x,p.y-d.y)<=3.0)
+                return "IDLE_"+factionFacility(d.kind)+"_COMPLETED_"+d.productionCompleted;
         return "NO_OWN_WORKSITE_IN_REACH";
     }
     /** All base PvP damage passes through this gate, including future explosives. */
@@ -912,12 +952,15 @@ public final class ArenaSystems {
            raidProtection.protectedOffline(device.ownerKey,utcMillis))return false;
         device.hp=Math.max(0,device.hp-amount);
         if(device.hp==0&&device.kind==STORAGE_CRATE)device.storage.destroy();
-        if(device.kind==BEGOTTEN_BROOD_NEST&&device.productionActive)
+        if((device.kind==BEGOTTEN_BROOD_NEST||
+            device.kind==BEGOTTEN_SPORE_BASIN)&&device.productionActive)
             device.productionMs=Math.max(0,device.productionMs-amount*1000L);
-        if(device.kind==PENITENT_VOTIVE_ALTAR&&device.productionActive)
+        if((device.kind==PENITENT_VOTIVE_ALTAR||
+            device.kind==PENITENT_RELIQUARY)&&device.productionActive)
             device.productionMs=0; // sacred rite must begin its chant again
         if(device.hp==0){
             device.productionActive=false;
+            device.productionRecipeId="";
             device.productionMs=0;
         }
         return true;

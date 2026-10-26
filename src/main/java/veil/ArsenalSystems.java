@@ -56,6 +56,24 @@ public final class ArsenalSystems {
         active.put(id,s);cancel(s);s.lastSequence=0;alignFaction(id,s);
     }}
     public void leave(int id){synchronized(host){State s=active.remove(id);ArenaSystems.Player p=host.player(id);if(s!=null){if(p!=null)s.storedScrap=p.scrap;cancel(s);}}}
+    /** All equipped guns, magazines, ammunition and carried fabrication inputs
+     * are physical inventory. Learned research and permanent faction affiliation
+     * are not items. The death event is issued only by the authoritative host. */
+    public void clearOnDeath(int id){synchronized(host){
+        State s=state(id);
+        if(s==null)return;
+        s.owned=0;
+        s.selected=0; // Safe catalog index while disarmed; owns() is mandatory.
+        Arrays.fill(s.clip,0);
+        Arrays.fill(s.reserve,0);
+        Arrays.fill(s.materials,0);
+        s.storedScrap=0;
+        s.readyAt=0;s.heat=0;
+        cancel(s);
+        // Delayed weapon effects may not continue dealing damage after death.
+        projectiles.removeIf(projectile->projectile.owner==id);
+        fields.removeIf(field->field.owner==id);
+    }}
     private State state(int id){return active.get(id);}
     private static boolean owns(State s,int w){return s!=null&&w>=0&&w<32&&(s.owned&(1L<<w))!=0;}
     private boolean alive(int id){ArenaSystems.Player p=host.player(id);return p!=null&&!p.dead&&host.vehicles.carDrivenBy(id)<0;}
@@ -109,7 +127,7 @@ public final class ArsenalSystems {
         if(!alive(id))return new Result(false,"UNAVAILABLE");State s=state(id);alignFaction(id,s);World.Device b=bench(id);if(b==null)return new Result(false,"OWN_BENCH_REQUIRED");
         int[] cost;int component=-1,w=-1;
         if(recipe>=32&&recipe<=36){component=recipe-28;cost=COMPONENT_COSTS[recipe-32];if(recipe==36&&b.tier<3)return new Result(false,"BENCH_TIER_3");}
-        else if(recipe==40){w=s.selected;if(s.reserve[w]>=get(w).capacity()*8)return new Result(false,"AMMO_FULL");cost=new int[]{2,0,0,0,0,0,0,0,0};if(get(w).faction()==1){cost[1]=1;cost[2]=1;}if(get(w).tier()==3)cost[3]=2;}
+        else if(recipe==40){w=s.selected;if(!owns(s,w))return new Result(false,"NOT_OWNED");if(s.reserve[w]>=get(w).capacity()*8)return new Result(false,"AMMO_FULL");cost=new int[]{2,0,0,0,0,0,0,0,0};if(get(w).faction()==1){cost[1]=1;cost[2]=1;}if(get(w).tier()==3)cost[3]=2;}
         else if(recipe>=0&&recipe<32){
             w=recipe;Weapon d=get(w);if(owns(s,w))return new Result(false,"ALREADY_OWNED");
             if(d.tier()>b.tier)return new Result(false,"BENCH_TIER_"+d.tier());
@@ -138,6 +156,7 @@ public final class ArsenalSystems {
     }}
     public Result reload(int id){synchronized(host){
         State s=state(id);if(!alive(id))return new Result(false,"UNAVAILABLE");int w=s.selected;
+        if(!owns(s,w))return new Result(false,"NOT_OWNED");
         if(s.reloadWeapon>=0)return new Result(false,"RELOADING");if(s.clip[w]>=get(w).capacity()||s.reserve[w]==0)return new Result(false,"NO_RELOAD");
         s.charging=-1;s.chargeAt=-1;s.reloadWeapon=w;s.reloadEnd=host.time()+get(w).reloadMs();s.action=3;s.actionAt=host.time();return new Result(true,"RELOADING");
     }}
@@ -157,7 +176,9 @@ public final class ArsenalSystems {
     }
     public Shot fire(int id,boolean alt,long sequence){synchronized(host){
         State s=state(id);if(s==null||sequence<=s.lastSequence||sequence<=0)return new Shot(false,"DUPLICATE",0,0);s.lastSequence=sequence;
-        int w=s.selected;int remaining=s.clip[w];if(!alive(id))return new Shot(false,"UNAVAILABLE",0,remaining);long now=host.time();
+        int w=s.selected;int remaining=s.clip[w];if(!alive(id))return new Shot(false,"UNAVAILABLE",0,remaining);
+        if(!owns(s,w))return new Shot(false,"NOT_OWNED",0,remaining);
+        long now=host.time();
         if(s.reloadWeapon>=0)return new Shot(false,"RELOADING",0,remaining);
         Mode m=mode(w,alt);int price=cost(w,alt,m);
         if(m.kind()==Kind.DETONATE||m.kind()==Kind.RECALL||m.kind()==Kind.STICKY){
@@ -320,7 +341,7 @@ public final class ArsenalSystems {
             if(in.readInt()!=1||in.readInt()!=loot.size())throw new IOException("Arsenal save catalog mismatch");boolean[] taken=new boolean[loot.size()];for(int i=0;i<taken.length;i++)taken[i]=in.readBoolean();
             int count=in.readInt();if(count<0||count>2000)throw new IOException("Arsenal account cap");Map<String,State> loaded=new TreeMap<>();
             for(int i=0;i<count;i++){String key=in.readUTF();State s=new State();s.owned=in.readLong();s.researched=in.readLong();s.selected=in.readInt();s.faction=in.readInt();s.factionLocked=in.readBoolean();s.storedScrap=in.readInt();
-                if(!key.matches("acct_[a-f0-9]{64}")||loaded.containsKey(key)||(s.owned&~0xffffffffL)!=0||(s.researched&~0xffffffffL)!=0||!owns(s,s.selected)||s.faction< -1||s.faction>2||s.factionLocked&&s.faction<0||s.storedScrap<0||s.storedScrap>1_000_000_000)throw new IOException("Invalid arsenal account");
+                if(!key.matches("acct_[a-f0-9]{64}")||loaded.containsKey(key)||(s.owned&~0xffffffffL)!=0||(s.researched&~0xffffffffL)!=0||(s.selected<0||s.selected>=32||(s.owned!=0&&!owns(s,s.selected)))||s.faction< -1||s.faction>2||s.factionLocked&&s.faction<0||s.storedScrap<0||s.storedScrap>1_000_000_000)throw new IOException("Invalid arsenal account");
                 for(int j=0;j<9;j++){s.materials[j]=in.readInt();if(s.materials[j]<0||s.materials[j]>999)throw new IOException("Invalid materials");}
                 for(int j=0;j<32;j++){s.clip[j]=in.readInt();if(s.clip[j]<0||s.clip[j]>get(j).capacity())throw new IOException("Invalid clip");}
                 for(int j=0;j<32;j++){s.reserve[j]=in.readInt();if(s.reserve[j]<0||s.reserve[j]>get(j).capacity()*8)throw new IOException("Invalid ammo");}loaded.put(key,s);

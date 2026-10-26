@@ -284,6 +284,7 @@ public final class ArenaSystems {
             p.cash=0;p.scrap=0;p.medkits=0;
             p.pistolClip=0;p.shellClip=0;p.pistolReserve=0;p.shellReserve=0;
             p.survival.clearOnDeath();
+            arsenal.clearOnDeath(p.id);
             if(p.lastSpawnIndex>=0&&clock-p.lastSpawnAt<5000)
                 p.earlySpawnDeaths[p.lastSpawnIndex]=Math.min(10,p.earlySpawnDeaths[p.lastSpawnIndex]+1);
         }

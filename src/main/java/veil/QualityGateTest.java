@@ -106,6 +106,7 @@ public final class QualityGateTest {
             NetLink.BuildEvent denied=a.buildResults.poll();
             check(!denied.reason().equals("OK"),"real socket rejection reason");
         }
+        ArsenalDeathInventoryTest.main(new String[0]);
         VehicleTest.main(new String[0]);
         HostPersistenceTest.main(new String[0]);
         DedicatedHostTest.main(new String[0]);

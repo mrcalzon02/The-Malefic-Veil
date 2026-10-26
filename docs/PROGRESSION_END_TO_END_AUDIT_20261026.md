@@ -8,6 +8,11 @@ One newly created character on a genuinely persisted server must be able to prog
 
 **Current conclusion:** The game has substantial host-authoritative combat, vehicles, survival/crafting foundations, three faction identities, 32 player weapon profiles and 21 separate throwable kits. The fully joined progression into permanent settlement, productive industry, advanced upgrades, inter-settlement logistics, aircraft and level-50 fortress operation is **not yet playable end to end**. The latest baseline full game verification, GPU and desktop release were blocked by an export-count mismatch after the 21 throw recipes were indexed. See [workflow](https://github.com/mrcalzon02/The-Malefic-Veil/actions/runs/40132895709) and [release workflow](https://github.com/mrcalzon02/The-Malefic-Veil/actions/runs/40132895708). Re-evaluate these results after any fix; do not assume they became green merely because code was committed.
 
+## Incremental implementation log
+
+- **2026-10-26 / catalog blocker (P0):** Export entrypoint now checks the 22 survival recipes **plus 21 independent thrown-field recipes**, and the regression checks every throw row. [Full game verification](https://github.com/mrcalzon02/The-Malefic-Veil/actions/runs/40403051799), GPU build, input and multiplayer soak completed successfully for commit `98c69b0`. Packaging runs have their own conclusions and must be checked separately.
+- **2026-10-26 / inventory integrity (P1, validation pending):** In the next gameplay correction, fatal damage clears the separate carried arsenal ledger and invalidates actions against an unowned weapon, including post-death pickup of loose ammunition. A functional normal/hardcore death → respawn → save/load → rearm test is added to release/game verification. **This does not reconcile starting loadouts, the unified item mass model or graveyard recovery.** Verify remote CI before promoting this slice to accepted.
+
 ## Evidence labels
 - **Runtime foundation:** executable host/client code or specific functional checks exist, but no full player-journey sign-off is implied.
 - **Partial:** some game transactions work; essential UI, economic transfer, persistence, world geometry, or balance remains disconnected.

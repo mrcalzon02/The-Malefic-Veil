@@ -100,6 +100,9 @@ jobs:
       - name: Industrial work-order cost, 24-7 restart, idempotency and incursion budget
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IndustrialWorkstationTest
+      - name: Full arsenal inventory loss on death, disarmed respawn and save/reconnect
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.ArsenalDeathInventoryTest
       - name: RPG death/reset, 5-8 second grace, slow skills and protected hand crafting
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.CharacterProgressionTest

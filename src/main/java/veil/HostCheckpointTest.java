@@ -93,6 +93,7 @@ public final class HostCheckpointTest {
                 "Recovery duplicated previously withdrawn timber");
             // A pointer cannot fall through to mismatched root mirrors.
             Files.writeString(root.resolve("host-ledger.previous"),"corrupt");
+            Files.writeString(root.resolve("host-ledger.current"),"also-corrupt");
             try{HostCheckpoint.load(new ArenaSystems(seed),root);
                 throw new AssertionError("Double-damaged ledger silently reset");}
             catch(java.io.IOException expected){/* correct fail closed */}

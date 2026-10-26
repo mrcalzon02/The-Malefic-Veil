@@ -254,6 +254,11 @@ public final class LanServer implements AutoCloseable {
             "|"+Math.max(0,p.protectedUntil-match.time())+
             "|"+p.survival.status().hunger()+"|"+p.survival.status().hydration();
     }
+    private String campStockPacket(int player){
+        StringJoiner items=new StringJoiner(",");
+        match.nearbyCampStock(player).forEach((item,n)->items.add(item.name()+"="+n));
+        return "CAMP_STOCK|"+(items.length()==0?"-":items.toString());
+    }
     private static String inventoryPacket(ArenaSystems.Player p){
         StringJoiner content=new StringJoiner(",");
         for(var item:p.survival.inventory().entrySet())
@@ -320,6 +325,7 @@ public final class LanServer implements AutoCloseable {
             for(var g:loot.ground(System.currentTimeMillis()))
                 peer.send("GROUND_ITEM|"+g.id()+"|"+g.x()+"|"+g.y()+"|"+g.item()+"|"+g.quantity()+"|"+g.expiresAtMs());
             peer.send(progressionPacket(actor));peer.send(inventoryPacket(actor));
+            peer.send(campStockPacket(actor.id));
             peer.send(ArsenalWire.state(match.arsenal.view(actor.id),match.time()));
             factionStateTo(actor,peer);
             broadcast(peerPacket(actor),peer.id);
@@ -342,7 +348,8 @@ public final class LanServer implements AutoCloseable {
                     if(moderation!=null&&peer.authenticated&&
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
-                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CARGO_UNLOAD","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
+                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CARGO_UNLOAD",
+                           "STOCK_PUT","STOCK_TAKE","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
                            "HARVEST","SCAVENGE","CONSUME","DROP_ITEM","GET_DROP","TRADE_ITEM",
                            "ARS_FIRE","ARS_SELECT","ARS_RELOAD","ARS_PICKUP","ARS_CRAFT",
                            "ARS_UPGRADE").contains(s[0])){
@@ -684,6 +691,24 @@ public final class LanServer implements AutoCloseable {
                                 broadcast(cargoYardPacket(match.cargo.sites().get(yard)),-1);
                             }
                         }
+                        case "STOCK_QUERY" -> {
+                            if(s.length!=1)continue;
+                            peer.send(campStockPacket(peer.id));
+                        }
+                        case "STOCK_PUT", "STOCK_TAKE" -> {
+                            if(s.length!=3)continue;
+                            SurvivalCrafting.Item item;
+                            try{item=SurvivalCrafting.Item.valueOf(s[1]);}
+                            catch(IllegalArgumentException invalid){
+                                peer.send("STOCK_RESULT|INVALID_ITEM");continue;
+                            }
+                            int quantity=Integer.parseInt(s[2]);
+                            changed=match.transferCampStock(peer.id,
+                                s[0].equals("STOCK_TAKE"),item,quantity);
+                            peer.send("STOCK_RESULT|"+(changed?"OK":"DENIED"));
+                            peer.send(campStockPacket(peer.id));
+                            if(changed)peer.send(inventoryPacket(match.player(peer.id)));
+                        }
                         case "CARGO_UNLOAD" -> {
                             if(s.length!=2)continue;
                             int car=Integer.parseInt(s[1]);
@@ -693,6 +718,7 @@ public final class LanServer implements AutoCloseable {
                                 broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
                                 peer.send(inventoryPacket(match.player(peer.id)));
                                 peer.send(progressionPacket(match.player(peer.id)));
+                                peer.send(campStockPacket(peer.id));
                             }
                         }
                         case "CARGO_RECOVER" -> {

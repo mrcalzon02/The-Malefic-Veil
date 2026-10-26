@@ -77,6 +77,8 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentHashMap<Integer,CargoYard> cargoYards=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,CargoDrop> cargoDrops=new ConcurrentHashMap<>();
     public final ConcurrentLinkedQueue<String> cargoResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentHashMap<String,Integer> campStock=new ConcurrentHashMap<>();
+    public final ConcurrentLinkedQueue<String> campStockResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> factionResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> craftResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> consumeResults=new ConcurrentLinkedQueue<>();
@@ -328,6 +330,19 @@ public final class NetLink implements AutoCloseable {
                             case "CARGO_DROP_TAKEN" -> {
                                 if(s.length==2)cargoDrops.remove(Integer.parseInt(s[1]));
                             }
+                            case "CAMP_STOCK" -> {
+                                if(s.length==2){
+                                    campStock.clear();
+                                    if(!s[1].equals("-"))for(String entry:s[1].split(",")){
+                                        String[] pair=entry.split("=");
+                                        if(pair.length==2)campStock.put(pair[0],Integer.parseInt(pair[1]));
+                                    }
+                                }
+                            }
+                            case "STOCK_RESULT" -> {
+                                if(s.length==2&&campStockResults.size()<32)
+                                    campStockResults.add(s[1]);
+                            }
                             case "CARGO_RESULT" -> {
                                 if(s.length==3)cargoResults.add(s[1]+"|"+s[2]);
                             }
@@ -446,6 +461,10 @@ public final class NetLink implements AutoCloseable {
     public void drive(double throttle,double steering){send("DRIVE|"+throttle+"|"+steering);}
     public void loadCargo(int truck,int yard){send("CARGO_LOAD|"+truck+"|"+yard);}
     public void unloadCargo(int truck){send("CARGO_UNLOAD|"+truck);}
+    public void requestCampStock(){send("STOCK_QUERY");}
+    public void transferCampStock(boolean taking,String item,int amount){
+        send((taking?"STOCK_TAKE":"STOCK_PUT")+"|"+item+"|"+amount);
+    }
     public void recoverCargo(int truck,int drop){send("CARGO_RECOVER|"+truck+"|"+drop);}
 
     @Override public void close()throws IOException{connected=false;socket.close();}

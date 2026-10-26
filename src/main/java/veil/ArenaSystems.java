@@ -684,6 +684,7 @@ public final class ArenaSystems {
         if(device.ownerKey!=null&&device.ownerKey.startsWith("acct_")&&
            raidProtection.protectedOffline(device.ownerKey,utcMillis))return false;
         device.hp=Math.max(0,device.hp-amount);
+        if(device.hp==0&&device.kind==STORAGE_CRATE)device.storage.destroy();
         return true;
     }
     /** Scores current threats for each selectable spawn without secretly denying chosen risk. */

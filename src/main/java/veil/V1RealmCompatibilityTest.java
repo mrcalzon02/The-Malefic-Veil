@@ -5,16 +5,18 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.zip.CRC32;
 
-/** Actual V1 -> V3 read and re-save, without silent world or NPC catalog reset. */
+/** Actual V1 -> V4 read and re-save, without silent world or NPC catalog reset. */
 public final class V1RealmCompatibilityTest {
     private static void check(boolean ok,String why){if(!ok)throw new AssertionError(why);}
     static byte[] downgradeForTest(byte[] current)throws Exception{
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(current,0,current.length-8))){
-            check(in.readInt()==0x5645494c&&in.readInt()==3,"Fixture is V3");
+            check(in.readInt()==0x5645494c&&in.readInt()==4,"Fixture is V4");
             in.readLong();in.readLong();
             int devices=in.readInt();
             for(int i=0;i<devices;i++){
                 in.readInt();in.readDouble();in.readDouble();in.readInt();in.readUTF();in.readInt();
+                int stacks=in.readInt();
+                for(int j=0;j<stacks;j++){in.readInt();in.readInt();}
             }
             int cars=in.readInt();
             for(int i=0;i<cars;i++){
@@ -54,13 +56,13 @@ public final class V1RealmCompatibilityTest {
             check(reopened.cargo.sites().stream().allMatch(x->x.stock()==1),
                 "New cargo economy must initialize exactly once on v1 migration");
             DurableRealm.save(reopened,dir);
-            byte[] v3=Files.readAllBytes(DurableRealm.file(dir));
-            check(v3[7]==3,"V1 realm was not upgraded on save");
+            byte[] v4=Files.readAllBytes(DurableRealm.file(dir));
+            check(v4[7]==4,"V1 realm was not upgraded on save");
             ArenaSystems again=new ArenaSystems(20261020L);
-            check(DurableRealm.load(again,dir),"Upgraded V3 world is unreadable");
+            check(DurableRealm.load(again,dir),"Upgraded V4 world is unreadable");
             check(again.world.pickups.get(0).taken&&again.world.npcs.get(0).hp==51,
-                "Legacy world data disappeared during V3 roundtrip");
-            System.out.println("PASS V1RealmCompatibilityTest: exact legacy header accepted and promoted to V3");
+                "Legacy world data disappeared during V4 roundtrip");
+            System.out.println("PASS V1RealmCompatibilityTest: exact legacy header accepted and promoted to V4");
         }finally{
             try(var stream=Files.walk(dir)){
                 stream.sorted(Comparator.reverseOrder()).forEach(path->{

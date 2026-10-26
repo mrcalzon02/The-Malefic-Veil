@@ -36,7 +36,6 @@ public final class CampCargoUnloadTest {
         ArenaSystems game=new ArenaSystems(seed);
         ArenaSystems.Player p=game.join(1);
         check(game.assignAccount(1,owner),"bind account");
-        game.world.npcs.clear();
         place(game,p);
         var camp=game.world.devices.get(game.world.devices.size()-1);
         check(!game.world.detailedCity(camp.x,camp.y),"city can't be cargo camp");

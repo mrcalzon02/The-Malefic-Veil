@@ -424,7 +424,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         vista=new ContinentVista(world);
         localVehicles=localHost==null?new Vehicles(world):localHost.vehicles;
         localCargo=localHost==null?new CargoHaulage(world,localVehicles):localHost.cargo;
-        if(localHost!=null)localHost.join(1);
+        if(localHost!=null){
+            localHost.join(1);
+            // A local solo world also needs a stable owner identity. Anonymous
+            // guest keys may not own/operate wilderness camp freight.
+            localHost.assignAccount(1,"acct_"+PlayerIdentity.sha256("solo:"+seed));
+        }
         arsenalVisualHost=localHost==null?new ArenaSystems(seed):localHost;
         localHarvesting=net==null?new WorldHarvesting(world):null;
         try{weather=new VeilWeather(seed,java.nio.file.Path.of("."));}

@@ -111,7 +111,7 @@ public final class ArenaSystems {
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     private final Map<Integer,Integer> shieldedShot=new HashMap<>();
-    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4, FIELD_FIRE=5, FIELD_BENCH=6;
+    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4, FIELD_FIRE=5, FIELD_BENCH=6, STORAGE_CRATE=7;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -532,10 +532,10 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>FIELD_BENCH)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
-        int price=kind==FIELD_FIRE||kind==FIELD_BENCH?0:
+        if(kind<0||kind>STORAGE_CRATE)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        int price=kind==FIELD_FIRE||kind==FIELD_BENCH||kind==STORAGE_CRATE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
-        int supplies=kind==FIELD_FIRE||kind==FIELD_BENCH?0:
+        int supplies=kind==FIELD_FIRE||kind==FIELD_BENCH||kind==STORAGE_CRATE?0:
             kind==0?3:kind==1?1:kind==2?2:1;
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
         // The current 132x132 arena is an ENTIRE fixed city sector. Player
@@ -553,17 +553,21 @@ public final class ArenaSystems {
                    p.accountKey.equals(existing.ownerKey))
                     return new BuildReview(false,"ALREADY_OWNS_CAMP",price,supplies,x,y);
         }
+        if(kind==STORAGE_CRATE&&world.detailedCity(x,y))
+            return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
+        if(kind==STORAGE_CRATE&&p.survival.count(SurvivalCrafting.Item.CRATE_KIT)<1)
+            return new BuildReview(false,"REQUIRES_CRAFTED_CRATE",price,supplies,x,y);
         if(kind==FIELD_BENCH&&world.detailedCity(x,y))
             return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
         if(kind==FIELD_BENCH&&p.survival.count(SurvivalCrafting.Item.WORKBENCH)<1)
             return new BuildReview(false,"REQUIRES_CRAFTED_WORKBENCH",price,supplies,x,y);
-        if(kind==FIELD_FIRE||kind==FIELD_BENCH){
+        if(kind==FIELD_FIRE||kind==FIELD_BENCH||kind==STORAGE_CRATE){
             if(kind==FIELD_FIRE&&p.survival.count(SurvivalCrafting.Item.CAMPFIRE)<1)
                 return new BuildReview(false,"REQUIRES_CAMPFIRE_KIT",price,supplies,x,y);
             boolean hasCamp=false;
             for(World.Device d:world.devices){
                 if(d.hp<=0||!p.accountKey.equals(d.ownerKey))continue;
-                if(d.kind==kind)
+                if(d.kind==kind&&kind!=STORAGE_CRATE)
                     return new BuildReview(false,
                         kind==FIELD_FIRE?"ALREADY_OWNS_FIRE":"ALREADY_OWNS_BENCH",
                         price,supplies,x,y);
@@ -572,6 +576,9 @@ public final class ArenaSystems {
             }
             if(!hasCamp)
                 return new BuildReview(false,"REQUIRES_OWN_CAMP",price,supplies,x,y);
+            if(kind==STORAGE_CRATE&&world.devices.stream().filter(d->
+                d.hp>0&&d.kind==STORAGE_CRATE&&p.accountKey.equals(d.ownerKey)).count()>=3)
+                return new BuildReview(false,"CRATE_LIMIT",price,supplies,x,y);
         }
         // Dedicated spawn-clearance feedback takes priority over overlapping world roads.
         for(double[] spawn:world.spawns)
@@ -626,6 +633,8 @@ public final class ArenaSystems {
             throw new IllegalStateException("Fire kit changed after authoritative preflight");
         if(kind==FIELD_BENCH&&!p.survival.debit(SurvivalCrafting.Item.WORKBENCH,1))
             throw new IllegalStateException("Workbench kit changed after authoritative preflight");
+        if(kind==STORAGE_CRATE&&!p.survival.debit(SurvivalCrafting.Item.CRATE_KIT,1))
+            throw new IllegalStateException("Crate kit changed after authoritative preflight");
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;
@@ -634,6 +643,36 @@ public final class ArenaSystems {
         return new BuildOutcome(true,review,world.devices.size()-1);
     }
     public synchronized boolean build(int id,int kind){return buildOutcome(id,kind).built();}
+    /** Host-validated material exchange with an actual owned wilderness crate. */
+    public synchronized boolean transferCampStock(int id,boolean taking,
+                               SurvivalCrafting.Item item,int quantity){
+        Player p=players.get(id);
+        if(p==null||p.dead||item==null||quantity<1||quantity>CampStockpile.MAX_STACK||
+           vehicles.carDrivenBy(id)>=0||p.accountKey==null||
+           !p.accountKey.startsWith("acct_"))return false;
+        for(World.Device d:world.devices)
+            if(d.hp>0&&d.kind==STORAGE_CRATE&&
+               p.accountKey.equals(d.ownerKey)&&
+               Math.hypot(p.x-d.x,p.y-d.y)<=2.6&&
+               world.lineClear(p.x,p.y,d.x,d.y)){
+                boolean ok=taking?d.storage.withdraw(p.survival,item,quantity):
+                                  d.storage.deposit(p.survival,item,quantity);
+                if(ok)breakGrace(p);
+                return ok;
+            }
+        return false;
+    }
+    public synchronized Map<SurvivalCrafting.Item,Integer> nearbyCampStock(int id){
+        Player p=players.get(id);
+        if(p==null||p.dead||vehicles.carDrivenBy(id)>=0)return Map.of();
+        for(World.Device d:world.devices)
+            if(d.hp>0&&d.kind==STORAGE_CRATE&&
+               p.accountKey.equals(d.ownerKey)&&
+               Math.hypot(p.x-d.x,p.y-d.y)<=2.6&&
+               world.lineClear(p.x,p.y,d.x,d.y))
+                return d.storage.snapshot();
+        return Map.of();
+    }
     /** All base PvP damage passes through this gate, including future explosives. */
     public synchronized boolean damageDevice(int attackerId,int deviceIndex,int amount,long utcMillis){
         Player attacker=players.get(attackerId);
@@ -740,6 +779,18 @@ public final class ArenaSystems {
         for(World.Device camp:world.devices){
             if(camp.hp<=0||camp.kind!=CAMP_STAKE||
                !p.accountKey.equals(camp.ownerKey))continue;
+            // Unload to fixed camp storage before temporary carried staging.
+            for(World.Device d:world.devices)
+                if(d.hp>0&&d.kind==STORAGE_CRATE&&
+                   p.accountKey.equals(d.ownerKey)&&
+                   Math.hypot(d.x-camp.x,d.y-camp.y)<=6&&
+                   cargo.unloadToStorage(playerId,p.x,p.y,carId,
+                       camp.x,camp.y,d.x,d.y,d.storage)){
+                    breakGrace(p);
+                    p.progression.reward(CharacterProgression.Skill.SCAVENGING,
+                        18,clock,3000);
+                    return true;
+                }
             if(cargo.unload(playerId,p.x,p.y,carId,camp.x,camp.y,p.survival)){
                 breakGrace(p);
                 p.progression.reward(CharacterProgression.Skill.SCAVENGING,18,clock,3000);

@@ -135,6 +135,32 @@ public final class CargoHaulage {
             throw new IllegalStateException("Cargo capacity changed after verified preflight");
         return true;
     }
+    /** Host-authorized unloading from parked truck into fixed wilderness crate. */
+    public synchronized boolean unloadToStorage(int id,double px,double py,int carId,
+                     double campX,double campY,double crateX,double crateY,
+                     CampStockpile storage){
+        Vehicles.State car=vehicles.state(carId);
+        Vehicles.Load load=vehicles.cargo(carId);
+        if(storage==null||car==null||load==null||load.resourceType()==null||
+           !Double.isFinite(px)||!Double.isFinite(py)||
+           world.detailedCity(car.x(),car.y())||
+           world.detailedCity(campX,campY)||world.detailedCity(crateX,crateY)||
+           car.hp()<=CARGO_DAMAGE_THRESHOLD||car.driverId()>=0||
+           vehicles.carDrivenBy(id)>=0||Math.abs(car.speed())>.10||
+           Math.hypot(px-crateX,py-crateY)>3.0||
+           Math.hypot(car.x()-crateX,car.y()-crateY)>4.2||
+           Math.hypot(crateX-campX,crateY-campY)>6||
+           !world.lineClear(px,py,crateX,crateY)||
+           !world.lineClear(px,py,car.x(),car.y()))return false;
+        SurvivalCrafting.Item kind=SurvivalCrafting.Item.valueOf(load.resourceType());
+        if(!storage.canAdd(kind,1))return false;
+        String removed=vehicles.takeCargo(carId);
+        if(!load.resourceType().equals(removed))
+            throw new IllegalStateException("Truck cargo changed before transfer");
+        if(!storage.delivered(kind,1))
+            throw new IllegalStateException("Crate stock changed before transfer");
+        return true;
+    }
     /** Damage checks always take the truck's load only once. */
     public synchronized void advance(long ms){
         if(ms<0||ms>1000)throw new IllegalArgumentException("Bad cargo world tick");

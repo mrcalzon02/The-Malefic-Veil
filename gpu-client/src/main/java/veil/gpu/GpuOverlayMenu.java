@@ -176,6 +176,8 @@ public final class GpuOverlayMenu {
                 add("INVENTORY",()->quickPanel(java.awt.event.KeyEvent.VK_I));
                 add("CHARACTER / SKILLS",()->quickPanel(java.awt.event.KeyEvent.VK_K));
                 add("CITY / CONTINENT MAP",()->quickPanel(java.awt.event.KeyEvent.VK_M));
+                add("EAT CARRIED FOOD",()->{gameplay.gpuUseSupplies(false);toast("HOST FOOD REQUEST");});
+                add("DRINK CLEAN WATER",()->{gameplay.gpuUseSupplies(true);toast("HOST WATER REQUEST");});
                 add("FIELD CRAFTING",this::openCraft);
                 add("RECIPE / INGREDIENT INDEX",this::openBook);
                 add("FACTION / CREW",this::openCrew);

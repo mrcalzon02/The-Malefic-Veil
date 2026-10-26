@@ -206,12 +206,25 @@ public final class SurvivalCrafting {
         }
         return true;
     }
+    /** Only edible food and purified water may be used. Never debit an item
+     * when the corresponding need is already full or when it is unsafe. */
     public synchronized boolean consume(Item item){
-        if(count(item)==0)return false;
-        if(item==Item.EDIBLES){hunger=Math.min(100,hunger+30);}
-        else if(item==Item.CLEAN_WATER){hydration=Math.min(100,hydration+40);}
-        else return false;
-        items.put(item,count(item)-1);return true;
+        if(item==null||count(item)==0)return false;
+        int restoredHunger=switch(item){
+            case EDIBLES -> 30;
+            case RATIONS -> 40;
+            case SMOKED_RATIONS -> 55;
+            default -> 0;
+        };
+        if(restoredHunger>0){
+            if(hunger>=100)return false;
+            hunger=Math.min(100,hunger+restoredHunger);
+        }else if(item==Item.CLEAN_WATER){
+            if(hydration>=100)return false;
+            hydration=Math.min(100,hydration+40);
+        }else return false;
+        items.put(item,count(item)-1);
+        return true;
     }
     /** Server-only 1-minute survival cadence; never run per render frame. */
     public synchronized void advance(long elapsedMs){

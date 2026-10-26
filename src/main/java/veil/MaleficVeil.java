@@ -181,6 +181,28 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
         });
     }
+    /** Native in-game supply action. Item selection uses the replicated
+     * inventory, but consumption and need recovery belong to the host. */
+    public void gpuUseSupplies(boolean water){
+        String chosen=null;
+        for(String name:water?
+            new String[]{"CLEAN_WATER"}:
+            new String[]{"EDIBLES","RATIONS","SMOKED_RATIONS"}){
+            if(carried().getOrDefault(name,0)>0){chosen=name;break;}
+        }
+        if(chosen==null){
+            toast(water?"NO CLEAN WATER CARRIED":"NO EDIBLE FOOD CARRIED");
+            return;
+        }
+        String item=chosen;
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.useSupply(item);
+            else if(localHost!=null){
+                boolean ok=localHost.consumeSurvival(1,SurvivalCrafting.Item.valueOf(item));
+                toast(ok?"USED "+item:"CANNOT USE "+item);
+            }
+        });
+    }
     public String gpuFieldStatus(){
         String faction=net!=null?net.faction():localHost==null?"NONE":
             String.valueOf(localHost.factions.faction(localHost.player(1).accountKey));
@@ -784,6 +806,11 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             for(var tier:net.benchTiers.entrySet())
                 if(tier.getKey()>=0&&tier.getKey()<world.devices.size())
                     world.devices.get(tier.getKey()).tier=tier.getValue();
+            String usedSupply;
+            while((usedSupply=net.consumeResults.poll())!=null)
+                toast(usedSupply.endsWith("|OK")?
+                    "CONSUMED "+usedSupply.substring(0,usedSupply.indexOf('|')).replace('_',' '):
+                    "SUPPLY USE DENIED: "+usedSupply.substring(0,usedSupply.indexOf('|')).replace('_',' '));
             while((craftMessage=net.craftResults.poll())!=null)
                 toast(craftMessage.endsWith("|OK")?
                     "CRAFTED "+craftMessage.substring(0,craftMessage.indexOf('|')):

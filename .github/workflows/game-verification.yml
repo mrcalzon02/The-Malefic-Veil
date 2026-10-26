@@ -100,6 +100,9 @@ jobs:
       - name: Industrial work-order cost, 24-7 restart, idempotency and incursion budget
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IndustrialWorkstationTest
+      - name: Host-validated eating, drinking, crafted rations and real socket feedback
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.SurvivalConsumptionTest
       - name: Full arsenal inventory loss on death, disarmed respawn and save/reconnect
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArsenalDeathInventoryTest

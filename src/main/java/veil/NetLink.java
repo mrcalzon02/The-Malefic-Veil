@@ -79,6 +79,7 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<String> cargoResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> factionResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> craftResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> consumeResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> rideResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<Integer> pickedUp=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<DeviceEvent> structures=new ConcurrentLinkedQueue<>();
@@ -240,6 +241,9 @@ public final class NetLink implements AutoCloseable {
                             }
                             case "CRAFT_RESULT" -> {
                                 if(s.length==3)craftResults.add(s[1]+"|"+s[2]);
+                            }
+                            case "CONSUME_RESULT" -> {
+                                if(s.length==3)consumeResults.add(s[1]+"|"+s[2]);
                             }
                             case "FACTION_RESULT", "CREW_RESULT", "CREW_INVITE" -> {
                                 factionResults.add(line);
@@ -413,6 +417,7 @@ public final class NetLink implements AutoCloseable {
     public void fieldThrow(int role){send("FIELD_THROW|"+role);}
     public void respawn(int index){send("RESPAWN|"+index);}
     public void sceneReady(){send("SCENE_READY");}
+    public void useSupply(String item){send("CONSUME|"+item);}
     public void craftHand(String recipeId){send("CRAFT_HAND|"+recipeId);}
     public void craftFire(String recipeId){send("CRAFT_FIRE|"+recipeId);}
     public void craftWorkbench(String recipeId){send("CRAFT_BENCH|"+recipeId);}

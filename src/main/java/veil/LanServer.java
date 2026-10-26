@@ -340,7 +340,7 @@ public final class LanServer implements AutoCloseable {
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
                            "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
-                           "HARVEST","SCAVENGE","DROP_ITEM","GET_DROP","TRADE_ITEM",
+                           "HARVEST","SCAVENGE","CONSUME","DROP_ITEM","GET_DROP","TRADE_ITEM",
                            "ARS_FIRE","ARS_SELECT","ARS_RELOAD","ARS_PICKUP","ARS_CRAFT",
                            "ARS_UPGRADE").contains(s[0])){
                         peer.send("FACTION_RESULT|REQUIRED");continue;
@@ -492,6 +492,18 @@ public final class LanServer implements AutoCloseable {
                                 peer.send(inventoryPacket(p));
                                 broadcast("SCAVENGE_TAKEN|"+id,-1);
                             }
+                        }
+                        case "CONSUME" -> {
+                            if(s.length!=2||s[1].length()>32)continue;
+                            SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(s[1]);
+                            boolean ok=match.consumeSurvival(peer.id,item);
+                            peer.send("CONSUME_RESULT|"+item+"|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                ArenaSystems.Player consumer=match.player(peer.id);
+                                peer.send(inventoryPacket(consumer));
+                                peer.send(progressionPacket(consumer));
+                            }
+                            changed=ok;
                         }
                         case "DROP_ITEM" -> {
                             if(s.length!=3)continue;

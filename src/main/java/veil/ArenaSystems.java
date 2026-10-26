@@ -753,6 +753,14 @@ public final class ArenaSystems {
         p.progression.reward(CharacterProgression.Skill.ENGINEERING,12,clock,3500);
         return true;
     }
+    /** Food and clean water are physically carried items, consumed only by
+     * the authoritative actor. Using supplies cancels nonoffensive spawn grace. */
+    public synchronized boolean consumeSurvival(int id,SurvivalCrafting.Item item){
+        Player p=players.get(id);
+        if(p==null||p.dead||item==null||!p.survival.consume(item))return false;
+        breakGrace(p);
+        return true;
+    }
     /** HAND recipes only: server verifies item costs, cooldown and authenticated player inventory. */
     public synchronized boolean craftHand(int id,String recipe){
         Player p=players.get(id);

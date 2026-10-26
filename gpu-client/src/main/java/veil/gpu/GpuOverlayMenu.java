@@ -243,6 +243,9 @@ public final class GpuOverlayMenu {
                     pageOffset+=MAX_RECIPES_PER_PAGE;show(Screen.CRAFT);
                 });
                 add("FULL RECIPE INDEX",this::openBook);
+                add("CONSTRUCT FACTION WORKSITE",()->{
+                    gameplay.gpuPlaceFactionFactory();show(Screen.GAME);
+                });
                 add("DEPLOY CRAFTED CRATE",()->{
                     gameplay.gpuPlaceStorage();show(Screen.GAME);
                 });

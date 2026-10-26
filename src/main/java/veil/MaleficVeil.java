@@ -204,6 +204,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
         });
     }
+    /** Dedicated early-faction fixed facilities, never temporary thrown kits. */
+    public void gpuPlaceFactionFactory(){
+        CraftingEraRegistry.Faction faction=gpuCraftFaction();
+        int kind=switch(faction){
+            case UNRAVELED -> ArenaSystems.UNRAVELED_SCRAP_OUTPOST;
+            case PENITENT -> ArenaSystems.PENITENT_VOTIVE_ALTAR;
+            case BEGOTTEN -> ArenaSystems.BEGOTTEN_BROOD_NEST;
+            default -> -1;
+        };
+        if(kind<0){toast("CHOOSE A FACTION BEFORE FOUNDING INDUSTRY");return;}
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.build(kind);
+            else if(localHost!=null)
+                toast(localHost.build(1,kind)?
+                    "FACTION FACILITY CONSTRUCTED":"FACTION SITE REQUIREMENTS NOT MET");
+        });
+    }
     public void gpuPlaceStorage(){
         SwingUtilities.invokeLater(()->{
             if(net!=null)net.build(ArenaSystems.STORAGE_CRATE);

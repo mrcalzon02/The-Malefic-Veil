@@ -18,6 +18,7 @@ public final class ArenaSystems {
     private final Map<Integer,Player> players=new LinkedHashMap<>();
     private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
     private final Map<String,CharacterProgression.Snapshot> accountSkills=new LinkedHashMap<>();
+    private final Map<String,SurvivalCrafting.Status> accountSurvival=new LinkedHashMap<>();
     private final java.security.SecureRandom respawnRandom=new java.security.SecureRandom();
     /** Persistent host-owned account snapshot, excluding transient socket/vehicle ownership. */
     public record Profile(int hp,int sanity,int cash,int scrap,int medkits,int pistolReserve,
@@ -50,6 +51,26 @@ public final class ArenaSystems {
             p.x=world.spawns[0][0];p.y=world.spawns[0][1];
         }
         p.moveAt=clock;refreshVisibility(p);
+    }
+    /** Bound, validated physical inventory and bodily needs for authenticated
+     * accounts. Transient guests are never serialized into persistent slots. */
+    public synchronized Map<String,SurvivalCrafting.Status> survivalSnapshot(){
+        Map<String,SurvivalCrafting.Status> out=new TreeMap<>(accountSurvival);
+        for(Player p:players.values())if(p.accountKey.startsWith("acct_"))
+            out.put(p.accountKey,p.survival.status());
+        return Collections.unmodifiableMap(out);
+    }
+    public synchronized void restoreSurvival(Map<String,SurvivalCrafting.Status> data){
+        if(!players.isEmpty())throw new IllegalStateException("Live survival restore forbidden");
+        Map<String,SurvivalCrafting.Status> checked=new TreeMap<>();
+        for(var entry:data.entrySet()){
+            if(!entry.getKey().matches("acct_[a-f0-9]{64}"))
+                throw new IllegalArgumentException("Invalid survival account owner");
+            SurvivalCrafting validation=new SurvivalCrafting();
+            validation.restoreStatus(entry.getValue());
+            checked.put(entry.getKey(),validation.status());
+        }
+        accountSurvival.clear();accountSurvival.putAll(checked);
     }
     public synchronized Map<String,CharacterProgression.Snapshot> skillsSnapshot(){
         Map<String,CharacterProgression.Snapshot> out=new TreeMap<>(accountSkills);
@@ -141,6 +162,8 @@ public final class ArenaSystems {
                 accountProfiles.put(departing.accountKey,savePlayer(departing));
             if(departing.accountKey.startsWith("acct_"))
                 accountSkills.put(departing.accountKey,departing.progression.snapshot());
+            if(departing.accountKey.startsWith("acct_"))
+                accountSurvival.put(departing.accountKey,departing.survival.status());
             raidProtection.logout(departing.accountKey,System.currentTimeMillis());
         }
         lastShotSequence.remove(id);
@@ -163,6 +186,8 @@ public final class ArenaSystems {
         if(saved!=null)applyProfile(p,saved);
         CharacterProgression.Snapshot skills=accountSkills.get(key);
         if(skills!=null)p.progression.restore(skills);
+        SurvivalCrafting.Status supplies=accountSurvival.get(key);
+        if(supplies!=null)p.survival.restoreStatus(supplies);
         return true;
     }
     /** Network server calls this when accepting a real, authenticated loading session. */

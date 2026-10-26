@@ -12,16 +12,19 @@ import java.util.zip.CRC32;
  * make inventory/crew/world transfers atomic across their durable domains.
  */
 public final class AccountDirectory {
-    private static final int MAGIC=0x56414331,VERSION=1,MAX=2_000_000;
+    // V1 has no physical survival inventory. V2 appends a bounded account
+    // survival ledger after crews, preserving the old fields byte-for-byte.
+    private static final int MAGIC=0x56414331,VERSION=2,MAX=2_000_000;
     private AccountDirectory(){}
     private record State(long seed,boolean hardcore,
         Map<String,ArenaSystems.Profile> profiles,
         Map<String,CharacterProgression.Snapshot> skills,
-        FactionGroups.Snapshot groups){}
+        FactionGroups.Snapshot groups,
+        Map<String,SurvivalCrafting.Status> survival){}
     private static boolean account(String key){return key.matches("acct_[a-f0-9]{64}");}
     private static State capture(ArenaSystems arena){
         return new State(arena.world.seed,arena.hardcore,arena.profilesSnapshot(),
-            arena.skillsSnapshot(),arena.factions.snapshot());
+            arena.skillsSnapshot(),arena.factions.snapshot(),arena.survivalSnapshot());
     }
     private static void profile(DataOutputStream out,ArenaSystems.Profile p)throws IOException{
         out.writeInt(p.hp());out.writeInt(p.sanity());out.writeInt(p.cash());
@@ -65,6 +68,20 @@ public final class AccountDirectory {
                     out.writeUTF(member.getKey());out.writeInt(member.getValue().ordinal());
                 }
             }
+            out.writeInt(state.survival().size());
+            for(var entry:new TreeMap<>(state.survival()).entrySet()){
+                var supplies=entry.getValue();
+                out.writeUTF(entry.getKey());
+                out.writeInt(supplies.hunger());
+                out.writeInt(supplies.hydration());
+                out.writeInt(supplies.inventory().size());
+                TreeMap<Integer,Integer> items=new TreeMap<>();
+                supplies.inventory().forEach((item,n)->items.put(item.ordinal(),n));
+                for(var item:items.entrySet()){
+                    out.writeInt(item.getKey());
+                    out.writeInt(item.getValue());
+                }
+            }
         }
         CRC32 crc=new CRC32();crc.update(buffer.toByteArray());
         try(DataOutputStream out=new DataOutputStream(buffer)){out.writeLong(crc.getValue());}
@@ -85,7 +102,9 @@ public final class AccountDirectory {
         if(bytes.length<25||bytes.length>MAX)throw new IOException("Invalid account data size");
         CRC32 crc=new CRC32();crc.update(bytes,0,bytes.length-8);
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes))){
-            if(in.readInt()!=MAGIC||in.readInt()!=VERSION)throw new IOException("Unknown accounts format");
+            if(in.readInt()!=MAGIC)throw new IOException("Unknown accounts signature");
+            int version=in.readInt();
+            if(version!=1&&version!=VERSION)throw new IOException("Unknown accounts format");
             long seed=in.readLong();boolean hardcore=in.readBoolean();
             if(seed!=target.world.seed||hardcore!=target.hardcore)
                 throw new IOException("Account realm seed or hardcore mode mismatch");
@@ -127,6 +146,27 @@ public final class AccountDirectory {
                 }
                 crews.add(new FactionGroups.Crew(id,name,faction,founder,Map.copyOf(members)));
             }
+            Map<String,SurvivalCrafting.Status> survival=new TreeMap<>();
+            if(version>=2)for(int i=count(in,10000);i>0;i--){
+                String key=in.readUTF();
+                int hunger=in.readInt(),hydration=in.readInt();
+                EnumMap<SurvivalCrafting.Item,Integer> items=
+                    new EnumMap<>(SurvivalCrafting.Item.class);
+                for(int j=count(in,SurvivalCrafting.Item.values().length);j>0;j--){
+                    SurvivalCrafting.Item kind=enumeration(
+                        SurvivalCrafting.Item.values(),in.readInt());
+                    int quantity=in.readInt();
+                    if(quantity<=0||items.putIfAbsent(kind,quantity)!=null)
+                        throw new IOException("Repeated or invalid survival stock");
+                }
+                var candidate=new SurvivalCrafting.Status(hunger,hydration,Map.copyOf(items));
+                SurvivalCrafting validation=new SurvivalCrafting();
+                try{validation.restoreStatus(candidate);}
+                catch(IllegalArgumentException bad){throw new IOException("Invalid survival stock",bad);}
+                if(!account(key)||!profiles.containsKey(key)||
+                   survival.putIfAbsent(key,validation.status())!=null)
+                    throw new IOException("Unowned or duplicate survival stock");
+            }
             long checksum=in.readLong();
             if(checksum!=crc.getValue()||in.available()!=0)
                 throw new IOException("Account directory CRC/trailing bytes mismatch");
@@ -134,7 +174,8 @@ public final class AccountDirectory {
                 Map.copyOf(allegiance),List.copyOf(crews),nextId);
             try{new FactionGroups().restore(factionState);}
             catch(IllegalArgumentException bad){throw new IOException("Invalid faction crews",bad);}
-            return new State(seed,hardcore,Map.copyOf(profiles),Map.copyOf(skills),factionState);
+            return new State(seed,hardcore,Map.copyOf(profiles),Map.copyOf(skills),
+                factionState,Map.copyOf(survival));
         }catch(EOFException invalid){throw new IOException("Truncated account directory",invalid);}
     }
     private static void write(ArenaSystems target,Path folder)throws IOException{
@@ -178,6 +219,7 @@ public final class AccountDirectory {
         synchronized(arena){
             arena.restoreProfiles(state.profiles());
             arena.restoreSkills(state.skills());
+            arena.restoreSurvival(state.survival());
             arena.factions.restore(state.groups());
         }
         return true;

@@ -730,6 +730,24 @@ public final class ArenaSystems {
         return player!=null&&!player.dead&&
             cargo.recover(playerId,player.x,player.y,carId,droppedId);
     }
+    /** Only a live authenticated owner beside their wilderness camp
+     * may unload into carried staging stock. No city or remote transfer. */
+    public synchronized boolean unloadTruck(int playerId,int carId){
+        Player p=players.get(playerId);
+        if(p==null||p.dead||p.accountKey==null||
+           !p.accountKey.matches("acct_[a-f0-9]{64}")||
+           vehicles.carDrivenBy(playerId)>=0)return false;
+        for(World.Device camp:world.devices){
+            if(camp.hp<=0||camp.kind!=CAMP_STAKE||
+               !p.accountKey.equals(camp.ownerKey))continue;
+            if(cargo.unload(playerId,p.x,p.y,carId,camp.x,camp.y,p.survival)){
+                breakGrace(p);
+                p.progression.reward(CharacterProgression.Skill.SCAVENGING,18,clock,3000);
+                return true;
+            }
+        }
+        return false;
+    }
     /** Damage originates at host-verified attack events, never client HP reports. */
     public synchronized boolean damageTruck(int attackerId,int carId,int amount){
         Player attacker=players.get(attackerId);

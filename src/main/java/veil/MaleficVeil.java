@@ -1783,6 +1783,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             case KeyEvent.VK_CLOSE_BRACKET -> cycleArsenal(1);
             case KeyEvent.VK_R -> reload();
             case KeyEvent.VK_L -> loadNearestCargo();
+            case KeyEvent.VK_PERIOD -> unloadNearestCargo();
             case KeyEvent.VK_G -> recoverNearestCargo();
             case KeyEvent.VK_F -> ability();
             case KeyEvent.VK_T -> deploy(0);
@@ -2047,6 +2048,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         menuAction(vehicleMenu,"Enter / exit (Q)",this::toggleCar);
         menuAction(vehicleMenu,"Vehicle inspection",this::vehicleInspection);
         menuAction(vehicleMenu,"Load cargo (L)",this::loadNearestCargo);
+        menuAction(vehicleMenu,"Unload at camp (.)",this::unloadNearestCargo);
         menuAction(vehicleMenu,"Recover cargo (G)",this::recoverNearestCargo);
         JMenu production=new JMenu("Production");
         menuAction(production,"Industrial recipe catalog",this::productionCatalog);
@@ -2170,6 +2172,27 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
         }
         toast("NO LOADING BAY / PARKED TRUCK IN REACH");
+    }
+    /** On-foot field transfer requires a loaded truck and an owned camp. */
+    private void unloadNearestCargo(){
+        if(net!=null){
+            if(net.drivenCar()>=0){toast("EXIT TRUCK TO UNLOAD");return;}
+            for(NetLink.Car car:net.cars.values())
+                if(car.hp()>CargoHaulage.CARGO_DAMAGE_THRESHOLD&&
+                   car.driverId()<0&&Math.abs(car.speed())<=.10&&
+                   net.truckCargo.containsKey(car.id())&&
+                   Math.hypot(px-car.x(),py-car.y())<=4.5){
+                    net.unloadCargo(car.id());
+                    toast("REQUESTING CAMP UNLOAD");return;
+                }
+        }else if(localHost!=null){
+            if(localVehicles.carDrivenBy(1)>=0){toast("EXIT TRUCK TO UNLOAD");return;}
+            for(Vehicles.State car:localVehicles.states())
+                if(localHost.unloadTruck(1,car.id())){
+                    toast("CARGO STAGED AT CAMP");return;
+                }
+        }
+        toast("NEED LOADED TRUCK AND OWN WILDERNESS CAMP");
     }
     /** Ground cargo is reloaded onto an intact nearby parked truck, never hand-carried. */
     private void recoverNearestCargo(){

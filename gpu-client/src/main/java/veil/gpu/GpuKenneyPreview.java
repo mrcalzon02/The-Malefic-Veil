@@ -461,7 +461,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         {Input.Keys.F,KeyEvent.VK_F},{Input.Keys.T,KeyEvent.VK_T},
         {Input.Keys.V,KeyEvent.VK_V},{Input.Keys.B,KeyEvent.VK_B},
         {Input.Keys.H,KeyEvent.VK_H},{Input.Keys.G,KeyEvent.VK_G},
-        {Input.Keys.L,KeyEvent.VK_L},{Input.Keys.X,KeyEvent.VK_X},
+        {Input.Keys.L,KeyEvent.VK_L},{Input.Keys.PERIOD,KeyEvent.VK_PERIOD},
+                {Input.Keys.X,KeyEvent.VK_X},
         {Input.Keys.Z,KeyEvent.VK_Z},{Input.Keys.Y,KeyEvent.VK_Y},
         {Input.Keys.I,KeyEvent.VK_I},{Input.Keys.K,KeyEvent.VK_K},
         // J/O open in-world crafting/crew menus, never legacy Swing popups.

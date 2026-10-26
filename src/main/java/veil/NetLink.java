@@ -445,6 +445,7 @@ public final class NetLink implements AutoCloseable {
     public void exitCar(){send("EXIT");}
     public void drive(double throttle,double steering){send("DRIVE|"+throttle+"|"+steering);}
     public void loadCargo(int truck,int yard){send("CARGO_LOAD|"+truck+"|"+yard);}
+    public void unloadCargo(int truck){send("CARGO_UNLOAD|"+truck);}
     public void recoverCargo(int truck,int drop){send("CARGO_RECOVER|"+truck+"|"+drop);}
 
     @Override public void close()throws IOException{connected=false;socket.close();}

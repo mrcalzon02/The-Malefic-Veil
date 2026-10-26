@@ -109,6 +109,32 @@ public final class CargoHaulage {
         }
         return false;
     }
+    /** Move one legitimate parked truck load into a physically carried
+     * staging inventory at an owned wilderness camp. The permanent
+     * settlement warehouse remains a separate future system. */
+    public synchronized boolean unload(int playerId,double px,double py,int carId,
+                                         double campX,double campY,SurvivalCrafting bag){
+        Vehicles.State car=vehicles.state(carId);
+        Vehicles.Load load=vehicles.cargo(carId);
+        if(bag==null||car==null||load==null||load.resourceType()==null||
+           !Double.isFinite(px)||!Double.isFinite(py)||
+           world.detailedCity(campX,campY)||world.detailedCity(car.x(),car.y())||
+           car.hp()<=CARGO_DAMAGE_THRESHOLD||car.driverId()>=0||
+           vehicles.carDrivenBy(playerId)>=0||Math.abs(car.speed())>.10||
+           Math.hypot(px-campX,py-campY)>3.0||
+           Math.hypot(car.x()-campX,car.y()-campY)>4.2||
+           Math.hypot(px-car.x(),py-car.y())>4.5||
+           !world.lineClear(px,py,campX,campY)||
+           !world.lineClear(px,py,car.x(),car.y()))return false;
+        SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(load.resourceType());
+        if(!bag.canAcquire(item,1,true))return false;
+        String released=vehicles.takeCargo(carId);
+        if(!load.resourceType().equals(released))
+            throw new IllegalStateException("Truck load changed after verified preflight");
+        if(!bag.acquire(item,1,true))
+            throw new IllegalStateException("Cargo capacity changed after verified preflight");
+        return true;
+    }
     /** Damage checks always take the truck's load only once. */
     public synchronized void advance(long ms){
         if(ms<0||ms>1000)throw new IllegalArgumentException("Bad cargo world tick");

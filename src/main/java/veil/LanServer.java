@@ -342,7 +342,7 @@ public final class LanServer implements AutoCloseable {
                     if(moderation!=null&&peer.authenticated&&
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
-                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
+                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CARGO_UNLOAD","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
                            "HARVEST","SCAVENGE","CONSUME","DROP_ITEM","GET_DROP","TRADE_ITEM",
                            "ARS_FIRE","ARS_SELECT","ARS_RELOAD","ARS_PICKUP","ARS_CRAFT",
                            "ARS_UPGRADE").contains(s[0])){
@@ -682,6 +682,17 @@ public final class LanServer implements AutoCloseable {
                             if(changed){
                                 broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
                                 broadcast(cargoYardPacket(match.cargo.sites().get(yard)),-1);
+                            }
+                        }
+                        case "CARGO_UNLOAD" -> {
+                            if(s.length!=2)continue;
+                            int car=Integer.parseInt(s[1]);
+                            changed=match.unloadTruck(peer.id,car);
+                            peer.send("CARGO_RESULT|UNLOAD|"+(changed?"OK":"REJECTED"));
+                            if(changed){
+                                broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
+                                peer.send(inventoryPacket(match.player(peer.id)));
+                                peer.send(progressionPacket(match.player(peer.id)));
                             }
                         }
                         case "CARGO_RECOVER" -> {

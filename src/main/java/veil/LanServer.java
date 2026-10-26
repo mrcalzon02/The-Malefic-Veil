@@ -73,8 +73,7 @@ public final class LanServer implements AutoCloseable {
         // separate city/wilderness scene. Dedicated hosts do not load GLBs/audio.
         weather=new VeilWeather(seed,Path.of("."),false);
         if(saveDir!=null){
-            DurableRealm.load(match,saveDir);
-            AccountDirectory.load(match,saveDir);
+            HostCheckpoint.load(match,saveDir);
             harvesting.load(saveDir);
         }
         ai=new FactionAiDirector(match,harvesting,boundAI);
@@ -847,8 +846,7 @@ public final class LanServer implements AutoCloseable {
     }
     private synchronized void saveAll()throws IOException{
         if(dataDirectory==null)throw new IOException("In-memory LAN match has no save directory");
-        DurableRealm.save(match,dataDirectory);
-        AccountDirectory.save(match,dataDirectory);
+        HostCheckpoint.save(match,dataDirectory);
         harvesting.save(dataDirectory);
         ai.save(dataDirectory);
     }

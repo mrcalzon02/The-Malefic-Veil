@@ -112,7 +112,13 @@ public final class ArenaSystems {
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     private final Map<Integer,Integer> shieldedShot=new HashMap<>();
     public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4, FIELD_FIRE=5, FIELD_BENCH=6, STORAGE_CRATE=7,
-        UNRAVELED_SCRAP_OUTPOST=8,PENITENT_VOTIVE_ALTAR=9,BEGOTTEN_BROOD_NEST=10;
+        UNRAVELED_SCRAP_OUTPOST=8,PENITENT_VOTIVE_ALTAR=9,BEGOTTEN_BROOD_NEST=10,
+        CLAIM_HEART=11,HAND_WORKSHOP=12,DRY_STORE=13,COOKING_HEARTH=14,
+        RAIN_CATCHER=15,CARGO_LAYDOWN=16,FORAGER_GARDEN=17,
+        COMPOST_YARD=18,HERB_PLOT=19,CHARCOAL_KILN=20,
+        STONE_FURNACE=21,FORGE=22,FREIGHT_BAY=23,MATERIALS_RECYCLER=24,
+        UNRAVELED_MACHINIST_BAY=25,PENITENT_RELIQUARY=26,
+        BEGOTTEN_SPORE_BASIN=27;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -534,14 +540,41 @@ public final class ArenaSystems {
             case UNRAVELED_SCRAP_OUTPOST -> "unraveled-scrap-outpost";
             case PENITENT_VOTIVE_ALTAR -> "penitent-votive-altar";
             case BEGOTTEN_BROOD_NEST -> "begotten-brood-nest";
+            case CLAIM_HEART -> "claim-heart";
+            case HAND_WORKSHOP -> "hand-workshop";
+            case DRY_STORE -> "dry-store";
+            case COOKING_HEARTH -> "cooking-hearth";
+            case RAIN_CATCHER -> "rain-catcher";
+            case CARGO_LAYDOWN -> "cargo-laydown";
+            case FORAGER_GARDEN -> "forager-garden";
+            case COMPOST_YARD -> "compost-yard";
+            case HERB_PLOT -> "herb-plot";
+            case CHARCOAL_KILN -> "charcoal-kiln";
+            case STONE_FURNACE -> "stone-furnace";
+            case FORGE -> "forge";
+            case FREIGHT_BAY -> "freight-bay";
+            case MATERIALS_RECYCLER -> "materials-recycler";
+            case UNRAVELED_MACHINIST_BAY -> "unraveled-machinist-bay";
+            case PENITENT_RELIQUARY -> "penitent-reliquary";
+            case BEGOTTEN_SPORE_BASIN -> "begotten-spore-basin";
             default -> null;
         };
+    }
+    public static int kindForFacility(String facility){
+        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_SPORE_BASIN;kind++)
+            if(java.util.Objects.equals(factionFacility(kind),facility))return kind;
+        return -1;
     }
     private static CharacterRoster.Faction facilityFaction(int kind){
         return switch(kind){
             case UNRAVELED_SCRAP_OUTPOST -> CharacterRoster.Faction.THE_UNRAVELED;
             case PENITENT_VOTIVE_ALTAR -> CharacterRoster.Faction.THE_PENITENT;
-            case BEGOTTEN_BROOD_NEST -> CharacterRoster.Faction.THE_BEGOTTEN;
+            case BEGOTTEN_BROOD_NEST,BEGOTTEN_SPORE_BASIN ->
+                CharacterRoster.Faction.THE_BEGOTTEN;
+            case UNRAVELED_MACHINIST_BAY ->
+                CharacterRoster.Faction.THE_UNRAVELED;
+            case PENITENT_RELIQUARY ->
+                CharacterRoster.Faction.THE_PENITENT;
             default -> null;
         };
     }
@@ -560,6 +593,27 @@ public final class ArenaSystems {
         for(var item:recipe.inputs().entrySet())
             materials.put(SurvivalCrafting.Item.valueOf(item.getKey()),item.getValue());
         return materials;
+    }
+    /** A building is not considered a dependency merely because its catalog
+     * descriptor exists. E2 and support structures require real nearby,
+     * living, same-owner installed structures. Older E1 installs are retained
+     * for backwards compatibility with realms created before this gate. */
+    private boolean hasRealFacilityDependencies(Player player,int kind,double x,double y){
+        if(kind<CLAIM_HEART)return true;
+        var spec=CraftingEraRegistry.facility(factionFacility(kind));
+        if(spec==null)return false;
+        for(String required:spec.requires()){
+            boolean installed=false;
+            for(World.Device candidate:world.devices){
+                if(candidate.hp<=0||!player.accountKey.equals(candidate.ownerKey)||
+                   Math.hypot(candidate.x-x,candidate.y-y)>12)continue;
+                if(required.equals(factionFacility(candidate.kind))){
+                    installed=true;break;
+                }
+            }
+            if(!installed)return false;
+        }
+        return true;
     }
     private static Map<SurvivalCrafting.Item,Integer> facilityMaterialCost(int kind){
         String id=factionFacility(kind);
@@ -592,7 +646,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>BEGOTTEN_BROOD_NEST)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        if(kind<0||kind>BEGOTTEN_SPORE_BASIN)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
         int price=kind>=FIELD_FIRE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind>=FIELD_FIRE?0:
@@ -616,7 +670,8 @@ public final class ArenaSystems {
         if(factionFacility(kind)!=null){
             if(world.detailedCity(x,y))
                 return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
-            if(factions.faction(p.accountKey)!=facilityFaction(kind))
+            CharacterRoster.Faction needed=facilityFaction(kind);
+            if(needed!=null&&factions.faction(p.accountKey)!=needed)
                 return new BuildReview(false,"WRONG_FACTION_FACILITY",price,supplies,x,y);
             if(world.devices.stream().anyMatch(d->d.hp>0&&d.kind==kind&&
                p.accountKey.equals(d.ownerKey)))
@@ -626,6 +681,9 @@ public final class ArenaSystems {
                 Math.hypot(x-d.x,y-d.y)<=8);
             if(!ownsCamp)return new BuildReview(false,"REQUIRES_OWN_CAMP",
                 price,supplies,x,y);
+            if(!hasRealFacilityDependencies(p,kind,x,y))
+                return new BuildReview(false,"MISSING_PHYSICAL_PREREQUISITE",
+                    price,supplies,x,y);
             if(fundedFactoryCrate(p,x,y,kind)==null)
                 return new BuildReview(false,"NEEDS_STOCKED_OWN_CRATE",
                     price,supplies,x,y);

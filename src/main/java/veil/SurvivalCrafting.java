@@ -39,7 +39,9 @@ public final class SurvivalCrafting {
         DEPLOY_BEGOTTEN_MIASMA,
         DEPLOY_BEGOTTEN_SHIELD,
         // Append-only: first distinct faction factory outputs.
-        SCRAP_METAL, RITUAL_CLOTH, NUTRIENT_SLURRY
+        SCRAP_METAL, RITUAL_CLOTH, NUTRIENT_SLURRY,
+        IRON_BLOOM, METAL_BILLET, FASTENERS,
+        BEARING_SET, RELIQUARY_PLATE, SPORE_POD
     }
     public enum Station { HAND, FIRE, WORKBENCH }
     public record Recipe(String id,Station station,Map<Item,Integer> requires,

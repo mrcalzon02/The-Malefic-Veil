@@ -181,6 +181,37 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
         });
     }
+    /** The in-world menu reads the real host or subscribed authoritative
+     * stock ledger; no locally invented inventory or free material grant. */
+    public java.util.Map<String,Integer> gpuCarriedItems(){return carried();}
+    public java.util.Map<String,Integer> gpuCampStock(){
+        if(net!=null)return java.util.Map.copyOf(net.campStock);
+        java.util.Map<String,Integer> stock=new java.util.TreeMap<>();
+        if(localHost!=null)localHost.nearbyCampStock(1).forEach(
+            (item,amount)->stock.put(item.name(),amount));
+        return stock;
+    }
+    public void gpuRequestCampStock(){if(net!=null)net.requestCampStock();}
+    public void gpuTransferCampStock(boolean take,String item,int quantity){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.transferCampStock(take,item,quantity);
+            else if(localHost!=null){
+                boolean ok;
+                try{ok=localHost.transferCampStock(1,take,
+                        SurvivalCrafting.Item.valueOf(item),quantity);}
+                catch(IllegalArgumentException invalid){ok=false;}
+                toast(ok?"STOCK "+(take?"TAKEN":"DEPOSITED"):"CAMP STOCK DENIED");
+            }
+        });
+    }
+    public void gpuPlaceStorage(){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.build(ArenaSystems.STORAGE_CRATE);
+            else if(localHost!=null)
+                toast(localHost.build(1,ArenaSystems.STORAGE_CRATE)?
+                    "PERMANENT CRATE CONSTRUCTED":"CRATE PLACEMENT DENIED");
+        });
+    }
     /** Native in-game supply action. Item selection uses the replicated
      * inventory, but consumption and need recovery belong to the host. */
     public void gpuUseSupplies(boolean water){
@@ -794,6 +825,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 toast(cargoMessage.endsWith("|OK")?
                     "TRUCK "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" COMPLETE":
                     "CARGO "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" REJECTED");
+            String storageMessage;
+            while((storageMessage=net.campStockResults.poll())!=null)
+                toast(storageMessage.equals("OK")?"CAMP CRATE UPDATED":
+                    "STORAGE REJECTED: "+storageMessage);
             String factionMessage;
             while((factionMessage=net.factionResults.poll())!=null)
                 toast(factionMessage.replace('|',' ').replace('_',' '));

@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,STORAGE,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=7;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -56,6 +56,11 @@ public final class GpuOverlayMenu {
     public Screen screen(){return screen;}
     public boolean active(){return screen==Screen.GAME;}
     public void openCraft(){pageOffset=0;show(Screen.CRAFT);}
+    public void openStorage(){
+        pageOffset=0;
+        gameplay.gpuRequestCampStock();
+        show(Screen.STORAGE);
+    }
     public void openBook(){book.reset();show(Screen.BOOK);}
     public void openCrew(){show(Screen.CREW);}
     /** Existing game simulation stays live for clients; only local input pauses. */
@@ -179,6 +184,7 @@ public final class GpuOverlayMenu {
                 add("EAT CARRIED FOOD",()->{gameplay.gpuUseSupplies(false);toast("HOST FOOD REQUEST");});
                 add("DRINK CLEAN WATER",()->{gameplay.gpuUseSupplies(true);toast("HOST WATER REQUEST");});
                 add("FIELD CRAFTING",this::openCraft);
+                add("PERMANENT CAMP CRATE",this::openStorage);
                 add("RECIPE / INGREDIENT INDEX",this::openBook);
                 add("FACTION / CREW",this::openCrew);
                 add("VIDEO / GRAPHICS",()->show(Screen.VIDEO));
@@ -237,10 +243,37 @@ public final class GpuOverlayMenu {
                     pageOffset+=MAX_RECIPES_PER_PAGE;show(Screen.CRAFT);
                 });
                 add("FULL RECIPE INDEX",this::openBook);
+                add("DEPLOY CRAFTED CRATE",()->{
+                    gameplay.gpuPlaceStorage();show(Screen.GAME);
+                });
                 add("DEPLOY CRAFTED WORKBENCH",()->{
                     gameplay.gpuPlaceWorkbench();
                     show(Screen.GAME);
                 });
+                add("BACK TO PAUSE",()->show(Screen.PAUSE));
+            }
+            case STORAGE->{
+                var carried=new java.util.TreeMap<>(gameplay.gpuCarriedItems());
+                var stored=new java.util.TreeMap<>(gameplay.gpuCampStock());
+                java.util.List<String[]> options=new java.util.ArrayList<>();
+                carried.forEach((item,n)->{if(n>0)options.add(new String[]{"STORE",item,Integer.toString(n)});});
+                stored.forEach((item,n)->{if(n>0)options.add(new String[]{"TAKE",item,Integer.toString(n)});});
+                int end=Math.min(options.size(),pageOffset+7);
+                for(int i=pageOffset;i<end;i++){
+                    var option=options.get(i);
+                    boolean take=option[0].equals("TAKE");
+                    add(option[0]+" "+option[1]+" x"+option[2],()->{
+                        gameplay.gpuTransferCampStock(take,option[1],1);
+                        toast("HOST "+option[0]+" REQUEST");
+                    });
+                }
+                if(pageOffset>0)add("PREVIOUS MATERIALS",()->{
+                    pageOffset=Math.max(0,pageOffset-7);show(Screen.STORAGE);
+                });
+                if(end<options.size())add("MORE MATERIALS",()->{
+                    pageOffset+=7;show(Screen.STORAGE);
+                });
+                add("REFRESH CAMP STOCK",()->{gameplay.gpuRequestCampStock();build();});
                 add("BACK TO PAUSE",()->show(Screen.PAUSE));
             }
             case BOOK->{} // Owns its list and detail navigation; never crafts items.
@@ -296,6 +329,7 @@ public final class GpuOverlayMenu {
         if(Gdx.input.isKeyJustPressed(Input.Keys.F10))
             show(screen==Screen.VIDEO?Screen.GAME:Screen.VIDEO);
         if(screen==Screen.GAME)return true;
+        if(screen==Screen.STORAGE)build();
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
             selected=Math.floorMod(selected-1,Math.max(1,items.size()));
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
@@ -334,6 +368,8 @@ public final class GpuOverlayMenu {
             skin.font().draw(sprites,status,147,331);
         }else if(screen==Screen.CRAFT){
             skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
+        }else if(screen==Screen.STORAGE){
+            skin.font().draw(sprites,"STAND BY YOUR OWN CRATE / ONE UNIT PER ACTION",147,331);
         }
         for(int i=0;i<items.size();i++){
             float row=297-i*24;

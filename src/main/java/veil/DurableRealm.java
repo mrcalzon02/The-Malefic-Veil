@@ -11,11 +11,11 @@ import java.util.zip.CRC32;
  * Corrupt snapshots fail closed and may recover from an independently validated .bak.
  */
 public final class DurableRealm {
-    private static final int MAGIC=0x5645494c, VERSION=5, LIMIT=2_000_000;
+    private static final int MAGIC=0x5645494c, VERSION=6, LIMIT=2_000_000;
     private DurableRealm(){}
     private record DeviceSave(int kind,double x,double y,int hp,String owner,int tier,
                               Map<SurvivalCrafting.Item,Integer> stock,
-                              boolean working,long elapsedMs,int completed){}
+                              boolean working,long elapsedMs,int completed,String processId){}
     private record CarSave(int id,double x,double y,double heading,double fuel,int hp){}
     private record NpcSave(double x,double y,int hp){}
     private record Snapshot(long seed,long timestamp,List<DeviceSave> devices,List<CarSave> cars,
@@ -28,7 +28,7 @@ public final class DurableRealm {
             devices.add(new DeviceSave(d.kind,d.x,d.y,d.hp,
                 d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:"",d.tier,
                     d.kind==ArenaSystems.STORAGE_CRATE?d.storage.snapshot():Map.of(),
-                    d.productionActive,d.productionMs,d.productionCompleted));
+                    d.productionActive,d.productionMs,d.productionCompleted,d.productionRecipeId));
         List<CarSave> cars=new ArrayList<>();
         for(Vehicles.State c:game.vehicles.states())
             cars.add(new CarSave(c.id(),c.x(),c.y(),c.heading(),c.fuel(),c.hp()));
@@ -57,6 +57,7 @@ public final class DurableRealm {
                 out.writeBoolean(d.working());
                 out.writeLong(d.elapsedMs());
                 out.writeInt(d.completed());
+                out.writeUTF(d.processId());
             }
             out.writeInt(snap.cars.size());
             for(CarSave c:snap.cars){
@@ -116,7 +117,7 @@ public final class DurableRealm {
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes,0,bytes.length-8))){
             if(in.readInt()!=MAGIC)throw new IOException("Wrong save magic");
             int version=in.readInt();
-            if(version!=1&&version!=2&&version!=3&&version!=4&&version!=VERSION)throw new IOException("Unsupported snapshot version");
+            if(version!=1&&version!=2&&version!=3&&version!=4&&version!=5&&version!=VERSION)throw new IOException("Unsupported snapshot version");
             long seed=in.readLong(),timestamp=in.readLong(),now=System.currentTimeMillis();
             if(seed!=target.world.seed)throw new IOException("Save seed mismatch: no world reset allowed");
             if(timestamp<0||timestamp>now+300000)throw new IOException("Unreasonable snapshot timestamp");
@@ -146,15 +147,20 @@ public final class DurableRealm {
                 boolean active=version>=5&&in.readBoolean();
                 long elapsed=version>=5?in.readLong():0;
                 int finished=version>=5?in.readInt():0;
-                String process=ArenaSystems.firstProcess(kind);
-                long max=process==null?0:
-                    CraftingEraRegistry.process(process).seconds()*1000L;
-                if(elapsed<0||elapsed>max||finished<0||finished>1000000||
-                   (process==null&&(active||elapsed!=0||finished!=0))||
+                String process=version>=6?in.readUTF():
+                    active?ArenaSystems.firstProcess(kind):"";
+                var recipe=CraftingEraRegistry.process(process);
+                long max=recipe==null?0:recipe.seconds()*1000L;
+                if(process.length()>80||(active&&(recipe==null||
+                   !recipe.facility().equals(ArenaSystems.factionFacility(kind))||
+                   owner.isEmpty()))||
+                   (!active&&!process.isEmpty())||
+                   elapsed<0||elapsed>max||finished<0||finished>1000000||
+                   (recipe==null&&(active||elapsed!=0||finished!=0))||
                    (!active&&elapsed!=0)||(active&&hp==0))
                     throw new IOException("Corrupt faction production receipt");
                 devices.add(new DeviceSave(kind,x,y,hp,owner,tier,Map.copyOf(stock),
-                    active,elapsed,finished));
+                    active,elapsed,finished,process));
             }
             List<CarSave> cars=new ArrayList<>();
             int carCount=count(in,64);
@@ -291,6 +297,7 @@ public final class DurableRealm {
                 device.productionActive=d.working();
                 device.productionMs=d.elapsedMs();
                 device.productionCompleted=d.completed();
+                device.productionRecipeId=d.processId();
                 game.world.devices.add(device);
             }
             for(CarSave car:snapshot.cars){

@@ -111,7 +111,8 @@ public final class ArenaSystems {
     private long clock;
     private final Map<Integer,Long> lastShotSequence=new HashMap<>();
     private final Map<Integer,Integer> shieldedShot=new HashMap<>();
-    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4, FIELD_FIRE=5, FIELD_BENCH=6, STORAGE_CRATE=7;
+    public static final int TURRET=0, HEALTH_STATION=1, REVIVE_STATION=2, BARRICADE=3, CAMP_STAKE=4, FIELD_FIRE=5, FIELD_BENCH=6, STORAGE_CRATE=7,
+        UNRAVELED_SCRAP_OUTPOST=8,PENITENT_VOTIVE_ALTAR=9,BEGOTTEN_BROOD_NEST=10;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -526,16 +527,59 @@ public final class ArenaSystems {
         }
         return true;
     }
+    /** The three first industrial facilities are different manufacturing
+     * civilizations, and must retain their own legal recipe/cost/tech spine. */
+    public static String factionFacility(int kind){
+        return switch(kind){
+            case UNRAVELED_SCRAP_OUTPOST -> "unraveled-scrap-outpost";
+            case PENITENT_VOTIVE_ALTAR -> "penitent-votive-altar";
+            case BEGOTTEN_BROOD_NEST -> "begotten-brood-nest";
+            default -> null;
+        };
+    }
+    private static CharacterRoster.Faction facilityFaction(int kind){
+        return switch(kind){
+            case UNRAVELED_SCRAP_OUTPOST -> CharacterRoster.Faction.THE_UNRAVELED;
+            case PENITENT_VOTIVE_ALTAR -> CharacterRoster.Faction.THE_PENITENT;
+            case BEGOTTEN_BROOD_NEST -> CharacterRoster.Faction.THE_BEGOTTEN;
+            default -> null;
+        };
+    }
+    private static Map<SurvivalCrafting.Item,Integer> facilityMaterialCost(int kind){
+        String id=factionFacility(kind);
+        if(id==null)return Map.of();
+        var spec=CraftingEraRegistry.facility(id);
+        EnumMap<SurvivalCrafting.Item,Integer> need=
+            new EnumMap<>(SurvivalCrafting.Item.class);
+        for(var entry:spec.materials().entrySet())
+            need.put(SurvivalCrafting.Item.valueOf(entry.getKey()),entry.getValue());
+        return need;
+    }
+    private World.Device fundedFactoryCrate(Player p,double x,double y,int kind){
+        Map<SurvivalCrafting.Item,Integer> need=facilityMaterialCost(kind);
+        for(World.Device d:world.devices){
+            if(d.hp<=0||d.kind!=STORAGE_CRATE||
+               !p.accountKey.equals(d.ownerKey)||
+               Math.hypot(d.x-x,d.y-y)>5.5)continue;
+            boolean complete=true;
+            for(var material:need.entrySet())
+                if(d.storage.count(material.getKey())<material.getValue()){
+                    complete=false;break;
+                }
+            if(complete)return d;
+        }
+        return null;
+    }
     public record BuildReview(boolean allowed,String reason,int cashCost,int suppliesCost,double x,double y){}
     /** Returns a concrete rejection without mutating inventories. */
     public synchronized BuildReview reviewBuild(int id,int kind){
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>STORAGE_CRATE)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
-        int price=kind==FIELD_FIRE||kind==FIELD_BENCH||kind==STORAGE_CRATE?0:
+        if(kind<0||kind>BEGOTTEN_BROOD_NEST)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        int price=kind>=FIELD_FIRE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
-        int supplies=kind==FIELD_FIRE||kind==FIELD_BENCH||kind==STORAGE_CRATE?0:
+        int supplies=kind>=FIELD_FIRE?0:
             kind==0?3:kind==1?1:kind==2?2:1;
         double x=p.x+Math.cos(p.angle)*1.1,y=p.y+Math.sin(p.angle)*1.1;
         // The current 132x132 arena is an ENTIRE fixed city sector. Player
@@ -552,6 +596,23 @@ public final class ArenaSystems {
                 if(existing.kind==CAMP_STAKE&&existing.hp>0&&
                    p.accountKey.equals(existing.ownerKey))
                     return new BuildReview(false,"ALREADY_OWNS_CAMP",price,supplies,x,y);
+        }
+        if(factionFacility(kind)!=null){
+            if(world.detailedCity(x,y))
+                return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
+            if(factions.faction(p.accountKey)!=facilityFaction(kind))
+                return new BuildReview(false,"WRONG_FACTION_FACILITY",price,supplies,x,y);
+            if(world.devices.stream().anyMatch(d->d.hp>0&&d.kind==kind&&
+               p.accountKey.equals(d.ownerKey)))
+                return new BuildReview(false,"ALREADY_OWNS_FACTION_SITE",price,supplies,x,y);
+            boolean ownsCamp=world.devices.stream().anyMatch(d->
+                d.hp>0&&d.kind==CAMP_STAKE&&p.accountKey.equals(d.ownerKey)&&
+                Math.hypot(x-d.x,y-d.y)<=8);
+            if(!ownsCamp)return new BuildReview(false,"REQUIRES_OWN_CAMP",
+                price,supplies,x,y);
+            if(fundedFactoryCrate(p,x,y,kind)==null)
+                return new BuildReview(false,"NEEDS_STOCKED_OWN_CRATE",
+                    price,supplies,x,y);
         }
         if(kind==STORAGE_CRATE&&world.detailedCity(x,y))
             return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
@@ -635,6 +696,11 @@ public final class ArenaSystems {
             throw new IllegalStateException("Workbench kit changed after authoritative preflight");
         if(kind==STORAGE_CRATE&&!p.survival.debit(SurvivalCrafting.Item.CRATE_KIT,1))
             throw new IllegalStateException("Crate kit changed after authoritative preflight");
+        if(factionFacility(kind)!=null){
+            World.Device funded=fundedFactoryCrate(p,review.x(),review.y(),kind);
+            if(funded==null||!funded.storage.consume(facilityMaterialCost(kind)))
+                throw new IllegalStateException("Verified factory funding changed");
+        }
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;

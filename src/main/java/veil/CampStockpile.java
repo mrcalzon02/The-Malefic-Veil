@@ -26,6 +26,20 @@ public final class CampStockpile {
         if(!canAdd(item,n))return false;
         stock.merge(item,n,Integer::sum);return true;
     }
+    /** One host-owned all-or-nothing facility payment. Never give clients an
+     * independent item-debit port or half-build a structure. */
+    public synchronized boolean consume(Map<SurvivalCrafting.Item,Integer> costs){
+        if(costs==null||costs.isEmpty())return false;
+        for(var item:costs.entrySet())
+            if(item.getKey()==null||item.getValue()==null||
+               item.getValue()<1||count(item.getKey())<item.getValue())return false;
+        for(var item:costs.entrySet()){
+            int left=count(item.getKey())-item.getValue();
+            if(left==0)stock.remove(item.getKey());
+            else stock.put(item.getKey(),left);
+        }
+        return true;
+    }
     public synchronized boolean deposit(SurvivalCrafting bag,SurvivalCrafting.Item item,int n){
         if(bag==null||!canAdd(item,n)||bag.count(item)<n)return false;
         if(!bag.debit(item,n))return false;

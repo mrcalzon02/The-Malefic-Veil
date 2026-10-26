@@ -13,7 +13,9 @@ public final class GameplayMeshes {
     public static final String[] HERO={"hero-warden","hero-medic","hero-shade","hero-occultist"};
     public static final String[] PICKUP={"pickup-health","pickup-sanity","pickup-pistol-ammo",
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
-    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire","device-field-workbench","device-field-storage"};
+    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire","device-field-workbench","device-field-storage",
+        "facility-unraveled-scrap-outpost","facility-penitent-votive-altar",
+        "facility-begotten-brood-nest"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -218,6 +220,46 @@ public final class GameplayMeshes {
         }
         storage.box(0,1.18,0,1.1,.05,.08,0x483928);
         meshes.put(DEVICE[7],storage.done());
+
+        // Permanent faction industrial entry sites, not thrown kits.
+        // Unraveled: mechanical sorting/ram/rails and engine enclosure.
+        Model scrapSite=new Model();
+        scrapSite.box(0,.16,0,2.35,.32,1.76,0x565C60);
+        scrapSite.box(-.65,.73,.12,.85,.95,.99,0x566879);
+        scrapSite.box(.46,.60,-.15,.85,.70,.84,0x786D5A);
+        scrapSite.box(0,1.05,-.55,2.10,.13,.27,0xD29D51);
+        scrapSite.barrel(-.76,1.29,.14,.17,.67,0x6B767D);
+        scrapSite.box(.45,1.30,0,.21,.67,.21,0xB99C4C);
+        scrapSite.box(.45,1.60,0,.91,.18,.78,0x4B4F58);
+        meshes.put(DEVICE[8],scrapSite.done());
+
+        // Penitent: standing votive stone, scroll plinth, suspended censer
+        // and distinct ritual pillars; no industrial conveyor meshes.
+        Model altar=new Model();
+        altar.box(0,.18,0,2.32,.36,1.95,0x4A434A);
+        altar.box(0,.75,0,1.23,.67,.93,0x76646D);
+        altar.box(0,1.13,0,1.46,.12,1.10,0xB99A76);
+        altar.diamond(0,1.30,0,.21,.48,0xAC6B78);
+        for(int side=-1;side<=1;side+=2){
+            altar.box(side*.98,1.08,.21,.28,1.73,.28,0x70616B);
+            altar.box(side*.98,2.01,.21,.47,.15,.46,0xC2A477);
+            altar.diamond(side*.98,2.18,.21,.16,.31,0xCFAD67);
+        }
+        meshes.put(DEVICE[9],altar.done());
+
+        // Begotten: raised wet organic nest, spore chamber and living ribs;
+        // organic pulsing tissue is not a reskinned mechanical bench.
+        Model brood=new Model();
+        brood.box(0,.20,0,2.34,.32,1.89,0x4C393D);
+        brood.box(0,.65,0,1.78,.67,1.24,0x75444B);
+        brood.diamond(0,1.14,0,.61,.83,0xA75E68);
+        for(int i=0;i<7;i++){
+            double t=i*Math.PI*2/7;
+            brood.barrel(Math.cos(t)*.74,.66,Math.sin(t)*.47,.12,.61,0xB08079);
+        }
+        brood.diamond(-.56,.93,-.29,.22,.44,0x8B707B);
+        brood.diamond(.49,.99,.25,.19,.50,0x9D7476);
+        meshes.put(DEVICE[10],brood.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

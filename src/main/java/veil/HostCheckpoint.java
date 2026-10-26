@@ -89,11 +89,20 @@ public final class HostCheckpoint {
             try{
                 Pointer pointer=readPointer(root,file);
                 Path gen=verified(root,pointer,match.world.seed,match.hardcore);
-                // Files and checksums are verified before either ledger changes.
-                if(!DurableRealm.load(match,gen)||!AccountDirectory.load(match,gen))
+                // Parse the entire pair against a cold candidate BEFORE
+                // touching the real host. A malformed second file cannot
+                // partially restore a bad generation before fallback.
+                ArenaSystems candidate=new ArenaSystems(match.world.seed,match.hardcore);
+                if(!DurableRealm.load(candidate,gen)||
+                   !AccountDirectory.load(candidate,gen))
                     throw new IOException("Committed generation missing one ledger");
-                if(file.equals(PREVIOUS))
-                    System.err.println("Primary host ledger rejected; recovered previous complete pair");
+                if(!DurableRealm.load(match,gen)||
+                   !AccountDirectory.load(match,gen))
+                    throw new IOException("Verified host-ledger pair changed during readback");
+                if(file.equals(PREVIOUS)){
+                    install(root,CURRENT,format(pointer));
+                    System.err.println("Primary host ledger rejected; restored previous complete pair");
+                }
                 return true;
             }catch(IOException bad){
                 if(first==null)first=bad;else first.addSuppressed(bad);
@@ -131,6 +140,22 @@ public final class HostCheckpoint {
                 // These are explicitly nonauthoritative once CURRENT exists.
                 DurableRealm.save(match,root);
                 AccountDirectory.save(match,root);
+                // Keep only the two journal-referenced immutable generations.
+                // An hourly autosave must not accumulate hundreds of directories.
+                Set<String> keep=new HashSet<>();
+                keep.add(fresh.directory());
+                if(old!=null)keep.add(old.directory());
+                try(var directory=Files.newDirectoryStream(root,"ledger-*")){
+                    for(Path candidate:directory){
+                        String namePart=candidate.getFileName().toString();
+                        if(!namePart.matches("ledger-[0-9a-f-]{36}")||
+                           keep.contains(namePart)||!Files.isDirectory(candidate))continue;
+                        try(var tree=Files.walk(candidate)){
+                            for(Path node:tree.sorted(Comparator.reverseOrder()).toList())
+                                Files.deleteIfExists(node);
+                        }
+                    }
+                }
             }finally{
                 if(Files.exists(stage))try(var walk=Files.walk(stage)){
                     for(Path p:walk.sorted(Comparator.reverseOrder()).toList())

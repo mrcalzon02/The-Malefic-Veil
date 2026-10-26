@@ -41,7 +41,7 @@ public final class GameplayAssetTest {
             "resource-ore","resource-fiber","resource-edibles",
             "resource-herbs","resource-water"));
         for(var aircraft:AirPowerMeshes.specs())required.add(aircraft.id());
-        check(required.size()==38,"Complete legacy + 8 resources + 9 aircraft + 3 field structures");
+        check(required.size()==39,"Registered gameplay mesh count changed unexpectedly");
         check(lib.meshes().keySet().containsAll(required),
             "No prior gameplay mesh may disappear during aircraft integration");
         check(lib.meshes().size()>=required.size(),

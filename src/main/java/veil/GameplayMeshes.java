@@ -13,7 +13,7 @@ public final class GameplayMeshes {
     public static final String[] HERO={"hero-warden","hero-medic","hero-shade","hero-occultist"};
     public static final String[] PICKUP={"pickup-health","pickup-sanity","pickup-pistol-ammo",
         "pickup-shells","pickup-cash","pickup-supplies","pickup-medkit"};
-    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire","device-field-workbench"};
+    public static final String[] DEVICE={"device-turret","device-healing","device-revival","device-barricade","device-field-camp","device-field-fire","device-field-workbench","device-field-storage"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -208,6 +208,16 @@ public final class GameplayMeshes {
         bench.box(.33,.90,.10,.38,.06,.16,0x857F72);
         bench.box(.55,.91,-.18,.13,.20,.09,0xB9AB89);
         meshes.put(DEVICE[6],bench.done());
+        Model storage=new Model();
+        storage.box(0,.12,0,1.4,.2,1.05,0x59422F);
+        storage.box(0,.62,0,1.4,.8,1.05,0x816040);
+        storage.box(0,1.08,0,1.5,.14,1.14,0xA5855E);
+        for(int side=-1;side<=1;side+=2){
+            storage.box(side*.63,.62,0,.10,.85,1.12,0x4D4D49);
+            storage.box(0,.62,side*.47,1.48,.85,.08,0x66645A);
+        }
+        storage.box(0,1.18,0,1.1,.05,.08,0x483928);
+        meshes.put(DEVICE[7],storage.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

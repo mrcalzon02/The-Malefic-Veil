@@ -49,6 +49,7 @@ public final class World {
         public int ownerId=-1;
         public String ownerKey;
         public double cooldown;
+        public final CampStockpile storage=new CampStockpile();
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }
     public World(long seed) {

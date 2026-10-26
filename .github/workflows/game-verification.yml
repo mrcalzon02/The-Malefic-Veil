@@ -86,6 +86,7 @@ jobs:
         run: |
           java -Djava.awt.headless=true -cp build/classes veil.EarlyCampCraftingTest
           java -Djava.awt.headless=true -cp build/classes veil.FieldWorkbenchRuntimeTest
+          java -Djava.awt.headless=true -cp build/classes veil.SurvivalNeedsIntegrationTest
       - name: Seven-era industrial tech DAG and faction endgame recipe validation
         shell: bash
         run: |

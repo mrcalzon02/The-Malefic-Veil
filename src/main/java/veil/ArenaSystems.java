@@ -269,7 +269,18 @@ public final class ArenaSystems {
         if(p==null||p.dead||clock<p.protectedUntil)return;
         int effectiveHp=Math.max(0,hp);
         effectiveHp-=thrown.absorb(p,effectiveHp);
-        p.hp=Math.max(0,p.hp-effectiveHp);
+        applyHostDamage(p,effectiveHp,sanity);
+    }
+    /** Direct environmental injury bypasses tactical projectile shields but
+     * still respects the host's nonoffensive arrival grace and normal death. */
+    private void applyDeprivationDamage(Player p,int hp){
+        if(p==null||p.dead||clock<p.protectedUntil||hp<=0)return;
+        applyHostDamage(p,hp,0);
+    }
+    /** Every lethal cause funnels through the same inventory, arsenal and
+     * normal/hardcore XP loss. Never create an alternate survival death path. */
+    private void applyHostDamage(Player p,int hp,int sanity){
+        p.hp=Math.max(0,p.hp-Math.max(0,hp));
         p.sanity=Math.max(0,p.sanity-Math.max(0,sanity));
         p.lastHurt=clock;
         if(p.hp==0){
@@ -801,7 +812,18 @@ public final class ArenaSystems {
                 p.progression.reward(CharacterProgression.Skill.SURVIVAL,
                     20,clock,300_000);
             p.survival.advance(ms);
-            if(clock-p.lastHurt>=5000&&clock%1000<ms)
+            SurvivalCrafting.Status vitals=p.survival.status();
+            boolean starving=vitals.hunger()==0;
+            boolean dehydrated=vitals.hydration()==0;
+            // Empty need meters must matter. Every five seconds of simulated
+            // host time, hunger removes 2 HP and thirst 3 HP. Both stack.
+            // Tactical shield bubbles cannot absorb biological deprivation.
+            if((starving||dehydrated)&&clock%5000<ms)
+                applyDeprivationDamage(p,(starving?2:0)+(dehydrated?3:0));
+            // Never passively heal the damage away while either need is empty.
+            // Food/water consumption resumes normal recovery after combat rest.
+            if(!p.dead&&!starving&&!dehydrated&&clock-p.lastHurt>=5000&&
+               clock%1000<ms)
                 p.hp=Math.min(100,p.hp+2);
             refreshVisibility(p);
         }

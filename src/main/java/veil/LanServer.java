@@ -102,6 +102,9 @@ public final class LanServer implements AutoCloseable {
                     ArenaSystems.Player self=match.player(p.id);
                     if(self!=null){
                         p.send(selfPacket(self));
+                        // Hunger, hydration and life-streak XP change over time,
+                        // even with no new player command. Keep UI status live.
+                        if(match.time()%2000==0)p.send(progressionPacket(self));
                         ArsenalSystems.View arsenal=match.arsenal.view(p.id);
                         if(arsenal!=null)p.send(ArsenalWire.state(arsenal,match.time()));
                         if(!Double.isFinite(p.lastResourceX)||

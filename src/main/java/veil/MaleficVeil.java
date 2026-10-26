@@ -345,6 +345,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 stats.add("SCAVENGING "+rpg.scavenging());
                 stats.add("SURVIVAL "+rpg.survival());
                 stats.add("HUNGER "+rpg.hunger()+" WATER "+rpg.hydration());
+                if(rpg.hunger()==0||rpg.hydration()==0)
+                    stats.add((rpg.hunger()==0?"STARVING ":"")+
+                        (rpg.hydration()==0?"DEHYDRATED ":"")+"- HEALTH LOSS");
                 stats.add("LIFE "+rpg.aliveMs()/60000+"m BOOST "+
                     String.format(java.util.Locale.ROOT,"%.1fx",rpg.streakBonus()));
                 stats.add(net.hardcore()?"HARDCORE RESET ON DEATH":"STREAK RESET ON DEATH");

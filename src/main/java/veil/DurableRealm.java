@@ -11,9 +11,10 @@ import java.util.zip.CRC32;
  * Corrupt snapshots fail closed and may recover from an independently validated .bak.
  */
 public final class DurableRealm {
-    private static final int MAGIC=0x5645494c, VERSION=3, LIMIT=2_000_000;
+    private static final int MAGIC=0x5645494c, VERSION=4, LIMIT=2_000_000;
     private DurableRealm(){}
-    private record DeviceSave(int kind,double x,double y,int hp,String owner,int tier){}
+    private record DeviceSave(int kind,double x,double y,int hp,String owner,int tier,
+                              Map<SurvivalCrafting.Item,Integer> stock){}
     private record CarSave(int id,double x,double y,double heading,double fuel,int hp){}
     private record NpcSave(double x,double y,int hp){}
     private record Snapshot(long seed,long timestamp,List<DeviceSave> devices,List<CarSave> cars,
@@ -24,7 +25,8 @@ public final class DurableRealm {
         List<DeviceSave> devices=new ArrayList<>();
         for(World.Device d:game.world.devices)
             devices.add(new DeviceSave(d.kind,d.x,d.y,d.hp,
-                d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:"",d.tier));
+                d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:"",d.tier,
+                    d.kind==ArenaSystems.STORAGE_CRATE?d.storage.snapshot():Map.of()));
         List<CarSave> cars=new ArrayList<>();
         for(Vehicles.State c:game.vehicles.states())
             cars.add(new CarSave(c.id(),c.x(),c.y(),c.heading(),c.fuel(),c.hp()));
@@ -45,6 +47,11 @@ public final class DurableRealm {
             for(DeviceSave d:snap.devices){
                 out.writeInt(d.kind);out.writeDouble(d.x);out.writeDouble(d.y);
                 out.writeInt(d.hp);out.writeUTF(d.owner);out.writeInt(d.tier);
+                out.writeInt(d.stock().size());
+                for(var entry:new TreeMap<>(d.stock()).entrySet()){
+                    out.writeInt(entry.getKey().ordinal());
+                    out.writeInt(entry.getValue());
+                }
             }
             out.writeInt(snap.cars.size());
             for(CarSave c:snap.cars){
@@ -104,7 +111,7 @@ public final class DurableRealm {
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes,0,bytes.length-8))){
             if(in.readInt()!=MAGIC)throw new IOException("Wrong save magic");
             int version=in.readInt();
-            if(version!=1&&version!=2&&version!=VERSION)throw new IOException("Unsupported snapshot version");
+            if(version!=1&&version!=2&&version!=3&&version!=VERSION)throw new IOException("Unsupported snapshot version");
             long seed=in.readLong(),timestamp=in.readLong(),now=System.currentTimeMillis();
             if(seed!=target.world.seed)throw new IOException("Save seed mismatch: no world reset allowed");
             if(timestamp<0||timestamp>now+300000)throw new IOException("Unreasonable snapshot timestamp");
@@ -115,11 +122,23 @@ public final class DurableRealm {
                 // Parse structurally valid legacy devices even when they sit in
                 // newly protected city plots. load() will archive and quarantine
                 // them; active city placement is never restored.
-                if(kind<0||kind>ArenaSystems.FIELD_BENCH||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
+                if(kind<0||kind>ArenaSystems.STORAGE_CRATE||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
                    !target.world.continent().inBounds(target.world.parcelX(x),target.world.parcelY(y))||
                    (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}"))||tier<1||tier>3)
                     throw new IOException("Invalid persisted device");
-                devices.add(new DeviceSave(kind,x,y,hp,owner,tier));
+                EnumMap<SurvivalCrafting.Item,Integer> stock=
+                    new EnumMap<>(SurvivalCrafting.Item.class);
+                if(version>=4)for(int j=count(in,CampStockpile.MAX_STACKS);j>0;j--){
+                    int ordinal=in.readInt(),qty=in.readInt();
+                    if(ordinal<0||ordinal>=SurvivalCrafting.Item.values().length||
+                       qty<1||stock.putIfAbsent(
+                           SurvivalCrafting.Item.values()[ordinal],qty)!=null)
+                        throw new IOException("Invalid crate item");
+                }
+                if((kind!=ArenaSystems.STORAGE_CRATE&&!stock.isEmpty())||
+                   !CampStockpile.valid(stock)||(hp<=0&&!stock.isEmpty()))
+                    throw new IOException("Invalid crate stock or destroyed warehouse");
+                devices.add(new DeviceSave(kind,x,y,hp,owner,tier,Map.copyOf(stock)));
             }
             List<CarSave> cars=new ArrayList<>();
             int carCount=count(in,64);
@@ -252,6 +271,7 @@ public final class DurableRealm {
                 if(game.world.worldStructureAt(d.x,d.y,.55))continue;
                 World.Device device=new World.Device(d.x,d.y,d.kind);
                 device.hp=d.hp;device.tier=d.tier;device.ownerKey=d.owner.isEmpty()?null:d.owner;
+                device.storage.restore(d.stock());
                 game.world.devices.add(device);
             }
             for(CarSave car:snapshot.cars){

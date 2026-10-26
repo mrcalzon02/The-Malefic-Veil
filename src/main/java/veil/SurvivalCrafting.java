@@ -170,7 +170,7 @@ public final class SurvivalCrafting {
             newMass-=weight(part.getKey())*part.getValue();
         if(newMass>200)return false;
         for(var part:recipe.requires().entrySet())
-            items.put(part.getKey(),count(part.getKey())-part.getValue());
+            spend(part.getKey(),part.getValue());
         items.merge(recipe.result(),recipe.quantity(),Integer::sum);
         return true;
     }
@@ -185,13 +185,21 @@ public final class SurvivalCrafting {
         }
         if(massAfter<0||massAfter>200)return false;
         for(var entry:input.entrySet())
-            items.put(entry.getKey(),count(entry.getKey())-entry.getValue());
+            spend(entry.getKey(),entry.getValue());
         items.merge(result,quantity,Integer::sum);return true;
+    }
+    /** All carried stacks are positive; a spent stack must disappear instead
+     * of becoming a zero-count ghost entry in the durable inventory. */
+    private void spend(Item item,int amount){
+        int remainder=count(item)-amount;
+        if(remainder<0)throw new IllegalStateException("Inventory changed during debit");
+        if(remainder==0)items.remove(item);
+        else items.put(item,remainder);
     }
     /** Host-authorized structural material debit. Never applies food effects. */
     public synchronized boolean debit(Item item,int quantity){
         if(item==null||quantity<1||quantity>1000||count(item)<quantity)return false;
-        items.put(item,count(item)-quantity);
+        spend(item,quantity);
         return true;
     }
     /** Physical group handoff: weight and available stock checked atomically. */
@@ -200,7 +208,7 @@ public final class SurvivalCrafting {
            count(item)<quantity)return false;
         synchronized(recipient){
             if(!recipient.canAcquire(item,quantity,true))return false;
-            items.put(item,count(item)-quantity);
+            spend(item,quantity);
             if(!recipient.acquire(item,quantity,true))
                 throw new IllegalStateException("Resource transfer changed after preflight");
         }
@@ -223,7 +231,7 @@ public final class SurvivalCrafting {
             if(hydration>=100)return false;
             hydration=Math.min(100,hydration+40);
         }else return false;
-        items.put(item,count(item)-1);
+        spend(item,1);
         return true;
     }
     /** Server-only 1-minute survival cadence; never run per render frame. */

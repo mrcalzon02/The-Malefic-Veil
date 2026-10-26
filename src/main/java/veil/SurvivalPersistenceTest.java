@@ -62,6 +62,8 @@ public final class SurvivalPersistenceTest {
                 after.survival.count(SurvivalCrafting.Item.TIMBER)==3&&
                 after.survival.count(SurvivalCrafting.Item.FIBER)==0,
                 "Saved inventory spent incorrect recipe amounts");
+            check(!after.survival.inventory().containsKey(SurvivalCrafting.Item.FIBER),
+                "Fully spent stack persisted as a zero-count ghost entry");
             AccountDirectory.save(second,root);
             ArenaSystems third=new ArenaSystems(seed);
             check(AccountDirectory.load(third,root),"Updated inventory did not load");

@@ -42,7 +42,7 @@ public final class SurvivalPersistenceTest {
             check(first.assignAccount(1,key()),"Known authenticated account not bound");
             check(p.survival.acquire(SurvivalCrafting.Item.TIMBER,5,false),
                 "Hand-harvested material missing");
-            check(p.survival.acquire(SurvivalCrafting.Item.FIBER,2,false),
+            check(p.survival.acquire(SurvivalCrafting.Item.FIBER,4,false),
                 "Hand-harvested fiber missing");
             check(p.survival.acquire(SurvivalCrafting.Item.EDIBLES,2,false),
                 "Carried food missing");

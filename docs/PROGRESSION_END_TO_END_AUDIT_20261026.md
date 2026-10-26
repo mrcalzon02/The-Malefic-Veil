@@ -66,6 +66,14 @@ Each site now starts its own real E1 work order by reserving verified inputs fro
 
 The paired host-ledger checkpoint commits `realm.dat` with `accounts.dat` under a recoverable pointer, retains the preceding verified generation, and must not silently mix newer backpack contents with older crate stock. Its scope does not yet include every source of harvest or AI state; do not describe it as a global all-file transaction journal. E1 worksite registration and production do **not** constitute full E2–E6 manufacturing, separate factory facility networks, power grids, advanced skill perks or a finished faction class roster.
 
+## E2 physical support and second-era faction branches — 26 October 2026
+
+The second-tier Unraveled machinist bay, Penitent reliquary, and Begotten spore basin are now implemented as distinct permanent mesh-backed world devices. Unlike legacy E1 placement, **new E2 support and faction facilities check every registered real, living, owner-controlled prerequisite in the local settlement**. Fifteen upstream shared/basic facilities are modeled, including claim heart, hand workshop, dry store, hearth, rain catcher, garden, compost, herb plot, charcoal kiln, stone furnace, forge, freight bay, cargo laydown and material recycler. Their definitions and material costs come from the canonical registry, not invented substitutes.
+
+Host operations now accept a selected registered process instead of always choosing a single default. Shared live work orders include charcoal processing, ore sorting, cooking, crops and forge preproducts; the three faction E2 processes manufacture distinct `BEARING_SET`, `RELIQUARY_PLATE`, and `SPORE_POD`. Penitent ceremonies require witnesses at either altar or reliquary; Begotten gestation at either nest or spore basin is vulnerable to damage. V6 snapshots persist active `processId` alongside remaining time, while earlier V1–V5 records remain parsable. Native GPU in-world menus page through only world-buildable facility types and physically runnable registered recipes, with host-side ownership, proximity, stock and faction checks.
+
+**Scope boundaries:** This does not implement complete machinery/power networks for electric or automation eras, nor does it make registry-only facilities usable automatically. Some common physical building meshes are authored interim low-poly infrastructure rather than final environment art. The E1 first factories retain migration-compatible placement behavior; imposing all newer historical E1 prerequisites requires a dedicated save migration and must not silently delete existing bases. The E2 functional test supplies externally harvested/raw resources via a trusted test fixture while verifying actual host construction and the real E1-to-E2 crafting transactions.
+
 ## Ordered development backlog and measurable acceptance
 
 | Priority | Work item | Acceptance proving actual gameplay |

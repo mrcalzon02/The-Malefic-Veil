@@ -78,7 +78,12 @@ public final class CraftingCatalogExport {
         Path destination=Path.of(args.length>0?args[0]:
             "build/test-visuals/crafting-completion-catalog.csv");
         Report report=write(root,destination);
-        if(report.field()!=SurvivalCrafting.recipes().size()||
+        // FIELD also contains the independently manufactured thrown kits. Do not
+        // compare against hand recipes alone: this used to fail every release
+        // after the 21 faction-specific throwable recipes were indexed.
+        int expectedField=SurvivalCrafting.recipes().size()+
+            ThrownDeployables.catalog().size();
+        if(report.field()!=expectedField||
             report.processes()!=CraftingEraRegistry.processes().size()||
             report.facilities()!=CraftingEraRegistry.facilities().size()||
             report.totalRows()!=report.field()+report.processes()+report.facilities()+150)

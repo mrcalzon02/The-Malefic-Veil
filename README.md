@@ -2,6 +2,8 @@
 
 ## Repository wiki: systems, inventories, recipes and the Lost
 
+**Progression and release integration:** [October 26 end-to-end gameplay audit](docs/PROGRESSION_END_TO_END_AUDIT_20261026.md) records evidence, unresolved gaps and functional acceptance paths from initial spawn to level-50 base. Do not equate registry entries or a passing unit test with a completed playthrough.
+
 Browse the [source-driven wiki](wiki/Home.md) for a navigable reference covering 157 exported items, 22 field recipes, 62 industrial processes, 69 facility blueprints, three factions, nine class definitions, current gameplay systems and world generation. [The Lost](wiki/The-Lost.md) now have a detailed five-family bestiary and [25 proposed weapon profiles](wiki/Lost-Arsenal.md) with distinct tactics, windups, counterplay and encounter roles, backed by the [LostArsenal design registry](src/main/java/veil/LostArsenal.java) and a self-test. **The roster is descriptive data, not live NPC weapon logic**; current host monsters still use the basic attack in `ArenaSystems`.
 
 

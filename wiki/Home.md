@@ -8,6 +8,7 @@ This wiki is stored in the **main repository's `wiki/` folder** so changes are v
 |---|---|
 | [Getting Started](Getting-Started.md) | Run modes, what works and what is provisional |
 | [Gameplay](Gameplay.md) | Combat, PvP, survival, death, crafting, vehicles, deployment |
+| [End-to-end progression audit](../docs/PROGRESSION_END_TO_END_AUDIT_20261026.md) | Evidence-backed level-one-to-level-50 status, dependency blockers, and functional milestones |
 | [Items](Items.md) | All 157 exported item records, icon provenance, recipes that produce and consume them |
 | [Item Dependencies](Item-Dependencies.md) | Full reverse index of every item producer and consumer, including quantities |
 | [Recipes](Recipes.md) | All 22 hand and 62 industrial formulas with input amounts, output, workstation, era and faction |

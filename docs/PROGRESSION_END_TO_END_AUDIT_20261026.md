@@ -54,6 +54,10 @@ One newly created character on a genuinely persisted server must be able to prog
 - Normal death loses carried physical items while retaining permanent skill progress; hardcore also resets earned skills. Graveyard recovery cannot be enabled as a fake free death chest.
 - Release-blocking diagnostics must test whether real gameplay works; do not install unrequested cosmetic gates, and do not confuse render snapshots with actual end-to-end mechanics.
 
+## Implementation update — 26 October, ongoing
+
+Fixed-world camp crates now have an original low-poly model, require a physically crafted crate kit and wilderness camp proximity, carry a capped 128-unit ledger with 32 stack types, can receive actual truck freight, and expose host-authorized deposit/withdrawal plus native in-game controls. Realm snapshot format V4 adds validated crate stock; older realm versions remain readable. This is an **E1 field storage milestone**, **not** a claim deed, faction factory, or completed utility grid. The existing two-file realm/account save sequence is still not crash-atomic across distinct file replacements; a cross-domain journal remains essential before unrestricted player trade.
+
 ## Ordered development backlog and measurable acceptance
 
 | Priority | Work item | Acceptance proving actual gameplay |

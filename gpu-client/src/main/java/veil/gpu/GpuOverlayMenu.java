@@ -243,6 +243,10 @@ public final class GpuOverlayMenu {
                     pageOffset+=MAX_RECIPES_PER_PAGE;show(Screen.CRAFT);
                 });
                 add("FULL RECIPE INDEX",this::openBook);
+                add("START FACTION WORK ORDER",()->{
+                    gameplay.gpuStartFactionBatch();show(Screen.GAME);
+                });
+                add("INSPECT WORKSITE PROGRESS",gameplay::gpuInspectFactionBatch);
                 add("CONSTRUCT FACTION WORKSITE",()->{
                     gameplay.gpuPlaceFactionFactory();show(Screen.GAME);
                 });

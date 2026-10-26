@@ -827,6 +827,21 @@ public final class ArenaSystems {
         // Completed production waits for physical storage capacity: no
         // material appears from thin air or off-screen remote transactions.
     }
+    /** No client-predicted industrial progress or hidden remote machine access. */
+    public synchronized String factionBatchStatus(int id){
+        Player p=players.get(id);
+        if(p==null||p.dead)return "NO_LIVE_OPERATOR";
+        for(World.Device d:world.devices){
+            if(d.hp<=0||firstProcess(d.kind)==null||
+               !p.accountKey.equals(d.ownerKey)||
+               Math.hypot(p.x-d.x,p.y-d.y)>3.0)continue;
+            long duration=CraftingEraRegistry.process(firstProcess(d.kind)).seconds();
+            return d.productionActive?
+                "RUNNING_"+(d.productionMs/1000)+"_OF_"+duration+"_SECONDS":
+                "IDLE_COMPLETED_"+d.productionCompleted;
+        }
+        return "NO_OWN_WORKSITE_IN_REACH";
+    }
     /** All base PvP damage passes through this gate, including future explosives. */
     public synchronized boolean damageDevice(int attackerId,int deviceIndex,int amount,long utcMillis){
         Player attacker=players.get(attackerId);

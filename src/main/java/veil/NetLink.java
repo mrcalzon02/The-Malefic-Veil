@@ -79,6 +79,7 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<String> cargoResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentHashMap<String,Integer> campStock=new ConcurrentHashMap<>();
     public final ConcurrentLinkedQueue<String> campStockResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> factoryResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> factionResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> craftResults=new ConcurrentLinkedQueue<>();
     public final ConcurrentLinkedQueue<String> consumeResults=new ConcurrentLinkedQueue<>();
@@ -339,6 +340,9 @@ public final class NetLink implements AutoCloseable {
                                     }
                                 }
                             }
+                            case "FACTORY_RESULT" -> {
+                                if(s.length==2&&factoryResults.size()<32)factoryResults.add(s[1]);
+                            }
                             case "STOCK_RESULT" -> {
                                 if(s.length==2&&campStockResults.size()<32)
                                     campStockResults.add(s[1]);
@@ -462,6 +466,8 @@ public final class NetLink implements AutoCloseable {
     public void loadCargo(int truck,int yard){send("CARGO_LOAD|"+truck+"|"+yard);}
     public void unloadCargo(int truck){send("CARGO_UNLOAD|"+truck);}
     public void requestCampStock(){send("STOCK_QUERY");}
+    public void startFactionBatch(){send("FACTION_PRODUCE");}
+    public void inspectFactionBatch(){send("FACTORY_QUERY");}
     public void transferCampStock(boolean taking,String item,int amount){
         send((taking?"STOCK_TAKE":"STOCK_PUT")+"|"+item+"|"+amount);
     }

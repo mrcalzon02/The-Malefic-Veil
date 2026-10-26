@@ -205,6 +205,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         });
     }
     /** Dedicated early-faction fixed facilities, never temporary thrown kits. */
+    /** Authoritative first-tier work orders; all three progress through
+     * independent faction-specific operating conditions, not one factory. */
+    public void gpuStartFactionBatch(){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.startFactionBatch();
+            else if(localHost!=null)
+                toast(localHost.startFactionBatch(1)?
+                    "WORKSITE PRODUCTION STARTED":"WORKSITE NEEDS SUPPLY / FACTION / REACH");
+        });
+    }
+    public void gpuInspectFactionBatch(){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.inspectFactionBatch();
+            else if(localHost!=null)
+                toast(localHost.factionBatchStatus(1).replace('_',' '));
+        });
+    }
     public void gpuPlaceFactionFactory(){
         CraftingEraRegistry.Faction faction=gpuCraftFaction();
         int kind=switch(faction){
@@ -842,6 +859,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 toast(cargoMessage.endsWith("|OK")?
                     "TRUCK "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" COMPLETE":
                     "CARGO "+cargoMessage.substring(0,cargoMessage.indexOf('|'))+" REJECTED");
+            String factoryMessage;
+            while((factoryMessage=net.factoryResults.poll())!=null)
+                toast("FACTORY "+factoryMessage.replace('_',' '));
             String storageMessage;
             while((storageMessage=net.campStockResults.poll())!=null)
                 toast(storageMessage.equals("OK")?"CAMP CRATE UPDATED":

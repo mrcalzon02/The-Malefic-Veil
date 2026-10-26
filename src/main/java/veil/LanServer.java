@@ -348,7 +348,7 @@ public final class LanServer implements AutoCloseable {
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
                            "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CARGO_UNLOAD",
-                           "STOCK_PUT","STOCK_TAKE","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
+                           "STOCK_PUT","STOCK_TAKE","FACTION_PRODUCE","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
                            "HARVEST","SCAVENGE","CONSUME","DROP_ITEM","GET_DROP","TRADE_ITEM",
                            "ARS_FIRE","ARS_SELECT","ARS_RELOAD","ARS_PICKUP","ARS_CRAFT",
                            "ARS_UPGRADE").contains(s[0])){
@@ -689,6 +689,20 @@ public final class LanServer implements AutoCloseable {
                                 broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
                                 broadcast(cargoYardPacket(match.cargo.sites().get(yard)),-1);
                             }
+                        }
+                        case "FACTION_PRODUCE" -> {
+                            if(s.length!=1)continue;
+                            changed=match.startFactionBatch(peer.id);
+                            peer.send("FACTORY_RESULT|"+(changed?"STARTED":"DENIED"));
+                            if(changed){
+                                peer.send(campStockPacket(peer.id));
+                                peer.send(progressionPacket(match.player(peer.id)));
+                            }
+                        }
+                        case "FACTORY_QUERY" -> {
+                            if(s.length!=1)continue;
+                            peer.send("FACTORY_RESULT|"+
+                                match.factionBatchStatus(peer.id));
                         }
                         case "STOCK_QUERY" -> {
                             if(s.length!=1)continue;

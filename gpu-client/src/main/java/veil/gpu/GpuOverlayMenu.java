@@ -15,8 +15,8 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,STORAGE,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
-    private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=7;
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,STORAGE,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
+    private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
     private final GpuCraftingBook book;
@@ -243,21 +243,26 @@ public final class GpuOverlayMenu {
                     pageOffset+=MAX_RECIPES_PER_PAGE;show(Screen.CRAFT);
                 });
                 add("FULL RECIPE INDEX",this::openBook);
+                add("FACTION INDUSTRY",()->show(Screen.INDUSTRY));
+                add("DEPLOY CRAFTED WORKBENCH",()->{
+                    gameplay.gpuPlaceWorkbench();show(Screen.GAME);
+                });
+                add("BACK TO PAUSE",()->show(Screen.PAUSE));
+            }
+            case INDUSTRY->{
+                add("CONSTRUCT FACTION WORKSITE",()->{
+                    gameplay.gpuPlaceFactionFactory();show(Screen.GAME);
+                });
                 add("START FACTION WORK ORDER",()->{
                     gameplay.gpuStartFactionBatch();show(Screen.GAME);
                 });
                 add("INSPECT WORKSITE PROGRESS",gameplay::gpuInspectFactionBatch);
-                add("CONSTRUCT FACTION WORKSITE",()->{
-                    gameplay.gpuPlaceFactionFactory();show(Screen.GAME);
-                });
                 add("DEPLOY CRAFTED CRATE",()->{
                     gameplay.gpuPlaceStorage();show(Screen.GAME);
                 });
-                add("DEPLOY CRAFTED WORKBENCH",()->{
-                    gameplay.gpuPlaceWorkbench();
-                    show(Screen.GAME);
-                });
-                add("BACK TO PAUSE",()->show(Screen.PAUSE));
+                add("CAMP CRATE INVENTORY",this::openStorage);
+                add("FULL INDUSTRIAL RECIPE INDEX",this::openBook);
+                add("BACK TO CRAFTING",this::openCraft);
             }
             case STORAGE->{
                 var carried=new java.util.TreeMap<>(gameplay.gpuCarriedItems());
@@ -375,6 +380,8 @@ public final class GpuOverlayMenu {
             skin.font().draw(sprites,status,147,331);
         }else if(screen==Screen.CRAFT){
             skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
+         }else if(screen==Screen.INDUSTRY){
+            skin.font().draw(sprites,"SEPARATE FACTION SYSTEMS / LIVE HOST ACTIONS",147,331);
         }else if(screen==Screen.STORAGE){
             skin.font().draw(sprites,"STAND BY YOUR OWN CRATE / ONE UNIT PER ACTION",147,331);
         }

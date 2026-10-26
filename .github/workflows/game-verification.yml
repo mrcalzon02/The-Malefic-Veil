@@ -74,6 +74,7 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.CampStockpileIntegrationTest
           java -Djava.awt.headless=true -cp build/classes veil.HostCheckpointTest
           java -Djava.awt.headless=true -cp build/classes veil.FactionWorksiteConstructionTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactionFirstProductionTest
       - name: Atomic cargo v2 realm save and restart compatibility
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.CargoRealmPersistenceTest

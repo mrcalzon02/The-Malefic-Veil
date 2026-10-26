@@ -58,6 +58,14 @@ One newly created character on a genuinely persisted server must be able to prog
 
 Fixed-world camp crates now have an original low-poly model, require a physically crafted crate kit and wilderness camp proximity, carry a capped 128-unit ledger with 32 stack types, can receive actual truck freight, and expose host-authorized deposit/withdrawal plus native in-game controls. Realm snapshot format V4 adds validated crate stock; older realm versions remain readable. This is an **E1 field storage milestone**, **not** a claim deed, faction factory, or completed utility grid. The existing two-file realm/account save sequence is still not crash-atomic across distinct file replacements; a cross-domain journal remains essential before unrestricted player trade.
 
+## First functional faction workshops — 26 October 2026
+
+The first three **permanent**, faction-locked structures are no longer catalog-only: Unraveled scrap outposts, Penitent votive altars and Begotten brood nests each consume their registered construction cost from an owned nearby camp crate. Their authored geometry and world identities persist.
+
+Each site now starts its own real E1 work order by reserving verified inputs from the same camp-storage economy. Unraveled works unattended after fuel payment; Penitent requires physically present allied ritual witnesses and receives participant speed bonuses; Begotten gestates independently but loses maturity progress when harmed. Completed products are respectively `SCRAP_METAL`, `RITUAL_CLOTH` and `NUTRIENT_SLURRY`; outputs must fit in authentic nearby camp storage or remain pending. Active production and completion counters are in realm V5, never client-authored.
+
+The paired host-ledger checkpoint commits `realm.dat` with `accounts.dat` under a recoverable pointer, retains the preceding verified generation, and must not silently mix newer backpack contents with older crate stock. Its scope does not yet include every source of harvest or AI state; do not describe it as a global all-file transaction journal. E1 worksite registration and production do **not** constitute full E2–E6 manufacturing, separate factory facility networks, power grids, advanced skill perks or a finished faction class roster.
+
 ## Ordered development backlog and measurable acceptance
 
 | Priority | Work item | Acceptance proving actual gameplay |

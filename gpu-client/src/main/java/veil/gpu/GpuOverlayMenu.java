@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,STORAGE,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -56,6 +56,8 @@ public final class GpuOverlayMenu {
     public Screen screen(){return screen;}
     public boolean active(){return screen==Screen.GAME;}
     public void openCraft(){pageOffset=0;show(Screen.CRAFT);}
+    public void openSites(){pageOffset=0;show(Screen.SITES);}
+    public void openWorkOrders(){pageOffset=0;show(Screen.WORK_ORDERS);}
     public void openStorage(){
         pageOffset=0;
         gameplay.gpuRequestCampStock();
@@ -257,12 +259,50 @@ public final class GpuOverlayMenu {
                     gameplay.gpuStartFactionBatch();show(Screen.GAME);
                 });
                 add("INSPECT WORKSITE PROGRESS",gameplay::gpuInspectFactionBatch);
+                add("BUILD SHARED / E2 FACILITIES",this::openSites);
+                add("SELECT INDUSTRIAL RECIPE",this::openWorkOrders);
                 add("DEPLOY CRAFTED CRATE",()->{
                     gameplay.gpuPlaceStorage();show(Screen.GAME);
                 });
                 add("CAMP CRATE INVENTORY",this::openStorage);
                 add("FULL INDUSTRIAL RECIPE INDEX",this::openBook);
                 add("BACK TO CRAFTING",this::openCraft);
+            }
+            case SITES->{
+                var ids=gameplay.gpuSupportedFacilities();
+                int end=Math.min(ids.size(),pageOffset+5);
+                for(int i=pageOffset;i<end;i++){
+                    String id=ids.get(i);
+                    add("BUILD "+id.toUpperCase(java.util.Locale.ROOT),()->{
+                        gameplay.gpuPlaceFacility(id);
+                        show(Screen.GAME);
+                    });
+                }
+                if(pageOffset>0)add("PREVIOUS FACILITIES",()->{
+                    pageOffset=Math.max(0,pageOffset-5);show(Screen.SITES);
+                });
+                if(end<ids.size())add("MORE FACILITIES",()->{
+                    pageOffset+=5;show(Screen.SITES);
+                });
+                add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
+            }
+            case WORK_ORDERS->{
+                var ids=gameplay.gpuSupportedProcesses();
+                int end=Math.min(ids.size(),pageOffset+5);
+                for(int i=pageOffset;i<end;i++){
+                    String id=ids.get(i);
+                    add("RUN "+id.toUpperCase(java.util.Locale.ROOT),()->{
+                        gameplay.gpuStartFactionBatch(id);
+                        show(Screen.GAME);
+                    });
+                }
+                if(pageOffset>0)add("PREVIOUS WORK ORDERS",()->{
+                    pageOffset=Math.max(0,pageOffset-5);show(Screen.WORK_ORDERS);
+                });
+                if(end<ids.size())add("MORE WORK ORDERS",()->{
+                    pageOffset+=5;show(Screen.WORK_ORDERS);
+                });
+                add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case STORAGE->{
                 var carried=new java.util.TreeMap<>(gameplay.gpuCarriedItems());
@@ -382,6 +422,9 @@ public final class GpuOverlayMenu {
             skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
          }else if(screen==Screen.INDUSTRY){
             skin.font().draw(sprites,"SEPARATE FACTION SYSTEMS / LIVE HOST ACTIONS",147,331);
+        }else if(screen==Screen.SITES||screen==Screen.WORK_ORDERS){
+            skin.font().draw(sprites,
+                "HOST CHECKS REAL COSTS / LOCATION / DEPENDENCIES",147,331);
         }else if(screen==Screen.STORAGE){
             skin.font().draw(sprites,"STAND BY YOUR OWN CRATE / ONE UNIT PER ACTION",147,331);
         }

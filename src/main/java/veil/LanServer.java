@@ -691,8 +691,10 @@ public final class LanServer implements AutoCloseable {
                             }
                         }
                         case "FACTION_PRODUCE" -> {
-                            if(s.length!=1)continue;
-                            changed=match.startFactionBatch(peer.id);
+                            if(s.length!=1&&s.length!=2)continue;
+                            if(s.length==2&&s[1].length()>80)continue;
+                            changed=match.startFactionBatch(peer.id,
+                                s.length==2?s[1]:null);
                             peer.send("FACTORY_RESULT|"+(changed?"STARTED":"DENIED"));
                             if(changed){
                                 peer.send(campStockPacket(peer.id));

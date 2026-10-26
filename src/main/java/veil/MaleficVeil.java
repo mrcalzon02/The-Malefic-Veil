@@ -204,14 +204,18 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             }
         });
     }
-    /** Dedicated early-faction fixed facilities, never temporary thrown kits. */
     /** Authoritative first-tier work orders; all three progress through
      * independent faction-specific operating conditions, not one factory. */
     public void gpuStartFactionBatch(){
+        gpuStartFactionBatch(null);
+    }
+    public void gpuStartFactionBatch(String requested){
         SwingUtilities.invokeLater(()->{
-            if(net!=null)net.startFactionBatch();
-            else if(localHost!=null)
-                toast(localHost.startFactionBatch(1)?
+            if(net!=null){
+                if(requested==null)net.startFactionBatch();
+                else net.startFactionBatch(requested);
+            }else if(localHost!=null)
+                toast(localHost.startFactionBatch(1,requested)?
                     "WORKSITE PRODUCTION STARTED":"WORKSITE NEEDS SUPPLY / FACTION / REACH");
         });
     }
@@ -220,6 +224,54 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(net!=null)net.inspectFactionBatch();
             else if(localHost!=null)
                 toast(localHost.factionBatchStatus(1).replace('_',' '));
+        });
+    }
+    /** Listed entries have a real physical blueprint and host-paid build path;
+     * the UI never offers registry-only late-game machinery as functional. */
+    public java.util.List<String> gpuSupportedFacilities(){
+        CraftingEraRegistry.Faction selected=gpuCraftFaction();
+        java.util.List<String> result=new java.util.ArrayList<>();
+        for(int kind=ArenaSystems.CLAIM_HEART;
+                kind<=ArenaSystems.BEGOTTEN_SPORE_BASIN;kind++){
+            String id=ArenaSystems.factionFacility(kind);
+            var facility=CraftingEraRegistry.facility(id);
+            if(facility!=null&&(facility.faction()==CraftingEraRegistry.Faction.ALL||
+               facility.faction()==selected))
+                result.add(id);
+        }
+        return java.util.List.copyOf(result);
+    }
+    public java.util.List<String> gpuSupportedProcesses(){
+        CraftingEraRegistry.Faction selected=gpuCraftFaction();
+        java.util.List<String> result=new java.util.ArrayList<>();
+        for(var recipe:CraftingEraRegistry.processes().values()){
+            if(ArenaSystems.kindForFacility(recipe.facility())<0||
+               recipe.faction()!=CraftingEraRegistry.Faction.ALL&&
+               recipe.faction()!=selected)continue;
+            try{
+                SurvivalCrafting.Item.valueOf(recipe.output());
+                for(String ingredient:recipe.inputs().keySet())
+                    SurvivalCrafting.Item.valueOf(ingredient);
+            }catch(IllegalArgumentException unknown){continue;}
+            result.add(recipe.id());
+        }
+        return java.util.List.copyOf(result);
+    }
+    public void gpuPlaceFacility(String facilityId){
+        int kind=ArenaSystems.kindForFacility(facilityId);
+        if(kind<0){toast("FACILITY IS NOT YET CONSTRUCTIBLE");return;}
+        var facility=CraftingEraRegistry.facility(facilityId);
+        if(facility==null||facility.faction()!=CraftingEraRegistry.Faction.ALL&&
+           facility.faction()!=gpuCraftFaction()){
+            toast("WRONG FACTION CONSTRUCTION");return;
+        }
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.build(kind);
+            else if(localHost!=null){
+                var result=localHost.buildOutcome(1,kind);
+                toast(result.built()?"FACILITY PLACED":
+                    "BUILD "+result.review().reason().replace('_',' '));
+            }
         });
     }
     public void gpuPlaceFactionFactory(){

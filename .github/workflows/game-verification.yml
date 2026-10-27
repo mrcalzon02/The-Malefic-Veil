@@ -66,6 +66,11 @@ jobs:
       - name: Lost NPC origin, lifetime and cooldown population tests
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.LostSpawnSitesTest
+      - name: Lost Drifter shiv windup, sidestep, LOS, protection and host wire
+        shell: bash
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.LostArsenalTest
+          java -Djava.awt.headless=true -cp build/classes veil.LostBoneShivTest
       - name: Two-resource truck cargo pickup damage and LAN recovery
         shell: bash
         run: |

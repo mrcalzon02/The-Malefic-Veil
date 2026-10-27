@@ -952,9 +952,10 @@ public final class ArenaSystems {
            p.accountKey==null||!p.accountKey.startsWith("acct_")||
            requested==null||requested.length()>80)return false;
         boolean cancel=requested.equals("NONE");
-        var job=cancel?null:CraftingEraRegistry.process(requested);
+        String jobId=AutomationOrders.recipe(requested);
+        var job=cancel?null:CraftingEraRegistry.process(jobId);
         if(!cancel&&(job==null||job.era()!=CraftingEraRegistry.Era.AUTOMATION||
-            !requested.matches("[a-z0-9-]+")||job.utilityDemand()<1))
+            !jobId.matches("[a-z0-9-]+")||job.utilityDemand()<1))
             return false;
         for(World.Device device:world.devices){
             if(device.hp<=0||!p.accountKey.equals(device.ownerKey)||
@@ -990,7 +991,7 @@ public final class ArenaSystems {
     private void advanceQueuedAutomation(Map<World.Device,Integer> allocated){
         for(World.Device d:world.devices){
             if(d.hp<=0||d.productionActive||d.queuedRecipeId.isEmpty())continue;
-            var recipe=CraftingEraRegistry.process(d.queuedRecipeId);
+            var recipe=CraftingEraRegistry.process(AutomationOrders.recipe(d.queuedRecipeId));
             if(recipe==null||recipe.era()!=CraftingEraRegistry.Era.AUTOMATION||
                !recipe.facility().equals(factionFacility(d.kind))||
                d.ownerKey==null)continue;
@@ -1018,7 +1019,10 @@ public final class ArenaSystems {
                 d.productionActive=true;
                 d.productionMs=0;
                 d.productionRecipeId=recipe.id();
-                d.queuedRecipeId="";
+                // A repeat order remains an unpaid intention: every next
+                // cycle must independently obtain genuine ingredients/power.
+                if(!AutomationOrders.repeating(d.queuedRecipeId))
+                    d.queuedRecipeId="";
                 allocated.merge(generator,recipe.utilityDemand(),Integer::sum);
                 paid=true;
                 break;
@@ -1326,7 +1330,9 @@ public final class ArenaSystems {
         if(nearest==null)return FactoryInspection.unavailable();
         World.Device d=nearest;
         String facility=factionFacility(d.kind);
-        String next=d.queuedRecipeId.isEmpty()?"-":d.queuedRecipeId;
+        String next=d.queuedRecipeId.isEmpty()?"-":
+            AutomationOrders.repeating(d.queuedRecipeId)?
+                "REPEAT_"+AutomationOrders.recipe(d.queuedRecipeId):d.queuedRecipeId;
         if(d.productionActive){
             var job=CraftingEraRegistry.process(d.productionRecipeId);
             if(job==null)return FactoryInspection.unavailable();
@@ -1350,7 +1356,7 @@ public final class ArenaSystems {
                 d.productionMs/1000L,duration,d.productionCompleted,next);
         }
         if(!d.queuedRecipeId.isEmpty()){
-            var job=CraftingEraRegistry.process(d.queuedRecipeId);
+            var job=CraftingEraRegistry.process(AutomationOrders.recipe(d.queuedRecipeId));
             if(job==null)return FactoryInspection.unavailable();
             String state=currentFactoryHold(d,job,true),detail="-";
             if(state.startsWith("WAIT_INPUT_")){

@@ -61,7 +61,8 @@ public final class World {
         public String productionRecipeId="";
         public long productionMs;
         public int productionCompleted;
-        /** One persistent unpaid AUTOMATION-era next job. */
+        /** One persistent unpaid AUTOMATION-era next job, optionally tagged
+         * for repeating manufacture; a repeat never pre-debits future batches. */
         public String queuedRecipeId="";
         /** Charged seconds of genuine pressurized boiler operation. Only a
          * STEAM_BOILER may hold it; the host persists its remaining reserve. */

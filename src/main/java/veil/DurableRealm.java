@@ -198,7 +198,12 @@ public final class DurableRealm {
                    (!queued.isEmpty()&&!owner.startsWith("acct_")))
                     throw new IOException("Invalid E5 job queue owner/status");
                 if(!queued.isEmpty()){
-                    var next=CraftingEraRegistry.process(queued);
+                    if(AutomationOrders.repeating(queued)&&version<11)
+                        throw new IOException("Repeat job cannot exist in a legacy E5 save");
+                    String recipeId=AutomationOrders.recipe(queued);
+                    if(recipeId.length()>80||!recipeId.matches("[a-z0-9-]+"))
+                        throw new IOException("Invalid E5 programmed recipe syntax");
+                    var next=CraftingEraRegistry.process(recipeId);
                     if(next==null||
                        next.era()!=CraftingEraRegistry.Era.AUTOMATION||
                        next.utilityDemand()<1||

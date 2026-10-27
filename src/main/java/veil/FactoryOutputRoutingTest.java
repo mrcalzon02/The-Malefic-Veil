@@ -43,6 +43,10 @@ public final class FactoryOutputRoutingTest {
         belt.routeItem="AUTO";
         shouldSelect(source,producer,devices,
             "Live AUTO route failed to override earlier wrong output crate");
+        consumer.queuedRecipeId=AutomationOrders.repeat("ballistic-resupply");
+        shouldSelect(source,producer,devices,
+            "Repeating downstream order lost priority for real conveyor output");
+        consumer.queuedRecipeId="ballistic-resupply";
         belt.routeItem="PRECISION_FEEDLINE";
         shouldSelect(source,producer,devices,
             "Explicit matching manual belt failed to prioritize its real source");

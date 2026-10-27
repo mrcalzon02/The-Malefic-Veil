@@ -43,7 +43,7 @@ public final class ConveyorLogistics {
         for(World.Device machine:devices){
             if(machine.hp<=0||machine.queuedRecipeId.isEmpty()||
                !belt.ownerKey.equals(machine.ownerKey))continue;
-            var job=CraftingEraRegistry.process(machine.queuedRecipeId);
+            var job=CraftingEraRegistry.process(AutomationOrders.recipe(machine.queuedRecipeId));
             if(job==null||job.era()!=CraftingEraRegistry.Era.AUTOMATION||
                !job.facility().equals(ArenaSystems.factionFacility(machine.kind)))continue;
             for(World.Device target:devices){
@@ -120,7 +120,7 @@ public final class ConveyorLogistics {
                 for(World.Device consumer:devices){
                     if(consumer.hp<=0||consumer.queuedRecipeId.isEmpty()||
                        !producer.ownerKey.equals(consumer.ownerKey))continue;
-                    var job=CraftingEraRegistry.process(consumer.queuedRecipeId);
+                    var job=CraftingEraRegistry.process(AutomationOrders.recipe(consumer.queuedRecipeId));
                     if(job==null||job.era()!=CraftingEraRegistry.Era.AUTOMATION||
                        !job.facility().equals(ArenaSystems.factionFacility(consumer.kind))||
                        !job.inputs().containsKey(output.name()))continue;

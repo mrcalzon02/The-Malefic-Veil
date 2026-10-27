@@ -42,7 +42,7 @@ public final class GpuOverlayMenu {
     };
     private Screen screen=Screen.GAME;
     private int selected,pageOffset;
-    private boolean conveyorReverse;
+    private boolean conveyorReverse,repeatOrders;
     private String notice="",crewAction="",crewText="";
     public GpuOverlayMenu(PsxHorrorMenu skin,MaleficVeil game,
             GpuClientSettings settings,GpuAudioBus audio,
@@ -356,21 +356,24 @@ public final class GpuOverlayMenu {
                 add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case QUEUE_ORDERS->{
+                add("MODE: "+(repeatOrders?"REPEAT EACH PAID BATCH":"SINGLE NEXT BATCH"),
+                    ()->{repeatOrders=!repeatOrders;build();});
                 var ids=gameplay.gpuAutomationRecipes();
-                int end=Math.min(ids.size(),pageOffset+5);
+                int end=Math.min(ids.size(),pageOffset+4);
                 for(int i=pageOffset;i<end;i++){
                     String id=ids.get(i);
-                    add("QUEUE "+id.toUpperCase(java.util.Locale.ROOT),()->{
-                        gameplay.gpuQueueAutomation(id);show(Screen.GAME);
+                    add((repeatOrders?"REPEAT ":"QUEUE ")+id.toUpperCase(java.util.Locale.ROOT),()->{
+                        gameplay.gpuQueueAutomation(repeatOrders?"REPEAT:"+id:id);
+                        show(Screen.GAME);
                     });
                 }
                 if(pageOffset>0)add("PREVIOUS E5 JOBS",()->{
-                    pageOffset=Math.max(0,pageOffset-5);show(Screen.QUEUE_ORDERS);
+                    pageOffset=Math.max(0,pageOffset-4);show(Screen.QUEUE_ORDERS);
                 });
                 if(end<ids.size())add("MORE E5 JOBS",()->{
-                    pageOffset+=5;show(Screen.QUEUE_ORDERS);
+                    pageOffset+=4;show(Screen.QUEUE_ORDERS);
                 });
-                add("CANCEL PENDING E5 JOB",()->{
+                add("CANCEL QUEUED / REPEATING JOB",()->{
                     gameplay.gpuQueueAutomation("NONE");show(Screen.GAME);
                 });
                 add("BACK TO WORK ORDERS",()->show(Screen.WORK_ORDERS));

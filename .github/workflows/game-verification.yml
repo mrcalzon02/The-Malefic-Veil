@@ -87,6 +87,7 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.ConveyorLogisticsTest
           java -Djava.awt.headless=true -cp build/classes veil.ConveyorDirectionTest
           java -Djava.awt.headless=true -cp build/classes veil.AutomaticFactoryFeedTest
+          java -Djava.awt.headless=true -cp build/classes veil.AutomationRepeatTest
           java -Djava.awt.headless=true -cp build/classes veil.FactoryOutputRoutingTest
           java -Djava.awt.headless=true -cp build/classes veil.AutomaticSorterIntegrationTest
           java -Djava.awt.headless=true -cp build/classes veil.AutomationEraFactionTest

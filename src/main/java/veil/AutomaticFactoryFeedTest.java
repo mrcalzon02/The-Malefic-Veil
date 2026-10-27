@@ -130,6 +130,11 @@ public final class AutomaticFactoryFeedTest {
         check(plan!=null&&plan.route().source()==actualSource&&
             plan.route().destination()==actualTarget,
             "Auto routing chose nearest wrong-side/other-owner crate rather than useful stock");
+        consumer.queuedRecipeId=AutomationOrders.repeat("ballistic-resupply");
+        check(ConveyorLogistics.autoInput(belt,host.world.devices)!=null,
+            "A repeat-mode factory must remain eligible for AUTO input feeding");
+        // Switch back to one shot for this original V11 delivery regression.
+        consumer.queuedRecipeId="ballistic-resupply";
         tick(host,3);
         check(belt.routeMs==4000&&!consumer.productionActive&&
             actualTarget.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE)==0,

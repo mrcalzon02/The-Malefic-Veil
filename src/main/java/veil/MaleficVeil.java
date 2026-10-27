@@ -259,7 +259,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(net!=null)net.queueAutomation(recipe);
             else if(localHost!=null)
                 toast(localHost.programNextAutomation(1,recipe)?
-                    (recipe.equals("NONE")?"E5 NEXT JOB CANCELLED":"E5 NEXT JOB QUEUED"):
+                    (recipe.equals("NONE")?"E5 ORDER CANCELLED":
+                     AutomationOrders.repeating(recipe)?"E5 REPEAT ENABLED":
+                     "E5 NEXT JOB QUEUED"):
                     "QUEUE REJECTED: OWN E5 STATION IN REACH REQUIRED");
         });
     }

@@ -700,7 +700,9 @@ public final class LanServer implements AutoCloseable {
                             if(s.length!=2||s[1].length()>80)continue;
                             changed=match.programNextAutomation(peer.id,s[1]);
                             peer.send("FACTORY_RESULT|"+(changed?
-                                (s[1].equals("NONE")?"QUEUE_CANCELLED":"NEXT_JOB_QUEUED"):
+                                (s[1].equals("NONE")?"QUEUE_CANCELLED":
+                                 AutomationOrders.repeating(s[1])?"REPEAT_ENABLED":
+                                 "NEXT_JOB_QUEUED"):
                                 "QUEUE_DENIED"));
                         }
                         case "AUTOMATION_ROUTE" -> {

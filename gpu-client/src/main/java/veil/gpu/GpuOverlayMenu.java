@@ -42,6 +42,7 @@ public final class GpuOverlayMenu {
     };
     private Screen screen=Screen.GAME;
     private int selected,pageOffset;
+    private boolean conveyorReverse;
     private String notice="",crewAction="",crewText="";
     public GpuOverlayMenu(PsxHorrorMenu skin,MaleficVeil game,
             GpuClientSettings settings,GpuAudioBus audio,
@@ -58,7 +59,8 @@ public final class GpuOverlayMenu {
     public void openCraft(){pageOffset=0;show(Screen.CRAFT);}
     public void openSites(){pageOffset=0;show(Screen.SITES);}
     public void openConveyor(){
-        pageOffset=0;gameplay.gpuRequestCampStock();show(Screen.CONVEYOR);
+        pageOffset=0;conveyorReverse=false;
+        gameplay.gpuRequestCampStock();show(Screen.CONVEYOR);
     }
     public void openWorkOrders(){pageOffset=0;show(Screen.WORK_ORDERS);}
     public void openStorage(){
@@ -282,12 +284,14 @@ public final class GpuOverlayMenu {
                 add("DISABLE AUTOMATIC ROUTE",()->{
                     gameplay.gpuProgramConveyor("NONE");show(Screen.GAME);
                 });
+                add("DIRECTION: "+(conveyorReverse?"EAST > WEST":"WEST > EAST"),
+                    ()->{conveyorReverse=!conveyorReverse;build();});
                 var materials=gameplay.gpuConveyorStockItems();
                 int end=Math.min(materials.size(),pageOffset+5);
                 for(int i=pageOffset;i<end;i++){
                     String item=materials.get(i);
-                    add("WEST > EAST  "+item,()->{
-                        gameplay.gpuProgramConveyor(item);show(Screen.GAME);
+                    add((conveyorReverse?"EAST > WEST  ":"WEST > EAST  ")+item,()->{
+                        gameplay.gpuProgramConveyor(item,conveyorReverse);show(Screen.GAME);
                     });
                 }
                 if(pageOffset>0)add("PREVIOUS MATERIALS",()->{

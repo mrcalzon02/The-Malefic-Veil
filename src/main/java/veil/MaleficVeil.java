@@ -206,16 +206,21 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     /** Authoritative first-tier work orders; all three progress through
      * independent faction-specific operating conditions, not one factory. */
-    public void gpuProgramConveyor(String item){
+    public void gpuProgramConveyor(String item){gpuProgramConveyor(item,false);}
+    public void gpuProgramConveyor(String item,boolean reverse){
         SwingUtilities.invokeLater(()->{
-            if(net!=null)net.programConveyor(item);
+            if(net!=null)net.programConveyor(item,reverse);
             else if(localHost!=null)
-                toast(localHost.programConveyor(1,item)?
-                    "CONVEYOR ROUTING "+item:"CONVEYOR SETUP DENIED");
+                toast(localHost.programConveyor(1,item,reverse)?
+                    "CONVEYOR "+(reverse?"EAST > WEST ":"WEST > EAST ")+item:
+                    "CONVEYOR SETUP DENIED");
         });
     }
     public java.util.List<String> gpuConveyorStockItems(){
-        var collected=new java.util.TreeSet<>(gpuCampStock().keySet());
+        // An operator standing beside the belt is not necessarily within
+        // STOCK_QUERY range of the physical source warehouse.
+        var collected=new java.util.TreeSet<String>();
+        for(var item:SurvivalCrafting.Item.values())collected.add(item.name());
         return java.util.List.copyOf(collected);
     }
     public void gpuChargeGenerator(){

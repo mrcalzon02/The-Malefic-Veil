@@ -1,7 +1,7 @@
 package veil;
 import java.util.*;
 
-/** Physical west-to-east conveyor between distinct, owned crates.
+/** Physical owner-programmed directional conveyor between distinct, owned crates.
  * Routing never references remote account inventory, client coordinates,
  * shared faction stock or temporary deployables. */
 public final class ConveyorLogistics {
@@ -25,7 +25,8 @@ public final class ConveyorLogistics {
             if(dx<0&&dist<westDist){west=d;westDist=dist;}
             if(dx>0&&dist<eastDist){east=d;eastDist=dist;}
         }
-        return west==null||east==null||west==east?null:new Route(west,east);
+        return west==null||east==null||west==east?null:
+            conveyor.routeReverse?new Route(east,west):new Route(west,east);
     }
     /** An actual powered automatic sorter mounted near the belt improves
      * throughput. It never changes recipe/faction stock ownership or acts as

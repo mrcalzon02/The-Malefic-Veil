@@ -1011,9 +1011,13 @@ public final class ArenaSystems {
             }
         }
     }
-    /** Owner programs one named stock item on a real reachable conveyor.
-     * The route remains physically directional, west source to east receiver. */
+    /** Legacy two-field commands retain historical west-to-east direction. */
     public synchronized boolean programConveyor(int id,String itemName){
+        return programConveyor(id,itemName,false);
+    }
+    /** A physically owned belt can reverse direction but never select remote
+     * warehouses or bypass the sender/receiver capacity checks. */
+    public synchronized boolean programConveyor(int id,String itemName,boolean reverse){
         Player p=players.get(id);
         if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||
            p.accountKey==null||!p.accountKey.startsWith("acct_")||
@@ -1030,6 +1034,7 @@ public final class ArenaSystems {
             if(item!=null&&ConveyorLogistics.between(conveyor,world.devices)==null)
                 return false;
             conveyor.routeItem=item==null?"":item.name();
+            conveyor.routeReverse=item!=null&&reverse;
             conveyor.routeMs=0;
             breakGrace(p);return true;
         }
@@ -1247,7 +1252,9 @@ public final class ArenaSystems {
             device.kind==PENITENT_WARD_SANCTUM)&&device.productionActive)
             device.productionMs=0; // sacred rite must begin its chant again
         if(device.hp==0){
-            if(device.kind==CONVEYOR_LINE){device.routeItem="";device.routeMs=0;}
+            if(device.kind==CONVEYOR_LINE){
+                device.routeItem="";device.routeMs=0;device.routeReverse=false;
+            }
             if(device.kind==STEAM_BOILER)device.steamMs=0;
             if(device.kind==GENERATOR)device.electricMs=0;
             device.productionActive=false;

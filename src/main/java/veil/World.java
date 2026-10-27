@@ -67,6 +67,8 @@ public final class World {
          * No thrown deployables participate in the logistics network. */
         public String routeItem="";
         public long routeMs;
+        /** False preserves V1-V10 west-to-east movement; true routes east-to-west. */
+        public boolean routeReverse;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }
     public World(long seed) {

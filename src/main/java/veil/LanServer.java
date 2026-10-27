@@ -698,8 +698,12 @@ public final class LanServer implements AutoCloseable {
                                 "QUEUE_DENIED"));
                         }
                         case "AUTOMATION_ROUTE" -> {
-                            if(s.length!=2)continue;
-                            changed=match.programConveyor(peer.id,s[1]);
+                            if((s.length!=2&&s.length!=3)||
+                               (s.length==3&&
+                                !s[2].equals("EAST_TO_WEST")&&
+                                !s[2].equals("WEST_TO_EAST")))continue;
+                            boolean reverse=s.length==3&&s[2].equals("EAST_TO_WEST");
+                            changed=match.programConveyor(peer.id,s[1],reverse);
                             peer.send("FACTORY_RESULT|"+(changed?
                                 "CONVEYOR_PROGRAMMED":"ROUTE_DENIED"));
                         }

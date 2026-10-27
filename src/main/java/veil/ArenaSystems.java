@@ -940,6 +940,74 @@ public final class ArenaSystems {
         }
         return false;
     }
+    /** A one-slot next E5 work order. Enqueueing never spends ingredients.
+     * Only a matched, owned, permanent AUTOMATION-era physical machine can
+     * accept a job, and no client can replace an occupied slot. */
+    public synchronized boolean programNextAutomation(int playerId,String requested){
+        Player p=players.get(playerId);
+        if(p==null||p.dead||vehicles.carDrivenBy(playerId)>=0||
+           p.accountKey==null||!p.accountKey.startsWith("acct_")||
+           requested==null||requested.length()>80)return false;
+        boolean cancel=requested.equals("NONE");
+        var job=cancel?null:CraftingEraRegistry.process(requested);
+        if(!cancel&&(job==null||job.era()!=CraftingEraRegistry.Era.AUTOMATION||
+            !requested.matches("[a-z0-9-]+")||job.utilityDemand()<1))
+            return false;
+        for(World.Device device:world.devices){
+            if(device.hp<=0||!p.accountKey.equals(device.ownerKey)||
+               Math.hypot(p.x-device.x,p.y-device.y)>2.6||
+               !world.lineClear(p.x,p.y,device.x,device.y))continue;
+            String station=factionFacility(device.kind);
+            var spec=CraftingEraRegistry.facility(station);
+            if(spec==null||spec.era()!=CraftingEraRegistry.Era.AUTOMATION||
+               (facilityFaction(device.kind)!=null&&
+                factions.faction(p.accountKey)!=facilityFaction(device.kind)))continue;
+            if(cancel){
+                if(device.queuedRecipeId.isEmpty())continue;
+                device.queuedRecipeId="";
+            }else{
+                if(!device.queuedRecipeId.isEmpty()||!job.facility().equals(station)||
+                   (job.faction()!=CraftingEraRegistry.Faction.ALL&&
+                    factions.faction(p.accountKey)!=switch(job.faction()){
+                        case UNRAVELED -> CharacterRoster.Faction.THE_UNRAVELED;
+                        case PENITENT -> CharacterRoster.Faction.THE_PENITENT;
+                        case BEGOTTEN -> CharacterRoster.Faction.THE_BEGOTTEN;
+                        default -> null;
+                    }))continue;
+                device.queuedRecipeId=requested;
+            }
+            breakGrace(p);
+            return true;
+        }
+        return false;
+    }
+    /** Queued E5 work cannot run without an actual charged same-owner grid
+     * and enough materials in a nearby owned crate. Consume only at launch. */
+    private void advanceQueuedAutomation(){
+        for(World.Device d:world.devices){
+            if(d.hp<=0||d.productionActive||d.queuedRecipeId.isEmpty())continue;
+            var recipe=CraftingEraRegistry.process(d.queuedRecipeId);
+            if(recipe==null||recipe.era()!=CraftingEraRegistry.Era.AUTOMATION||
+               !recipe.facility().equals(factionFacility(d.kind))||
+               d.ownerKey==null)continue;
+            if((d.kind==PENITENT_WARD_SANCTUM||d.kind==TERROR_COLLECTOR)&&
+               liturgicalWitnesses(d)==0)continue;
+            if(ElectricUtility.available(world.devices,d,
+                recipe.utilityDemand(),Map.of())==null)continue;
+            var inputs=processInputs(recipe.id());
+            for(World.Device crate:world.devices){
+                if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
+                   !d.ownerKey.equals(crate.ownerKey)||
+                   Math.hypot(crate.x-d.x,crate.y-d.y)>5.5||
+                   !crate.storage.consume(inputs))continue;
+                d.productionActive=true;
+                d.productionMs=0;
+                d.productionRecipeId=recipe.id();
+                d.queuedRecipeId="";
+                break;
+            }
+        }
+    }
     /** Owner programs one named stock item on a real reachable conveyor.
      * The route remains physically directional, west source to east receiver. */
     public synchronized boolean programConveyor(int id,String itemName){
@@ -967,6 +1035,7 @@ public final class ArenaSystems {
     /** Supply is physically routed once per host tick, not generated from a
      * recipe descriptor. Competing powered machines share boiler capacity. */
     private void advanceFactoryUtilities(long ms){
+        advanceQueuedAutomation();
         Map<World.Device,Integer> demand=new IdentityHashMap<>();
         Map<World.Device,Integer> electricDraw=new IdentityHashMap<>();
         for(World.Device d:world.devices){
@@ -1134,13 +1203,15 @@ public final class ArenaSystems {
             var process=CraftingEraRegistry.process(d.productionRecipeId);
             long duration=process.seconds();
             return "RUNNING_"+d.productionRecipeId+"_"+
-                (d.productionMs/1000)+"_OF_"+duration+"_SECONDS";
+                (d.productionMs/1000)+"_OF_"+duration+"_SECONDS"+
+                (d.queuedRecipeId.isEmpty()?"":"_NEXT_"+d.queuedRecipeId);
         }
         for(World.Device d:world.devices)
             if(d.hp>0&&firstProcess(d.kind)!=null&&
                p.accountKey.equals(d.ownerKey)&&
                Math.hypot(p.x-d.x,p.y-d.y)<=3.0)
-                return "IDLE_"+factionFacility(d.kind)+"_COMPLETED_"+d.productionCompleted;
+                return "IDLE_"+factionFacility(d.kind)+"_COMPLETED_"+d.productionCompleted+
+                    (d.queuedRecipeId.isEmpty()?"":"_WAITING_NEXT_"+d.queuedRecipeId);
         return "NO_OWN_WORKSITE_IN_REACH";
     }
     /** All base PvP damage passes through this gate, including future explosives. */
@@ -1175,6 +1246,7 @@ public final class ArenaSystems {
             if(device.kind==GENERATOR)device.electricMs=0;
             device.productionActive=false;
             device.productionRecipeId="";
+            device.queuedRecipeId="";
             device.productionMs=0;
         }
         return true;

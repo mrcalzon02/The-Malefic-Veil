@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,UTILITIES,CONVEYOR,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,UTILITIES,CONVEYOR,SITES,WORK_ORDERS,QUEUE_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -335,7 +335,30 @@ public final class GpuOverlayMenu {
                 if(end<ids.size())add("MORE WORK ORDERS",()->{
                     pageOffset+=5;show(Screen.WORK_ORDERS);
                 });
+                add("PROGRAM NEXT E5 JOB",()->{
+                    pageOffset=0;show(Screen.QUEUE_ORDERS);
+                });
                 add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
+            }
+            case QUEUE_ORDERS->{
+                var ids=gameplay.gpuAutomationRecipes();
+                int end=Math.min(ids.size(),pageOffset+5);
+                for(int i=pageOffset;i<end;i++){
+                    String id=ids.get(i);
+                    add("QUEUE "+id.toUpperCase(java.util.Locale.ROOT),()->{
+                        gameplay.gpuQueueAutomation(id);show(Screen.GAME);
+                    });
+                }
+                if(pageOffset>0)add("PREVIOUS E5 JOBS",()->{
+                    pageOffset=Math.max(0,pageOffset-5);show(Screen.QUEUE_ORDERS);
+                });
+                if(end<ids.size())add("MORE E5 JOBS",()->{
+                    pageOffset+=5;show(Screen.QUEUE_ORDERS);
+                });
+                add("CANCEL PENDING E5 JOB",()->{
+                    gameplay.gpuQueueAutomation("NONE");show(Screen.GAME);
+                });
+                add("BACK TO WORK ORDERS",()->show(Screen.WORK_ORDERS));
             }
             case STORAGE->{
                 var carried=new java.util.TreeMap<>(gameplay.gpuCarriedItems());

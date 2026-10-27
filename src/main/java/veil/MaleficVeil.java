@@ -249,6 +249,27 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     "WORKSITE PRODUCTION STARTED":"WORKSITE NEEDS SUPPLY / FACTION / REACH");
         });
     }
+    public void gpuQueueAutomation(String recipe){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.queueAutomation(recipe);
+            else if(localHost!=null)
+                toast(localHost.programNextAutomation(1,recipe)?
+                    (recipe.equals("NONE")?"E5 NEXT JOB CANCELLED":"E5 NEXT JOB QUEUED"):
+                    "QUEUE REJECTED: OWN E5 STATION IN REACH REQUIRED");
+        });
+    }
+    public java.util.List<String> gpuAutomationRecipes(){
+        java.util.List<String> result=new java.util.ArrayList<>();
+        var faction=gpuCraftFaction();
+        for(var recipe:CraftingEraRegistry.processes().values()){
+            if(recipe.era()!=CraftingEraRegistry.Era.AUTOMATION||
+               ArenaSystems.kindForFacility(recipe.facility())<0||
+               recipe.faction()!=CraftingEraRegistry.Faction.ALL&&
+               recipe.faction()!=faction)continue;
+            result.add(recipe.id());
+        }
+        return java.util.List.copyOf(result);
+    }
     public void gpuInspectFactionBatch(){
         SwingUtilities.invokeLater(()->{
             if(net!=null)net.inspectFactionBatch();

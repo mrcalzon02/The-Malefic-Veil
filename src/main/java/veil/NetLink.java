@@ -471,6 +471,7 @@ public final class NetLink implements AutoCloseable {
     public void programConveyor(String item){send("AUTOMATION_ROUTE|"+item);}
     public void startFactionBatch(){send("FACTION_PRODUCE");}
     public void startFactionBatch(String recipe){send("FACTION_PRODUCE|"+recipe);}
+    public void queueAutomation(String recipe){send("AUTOMATION_QUEUE|"+recipe);}
     public void inspectFactionBatch(){send("FACTORY_QUERY");}
     public void transferCampStock(boolean taking,String item,int amount){
         send((taking?"STOCK_TAKE":"STOCK_PUT")+"|"+item+"|"+amount);

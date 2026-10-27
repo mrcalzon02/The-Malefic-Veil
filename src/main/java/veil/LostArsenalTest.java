@@ -2,7 +2,7 @@ package veil;
 
 import java.util.*;
 
-/** Registry-only validation. Does not imply ArenaSystems executes weapon effects. */
+/** Registry validation: only the real Drifter bone-shiv may report host integration. */
 public final class LostArsenalTest {
     private static void check(boolean ok,String msg){if(!ok)throw new AssertionError(msg);}
     public static void main(String[] args){
@@ -11,7 +11,9 @@ public final class LostArsenalTest {
         for(var weapon:LostArsenal.all()){
             check(ids.add(weapon.id()),"Duplicate ID");
             check(LostArsenal.get(weapon.id()).equals(weapon),"Lookup drift");
-            check(!weapon.runtimeIntegrated(),"Design must not be claimed live");
+            check(weapon.runtimeIntegrated()==
+                weapon.id().equals("lost-drifter-bone-shiv"),
+                "Only the wired host attack may claim runtime integration");
             check(weapon.telegraph().length()>8&&weapon.counter().length()>8,
                 "Weapon needs actual telegraph and counterplay");
             check(weapon.reach()>0&&weapon.windupSeconds()>0&&
@@ -24,6 +26,6 @@ public final class LostArsenalTest {
             for(var e:entries)slots.add(e.slot());
             check(slots.size()==5,"Missing combat role for "+kind);
         }
-        System.out.println("PASS LostArsenalTest: 25 scoped profiles, tells, counters and roles");
+        System.out.println("PASS LostArsenalTest: 25 profiles, one live shiv, remaining roles descriptive");
     }
 }

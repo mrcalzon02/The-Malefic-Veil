@@ -900,7 +900,13 @@ public final class ArenaSystems {
            !p.accountKey.startsWith("acct_"))return false;
         if(requestedRecipe!=null&&(requestedRecipe.length()>80||
            !requestedRecipe.matches("[a-z0-9-]+")))return false;
-        for(World.Device device:world.devices){
+        // Match the nearest factory visible in inspectFactory, not an
+        // arbitrary historical structure insertion order. Never reorder
+        // the durable world list to select an interaction target.
+        List<World.Device> candidates=new ArrayList<>(world.devices);
+        candidates.sort(Comparator.comparingDouble(d->
+            Math.hypot(p.x-d.x,p.y-d.y)));
+        for(World.Device device:candidates){
             int kind=device.kind;
             String processId=requestedRecipe==null?firstProcess(kind):requestedRecipe;
             var process=CraftingEraRegistry.process(processId);
@@ -957,7 +963,10 @@ public final class ArenaSystems {
         if(!cancel&&(job==null||job.era()!=CraftingEraRegistry.Era.AUTOMATION||
             !jobId.matches("[a-z0-9-]+")||job.utilityDemand()<1))
             return false;
-        for(World.Device device:world.devices){
+        List<World.Device> candidates=new ArrayList<>(world.devices);
+        candidates.sort(Comparator.comparingDouble(d->
+            Math.hypot(p.x-d.x,p.y-d.y)));
+        for(World.Device device:candidates){
             if(device.hp<=0||!p.accountKey.equals(device.ownerKey)||
                Math.hypot(p.x-device.x,p.y-device.y)>2.6||
                !world.lineClear(p.x,p.y,device.x,device.y))continue;

@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,UTILITIES,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,UTILITIES,CONVEYOR,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -57,6 +57,9 @@ public final class GpuOverlayMenu {
     public boolean active(){return screen==Screen.GAME;}
     public void openCraft(){pageOffset=0;show(Screen.CRAFT);}
     public void openSites(){pageOffset=0;show(Screen.SITES);}
+    public void openConveyor(){
+        pageOffset=0;gameplay.gpuRequestCampStock();show(Screen.CONVEYOR);
+    }
     public void openWorkOrders(){pageOffset=0;show(Screen.WORK_ORDERS);}
     public void openStorage(){
         pageOffset=0;
@@ -260,6 +263,7 @@ public final class GpuOverlayMenu {
                 });
                 add("INSPECT WORKSITE PROGRESS",gameplay::gpuInspectFactionBatch);
                 add("POWER UTILITIES",()->show(Screen.UTILITIES));
+                add("CONFIGURE CONVEYOR",this::openConveyor);
                 add("BUILD SHARED / E3 FACILITIES",this::openSites);
                 add("SELECT INDUSTRIAL RECIPE",this::openWorkOrders);
                 add("DEPLOY CRAFTED CRATE",()->{
@@ -272,6 +276,29 @@ public final class GpuOverlayMenu {
             case UTILITIES->{
                 add("STOKE STEAM BOILER",gameplay::gpuFuelSteamBoiler);
                 add("CHARGE ELECTRIC GENERATOR",gameplay::gpuChargeGenerator);
+                add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
+            }
+            case CONVEYOR->{
+                add("DISABLE AUTOMATIC ROUTE",()->{
+                    gameplay.gpuProgramConveyor("NONE");show(Screen.GAME);
+                });
+                var materials=gameplay.gpuConveyorStockItems();
+                int end=Math.min(materials.size(),pageOffset+5);
+                for(int i=pageOffset;i<end;i++){
+                    String item=materials.get(i);
+                    add("WEST > EAST  "+item,()->{
+                        gameplay.gpuProgramConveyor(item);show(Screen.GAME);
+                    });
+                }
+                if(pageOffset>0)add("PREVIOUS MATERIALS",()->{
+                    pageOffset=Math.max(0,pageOffset-5);show(Screen.CONVEYOR);
+                });
+                if(end<materials.size())add("MORE MATERIALS",()->{
+                    pageOffset+=5;show(Screen.CONVEYOR);
+                });
+                add("REFRESH STOCK",()->{
+                    gameplay.gpuRequestCampStock();build();
+                });
                 add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case SITES->{
@@ -450,6 +477,9 @@ public final class GpuOverlayMenu {
             skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
          }else if(screen==Screen.INDUSTRY){
             skin.font().draw(sprites,"SEPARATE FACTION SYSTEMS / LIVE HOST ACTIONS",147,331);
+        }else if(screen==Screen.CONVEYOR){
+            skin.font().draw(sprites,
+                "OWNED CRATES / WEST SOURCE > EAST TARGET / PAID POWER",147,331);
         }else if(screen==Screen.SITES||screen==Screen.WORK_ORDERS){
             skin.font().draw(sprites,
                 "HOST CHECKS REAL COSTS / LOCATION / DEPENDENCIES",147,331);

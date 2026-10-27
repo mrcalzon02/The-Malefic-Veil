@@ -981,9 +981,10 @@ public final class ArenaSystems {
         }
         return false;
     }
-    /** Queued E5 work cannot run without an actual charged same-owner grid
-     * and enough materials in a nearby owned crate. Consume only at launch. */
-    private void advanceQueuedAutomation(){
+    /** Queued E5 work requires power LEFT after already-operating factories,
+     * conveyors and sorters. Reservation is per host tick and per generator.
+     * Never debit a queued recipe merely because an overloaded grid exists. */
+    private void advanceQueuedAutomation(Map<World.Device,Integer> allocated){
         for(World.Device d:world.devices){
             if(d.hp<=0||d.productionActive||d.queuedRecipeId.isEmpty())continue;
             var recipe=CraftingEraRegistry.process(d.queuedRecipeId);
@@ -992,8 +993,9 @@ public final class ArenaSystems {
                d.ownerKey==null)continue;
             if((d.kind==PENITENT_WARD_SANCTUM||d.kind==TERROR_COLLECTOR)&&
                liturgicalWitnesses(d)==0)continue;
-            if(ElectricUtility.available(world.devices,d,
-                recipe.utilityDemand(),Map.of())==null)continue;
+            World.Device generator=ElectricUtility.available(world.devices,d,
+                recipe.utilityDemand(),allocated);
+            if(generator==null)continue;
             var inputs=processInputs(recipe.id());
             for(World.Device crate:world.devices){
                 if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
@@ -1004,6 +1006,7 @@ public final class ArenaSystems {
                 d.productionMs=0;
                 d.productionRecipeId=recipe.id();
                 d.queuedRecipeId="";
+                allocated.merge(generator,recipe.utilityDemand(),Integer::sum);
                 break;
             }
         }
@@ -1035,7 +1038,6 @@ public final class ArenaSystems {
     /** Supply is physically routed once per host tick, not generated from a
      * recipe descriptor. Competing powered machines share boiler capacity. */
     private void advanceFactoryUtilities(long ms){
-        advanceQueuedAutomation();
         Map<World.Device,Integer> demand=new IdentityHashMap<>();
         Map<World.Device,Integer> electricDraw=new IdentityHashMap<>();
         for(World.Device d:world.devices){
@@ -1089,6 +1091,10 @@ public final class ArenaSystems {
                 }
             }
         }
+        // Launch unpaid E5 jobs only after active factory AND conveyor loads
+        // are known. A copy reserves capacity for multiple new starts without
+        // charging a factory for a tick in which it did not yet manufacture.
+        advanceQueuedAutomation(new IdentityHashMap<>(electricDraw));
         for(World.Device generator:electricDraw.keySet())
             generator.electricMs=Math.max(0,generator.electricMs-ms);
     }

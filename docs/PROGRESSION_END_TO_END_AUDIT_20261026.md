@@ -82,6 +82,16 @@ Steam machines with `utilityDemand` now require a living same-owner mechanical s
 
 **Scope remaining:** Shared steam utility does not unify independent faction economies. It is not yet a graphical pipe-placement utility network, nor does it cover E4 electricity, E5 industrial automation or E6 incursion. Work-order scheduling remains single-batch per physical machine; full construction build timers and repair/fuel diagnostics are later work.
 
+## E4 electrical civilization milestone — 27 October 2026
+
+Generator, electric-bus, precision-lathe, water-works, and the Unraveled sensor lab, Penitent choir relay, and Begotten membrane lab now exist as seven independent mesh-backed permanent structures. New-world placement pays the canonical facility materials from a genuine nearby owned camp crate and enforces each physical prerequisite. Old save device kinds and item ordinals remain stable.
+
+The host can now charge a real generator using a same-owner live steam boiler with at least one minute of paid pressure, plus three charcoal and two clean water from nearby persistent storage. An electric bus physically routes service within eight world units to the supplied generator and nearby machines; its per-tick allocation is capped at sixteen shared load units. **E4 electrical recipes explicitly use the electric grid rather than mistakenly consuming E3 shaft service.** Lost bus or generator connectivity stalls work without refunding reserved recipe materials. Generator charge and exact running recipes persist in realm V8, with V1–V7 backwards load compatibility.
+
+E4 factory behavior remains three separate systems: Unraveled produces mechanical SENSOR_HEAD at an actual sensor lab, Penitent CHOIR_SCORE at a witness-dependent ritual relay, and Begotten LIVING_MEMBRANE at its vulnerable organic membrane lab. The shared precision lathe makes CONDUCTOR_WIRE and CONTROL_BOARD through its own registered recipes; it does not craft faction-specific products. Existing thrown field equipment remains a completely separate transient construction category.
+
+**Still not delivered:** freely placeable cables and generator assemblies, full electrical failure effects/audio, tier-E5 automated factory complexes, automated hauling or timed multi-stage construction. E4 production is one real paid work order per machine, not yet a power-grid visual editor.
+
 ## Ordered development backlog and measurable acceptance
 
 | Priority | Work item | Acceptance proving actual gameplay |

@@ -13,11 +13,14 @@ public final class LostBoneShivTest {
         check(host.world.npcs.stream().anyMatch(n->"lost-drifter".equals(n.kind)),
             "actual ruin-owned host roster must contain classified Drifters");
         // Suppress unrelated attackers without changing the real host tick.
+        World.Npc npc=host.world.npcs.stream()
+            .filter(n->kind.equals(n.kind)).findFirst()
+            .orElseThrow(()->new AssertionError("Missing real ruin-owned "+kind));
         for(World.Npc other:host.world.npcs)other.hp=0;
         ArenaSystems.Player player=host.join(9);
-        World.Npc npc=new World.Npc(2.4,1.5);
-        npc.kind=kind;
-        host.world.npcs.add(npc);
+        // Move an actual stable site-owned actor into an unobstructed host
+        // test arena; never fabricate a classification on a new NPC.
+        npc.hp=80;npc.x=2.4;npc.y=1.5;
         check(host.world.canWalk(npc.x,npc.y)&&
               host.clear(npc.x,npc.y,player.x,player.y),
               "spawn fixture must have genuine unobstructed geometry");
@@ -97,10 +100,11 @@ public final class LostBoneShivTest {
     private static void wireAndRegistry(){
         Fixture f=fixture("lost-drifter");
         f.host.advance(100);
-        String wire=LanServer.npcPacket(45,f.npc);
+        int index=f.host.world.npcs.indexOf(f.npc);
+        String wire=LanServer.npcPacket(index,f.npc);
         NetLink.NpcEvent event=NetLink.decodeNpc(
             wire.split(java.util.regex.Pattern.quote("|")));
-        check(event!=null&&event.index()==45&&event.attackPhase()==1&&
+        check(event!=null&&event.index()==index&&event.attackPhase()==1&&
               event.attackTargetId()==f.player.id,
               "host snapshot must replicate exact windup and target");
         NetLink.NpcEvent legacy=NetLink.decodeNpc(

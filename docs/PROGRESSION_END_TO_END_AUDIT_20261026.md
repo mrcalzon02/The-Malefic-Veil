@@ -100,6 +100,27 @@ There is now real warehouse-to-warehouse E5 automation: at an owned living conve
 
 Boundaries: E5 is an initial fixed-site automatic logistics implementation, not yet a freeform drawable conveyor spline or AI truck-routing scheduler. Existing catalog-only E5 recipe outputs that need other unimplemented factories are not misrepresented as functioning. Steam and electrical utility services are shared, but the three faction-owned manufacturing civilizations are not unified.
 
+## Host-controlled E5 next-job scheduling — October 2026
+
+Owner-authorized permanent AUTOMATION-era facilities can retain exactly one
+`queuedRecipeId` while another batch is running or while awaiting real
+materials. Queueing neither spends stock nor grants output. The authoritative
+host advances to the next batch only after the physical machine is idle,
+a same-owner electrical grid is live, and a nearby same-owner crate contains
+the complete canonical recipe input. All ingredients are debited atomically
+*at work-order launch*, not at queue time, and the active recipe always runs
+through existing timed output, capacity, faction, and damage rules.
+
+The native industry UI offers separate next-job selection and cancellation;
+LAN hosts validate the same account ownership, exact station and E5 recipe.
+A saved V10 realm preserves the pending recipe separately from the paid active
+job, validates faction/station/era mapping, and retains V1–V9 loading.
+Destroyed equipment clears pending receipts. This is deliberately one
+pending order per machine, not a forged inventory escrow or unrestricted
+remote crafting. Fully configurable priority lists, multi-station batch
+queues, source-to-destination conveyor graphs and automatic generator fueling
+remain later work.
+
 ## Ordered development backlog and measurable acceptance
 
 | Priority | Work item | Acceptance proving actual gameplay |

@@ -77,6 +77,9 @@ def portrait(source, destination):
     light("Fill", center + Vector((span * 2, span * 0.6, span * 1.5)),
           320, span * 2.5)
     world = bpy.context.scene.world
+    if world is None:
+        world = bpy.data.worlds.new("Portrait studio ambient")
+        bpy.context.scene.world = world
     world.use_nodes = True
     world.node_tree.nodes.get("Background").inputs["Color"].default_value = (0.24, 0.27, 0.33, 1)
     world.node_tree.nodes.get("Background").inputs["Strength"].default_value = 0.85

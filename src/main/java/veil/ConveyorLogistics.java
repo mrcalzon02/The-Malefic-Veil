@@ -85,6 +85,68 @@ public final class ConveyorLogistics {
         return dy<=2.7&&Math.hypot(dx,dy)<=6.0&&
             (west?dx<=-1.0:dx>=1.0);
     }
+    /**
+     * Complete a paid manufacturing batch into a nearby physical crate.
+     * If an owner-programmed conveyor can carry that output into a crate
+     * serving a genuinely queued E5 consumer, prefer its reachable source
+     * over arbitrary insertion order. All receipts stay in actual storage.
+     *
+     * Does not require the belt to be currently powered: output delivery
+     * is not belt travel. The belt must still pay its normal grid load and
+     * transfer time before anything reaches the next factory.
+     */
+    public static World.Device outputCrate(World.Device producer,
+            SurvivalCrafting.Item output,int quantity,List<World.Device> devices){
+        if(producer==null||producer.hp<=0||producer.ownerKey==null||
+           output==null||quantity<1||devices==null)return null;
+        World.Device fallback=null,priority=null;
+        int score=-1;
+        double bestDistance=Double.MAX_VALUE;
+        for(World.Device candidate:devices){
+            if(candidate.hp<=0||candidate.kind!=ArenaSystems.STORAGE_CRATE||
+               !producer.ownerKey.equals(candidate.ownerKey)||
+               Math.hypot(candidate.x-producer.x,candidate.y-producer.y)>5.5||
+               !candidate.storage.canAdd(output,quantity))continue;
+            if(fallback==null)fallback=candidate;
+            for(World.Device belt:devices){
+                if(belt.hp<=0||belt.kind!=ArenaSystems.CONVEYOR_LINE||
+                   !producer.ownerKey.equals(belt.ownerKey)||
+                   belt.routeItem.isEmpty())continue;
+                boolean auto=belt.routeItem.equals("AUTO");
+                if(!auto&&!belt.routeItem.equals(output.name()))continue;
+                if(!eligibleCrate(belt,candidate,!belt.routeReverse))continue;
+                Route manual=auto?null:between(belt,devices);
+                if(!auto&&(manual==null||manual.source()!=candidate))continue;
+                for(World.Device consumer:devices){
+                    if(consumer.hp<=0||consumer.queuedRecipeId.isEmpty()||
+                       !producer.ownerKey.equals(consumer.ownerKey))continue;
+                    var job=CraftingEraRegistry.process(consumer.queuedRecipeId);
+                    if(job==null||job.era()!=CraftingEraRegistry.Era.AUTOMATION||
+                       !job.facility().equals(ArenaSystems.factionFacility(consumer.kind))||
+                       !job.inputs().containsKey(output.name()))continue;
+                    int need=job.inputs().get(output.name());
+                    for(World.Device receiver:devices){
+                        if(receiver==candidate||!eligibleCrate(belt,receiver,belt.routeReverse)||
+                           (!auto&&manual.destination()!=receiver)||
+                           Math.hypot(receiver.x-consumer.x,receiver.y-consumer.y)>5.5||
+                           receiver.storage.count(output)>=need||
+                           !receiver.storage.canAdd(output,1))continue;
+                        int staged=0;
+                        for(var ingredient:job.inputs().entrySet()){
+                            var item=SurvivalCrafting.Item.valueOf(ingredient.getKey());
+                            staged+=Math.min(ingredient.getValue(),receiver.storage.count(item));
+                        }
+                        double distance=Math.hypot(belt.x-candidate.x,belt.y-candidate.y)+
+                            Math.hypot(receiver.x-consumer.x,receiver.y-consumer.y);
+                        if(staged>score||(staged==score&&distance<bestDistance)){
+                            score=staged;bestDistance=distance;priority=candidate;
+                        }
+                    }
+                }
+            }
+        }
+        return priority!=null?priority:fallback;
+    }
     /** An actual powered automatic sorter mounted near the belt improves
      * throughput. It never changes recipe/faction stock ownership or acts as
      * free automation merely because it exists in the registry. */

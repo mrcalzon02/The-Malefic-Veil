@@ -79,6 +79,9 @@ public final class AutomaticFactoryFeedTest {
             "E5 operator must be an authenticated faction member");
         double[] point=site(host);double x=point[0],y=point[1];
         add(host,ArenaSystems.CAMP_STAKE,x-8,y-3,owner);
+        // Deliberately register an earlier and closer crate that cannot
+        // reach the downstream belt. Production must NOT default to it.
+        var decoy=add(host,ArenaSystems.STORAGE_CRATE,x-7.5,y+.4,owner);
         var nearWest=add(host,ArenaSystems.STORAGE_CRATE,x-2,y,owner);
         var actualSource=add(host,ArenaSystems.STORAGE_CRATE,x-5,y,owner);
         var nearEast=add(host,ArenaSystems.STORAGE_CRATE,x+2,y,owner);
@@ -104,10 +107,10 @@ public final class AutomaticFactoryFeedTest {
         check(actualSource.storage.count(SurvivalCrafting.Item.DRIVE_SHAFT)==0&&
             actualSource.storage.count(SurvivalCrafting.Item.CONDUCTOR_WIRE)==0,
             "Upstream fabrication failed to debit real input warehouse");
-        tick(host,CraftingEraRegistry.process("precision-feedlines").seconds());
-        check(!producer.productionActive&&producer.productionCompleted==1&&
-            actualSource.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE)==2,
-            "Upstream factory failed to manufacture two actual feedlines");
+        // Finish all but the last paid second before programming delivery.
+        // This proves actual host output placement sees a live downstream
+        // demand instead of merely depending on warehouse insertion order.
+        tick(host,CraftingEraRegistry.process("precision-feedlines").seconds()-1);
         player.x=consumer.x;player.y=consumer.y;
         check(host.programNextAutomation(1,"ballistic-resupply"),
             "Downstream Unraveled E5 receipt failed to queue");
@@ -118,11 +121,16 @@ public final class AutomaticFactoryFeedTest {
             "Unowned faction attempted to configure a private auto feeder");
         check(host.programConveyor(1,"AUTO",false)&&belt.routeItem.equals("AUTO"),
             "Real conveyor refused pending-job automatic routing");
+        tick(host,1);
+        check(!producer.productionActive&&producer.productionCompleted==1&&
+            actualSource.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE)==2&&
+            decoy.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE)==0,
+            "Paid output was stranded in the first wrong crate instead of the conveyor source");
         var plan=ConveyorLogistics.autoInput(belt,host.world.devices);
         check(plan!=null&&plan.route().source()==actualSource&&
             plan.route().destination()==actualTarget,
             "Auto routing chose nearest wrong-side/other-owner crate rather than useful stock");
-        tick(host,4);
+        tick(host,3);
         check(belt.routeMs==4000&&!consumer.productionActive&&
             actualTarget.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE)==0,
             "Factory was funded early without a completed paid conveyor tick");

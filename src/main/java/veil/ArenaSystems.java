@@ -1233,11 +1233,11 @@ public final class ArenaSystems {
         device.productionMs=Math.min(required,device.productionMs+gain);
         if(device.productionMs<required)return;
         SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(process.output());
-        for(World.Device crate:world.devices){
-            if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
-               !device.ownerKey.equals(crate.ownerKey)||
-               Math.hypot(device.x-crate.x,device.y-crate.y)>5.5)continue;
-            if(!crate.storage.delivered(item,process.quantity()))continue;
+        World.Device crate=ConveyorLogistics.outputCrate(device,item,
+            process.quantity(),world.devices);
+        if(crate!=null){
+            if(!crate.storage.delivered(item,process.quantity()))
+                throw new IllegalStateException("Preflighted factory output crate capacity changed");
             device.productionActive=false;
             device.productionRecipeId="";
             device.productionMs=0;

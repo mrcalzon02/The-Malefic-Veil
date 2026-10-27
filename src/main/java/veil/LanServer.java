@@ -348,7 +348,7 @@ public final class LanServer implements AutoCloseable {
                        match.factions.faction(match.player(peer.id).accountKey)==null&&
                        Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
                            "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CARGO_UNLOAD",
-                           "STOCK_PUT","STOCK_TAKE","FACTION_PRODUCE","REFUEL_STEAM","CHARGE_GENERATOR","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
+                           "STOCK_PUT","STOCK_TAKE","FACTION_PRODUCE","REFUEL_STEAM","CHARGE_GENERATOR","AUTOMATION_ROUTE","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
                            "HARVEST","SCAVENGE","CONSUME","DROP_ITEM","GET_DROP","TRADE_ITEM",
                            "ARS_FIRE","ARS_SELECT","ARS_RELOAD","ARS_PICKUP","ARS_CRAFT",
                            "ARS_UPGRADE").contains(s[0])){
@@ -689,6 +689,12 @@ public final class LanServer implements AutoCloseable {
                                 broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
                                 broadcast(cargoYardPacket(match.cargo.sites().get(yard)),-1);
                             }
+                        }
+                        case "AUTOMATION_ROUTE" -> {
+                            if(s.length!=2)continue;
+                            changed=match.programConveyor(peer.id,s[1]);
+                            peer.send("FACTORY_RESULT|"+(changed?
+                                "CONVEYOR_PROGRAMMED":"ROUTE_DENIED"));
                         }
                         case "CHARGE_GENERATOR" -> {
                             if(s.length!=1)continue;

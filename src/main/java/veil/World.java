@@ -61,6 +61,10 @@ public final class World {
         public long steamMs;
         /** Electricity reserve, nonzero exclusively on generators. */
         public long electricMs;
+        /** Configured one-item fixed conveyor route, within owned camp.
+         * No thrown deployables participate in the logistics network. */
+        public String routeItem="";
+        public long routeMs;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }
     public World(long seed) {

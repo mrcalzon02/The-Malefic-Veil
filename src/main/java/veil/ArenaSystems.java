@@ -940,6 +940,30 @@ public final class ArenaSystems {
         }
         return false;
     }
+    /** Owner programs one named stock item on a real reachable conveyor.
+     * The route remains physically directional, west source to east receiver. */
+    public synchronized boolean programConveyor(int id,String itemName){
+        Player p=players.get(id);
+        if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||
+           p.accountKey==null||!p.accountKey.startsWith("acct_")||
+           itemName==null||itemName.length()>80)return false;
+        SurvivalCrafting.Item item=null;
+        if(!itemName.equals("NONE"))try{
+            item=SurvivalCrafting.Item.valueOf(itemName);
+        }catch(IllegalArgumentException invalid){return false;}
+        for(World.Device conveyor:world.devices){
+            if(conveyor.kind!=CONVEYOR_LINE||conveyor.hp<=0||
+               !p.accountKey.equals(conveyor.ownerKey)||
+               Math.hypot(p.x-conveyor.x,p.y-conveyor.y)>2.6||
+               !world.lineClear(p.x,p.y,conveyor.x,conveyor.y))continue;
+            if(item!=null&&ConveyorLogistics.between(conveyor,world.devices)==null)
+                return false;
+            conveyor.routeItem=item==null?"":item.name();
+            conveyor.routeMs=0;
+            breakGrace(p);return true;
+        }
+        return false;
+    }
     /** Supply is physically routed once per host tick, not generated from a
      * recipe descriptor. Competing powered machines share boiler capacity. */
     private void advanceFactoryUtilities(long ms){
@@ -972,6 +996,24 @@ public final class ArenaSystems {
         }
         for(World.Device boiler:demand.keySet())
             boiler.steamMs=Math.max(0,boiler.steamMs-ms);
+        // Each stationary conveyor is its own paid logistics mechanism,
+        // sharing exactly the same grid budget as adjacent E5 fabrication.
+        for(World.Device conveyor:world.devices){
+            if(conveyor.kind!=CONVEYOR_LINE||conveyor.hp<=0||
+               conveyor.routeItem.isEmpty())continue;
+            SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(conveyor.routeItem);
+            var route=ConveyorLogistics.between(conveyor,world.devices);
+            if(!ConveyorLogistics.ready(route,item))continue;
+            World.Device power=ElectricUtility.available(world.devices,conveyor,
+                ConveyorLogistics.DEMAND,electricDraw);
+            if(power==null)continue;
+            electricDraw.merge(power,ConveyorLogistics.DEMAND,Integer::sum);
+            conveyor.routeMs=Math.min(ConveyorLogistics.TICK_MS,conveyor.routeMs+ms);
+            if(conveyor.routeMs>=ConveyorLogistics.TICK_MS){
+                if(ConveyorLogistics.moveOne(route,item))
+                    conveyor.routeMs=0;
+            }
+        }
         for(World.Device generator:electricDraw.keySet())
             generator.electricMs=Math.max(0,generator.electricMs-ms);
     }
@@ -1122,6 +1164,7 @@ public final class ArenaSystems {
             device.kind==PENITENT_WARD_SANCTUM)&&device.productionActive)
             device.productionMs=0; // sacred rite must begin its chant again
         if(device.hp==0){
+            if(device.kind==CONVEYOR_LINE){device.routeItem="";device.routeMs=0;}
             if(device.kind==STEAM_BOILER)device.steamMs=0;
             if(device.kind==GENERATOR)device.electricMs=0;
             device.productionActive=false;

@@ -123,7 +123,13 @@ public final class ArenaSystems {
         UNRAVELED_PRESSURE_SHOP=31, PENITENT_CANTOR_DAIS=32,
         BEGOTTEN_CHITIN_VAT=33,
         GENERATOR=34,ELECTRIC_BUS=35,PRECISION_LATHE=36,WATER_WORKS=37,
-        UNRAVELED_SENSOR_LAB=38,PENITENT_CHOIR_RELAY=39,BEGOTTEN_MEMBRANE_LAB=40;
+        UNRAVELED_SENSOR_LAB=38,PENITENT_CHOIR_RELAY=39,BEGOTTEN_MEMBRANE_LAB=40,
+        CONVEYOR_LINE=41,AUTOMATIC_SORTER=42,INDUSTRIAL_WORKSHOP=43,
+        ASSEMBLY_LINE=44,COMMAND_HALL=45,RESEARCH_ARCHIVE=46,
+        SIGNAL_RELAY=47,SECURITY_GRID=48,FUEL_REFINERY=49,
+        TERROR_COLLECTOR=50,NUTRIENT_DIGESTOR=51,
+        UNRAVELED_DEFENSE_WORKS=52,PENITENT_WARD_SANCTUM=53,
+        BEGOTTEN_ORGAN_LATTICE=54;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -575,11 +581,25 @@ public final class ArenaSystems {
             case UNRAVELED_SENSOR_LAB -> "unraveled-sensor-lab";
             case PENITENT_CHOIR_RELAY -> "penitent-choir-relay";
             case BEGOTTEN_MEMBRANE_LAB -> "begotten-membrane-lab";
+            case CONVEYOR_LINE -> "conveyor-line";
+            case AUTOMATIC_SORTER -> "automatic-sorter";
+            case INDUSTRIAL_WORKSHOP -> "industrial-workshop";
+            case ASSEMBLY_LINE -> "assembly-line";
+            case COMMAND_HALL -> "command-hall";
+            case RESEARCH_ARCHIVE -> "research-archive";
+            case SIGNAL_RELAY -> "signal-relay";
+            case SECURITY_GRID -> "security-grid";
+            case FUEL_REFINERY -> "fuel-refinery";
+            case TERROR_COLLECTOR -> "terror-collector";
+            case NUTRIENT_DIGESTOR -> "nutrient-digestor";
+            case UNRAVELED_DEFENSE_WORKS -> "unraveled-defense-works";
+            case PENITENT_WARD_SANCTUM -> "penitent-ward-sanctum";
+            case BEGOTTEN_ORGAN_LATTICE -> "begotten-organ-lattice";
             default -> null;
         };
     }
     public static int kindForFacility(String facility){
-        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_MEMBRANE_LAB;kind++)
+        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_ORGAN_LATTICE;kind++)
             if(java.util.Objects.equals(factionFacility(kind),facility))return kind;
         return -1;
     }
@@ -587,13 +607,15 @@ public final class ArenaSystems {
         return switch(kind){
             case UNRAVELED_SCRAP_OUTPOST -> CharacterRoster.Faction.THE_UNRAVELED;
             case PENITENT_VOTIVE_ALTAR -> CharacterRoster.Faction.THE_PENITENT;
-            case BEGOTTEN_BROOD_NEST,BEGOTTEN_SPORE_BASIN,BEGOTTEN_CHITIN_VAT,BEGOTTEN_MEMBRANE_LAB ->
+            case BEGOTTEN_BROOD_NEST,BEGOTTEN_SPORE_BASIN,BEGOTTEN_CHITIN_VAT,BEGOTTEN_MEMBRANE_LAB,
+                NUTRIENT_DIGESTOR,BEGOTTEN_ORGAN_LATTICE ->
                 CharacterRoster.Faction.THE_BEGOTTEN;
             case UNRAVELED_MACHINIST_BAY ->
                 CharacterRoster.Faction.THE_UNRAVELED;
-            case PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS,PENITENT_CHOIR_RELAY ->
+            case PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS,PENITENT_CHOIR_RELAY,
+                TERROR_COLLECTOR,PENITENT_WARD_SANCTUM ->
                 CharacterRoster.Faction.THE_PENITENT;
-            case UNRAVELED_PRESSURE_SHOP,UNRAVELED_SENSOR_LAB ->
+            case UNRAVELED_PRESSURE_SHOP,UNRAVELED_SENSOR_LAB,UNRAVELED_DEFENSE_WORKS ->
                 CharacterRoster.Faction.THE_UNRAVELED;
             default -> null;
         };
@@ -622,6 +644,15 @@ public final class ArenaSystems {
             case UNRAVELED_SENSOR_LAB -> "unraveled-calibrate-sensors";
             case PENITENT_CHOIR_RELAY -> "penitent-score-hymn";
             case BEGOTTEN_MEMBRANE_LAB -> "begotten-grow-membrane";
+            case INDUSTRIAL_WORKSHOP -> "precision-feedlines";
+            case ASSEMBLY_LINE -> "production-controller";
+            case RESEARCH_ARCHIVE -> "chorus-resonance";
+            case SECURITY_GRID -> "secure-ammo-cache";
+            case TERROR_COLLECTOR -> "bound-liturgy";
+            case NUTRIENT_DIGESTOR -> "biomass-feed";
+            case UNRAVELED_DEFENSE_WORKS -> "unraveled-defense-scanner";
+            case PENITENT_WARD_SANCTUM -> "penitent-sanctify-shell";
+            case BEGOTTEN_ORGAN_LATTICE -> "begotten-pulse-organ";
             default -> null;
         };
     }
@@ -685,7 +716,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>BEGOTTEN_MEMBRANE_LAB)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        if(kind<0||kind>BEGOTTEN_ORGAN_LATTICE)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
         int price=kind>=FIELD_FIRE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind>=FIELD_FIRE?0:
@@ -891,7 +922,7 @@ public final class ArenaSystems {
                    !p.accountKey.equals(crate.ownerKey)||
                    Math.hypot(crate.x-device.x,crate.y-device.y)>5.5)continue;
                 if(process.utilityDemand()>0){
-                    boolean powered=process.era()==CraftingEraRegistry.Era.ELECTRIC?
+                    boolean powered=process.era().ordinal()>=CraftingEraRegistry.Era.ELECTRIC.ordinal()?
                         ElectricUtility.available(world.devices,device,
                             process.utilityDemand(),Map.of())!=null:
                         SteamUtility.available(world.devices,device,
@@ -921,9 +952,10 @@ public final class ArenaSystems {
             long needMs=recipe.seconds()*1000L;
             // A Penitent cantor dais does not spend pressurized steam on a
             // ritual when no allied witness is present to perform it.
-            if((d.kind==PENITENT_CANTOR_DAIS||d.kind==PENITENT_CHOIR_RELAY)&&
+            if((d.kind==PENITENT_CANTOR_DAIS||d.kind==PENITENT_CHOIR_RELAY||
+                d.kind==PENITENT_WARD_SANCTUM||d.kind==TERROR_COLLECTOR)&&
                liturgicalWitnesses(d)==0&&d.productionMs<needMs)continue;
-            if(recipe.era()==CraftingEraRegistry.Era.ELECTRIC&&
+            if(recipe.era().ordinal()>=CraftingEraRegistry.Era.ELECTRIC.ordinal()&&
                recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device generator=ElectricUtility.available(world.devices,d,
                     recipe.utilityDemand(),electricDraw);
@@ -1016,7 +1048,8 @@ public final class ArenaSystems {
             throw new IllegalStateException("Invalid faction work order on world device");
         long required=process.seconds()*1000L;
         long gain=switch(device.kind){
-            case PENITENT_VOTIVE_ALTAR,PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS,PENITENT_CHOIR_RELAY ->
+            case PENITENT_VOTIVE_ALTAR,PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS,PENITENT_CHOIR_RELAY,
+                 PENITENT_WARD_SANCTUM,TERROR_COLLECTOR ->
                 ms*liturgicalWitnesses(device); // no rite without a present choir
             // All other salvage and cultivation equipment has a physical
             // stocked facility and independently registered batch ingredients.
@@ -1077,12 +1110,16 @@ public final class ArenaSystems {
         if((device.kind==BEGOTTEN_BROOD_NEST||
             device.kind==BEGOTTEN_SPORE_BASIN||
             device.kind==BEGOTTEN_CHITIN_VAT||
-            device.kind==BEGOTTEN_MEMBRANE_LAB)&&device.productionActive)
+            device.kind==BEGOTTEN_MEMBRANE_LAB||
+            device.kind==NUTRIENT_DIGESTOR||
+            device.kind==BEGOTTEN_ORGAN_LATTICE)&&device.productionActive)
             device.productionMs=Math.max(0,device.productionMs-amount*1000L);
         if((device.kind==PENITENT_VOTIVE_ALTAR||
             device.kind==PENITENT_RELIQUARY||
             device.kind==PENITENT_CANTOR_DAIS||
-            device.kind==PENITENT_CHOIR_RELAY)&&device.productionActive)
+            device.kind==PENITENT_CHOIR_RELAY||
+            device.kind==TERROR_COLLECTOR||
+            device.kind==PENITENT_WARD_SANCTUM)&&device.productionActive)
             device.productionMs=0; // sacred rite must begin its chant again
         if(device.hp==0){
             if(device.kind==STEAM_BOILER)device.steamMs=0;

@@ -2,7 +2,7 @@ package veil;
 import java.util.*;
 /** Shared physical utility. Faction technology and manufacturing stay separate. */
 public final class ElectricUtility {
-    public static final int CAPACITY=16;
+    public static final int CAPACITY=24; // E5 assembly machines demand up to 18.
     public static final long MAX_CHARGE_MS=1_200_000L,STEAM_STARTUP_MS=60_000L;
     public static final Map<SurvivalCrafting.Item,Integer> FUEL=Map.of(
         SurvivalCrafting.Item.CHARCOAL,3,SurvivalCrafting.Item.CLEAN_WATER,2);

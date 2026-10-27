@@ -127,9 +127,10 @@ public final class FactoryInspectionTest {
             check(restored.inspectFactory(2).state().equals("NO_OWN_WORKSITE"),
                 "Saved host revealed factory details to an unauthenticated visitor");
         }finally{
-            try(var paths=Files.walk(root))
+            try(var paths=Files.walk(root)){
                 for(Path path:paths.sorted(Comparator.reverseOrder()).toList())
                     Files.deleteIfExists(path);
+            }
         }
         System.out.println("PASS FactoryInspectionTest: ownership, power, exact shortage, split inputs, blocked output, and V11 restart");
     }

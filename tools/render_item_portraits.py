@@ -88,6 +88,9 @@ def portrait(source, destination):
     scene.render.engine = "CYCLES"
     scene.cycles.device = "CPU"
     scene.cycles.samples = 12
+    # Ubuntu's distro Blender omits OpenImageDenoise; do not request denoising.
+    for layer in scene.view_layers:
+        layer.cycles.use_denoising = False
     scene.render.resolution_x = 256
     scene.render.resolution_y = 256
     scene.render.resolution_percentage = 100

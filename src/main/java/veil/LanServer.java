@@ -145,7 +145,7 @@ public final class LanServer implements AutoCloseable {
                 }
                 for(int i=0;i<match.world.npcs.size();i++){
                     World.Npc n=match.world.npcs.get(i);
-                    broadcast("NPC|"+i+"|"+n.x+"|"+n.y+"|"+n.hp,-1);
+                    broadcast(npcPacket(i,n),-1);
                 }
             }catch(RuntimeException e){
                 System.err.println("Arena tick failed: "+e);
@@ -214,6 +214,12 @@ public final class LanServer implements AutoCloseable {
             ":base"+bot.buildings()+":bag"+bot.carried()+
             ":crew"+bot.group()+":at("+Math.round(bot.x())+","+Math.round(bot.y())+")");
         return j.toString();
+    }
+    /** Host-owned combat phase is part of the same NPC snapshot; no client
+     * may choose the target, windup duration or apply NPC damage. */
+    static String npcPacket(int index,World.Npc npc){
+        return "NPC|"+index+"|"+npc.x+"|"+npc.y+"|"+npc.hp+
+            "|"+npc.attackPhase+"|"+npc.attackTargetId;
     }
     private static String peerPacket(ArenaSystems.Player p){
         return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility+"|"+p.classId;

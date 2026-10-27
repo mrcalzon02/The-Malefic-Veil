@@ -71,6 +71,22 @@ public final class SurvivalNeedsIntegrationTest {
         tick(recovered,1);
         check(eater.hp==27,"New dehydration period did not apply exactly once");
 
+        // Food and water are independent clocks. Thirst beginning four seconds
+        // after starvation cannot borrow the starvation clock's first tick.
+        ArenaSystems split=new ArenaSystems(20261031L,false);
+        ArenaSystems.Player dual=split.join(4);
+        split.world.npcs.clear();
+        dual.hp=30;
+        vitals(dual,0,100);
+        tick(split,4);
+        vitals(dual,0,0);
+        tick(split,1);
+        check(dual.hp==28,"New thirst inherited starvation exposure");
+        tick(split,4);
+        check(dual.hp==25,"Thirst did not apply its own first five-second tick");
+        tick(split,1);
+        check(dual.hp==23,"Hunger did not retain its independent five-second clock");
+
         // Hunger and thirst stack, but safe arrival protection still prevents
         // repeated instant deaths while the player gets their bearings.
         ArenaSystems protectedGame=new ArenaSystems(20261027L,true);
@@ -107,6 +123,6 @@ public final class SurvivalNeedsIntegrationTest {
         check(deadly.respawn(1,0),"Player trapped in permanent dead state");
         check(!victim.dead&&victim.hp==100&&deadly.arsenal.view(1).owned()==0,
             "Respawn from deprivation granted free weapon or left player dead");
-        System.out.println("PASS SurvivalNeedsIntegrationTest: per-player need cadence, real damage, authorized recovery, protection and inventory-safe death");
+        System.out.println("PASS SurvivalNeedsIntegrationTest: independent need cadence, real damage, authorized recovery, protection and inventory-safe death");
     }
 }

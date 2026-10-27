@@ -1089,6 +1089,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 if(npc.index()>=0&&npc.index()<world.npcs.size()){
                     World.Npc n=world.npcs.get(npc.index());
                     n.x=npc.x();n.y=npc.y();n.hp=npc.hp();
+                    n.attackPhase=npc.attackPhase();n.attackTargetId=npc.attackTargetId();
                 }
             }
             if(ticks%3==0){
@@ -1663,7 +1664,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             int barWidth=33,center=Math.max(17,Math.min(RW-18,column));
             int top=Math.max(10,Math.min(RH-26,RH/2-(int)(62/d)-14));
             g.setColor(new Color(10,12,17,205));
-            g.fillRect(center-36,top-13,72,23);
+            g.fillRect(center-36,top-13,72,
+                monster.attackPhase==LostBoneShiv.WINDUP?31:23);
             g.setColor(Color.decode(threat.colorHex()));
             String archetype=monster.kind.replace("lost-","").toUpperCase();
             String label=threat.icon()+" LV"+enemyLevel+" "+archetype;
@@ -1671,6 +1673,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             g.setColor(new Color(55,54,61));g.fillRect(center-16,top,barWidth,3);
             g.setColor(Color.decode(threat.colorHex()));
             g.fillRect(center-16,top,(int)Math.ceil(barWidth*Math.max(0,monster.hp)/80.0),3);
+            if(monster.attackPhase==LostBoneShiv.WINDUP){
+                g.setColor(new Color(255,128,76));
+                g.drawString("BONE SHIV!",center-26,top+12);
+            }
             drawn++;
         }
         g.setFont(original);

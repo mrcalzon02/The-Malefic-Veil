@@ -50,6 +50,16 @@ jobs:
       - name: Resolve pinned standalone editor module
         shell: bash
         run: bash tools/install-editor-kit.sh
+      - name: Bake angled inventory renders from real checked-in GLBs
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender
+          mkdir -p build
+          blender --background --factory-startup --python tools/render_item_portraits.py |
+            tee build/model-portraits.log
+          grep -q 'PASS REAL_3D_ITEM_PORTRAITS total=41' build/model-portraits.log
       - name: Build the actual playable GPU game with its complete Java engine
         run: |
           set -euo pipefail
@@ -72,6 +82,8 @@ jobs:
           java -Djava.awt.headless=true -cp build/package/MaleficVeil.jar veil.CraftingIconPacksTest
           jar tf build/package/MaleficVeil.jar |
             grep -qx 'crafting/packs/begotten_biology_sprites_only.zip'
+           jar tf build/package/MaleficVeil.jar | grep -qx 'portraits/weapons/w32-veilbreaker.png'
+           jar tf build/package/MaleficVeil.jar | grep -qx 'portraits/aircraft/penitent_censer.png'
           java -cp build/package/MaleficVeil.jar veil.gpu.GpuAudioBus
           java -cp build/package/MaleficVeil.jar veil.gpu.GpuClientSettingsTest
           java -cp build/package/MaleficVeil.jar veil.gpu.PsxHorrorUiSource

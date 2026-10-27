@@ -7,6 +7,9 @@ on:
       - 'gpu-client/**'
       - 'src/main/java/veil/**'
       - 'assets/game/kenney/**'
+      - 'assets/game/arsenal/**'
+      - 'assets/game/aircraft/**'
+      - 'tools/render_item_portraits.py'
       - '.github/workflows/gpu-client.yml'
   pull_request:
   workflow_dispatch:
@@ -15,7 +18,30 @@ permissions:
   contents: read
 
 jobs:
+  source-portraits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender for actual GLB rendering
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender
+      - name: Bake 41 source-model item portraits
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender --background --factory-startup --python tools/render_item_portraits.py |
+            tee model-portraits.log
+          grep -q 'PASS REAL_3D_ITEM_PORTRAITS total=41' model-portraits.log
+          test "$(find build/generated/item-portraits/portraits -name '*.png' | wc -l)" -eq 41
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-model-item-portraits
+          path: build/generated/item-portraits
+          if-no-files-found: error
+
   gpu-desktop:
+    needs: source-portraits:
     strategy:
       fail-fast: false
       matrix:
@@ -24,6 +50,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: source-model-item-portraits
+          path: build/generated/item-portraits
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -69,6 +99,8 @@ jobs:
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'kenney/retro-urban-kit-2.0.zip'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'ggbot/psx-style-cars.zip'
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'psx-ui/psx-horror-ui-free-assets.zip'
+           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'portraits/weapons/w01-vesper.png'
+           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'portraits/aircraft/begotten_gnat.png'
       - name: Verify exact licensed source, 53 fog sprites and Swing editor skin
         shell: bash
         run: |

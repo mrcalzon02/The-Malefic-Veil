@@ -184,11 +184,15 @@ public final class DurableRealm {
                    (hp==0&&(!routeItem.isEmpty()||routeMs!=0))||
                    (routeItem.isEmpty()&&routeMs!=0))
                     throw new IOException("Invalid conveyor logistics state");
-                if(!routeItem.isEmpty())try{
+                if(!routeItem.isEmpty()&&!routeItem.equals("AUTO"))try{
                     SurvivalCrafting.Item.valueOf(routeItem);
                 }catch(IllegalArgumentException invalid){
                     throw new IOException("Invalid recorded conveyor item",invalid);
                 }
+                if(routeItem.equals("AUTO")&&(version<11||
+                   !owner.startsWith("acct_")||hp<=0||
+                   kind!=ArenaSystems.CONVEYOR_LINE))
+                    throw new IOException("Invalid automatic E5 input route");
                 String queued=version>=10?in.readUTF():"";
                 if(queued.length()>80||(hp<=0&&!queued.isEmpty())||
                    (!queued.isEmpty()&&!owner.startsWith("acct_")))

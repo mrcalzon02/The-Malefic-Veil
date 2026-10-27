@@ -1037,8 +1037,9 @@ public final class ArenaSystems {
         if(p==null||p.dead||vehicles.carDrivenBy(id)>=0||
            p.accountKey==null||!p.accountKey.startsWith("acct_")||
            itemName==null||itemName.length()>80)return false;
+        boolean auto=itemName.equals("AUTO");
         SurvivalCrafting.Item item=null;
-        if(!itemName.equals("NONE"))try{
+        if(!auto&&!itemName.equals("NONE"))try{
             item=SurvivalCrafting.Item.valueOf(itemName);
         }catch(IllegalArgumentException invalid){return false;}
         for(World.Device conveyor:world.devices){
@@ -1046,10 +1047,11 @@ public final class ArenaSystems {
                !p.accountKey.equals(conveyor.ownerKey)||
                Math.hypot(p.x-conveyor.x,p.y-conveyor.y)>2.6||
                !world.lineClear(p.x,p.y,conveyor.x,conveyor.y))continue;
-            if(item!=null&&ConveyorLogistics.between(conveyor,world.devices)==null)
+            if((item!=null||auto)&&
+               ConveyorLogistics.between(conveyor,world.devices)==null)
                 return false;
-            conveyor.routeItem=item==null?"":item.name();
-            conveyor.routeReverse=item!=null&&reverse;
+            conveyor.routeItem=auto?"AUTO":item==null?"":item.name();
+            conveyor.routeReverse=(auto||item!=null)&&reverse;
             conveyor.routeMs=0;
             breakGrace(p);return true;
         }
@@ -1106,8 +1108,14 @@ public final class ArenaSystems {
         for(World.Device conveyor:world.devices){
             if(conveyor.kind!=CONVEYOR_LINE||conveyor.hp<=0||
                conveyor.routeItem.isEmpty())continue;
-            SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(conveyor.routeItem);
-            var route=ConveyorLogistics.between(conveyor,world.devices);
+            boolean automatic=conveyor.routeItem.equals("AUTO");
+            var plan=automatic?ConveyorLogistics.autoInput(conveyor,world.devices):null;
+            SurvivalCrafting.Item item=automatic?
+                (plan==null?null:plan.item()):
+                SurvivalCrafting.Item.valueOf(conveyor.routeItem);
+            var route=automatic?
+                (plan==null?null:plan.route()):
+                ConveyorLogistics.between(conveyor,world.devices);
             if(!ConveyorLogistics.ready(route,item))continue;
             boolean sorted=ConveyorLogistics.sorted(conveyor,world.devices);
             int beltLoad=sorted?ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
@@ -1120,7 +1128,15 @@ public final class ArenaSystems {
                 if(ConveyorLogistics.moveOne(route,item)){
                     // Additional throughput is paid by a real powered sorter,
                     // and never overfills the receiving warehouse.
-                    if(sorted)ConveyorLogistics.moveOne(route,item);
+                    if(sorted){
+                        // Re-evaluate the true remaining factory shortage
+                        // after the first delivery. Never flood a staging crate
+                        // past its pending job's required quantities.
+                        if(automatic){
+                            var next=ConveyorLogistics.autoInput(conveyor,world.devices);
+                            if(next!=null)ConveyorLogistics.moveOne(next.route(),next.item());
+                        }else ConveyorLogistics.moveOne(route,item);
+                    }
                     conveyor.routeMs=0;
                 }
             }

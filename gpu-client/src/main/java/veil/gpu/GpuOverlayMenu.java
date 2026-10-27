@@ -294,8 +294,11 @@ public final class GpuOverlayMenu {
                 });
                 add("DIRECTION: "+(conveyorReverse?"EAST > WEST":"WEST > EAST"),
                     ()->{conveyorReverse=!conveyorReverse;build();});
+                add("AUTO: FEED QUEUED E5 INPUTS",()->{
+                    gameplay.gpuProgramConveyor("AUTO",conveyorReverse);show(Screen.GAME);
+                });
                 var materials=gameplay.gpuConveyorStockItems();
-                int end=Math.min(materials.size(),pageOffset+5);
+                int end=Math.min(materials.size(),pageOffset+4);
                 for(int i=pageOffset;i<end;i++){
                     String item=materials.get(i);
                     add((conveyorReverse?"EAST > WEST  ":"WEST > EAST  ")+item,()->{
@@ -303,10 +306,10 @@ public final class GpuOverlayMenu {
                     });
                 }
                 if(pageOffset>0)add("PREVIOUS MATERIALS",()->{
-                    pageOffset=Math.max(0,pageOffset-5);show(Screen.CONVEYOR);
+                    pageOffset=Math.max(0,pageOffset-4);show(Screen.CONVEYOR);
                 });
                 if(end<materials.size())add("MORE MATERIALS",()->{
-                    pageOffset+=5;show(Screen.CONVEYOR);
+                    pageOffset+=4;show(Screen.CONVEYOR);
                 });
                 add("REFRESH STOCK",()->{
                     gameplay.gpuRequestCampStock();build();

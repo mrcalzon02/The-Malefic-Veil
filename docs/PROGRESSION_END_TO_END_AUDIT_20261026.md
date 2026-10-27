@@ -74,6 +74,14 @@ Host operations now accept a selected registered process instead of always choos
 
 **Scope boundaries:** This does not implement complete machinery/power networks for electric or automation eras, nor does it make registry-only facilities usable automatically. Some common physical building meshes are authored interim low-poly infrastructure rather than final environment art. The E1 first factories retain migration-compatible placement behavior; imposing all newer historical E1 prerequisites requires a dedicated save migration and must not silently delete existing bases. The E2 functional test supplies externally harvested/raw resources via a trusted test fixture while verifying actual host construction and the real E1-to-E2 crafting transactions.
 
+## E3 true steam utility and faction manufacture — October 26 2026
+
+Permanent steam boilers, mechanical-shaft distributions, metal presses, and three additional faction-only production buildings now exist as actual world meshes and registry-priced blueprints. The Unraveled pressure shop manufactures `PRESSURE_TANK`; the Penitent cantor dais performs participant-required rituals for `BRONZE_CENSER`; the Begotten chitin vat cultures `CHITIN_SHARDS` and suffers maturity setbacks when attacked. Manufacturing remains three distinct civilizations, not a uniform recipe-factory abstraction or field deployable clone.
+
+Steam machines with `utilityDemand` now require a living same-owner mechanical shaft connected to a real charged boiler, with per-tick boiler capacity capped at eight service units. An authenticated owner must manually fire the boiler with actual `FIREWOOD` and `DIRTY_WATER` from a nearby persistent storage crate. A charged boiler has at most thirty minutes of operating reserve, depleted only when work draws steam. Destroying shafts or boilers immediately interrupts powered work without refunding inputs. Realm format V7 adds bounded persisted boiler reserves, retaining read support for earlier versions. Host requests and the in-game industry menu expose manual fuel loading. No infinite production from nominal facilities, no magic utility from a registry line.
+
+**Scope remaining:** Shared steam utility does not unify independent faction economies. It is not yet a graphical pipe-placement utility network, nor does it cover E4 electricity, E5 industrial automation or E6 incursion. Work-order scheduling remains single-batch per physical machine; full construction build timers and repair/fuel diagnostics are later work.
+
 ## Ordered development backlog and measurable acceptance
 
 | Priority | Work item | Acceptance proving actual gameplay |

@@ -330,6 +330,15 @@ public final class GpuOverlayMenu {
             }
             case BOOK->{} // Owns its list and detail navigation; never crafts items.
             case CREW->{
+                if(gameplay.gpuCraftFaction()==veil.CraftingEraRegistry.Faction.ALL){
+                    add("JOIN UNRAVELED",()->gameplay.gpuEnrollFaction(
+                        veil.CharacterRoster.Faction.THE_UNRAVELED));
+                    add("JOIN PENITENT",()->gameplay.gpuEnrollFaction(
+                        veil.CharacterRoster.Faction.THE_PENITENT));
+                    add("JOIN BEGOTTEN",()->gameplay.gpuEnrollFaction(
+                        veil.CharacterRoster.Faction.THE_BEGOTTEN));
+                }
+                if(gameplay.gpuHasNetworkCrew()){
                 add("CREATE CREW",()->beginCrewInput("CREATE"));
                 add("INVITE PLAYER ID",()->beginCrewInput("INVITE"));
                 add("ACCEPT INVITATION",()->crewImmediate("ACCEPT"));
@@ -338,6 +347,7 @@ public final class GpuOverlayMenu {
                 add("TRANSFER LEADERSHIP",()->beginCrewInput("TRANSFER"));
                 add("LEAVE CREW",()->crewImmediate("LEAVE"));
                 add("DISBAND CREW",()->show(Screen.CONFIRM_DISBAND));
+                }
                 add("BACK",()->show(Screen.PAUSE));
             }
             case CREW_INPUT->{

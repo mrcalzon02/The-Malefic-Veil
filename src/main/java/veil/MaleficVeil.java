@@ -376,18 +376,32 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     /** Only server-confirmed faction state determines which industrial
      * recipes appear as belonging to the player's production economy. */
     public CraftingEraRegistry.Faction gpuCraftFaction(){
-        String hostFaction=net==null?"NONE":net.faction();
-        return switch(hostFaction){
+        String chosen=net!=null?net.faction():
+            localHost==null?"NONE":
+            String.valueOf(localHost.factions.faction(localHost.player(1).accountKey));
+        return switch(chosen){
             case "THE_UNRAVELED" -> CraftingEraRegistry.Faction.UNRAVELED;
             case "THE_PENITENT" -> CraftingEraRegistry.Faction.PENITENT;
             case "THE_BEGOTTEN" -> CraftingEraRegistry.Faction.BEGOTTEN;
             default -> CraftingEraRegistry.Faction.ALL;
         };
     }
+    /** Solo and multiplayer faction enrollment use the same permanent host
+     * rule; the menu does not fabricate faction inventory or change affiliation. */
+    public void gpuEnrollFaction(CharacterRoster.Faction faction){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.selectFaction(faction);
+            else if(localHost!=null)
+                toast(localHost.enrollFaction(1,faction)?
+                    "FACTION ENROLLED "+faction.display:
+                    "FACTION ENROLLMENT DENIED OR ALREADY COMMITTED");
+        });
+    }
     public String gpuCrewStatus(){
-        return net==null?"OFFLINE - NO CREW":
+        return net==null?"SOLO FACTION "+gpuCraftFaction()+" / NO NETWORK CREW":
             "FACTION "+net.faction()+"  CREW "+net.crew()+"  ROLE "+net.crewRole();
     }
+    public boolean gpuHasNetworkCrew(){return net!=null;}
     public void gpuCrewAction(String action,String argument){
         if(net==null)throw new IllegalStateException("No connected multiplayer host");
         String input=argument==null?"":argument.strip();

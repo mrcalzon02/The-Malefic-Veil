@@ -466,6 +466,7 @@ public final class NetLink implements AutoCloseable {
     public void loadCargo(int truck,int yard){send("CARGO_LOAD|"+truck+"|"+yard);}
     public void unloadCargo(int truck){send("CARGO_UNLOAD|"+truck);}
     public void requestCampStock(){send("STOCK_QUERY");}
+    public void refuelSteam(){send("REFUEL_STEAM");}
     public void startFactionBatch(){send("FACTION_PRODUCE");}
     public void startFactionBatch(String recipe){send("FACTION_PRODUCE|"+recipe);}
     public void inspectFactionBatch(){send("FACTORY_QUERY");}

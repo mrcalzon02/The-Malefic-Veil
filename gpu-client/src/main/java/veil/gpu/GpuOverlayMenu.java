@@ -259,7 +259,8 @@ public final class GpuOverlayMenu {
                     gameplay.gpuStartFactionBatch();show(Screen.GAME);
                 });
                 add("INSPECT WORKSITE PROGRESS",gameplay::gpuInspectFactionBatch);
-                add("BUILD SHARED / E2 FACILITIES",this::openSites);
+                add("STOKE STEAM BOILER",gameplay::gpuFuelSteamBoiler);
+                add("BUILD SHARED / E3 FACILITIES",this::openSites);
                 add("SELECT INDUSTRIAL RECIPE",this::openWorkOrders);
                 add("DEPLOY CRAFTED CRATE",()->{
                     gameplay.gpuPlaceStorage();show(Screen.GAME);

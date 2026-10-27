@@ -104,6 +104,13 @@
           <include>crafting/packs/*_sprites_only.zip</include>
         </includes>
       </resource>
+      <resource>
+        <directory>${project.basedir}/../build/generated/item-portraits</directory>
+        <includes>
+          <include>portraits/**/*.png</include>
+          <include>portraits/index.csv</include>
+        </includes>
+      </resource>
     </resources>
   </build>
 </project>

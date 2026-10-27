@@ -20,6 +20,7 @@ public final class GpuCraftingBook implements AutoCloseable {
     private static final int PER_PAGE=8;
     private final PsxHorrorMenu skin;
     private final GpuCraftingIcons icons;
+    private final GpuItemPortraits portraits=new GpuItemPortraits();
     private final Supplier<CraftingEraRegistry.Faction> hostFaction;
     private CraftingEraRegistry.Faction faction(){
         return Objects.requireNonNull(hostFaction.get(),"Missing host faction");
@@ -149,7 +150,8 @@ public final class GpuCraftingBook implements AutoCloseable {
         }
     }
     public void drawIcon(SpriteBatch batch,String item,float x,float y,float size){
-        icons.draw(batch,item,x,y,size);
+        if(icons.contains(item))icons.draw(batch,item,x,y,size);
+        else portraits.draw(batch,item,x,y,size);
     }
     private static String clipped(String s,int limit){
         return s.length()<=limit?s:s.substring(0,Math.max(0,limit-1))+"~";
@@ -275,7 +277,8 @@ public final class GpuCraftingBook implements AutoCloseable {
     private void detailRecipe(SpriteBatch batch,Record record,MaleficVeil.GpuFrame snapshot){
         line(batch,"RECIPE  "+clipped(record.name(),29),314,309);
         String icon=record.output().startsWith("FACILITY:")?null:record.output();
-        if(icon!=null&&icons.contains(icon))icons.draw(batch,icon,315,253,43);
+        if(icon!=null&&(icons.contains(icon)||portraits.contains(icon)))
+            drawIcon(batch,icon,315,253,43);
         else{
             skin.slot(batch,315,253,43,false);
             line(batch,record.kind()==CraftingRecipeIndex.Kind.FACILITY?"SITE":"NO ART",319,279);
@@ -295,7 +298,7 @@ public final class GpuCraftingBook implements AutoCloseable {
             if(row==4)break;
             float y=161-row*24;
             skin.slot(batch,315,y,23,false);
-            icons.draw(batch,ingredient.getKey(),316,y+1,21);
+            drawIcon(batch,ingredient.getKey(),316,y+1,21);
             line(batch,ingredient.getValue()+"x "+clipped(icons.label(ingredient.getKey()),27),
                 344,y+16);
             row++;
@@ -314,8 +317,9 @@ public final class GpuCraftingBook implements AutoCloseable {
     private void detailItem(SpriteBatch batch,String item){
         line(batch,"ITEM  "+clipped(icons.label(item),32),314,309);
         skin.slot(batch,315,248,52,false);
-        icons.draw(batch,item,315,248,52);
-        if(!icons.contains(item))line(batch,"UNILLUSTRATED SOURCE ITEM",374,280);
+        drawIcon(batch,item,315,248,52);
+        if(!icons.contains(item)&&!portraits.contains(item))
+            line(batch,"UNILLUSTRATED SOURCE ITEM",374,280);
         List<Record> available=makers(item);
         String status=available.isEmpty()?
             (CraftingRecipeIndex.items().contains(item)?
@@ -364,7 +368,7 @@ public final class GpuCraftingBook implements AutoCloseable {
             skin.choice(batch,"",26,y,249,29,i==choice);
             skin.slot(batch,30,y+2,25,i==choice);
             String target=entry.output().startsWith("FACILITY:")?null:entry.output();
-            if(target!=null)icons.draw(batch,target,31,y+3,23);
+            if(target!=null)drawIcon(batch,target,31,y+3,23);
             line(batch,clipped(entry.title(),25),62,y+20);
             if(entry.recipe()!=null){
                 String tag=switch(entry.recipe().availability()){
@@ -386,5 +390,5 @@ public final class GpuCraftingBook implements AutoCloseable {
         skin.band(batch,18,14,603,18);
         line(batch,"ARROWS  ENTER FOLLOW  F6 INGREDIENT  F7 USED BY  F8 BACK",29,28);
     }
-    @Override public void close(){icons.close();}
+    @Override public void close(){icons.close();portraits.close();}
 }

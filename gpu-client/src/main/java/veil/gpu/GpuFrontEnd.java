@@ -29,6 +29,8 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     private GpuKenneyPreview backdrop;
     private GpuKenneyPreview gameRenderer;
     private PsxHorrorMenu skin;
+    private GpuItemPortraits modelPortraits;
+    private long menuTicks;
     private SpriteBatch ui;
     private InputAdapter typing;
     private GpuClientSettings settings;
@@ -65,6 +67,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         settings=GpuClientSettings.load();
         ui=new SpriteBatch();
         skin=new PsxHorrorMenu(true);
+        modelPortraits=new GpuItemPortraits();
         backdrop=GpuKenneyPreview.menuBackdrop(20261020);
         backdrop.clientSettings(settings);
         backdrop.create();
@@ -520,6 +523,22 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             if(label.length()>49)label=label.substring(0,48)+"~";
             skin.choice(ui,label,35,START_Y-i*ROW,390,22,selected==i);
         }
+        // Rotating display of a real model; not a shop or placeholder button.
+        if(screen==Screen.HOME&&modelPortraits!=null){
+            ArsenalCatalog.Weapon featured=ArsenalCatalog.WEAPONS[
+                (int)((menuTicks/180)%ArsenalCatalog.WEAPONS.length)];
+            if(modelPortraits.contains(featured.id())){
+                skin.panel(ui,446,90,180,274);
+                skin.band(ui,452,330,168,27);
+                skin.font().draw(ui,"ARSENAL / MODEL",460,348);
+                modelPortraits.draw(ui,featured.id(),462,172,150);
+                skin.font().draw(ui,featured.name().toUpperCase(Locale.ROOT),461,155);
+                String owner=featured.faction()<0?"FIELD LOOT":
+                    ArsenalCatalog.FACTIONS[featured.faction()].toUpperCase(Locale.ROOT);
+                skin.font().draw(ui,owner,461,137);
+                skin.font().draw(ui,(featured.index()+1)+"/32  SOURCE GLB",461,116);
+            }
+        }
         skin.band(ui,17,22,422,29);
         String foot=message.length()>57?message.substring(0,55)+"~":message;
         skin.font().draw(ui,foot,32,43);
@@ -593,6 +612,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             }
         }
         input();
+        menuTicks++;
         // Both UI art and licensed GLBs enter the same FBO before screen
         // presentation. Do not draw an extra, reversed default-FBO overlay.
         backdrop.launcherOverlay(this::draw);
@@ -664,6 +684,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(gameRenderer!=null)gameRenderer.dispose();
         if(backdrop!=null)backdrop.dispose();
         if(skin!=null)skin.close();
+        if(modelPortraits!=null)modelPortraits.close();
         if(ui!=null)ui.dispose();
         if(audio!=null)audio.close();
     }

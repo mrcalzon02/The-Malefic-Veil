@@ -315,7 +315,7 @@ public final class GpuOverlayMenu {
                 for(int i=pageOffset;i<end;i++){
                     var option=options.get(i);
                     boolean take=option[0].equals("TAKE");
-                    add(option[0]+" "+option[1]+" x"+option[2],()->{
+                    add("    "+option[0]+" "+option[1]+" x"+option[2],()->{
                         gameplay.gpuTransferCampStock(take,option[1],1);
                         toast("HOST "+option[0]+" REQUEST");
                     });
@@ -454,6 +454,19 @@ public final class GpuOverlayMenu {
         for(int i=0;i<items.size();i++){
             float row=297-i*24;
             skin.choice(sprites,items.get(i).label(),143,row,364,22,selected==i);
+            if(screen==Screen.STORAGE){
+                // Match host transfer rows exactly; artwork never changes the transaction.
+                List<String> materialIds=new ArrayList<>();
+                new TreeMap<>(gameplay.gpuCarriedItems()).forEach((id,count)->{
+                    if(count>0)materialIds.add(id);
+                });
+                new TreeMap<>(gameplay.gpuCampStock()).forEach((id,count)->{
+                    if(count>0)materialIds.add(id);
+                });
+                int source=pageOffset+i;
+                if(i<7&&source<materialIds.size())
+                    book.drawIcon(sprites,materialIds.get(source),146,row+1,19);
+            }
             if(screen==Screen.CRAFT){
                 List<MaleficVeil.GpuCraftRecipe> recipes=crafts();
                 int source=pageOffset+i;

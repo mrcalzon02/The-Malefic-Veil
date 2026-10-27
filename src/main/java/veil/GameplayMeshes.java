@@ -28,7 +28,14 @@ public final class GameplayMeshes {
         "facility-begotten-chitin-vat",
         "facility-generator","facility-electric-bus","facility-precision-lathe",
         "facility-water-works","facility-unraveled-sensor-lab",
-        "facility-penitent-choir-relay","facility-begotten-membrane-lab"};
+        "facility-penitent-choir-relay","facility-begotten-membrane-lab",
+        "facility-conveyor-line","facility-automatic-sorter",
+        "facility-industrial-workshop","facility-assembly-line",
+        "facility-command-hall","facility-research-archive",
+        "facility-signal-relay","facility-security-grid",
+        "facility-fuel-refinery","facility-terror-collector",
+        "facility-nutrient-digestor","facility-unraveled-defense-works",
+        "facility-penitent-ward-sanctum","facility-begotten-organ-lattice"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -551,6 +558,132 @@ public final class GameplayMeshes {
         }
         membrane.diamond(0,2.24,0,.37,.61,0x9BC2AD);
         meshes.put(DEVICE[40],membrane.done());
+
+
+        // E5 has actual static, collidable, faction-distinct PSX 3D machinery,
+        // not a common factory reskin or thrown deployment.
+        for(int index=41;index<=54;index++){
+            Model machine=new Model();
+            int frame=index==53?0x635363:index==54?0x76565E:0x535D64;
+            machine.box(0,.18,0,2.62,.27,2.10,frame);
+            switch(index){
+                case 41 -> { // Conveyor belt on raised driven rollers
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*1.04,.68,0,.19,.62,1.95,0x687279);
+                        machine.barrel(side*.72,.87,0,.18,.44,0xA69A72);
+                    }
+                    machine.box(0,1.02,0,2.48,.16,1.58,0x494A43);
+                    for(int n=-2;n<=2;n++)
+                        machine.box(n*.43,1.13,0,.07,.05,1.62,0xA18C56);
+                }
+                case 42 -> { // Sorting bin array with lift arm
+                    for(int i=-1;i<=1;i++){
+                        machine.box(i*.73,.73,.15,.64,.89,.91,0x68767D);
+                        machine.box(i*.73,1.23,.16,.69,.13,.92,0xC9B06C);
+                    }
+                    machine.box(0,1.82,-.66,2.12,.18,.24,0x8B9B9E);
+                    machine.box(.70,1.64,-.67,.13,.51,.17,0xE4B75E);
+                }
+                case 43 -> { // Industrial fabrication bench / motor crane
+                    machine.box(-.45,.83,0,1.32,.74,1.48,0x7E7E70);
+                    machine.box(.81,1.28,-.21,.47,2.13,.47,0x687987);
+                    machine.box(0,2.29,-.23,2.10,.18,.25,0xB8A36D);
+                    machine.box(-.11,1.43,-.31,.31,1.02,.33,0x4E6977);
+                }
+                case 44 -> { // Actual multi-station production assembly line
+                    for(int j=-1;j<=1;j++){
+                        machine.box(j*.77,.80,0,.64,.87,1.24,0x576978);
+                        machine.box(j*.77,1.38,0,.71,.13,.92,0xBE985D);
+                    }
+                    machine.box(0,1.82,-.61,2.52,.21,.26,0xA8AEB0);
+                    machine.box(0,.32,.74,2.35,.21,.32,0x303942);
+                }
+                case 45 -> { // Command hall, strategic monitor canopy
+                    machine.box(0,.83,.39,2.39,1.24,.62,0x74716F);
+                    machine.box(0,1.52,.31,2.14,.57,.16,0x334E56);
+                    machine.box(0,1.81,.29,1.86,.31,.07,0x5C8791);
+                    machine.box(0,.73,-.56,1.94,.31,.58,0xA69479);
+                }
+                case 46 -> { // Research archive with tall racks and scanners
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*.83,1.23,.35,.55,2.01,.54,0x817A6C);
+                        for(int h=0;h<3;h++)
+                            machine.box(side*.83,.54+h*.59,.04,.59,.13,.88,0xB0A27A);
+                    }
+                    machine.diamond(0,1.35,0,.37,.71,0x85A7B0);
+                    machine.box(0,2.06,0,1.38,.20,.34,0xABBAB1);
+                }
+                case 47 -> { // Signal mast and transmitter
+                    machine.box(0,.64,0,.81,.92,.81,0x687B87);
+                    machine.box(0,1.90,0,.21,2.12,.20,0xA8A19C);
+                    machine.box(0,2.65,0,1.43,.12,.13,0xD1AC68);
+                    machine.diamond(0,3.12,0,.32,.56,0x98BFCA);
+                }
+                case 48 -> { // Security grid, layered armored relay segments
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*.78,.93,0,.83,1.14,.69,0x555D6C);
+                        machine.box(side*.78,1.61,0,.88,.20,.88,0xB3A36B);
+                    }
+                    machine.box(0,1.13,0,.74,.74,1.31,0x7395A8);
+                    machine.box(0,1.95,0,2.40,.13,.31,0xCCA46F);
+                }
+                case 49 -> { // Liquid fuel refinery and pipe manifold
+                    for(int side:new int[]{-1,1}){
+                        machine.barrel(side*.67,.86,0,.47,1.11,0x7A878A);
+                        machine.box(side*.67,1.53,.09,.77,.11,.75,0xAEA075);
+                    }
+                    machine.box(0,1.78,-.26,2.30,.18,.29,0xB2B0A0);
+                    machine.box(0,.87,.81,.27,1.06,.23,0x9B783D);
+                }
+                case 50 -> { // Penitent terror collector / suspended censers
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*.85,1.22,.52,.26,2.03,.26,0x625669);
+                        machine.diamond(side*.85,2.35,.52,.20,.39,0xC9A974);
+                    }
+                    machine.box(0,.82,0,1.32,.90,1.26,0x7F667A);
+                    machine.diamond(0,1.72,0,.46,.79,0xAA7187);
+                    machine.box(0,2.36,0,1.87,.13,.15,0xC1B19E);
+                }
+                case 51 -> { // Begotten digestive bioreactor and living ribs
+                    machine.box(0,.68,0,2.20,.75,1.69,0x67434C);
+                    machine.diamond(0,1.31,0,.77,1.27,0xA47576);
+                    for(int n=0;n<7;n++){
+                        double t=n*Math.PI*2/7;
+                        machine.diamond(Math.cos(t)*.93,.89,Math.sin(t)*.73,
+                            .21,.66,0xB18A6D);
+                    }
+                    machine.diamond(0,2.02,0,.35,.52,0xCFAB83);
+                }
+                case 52 -> { // Unraveled armored defense production bay
+                    machine.box(0,.76,.12,2.24,.91,1.40,0x53697A);
+                    machine.box(-.78,1.52,-.25,.51,.83,.66,0xA78B59);
+                    machine.barrel(.60,1.75,.17,.38,.93,0x8399A4);
+                    machine.box(0,2.12,.66,2.26,.19,.25,0xB99D61);
+                    machine.box(.57,1.24,-.73,.16,.96,.17,0x6CB0BA);
+                }
+                case 53 -> { // Penitent consecration sanctum, tall colonnade
+                    machine.box(0,.74,0,1.53,.76,1.38,0x80717A);
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*.98,1.50,.55,.26,2.21,.29,0x77677A);
+                        machine.diamond(side*.98,2.68,.55,.21,.37,0xD8B777);
+                    }
+                    machine.diamond(0,1.69,0,.55,1.03,0xB47992);
+                    machine.box(0,2.38,0,1.63,.18,.48,0xB7A884);
+                }
+                case 54 -> { // Begotten organ lattice, living vertical skeleton
+                    machine.box(0,.68,0,2.34,.67,1.96,0x704B58);
+                    machine.diamond(0,1.53,0,.90,1.59,0xBB7A84);
+                    for(int n=0;n<10;n++){
+                        double t=n*Math.PI/5;
+                        machine.diamond(Math.cos(t)*1.0,1.06,
+                            Math.sin(t)*.79,.19,.83,0xB29486);
+                    }
+                    machine.diamond(0,2.48,0,.32,.64,0xDAB4A2);
+                }
+                default -> throw new IllegalStateException("Missing E5 industrial geometry");
+            }
+            meshes.put(DEVICE[index],machine.done());
+        }
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

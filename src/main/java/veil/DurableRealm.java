@@ -11,11 +11,11 @@ import java.util.zip.CRC32;
  * Corrupt snapshots fail closed and may recover from an independently validated .bak.
  */
 public final class DurableRealm {
-    private static final int MAGIC=0x5645494c, VERSION=6, LIMIT=2_000_000;
+    private static final int MAGIC=0x5645494c, VERSION=7, LIMIT=2_000_000;
     private DurableRealm(){}
     private record DeviceSave(int kind,double x,double y,int hp,String owner,int tier,
                               Map<SurvivalCrafting.Item,Integer> stock,
-                              boolean working,long elapsedMs,int completed,String processId){}
+                              boolean working,long elapsedMs,int completed,String processId,long steamMs){}
     private record CarSave(int id,double x,double y,double heading,double fuel,int hp){}
     private record NpcSave(double x,double y,int hp){}
     private record Snapshot(long seed,long timestamp,List<DeviceSave> devices,List<CarSave> cars,
@@ -28,7 +28,7 @@ public final class DurableRealm {
             devices.add(new DeviceSave(d.kind,d.x,d.y,d.hp,
                 d.ownerKey!=null&&d.ownerKey.startsWith("acct_")?d.ownerKey:"",d.tier,
                     d.kind==ArenaSystems.STORAGE_CRATE?d.storage.snapshot():Map.of(),
-                    d.productionActive,d.productionMs,d.productionCompleted,d.productionRecipeId));
+                    d.productionActive,d.productionMs,d.productionCompleted,d.productionRecipeId,d.steamMs));
         List<CarSave> cars=new ArrayList<>();
         for(Vehicles.State c:game.vehicles.states())
             cars.add(new CarSave(c.id(),c.x(),c.y(),c.heading(),c.fuel(),c.hp()));
@@ -57,7 +57,7 @@ public final class DurableRealm {
                 out.writeBoolean(d.working());
                 out.writeLong(d.elapsedMs());
                 out.writeInt(d.completed());
-                out.writeUTF(d.processId());
+                out.writeUTF(d.processId());out.writeLong(d.steamMs());
             }
             out.writeInt(snap.cars.size());
             for(CarSave c:snap.cars){
@@ -117,7 +117,7 @@ public final class DurableRealm {
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes,0,bytes.length-8))){
             if(in.readInt()!=MAGIC)throw new IOException("Wrong save magic");
             int version=in.readInt();
-            if(version!=1&&version!=2&&version!=3&&version!=4&&version!=5&&version!=VERSION)throw new IOException("Unsupported snapshot version");
+            if(version!=1&&version!=2&&version!=3&&version!=4&&version!=5&&version!=6&&version!=VERSION)throw new IOException("Unsupported snapshot version");
             long seed=in.readLong(),timestamp=in.readLong(),now=System.currentTimeMillis();
             if(seed!=target.world.seed)throw new IOException("Save seed mismatch: no world reset allowed");
             if(timestamp<0||timestamp>now+300000)throw new IOException("Unreasonable snapshot timestamp");
@@ -128,7 +128,7 @@ public final class DurableRealm {
                 // Parse structurally valid legacy devices even when they sit in
                 // newly protected city plots. load() will archive and quarantine
                 // them; active city placement is never restored.
-                if(kind<0||kind>ArenaSystems.BEGOTTEN_SPORE_BASIN||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
+                if(kind<0||kind>ArenaSystems.BEGOTTEN_CHITIN_VAT||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
                    !target.world.continent().inBounds(target.world.parcelX(x),target.world.parcelY(y))||
                    (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}"))||tier<1||tier>3)
                     throw new IOException("Invalid persisted device");
@@ -160,8 +160,13 @@ public final class DurableRealm {
                     (finished!=0&&ArenaSystems.firstProcess(kind)==null)))||
                    (!active&&elapsed!=0)||(active&&hp==0))
                     throw new IOException("Corrupt faction production receipt");
+                long steamMs=version>=7?in.readLong():0;
+                if(steamMs<0||steamMs>SteamUtility.MAX_CHARGE_MS||
+                   (kind!=ArenaSystems.STEAM_BOILER&&steamMs!=0)||
+                   (hp==0&&steamMs!=0)||(!owner.startsWith("acct_")&&steamMs!=0))
+                    throw new IOException("Invalid host boiler steam reserve");
                 devices.add(new DeviceSave(kind,x,y,hp,owner,tier,Map.copyOf(stock),
-                    active,elapsed,finished,process));
+                    active,elapsed,finished,process,steamMs));
             }
             List<CarSave> cars=new ArrayList<>();
             int carCount=count(in,64);
@@ -299,6 +304,7 @@ public final class DurableRealm {
                 device.productionMs=d.elapsedMs();
                 device.productionCompleted=d.completed();
                 device.productionRecipeId=d.processId();
+                device.steamMs=d.steamMs();
                 game.world.devices.add(device);
             }
             for(CarSave car:snapshot.cars){

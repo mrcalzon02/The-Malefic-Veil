@@ -22,7 +22,10 @@ public final class GameplayMeshes {
         "facility-charcoal-kiln","facility-stone-furnace","facility-forge",
         "facility-freight-bay","facility-materials-recycler",
         "facility-unraveled-machinist-bay","facility-penitent-reliquary",
-        "facility-begotten-spore-basin"};
+        "facility-begotten-spore-basin",
+        "facility-steam-boiler","facility-mechanical-shaft","facility-metal-press",
+        "facility-unraveled-pressure-shop","facility-penitent-cantor-dais",
+        "facility-begotten-chitin-vat"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -406,6 +409,71 @@ public final class GameplayMeshes {
         }
         sporeBasin.diamond(0,1.73,0,.31,.67,0xC6A18B);
         meshes.put(DEVICE[27],sporeBasin.done());
+
+
+        // Steam-era fixed buildings. The boiler and driveshaft are common
+        // utilities; each faction retains a different E3 manufacturing plant.
+        Model boiler=new Model();
+        boiler.box(0,.2,0,2.62,.3,1.98,0x56565A);
+        boiler.barrel(0,1.10,0,.72,1.40,0x667077);
+        boiler.box(-.91,1.42,.23,.24,1.42,.22,0x40464B);
+        boiler.box(.86,1.50,.23,.34,1.72,.32,0x4A4F52);
+        boiler.box(0,.67,-.80,1.32,.34,.18,0xC66B33);
+        boiler.box(0,1.97,0,1.17,.13,1.10,0x928C80);
+        meshes.put(DEVICE[28],boiler.done());
+
+        Model drive=new Model();
+        drive.box(0,.22,0,2.36,.26,1.72,0x60636B);
+        for(int side=-1;side<=1;side+=2){
+            drive.box(side*.88,.75,0,.32,.89,.75,0x55585D);
+            drive.barrel(side*.81,1.25,0,.33,.32,0xB1A47D);
+        }
+        drive.box(0,1.19,0,2.1,.25,.31,0xBDA273);
+        drive.box(0,1.35,-.48,1.25,.17,.19,0x737E87);
+        meshes.put(DEVICE[29],drive.done());
+
+        Model press=new Model();
+        press.box(0,.24,0,2.45,.35,1.88,0x56616B);
+        for(int side=-1;side<=1;side+=2)
+            press.box(side*.87,1.31,0,.28,2.19,.49,0x76828A);
+        press.box(0,2.44,0,2.14,.28,.73,0x60676D);
+        press.box(0,1.36,0,.64,1.88,.58,0xBA9958);
+        press.box(0,.84,0,1.18,.27,1.0,0x95938A);
+        meshes.put(DEVICE[30],press.done());
+
+        Model unraveledPressure=new Model();
+        unraveledPressure.box(0,.20,0,2.68,.31,2.18,0x4A545C);
+        for(int side=-1;side<=1;side+=2){
+            unraveledPressure.barrel(side*.62,.93,0,.42,1.16,0x72838D);
+            unraveledPressure.box(side*.64,1.62,0,.87,.12,.75,0xCEAB61);
+        }
+        unraveledPressure.box(0,1.9,.34,1.72,.23,.29,0x545A5D);
+        unraveledPressure.box(0,1.41,-.84,.25,.97,.22,0xA98C54);
+        meshes.put(DEVICE[31],unraveledPressure.done());
+
+        Model penitentDais=new Model();
+        penitentDais.box(0,.22,0,2.48,.32,2.14,0x594C54);
+        penitentDais.box(0,.79,0,1.65,.82,1.48,0x807080);
+        penitentDais.box(0,1.29,0,1.89,.14,1.65,0xB3A18E);
+        for(int side=-1;side<=1;side+=2){
+            penitentDais.box(side*.91,1.47,.35,.24,2.32,.23,0x655B6A);
+            penitentDais.diamond(side*.91,2.55,.35,.19,.39,0xCF9C65);
+        }
+        penitentDais.diamond(0,1.89,0,.44,.76,0xAF738A);
+        penitentDais.box(0,2.21,.1,.19,.65,.17,0xC4A77C);
+        meshes.put(DEVICE[32],penitentDais.done());
+
+        Model chitinVat=new Model();
+        chitinVat.box(0,.19,0,2.78,.31,2.20,0x4C393D);
+        chitinVat.box(0,.75,0,2.15,.83,1.81,0x8A5868);
+        chitinVat.diamond(0,1.35,0,.86,1.49,0xBC7C72);
+        for(int i=0;i<8;i++){
+            double t=i*Math.PI*2/8;
+            chitinVat.diamond(Math.cos(t)*1.08,.93,
+                Math.sin(t)*.77,.20,.68,0xA37B6C);
+        }
+        chitinVat.diamond(0,2.21,0,.32,.62,0xC69E7E);
+        meshes.put(DEVICE[33],chitinVat.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

@@ -92,6 +92,14 @@ E4 factory behavior remains three separate systems: Unraveled produces mechanica
 
 **Still not delivered:** freely placeable cables and generator assemblies, full electrical failure effects/audio, tier-E5 automated factory complexes, automated hauling or timed multi-stage construction. E4 production is one real paid work order per machine, not yet a power-grid visual editor.
 
+## E5 powered material-routing and distinct automation facilities — 27 October 2026
+
+Permanent E5 construction now includes conveyor lines, automatic sorters, industrial workshops, assembly lines, command halls, research archives, signal relays, security grids, fuel refineries, Penitent terror collectors, Begotten nutrient digestors, and a distinct final E5 manufacturing site for each faction. All fourteen have original low-poly 3D world geometry and actual dependency/cost-based build eligibility. Faction E5 work orders remain in the registered separate economies: Unraveled builds `RELAY_BOX`, Penitent manufactures `CONSECRATED_SHELL` with witnesses and terror-derived materials, Begotten grows `ORGAN_CORE` from membranes and nutrient stock. One physically installed machine handles one paid batch. E5 jobs draw electricity, not the prior E3 shaft utility.
+
+There is now real warehouse-to-warehouse E5 automation: at an owned living conveyor the player selects one stocked resource, and an electrically powered physical west-to-east route carries **one unit per five simulated seconds** from a nearby west-side owned crate to an east-side owned crate. This is an actual resource debit and credit within the same host world snapshot; a route cannot mint items, access another player's inventory, traverse remote sectors, overload a target crate, or work without a functioning bus and charged generator. Conveyor identity, material choice and partial timing persist in realm V9 and are covered by restart tests. Crates remain permanent; **the separate one-hour throwable equipment line remains untouched**.
+
+Boundaries: E5 is an initial fixed-site automatic logistics implementation, not yet a freeform drawable conveyor spline or AI truck-routing scheduler. Existing catalog-only E5 recipe outputs that need other unimplemented factories are not misrepresented as functioning. Steam and electrical utility services are shared, but the three faction-owned manufacturing civilizations are not unified.
+
 ## Ordered development backlog and measurable acceptance
 
 | Priority | Work item | Acceptance proving actual gameplay |

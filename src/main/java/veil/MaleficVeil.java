@@ -206,6 +206,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     /** Authoritative first-tier work orders; all three progress through
      * independent faction-specific operating conditions, not one factory. */
+    public void gpuFuelSteamBoiler(){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.refuelSteam();
+            else if(localHost!=null)
+                toast(localHost.fireSteamBoiler(1)?
+                    "BOILER FUELED / SHAFT PRESSURIZED":
+                    "BOILER REQUIRES OWNED FUEL, WATER AND CLOSE REACH");
+        });
+    }
     public void gpuStartFactionBatch(){
         gpuStartFactionBatch(null);
     }
@@ -232,7 +241,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         CraftingEraRegistry.Faction selected=gpuCraftFaction();
         java.util.List<String> result=new java.util.ArrayList<>();
         for(int kind=ArenaSystems.CLAIM_HEART;
-                kind<=ArenaSystems.BEGOTTEN_SPORE_BASIN;kind++){
+                kind<=ArenaSystems.BEGOTTEN_CHITIN_VAT;kind++){
             String id=ArenaSystems.factionFacility(kind);
             var facility=CraftingEraRegistry.facility(id);
             if(facility!=null&&(facility.faction()==CraftingEraRegistry.Faction.ALL||

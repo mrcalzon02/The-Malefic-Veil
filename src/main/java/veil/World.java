@@ -56,6 +56,9 @@ public final class World {
         public String productionRecipeId="";
         public long productionMs;
         public int productionCompleted;
+        /** Charged seconds of genuine pressurized boiler operation. Only a
+         * STEAM_BOILER may hold it; the host persists its remaining reserve. */
+        public long steamMs;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }
     public World(long seed) {

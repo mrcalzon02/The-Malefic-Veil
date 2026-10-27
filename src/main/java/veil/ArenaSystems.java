@@ -1716,12 +1716,16 @@ public final class ArenaSystems {
                     nearest=driver;best=distance;
                 }
             }
+            // Drifters alone use the committed bone-shiv telegraph.
+            // Other Lost families retain the existing basic melee until
+            // their own authored weapons are actually integrated.
+            if(LostBoneShiv.advance(this,n,nearest,ms))continue;
             if(nearest==null)continue;
             if(best>.85){
                 double nx=n.x+(nearest.x-n.x)/best*.55*arsenal.speed(n)*ms/1000;
                 double ny=n.y+(nearest.y-n.y)/best*.55*arsenal.speed(n)*ms/1000;
                 if(free(nx,n.y))n.x=nx;if(free(n.x,ny))n.y=ny;
-            } else if(n.cooldown<=0){
+            } else if(!"lost-drifter".equals(n.kind)&&n.cooldown<=0){
                 damage(nearest,8,8);n.cooldown=1.2;
             }
         }

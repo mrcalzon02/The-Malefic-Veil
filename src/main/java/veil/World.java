@@ -33,6 +33,11 @@ public final class World {
         public int hp = 80;
         public int sourceSite=-1;
         public String kind="lost-drifter";
+        /** Host-owned Lost Drifter opening attack; 0 idle, 1 windup, 2 recovery.
+         * Kept transient: loading an old realm never resumes a stale attack. */
+        public int attackPhase,attackTargetId=-1;
+        public long attackMs;
+        public double attackAimX,attackAimY;
         Npc(double x, double y) {this.x=x; this.y=y;}
     }
     public static final class Pickup {

@@ -145,9 +145,28 @@ public final class SteamEraProductionTest {
             ticks(restored,12);
             check(warehouse.storage.count(output)==recipe.quantity(),
                 "Idle E3 machine repeated its manufacturing receipt");
+            // Host damage, not fixture assignment: the final kill must
+            // depressurize a boiler so its destroyed-world save can reload.
+            var adversary=restored.join(2);
+            check(restored.assignAccount(2,"acct_"+"a".repeat(64)),
+                "Adversarial account could not authenticate");
+            CharacterRoster.Faction enemy=faction==CharacterRoster.Faction.THE_PENITENT?
+                CharacterRoster.Faction.THE_BEGOTTEN:
+                CharacterRoster.Faction.THE_PENITENT;
+            check(restored.enrollFaction(2,enemy),
+                "Enemy raider failed enrollment");
+            check(restored.damageDevice(2,restored.world.devices.indexOf(charged),
+                120,System.currentTimeMillis()),
+                "Legitimate hostile raid failed to destroy live steam boiler");
+            check(charged.hp==0&&charged.steamMs==0,
+                "Destroyed boiler retained forbidden live pressure reserve");
             HostCheckpoint.save(restored,dir);
             ArenaSystems loaded=new ArenaSystems(seed);
             check(HostCheckpoint.load(loaded,dir),"Completed E3 checkpoint cannot reload");
+            check(loaded.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.STEAM_BOILER)
+                .allMatch(d->d.hp==0&&d.steamMs==0),
+                "Destroyed E3 boiler reloaded with illegal power reserve");
             check(loaded.world.devices.stream()
                 .filter(d->d.kind==ArenaSystems.STORAGE_CRATE)
                 .mapToInt(d->d.storage.count(output)).sum()==recipe.quantity(),

@@ -900,6 +900,10 @@ public final class ArenaSystems {
             var recipe=CraftingEraRegistry.process(d.productionRecipeId);
             if(recipe==null)continue;
             long needMs=recipe.seconds()*1000L;
+            // A Penitent cantor dais does not spend pressurized steam on a
+            // ritual when no allied witness is present to perform it.
+            if(d.kind==PENITENT_CANTOR_DAIS&&
+               liturgicalWitnesses(d)==0&&d.productionMs<needMs)continue;
             if(recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device boiler=SteamUtility.available(world.devices,d,
                     recipe.utilityDemand(),demand);
@@ -936,6 +940,19 @@ public final class ArenaSystems {
         }
         return false;
     }
+    /** Penitent rites are participant-operated spiritual manufacturing,
+     * not unattended motors that consume heat in an empty building. */
+    private int liturgicalWitnesses(World.Device device){
+        int count=0;
+        for(Player p:players.values()){
+            if(!p.dead&&factions.faction(p.accountKey)==
+               CharacterRoster.Faction.THE_PENITENT&&
+               factions.allied(p.accountKey,device.ownerKey)&&
+               Math.hypot(p.x-device.x,p.y-device.y)<=3.5&&
+               world.lineClear(p.x,p.y,device.x,device.y))count++;
+        }
+        return Math.min(3,count);
+    }
     /** Distinct manufacturing logic runs after actual steam distribution. */
     private void advanceFactionBatch(World.Device device,long ms){
         if(device.hp<=0||!device.productionActive)return;
@@ -945,18 +962,8 @@ public final class ArenaSystems {
             throw new IllegalStateException("Invalid faction work order on world device");
         long required=process.seconds()*1000L;
         long gain=switch(device.kind){
-            case PENITENT_VOTIVE_ALTAR,PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS -> {
-                int witnesses=0;
-                for(Player p:players.values()){
-                    if(!p.dead&&factions.faction(p.accountKey)==
-                       CharacterRoster.Faction.THE_PENITENT&&
-                       factions.allied(p.accountKey,device.ownerKey)&&
-                       Math.hypot(p.x-device.x,p.y-device.y)<=3.5&&
-                       world.lineClear(p.x,p.y,device.x,device.y))
-                        witnesses++;
-                }
-                yield ms*Math.min(3,witnesses); // no ritual without participants
-            }
+            case PENITENT_VOTIVE_ALTAR,PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS ->
+                ms*liturgicalWitnesses(device); // no rite without a present choir
             // All other salvage and cultivation equipment has a physical
             // stocked facility and independently registered batch ingredients.
             // Purely Begotten and Unraveled sites run unattended, while rites
@@ -1022,6 +1029,7 @@ public final class ArenaSystems {
             device.kind==PENITENT_CANTOR_DAIS)&&device.productionActive)
             device.productionMs=0; // sacred rite must begin its chant again
         if(device.hp==0){
+            if(device.kind==STEAM_BOILER)device.steamMs=0;
             device.productionActive=false;
             device.productionRecipeId="";
             device.productionMs=0;

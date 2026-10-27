@@ -37,6 +37,40 @@ public final class SurvivalNeedsIntegrationTest {
         tick(game,5);
         check(p.hp>27,"Natural regeneration failed to resume after drinking");
 
+        // A player who becomes dehydrated late in a world-clock period must
+        // receive five seconds of THEIR OWN unmet-need time before injury.
+        ArenaSystems staggered=new ArenaSystems(20261029L,false);
+        tick(staggered,4);
+        ArenaSystems.Player late=staggered.join(2);
+        staggered.world.npcs.clear();
+        late.hp=30;
+        vitals(late,0,0);
+        tick(staggered,1); // world reaches five seconds, actor has only one
+        check(late.hp==30,"Global clock caused premature injury to late joiner");
+        tick(staggered,4);
+        check(late.hp==25,"Late joiner did not receive one combined need tick");
+
+        // Fully replenishing both needs clears accrued exposure. A later
+        // depletion begins a new five-second period, not the old remainder.
+        ArenaSystems recovered=new ArenaSystems(20261030L,false);
+        ArenaSystems.Player eater=recovered.join(3);
+        recovered.world.npcs.clear();
+        eater.hp=30;
+        vitals(eater,100,0);
+        tick(recovered,4);
+        check(eater.hp==30,"Injury occurred before first five-second interval");
+        check(eater.survival.acquire(SurvivalCrafting.Item.CLEAN_WATER,1,false),
+            "Recovery water unavailable");
+        check(recovered.consumeSurvival(3,SurvivalCrafting.Item.CLEAN_WATER),
+            "Hydration recovery was rejected");
+        tick(recovered,2); // permits the host to observe fully recovered needs
+        eater.hp=30;
+        vitals(eater,100,0);
+        tick(recovered,4); // crosses world-clock ten-second boundary
+        check(eater.hp==30,"Old global exposure damaged newly dehydrated actor");
+        tick(recovered,1);
+        check(eater.hp==27,"New dehydration period did not apply exactly once");
+
         // Hunger and thirst stack, but safe arrival protection still prevents
         // repeated instant deaths while the player gets their bearings.
         ArenaSystems protectedGame=new ArenaSystems(20261027L,true);
@@ -73,6 +107,6 @@ public final class SurvivalNeedsIntegrationTest {
         check(deadly.respawn(1,0),"Player trapped in permanent dead state");
         check(!victim.dead&&victim.hp==100&&deadly.arsenal.view(1).owned()==0,
             "Respawn from deprivation granted free weapon or left player dead");
-        System.out.println("PASS SurvivalNeedsIntegrationTest: real need damage, no passive exploit, authorized recovery, protection and inventory-safe death");
+        System.out.println("PASS SurvivalNeedsIntegrationTest: per-player need cadence, real damage, authorized recovery, protection and inventory-safe death");
     }
 }

@@ -121,7 +121,9 @@ public final class ArenaSystems {
         BEGOTTEN_SPORE_BASIN=27,
         STEAM_BOILER=28, MECHANICAL_SHAFT=29, METAL_PRESS=30,
         UNRAVELED_PRESSURE_SHOP=31, PENITENT_CANTOR_DAIS=32,
-        BEGOTTEN_CHITIN_VAT=33;
+        BEGOTTEN_CHITIN_VAT=33,
+        GENERATOR=34,ELECTRIC_BUS=35,PRECISION_LATHE=36,WATER_WORKS=37,
+        UNRAVELED_SENSOR_LAB=38,PENITENT_CHOIR_RELAY=39,BEGOTTEN_MEMBRANE_LAB=40;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -566,11 +568,18 @@ public final class ArenaSystems {
             case UNRAVELED_PRESSURE_SHOP -> "unraveled-pressure-shop";
             case PENITENT_CANTOR_DAIS -> "penitent-cantor-dais";
             case BEGOTTEN_CHITIN_VAT -> "begotten-chitin-vat";
+            case GENERATOR -> "generator";
+            case ELECTRIC_BUS -> "electric-bus";
+            case PRECISION_LATHE -> "precision-lathe";
+            case WATER_WORKS -> "water-works";
+            case UNRAVELED_SENSOR_LAB -> "unraveled-sensor-lab";
+            case PENITENT_CHOIR_RELAY -> "penitent-choir-relay";
+            case BEGOTTEN_MEMBRANE_LAB -> "begotten-membrane-lab";
             default -> null;
         };
     }
     public static int kindForFacility(String facility){
-        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_CHITIN_VAT;kind++)
+        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_MEMBRANE_LAB;kind++)
             if(java.util.Objects.equals(factionFacility(kind),facility))return kind;
         return -1;
     }
@@ -578,13 +587,13 @@ public final class ArenaSystems {
         return switch(kind){
             case UNRAVELED_SCRAP_OUTPOST -> CharacterRoster.Faction.THE_UNRAVELED;
             case PENITENT_VOTIVE_ALTAR -> CharacterRoster.Faction.THE_PENITENT;
-            case BEGOTTEN_BROOD_NEST,BEGOTTEN_SPORE_BASIN,BEGOTTEN_CHITIN_VAT ->
+            case BEGOTTEN_BROOD_NEST,BEGOTTEN_SPORE_BASIN,BEGOTTEN_CHITIN_VAT,BEGOTTEN_MEMBRANE_LAB ->
                 CharacterRoster.Faction.THE_BEGOTTEN;
             case UNRAVELED_MACHINIST_BAY ->
                 CharacterRoster.Faction.THE_UNRAVELED;
-            case PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS ->
+            case PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS,PENITENT_CHOIR_RELAY ->
                 CharacterRoster.Faction.THE_PENITENT;
-            case UNRAVELED_PRESSURE_SHOP ->
+            case UNRAVELED_PRESSURE_SHOP,UNRAVELED_SENSOR_LAB ->
                 CharacterRoster.Faction.THE_UNRAVELED;
             default -> null;
         };
@@ -609,6 +618,10 @@ public final class ArenaSystems {
             case UNRAVELED_PRESSURE_SHOP -> "unraveled-pressure-vessel";
             case PENITENT_CANTOR_DAIS -> "penitent-cast-censer";
             case BEGOTTEN_CHITIN_VAT -> "begotten-harden-chitin";
+            case PRECISION_LATHE -> "copper-wire";
+            case UNRAVELED_SENSOR_LAB -> "unraveled-calibrate-sensors";
+            case PENITENT_CHOIR_RELAY -> "penitent-score-hymn";
+            case BEGOTTEN_MEMBRANE_LAB -> "begotten-grow-membrane";
             default -> null;
         };
     }
@@ -672,7 +685,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>BEGOTTEN_CHITIN_VAT)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        if(kind<0||kind>BEGOTTEN_MEMBRANE_LAB)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
         int price=kind>=FIELD_FIRE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind>=FIELD_FIRE?0:
@@ -877,9 +890,14 @@ public final class ArenaSystems {
                 if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
                    !p.accountKey.equals(crate.ownerKey)||
                    Math.hypot(crate.x-device.x,crate.y-device.y)>5.5)continue;
-                if(process.utilityDemand()>0&&
-                   SteamUtility.available(world.devices,device,
-                       process.utilityDemand(),Map.of())==null)continue;
+                if(process.utilityDemand()>0){
+                    boolean powered=process.era()==CraftingEraRegistry.Era.ELECTRIC?
+                        ElectricUtility.available(world.devices,device,
+                            process.utilityDemand(),Map.of())!=null:
+                        SteamUtility.available(world.devices,device,
+                            process.utilityDemand(),Map.of())!=null;
+                    if(!powered)continue;
+                }
                 if(!crate.storage.consume(inputs))continue;
                 device.productionMs=0;
                 device.productionRecipeId=processId;
@@ -895,6 +913,7 @@ public final class ArenaSystems {
      * recipe descriptor. Competing powered machines share boiler capacity. */
     private void advanceFactoryUtilities(long ms){
         Map<World.Device,Integer> demand=new IdentityHashMap<>();
+        Map<World.Device,Integer> electricDraw=new IdentityHashMap<>();
         for(World.Device d:world.devices){
             if(d.hp<=0||!d.productionActive)continue;
             var recipe=CraftingEraRegistry.process(d.productionRecipeId);
@@ -902,9 +921,16 @@ public final class ArenaSystems {
             long needMs=recipe.seconds()*1000L;
             // A Penitent cantor dais does not spend pressurized steam on a
             // ritual when no allied witness is present to perform it.
-            if(d.kind==PENITENT_CANTOR_DAIS&&
+            if((d.kind==PENITENT_CANTOR_DAIS||d.kind==PENITENT_CHOIR_RELAY)&&
                liturgicalWitnesses(d)==0&&d.productionMs<needMs)continue;
-            if(recipe.utilityDemand()>0&&d.productionMs<needMs){
+            if(recipe.era()==CraftingEraRegistry.Era.ELECTRIC&&
+               recipe.utilityDemand()>0&&d.productionMs<needMs){
+                World.Device generator=ElectricUtility.available(world.devices,d,
+                    recipe.utilityDemand(),electricDraw);
+                if(generator==null)continue;
+                electricDraw.merge(generator,recipe.utilityDemand(),Integer::sum);
+                advanceFactionBatch(d,ms);
+            }else if(recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device boiler=SteamUtility.available(world.devices,d,
                     recipe.utilityDemand(),demand);
                 if(boiler==null)continue;
@@ -914,6 +940,8 @@ public final class ArenaSystems {
         }
         for(World.Device boiler:demand.keySet())
             boiler.steamMs=Math.max(0,boiler.steamMs-ms);
+        for(World.Device generator:electricDraw.keySet())
+            generator.electricMs=Math.max(0,generator.electricMs-ms);
     }
     /** Refuel a real boiler at the player's own camp; fuel is consumed from
      * an owned nearby fixed crate and is never a temporary field deployable. */
@@ -940,6 +968,32 @@ public final class ArenaSystems {
         }
         return false;
     }
+    /** Steam-driven generator consumes real stored fuel and pressurized steam. */
+    public synchronized boolean chargeGenerator(int playerId){
+        Player p=players.get(playerId);
+        if(p==null||p.dead||vehicles.carDrivenBy(playerId)>=0||
+           p.accountKey==null||!p.accountKey.startsWith("acct_"))return false;
+        for(World.Device generator:world.devices){
+            if(generator.kind!=GENERATOR||generator.hp<=0||
+               !p.accountKey.equals(generator.ownerKey)||
+               Math.hypot(p.x-generator.x,p.y-generator.y)>2.6||
+               !world.lineClear(p.x,p.y,generator.x,generator.y)||
+               generator.electricMs>ElectricUtility.MAX_CHARGE_MS/2)continue;
+            World.Device boiler=ElectricUtility.turbineSource(world.devices,generator);
+            if(boiler==null)continue;
+            for(World.Device crate:world.devices){
+                if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
+                   !p.accountKey.equals(crate.ownerKey)||
+                   Math.hypot(crate.x-generator.x,crate.y-generator.y)>5.5)continue;
+                if(!crate.storage.consume(ElectricUtility.FUEL))continue;
+                boiler.steamMs-=ElectricUtility.STEAM_STARTUP_MS;
+                generator.electricMs=Math.min(ElectricUtility.MAX_CHARGE_MS,
+                    generator.electricMs+ElectricUtility.MAX_CHARGE_MS);
+                breakGrace(p);return true;
+            }
+        }
+        return false;
+    }
     /** Penitent rites are participant-operated spiritual manufacturing,
      * not unattended motors that consume heat in an empty building. */
     private int liturgicalWitnesses(World.Device device){
@@ -962,7 +1016,7 @@ public final class ArenaSystems {
             throw new IllegalStateException("Invalid faction work order on world device");
         long required=process.seconds()*1000L;
         long gain=switch(device.kind){
-            case PENITENT_VOTIVE_ALTAR,PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS ->
+            case PENITENT_VOTIVE_ALTAR,PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS,PENITENT_CHOIR_RELAY ->
                 ms*liturgicalWitnesses(device); // no rite without a present choir
             // All other salvage and cultivation equipment has a physical
             // stocked facility and independently registered batch ingredients.
@@ -1022,14 +1076,17 @@ public final class ArenaSystems {
         if(device.hp==0&&device.kind==STORAGE_CRATE)device.storage.destroy();
         if((device.kind==BEGOTTEN_BROOD_NEST||
             device.kind==BEGOTTEN_SPORE_BASIN||
-            device.kind==BEGOTTEN_CHITIN_VAT)&&device.productionActive)
+            device.kind==BEGOTTEN_CHITIN_VAT||
+            device.kind==BEGOTTEN_MEMBRANE_LAB)&&device.productionActive)
             device.productionMs=Math.max(0,device.productionMs-amount*1000L);
         if((device.kind==PENITENT_VOTIVE_ALTAR||
             device.kind==PENITENT_RELIQUARY||
-            device.kind==PENITENT_CANTOR_DAIS)&&device.productionActive)
+            device.kind==PENITENT_CANTOR_DAIS||
+            device.kind==PENITENT_CHOIR_RELAY)&&device.productionActive)
             device.productionMs=0; // sacred rite must begin its chant again
         if(device.hp==0){
             if(device.kind==STEAM_BOILER)device.steamMs=0;
+            if(device.kind==GENERATOR)device.electricMs=0;
             device.productionActive=false;
             device.productionRecipeId="";
             device.productionMs=0;

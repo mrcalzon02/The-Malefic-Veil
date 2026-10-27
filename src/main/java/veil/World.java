@@ -59,6 +59,8 @@ public final class World {
         /** Charged seconds of genuine pressurized boiler operation. Only a
          * STEAM_BOILER may hold it; the host persists its remaining reserve. */
         public long steamMs;
+        /** Electricity reserve, nonzero exclusively on generators. */
+        public long electricMs;
         Device(double x,double y,int kind){this.x=x;this.y=y;this.kind=kind;}
     }
     public World(long seed) {

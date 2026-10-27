@@ -206,6 +206,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     /** Authoritative first-tier work orders; all three progress through
      * independent faction-specific operating conditions, not one factory. */
+    public void gpuChargeGenerator(){
+        SwingUtilities.invokeLater(()->{
+            if(net!=null)net.chargeGenerator();
+            else if(localHost!=null)
+                toast(localHost.chargeGenerator(1)?
+                    "GENERATOR CHARGED: REAL STEAM AND FUEL":
+                    "GENERATOR NEEDS OWN STEAM AND CHARCOAL / CLEAN WATER");
+        });
+    }
     public void gpuFuelSteamBoiler(){
         SwingUtilities.invokeLater(()->{
             if(net!=null)net.refuelSteam();
@@ -241,7 +250,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         CraftingEraRegistry.Faction selected=gpuCraftFaction();
         java.util.List<String> result=new java.util.ArrayList<>();
         for(int kind=ArenaSystems.CLAIM_HEART;
-                kind<=ArenaSystems.BEGOTTEN_CHITIN_VAT;kind++){
+                kind<=ArenaSystems.BEGOTTEN_MEMBRANE_LAB;kind++){
             String id=ArenaSystems.factionFacility(kind);
             var facility=CraftingEraRegistry.facility(id);
             if(facility!=null&&(facility.faction()==CraftingEraRegistry.Faction.ALL||

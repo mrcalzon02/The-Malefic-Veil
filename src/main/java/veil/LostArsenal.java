@@ -3,10 +3,9 @@ package veil;
 import java.util.*;
 
 /**
- * Design-data weapon registry for the Lost. These are NOT executable NPC attacks.
- * ArenaSystems currently uses its legacy melee damage/cooldown loop.
- * Integrate through host authoritative telegraph -> execute -> recovery before
- * reporting any profile as playable or minting drops.
+ * The Lost weapon design registry. The Drifter's opening bone-shiv alone
+ * has a host-authoritative telegraph -> avoidable strike -> recovery path.
+ * The other 24 profiles are still design data, not executable NPC attacks.
  */
 public final class LostArsenal {
     public enum Slot { OPENING, PRESSURE, CONTROL, AREA, ELITE }
@@ -16,8 +15,10 @@ public final class LostArsenal {
                          int sanityDamage, double windupSeconds,
                          double recoverySeconds, String telegraph,
                          String counter, String behavior) {
-        /** Profile available to design systems, not active in host combat. */
-        public boolean runtimeIntegrated() { return false; }
+        /** Only the genuinely wired host attack may claim runtime integration. */
+        public boolean runtimeIntegrated() {
+            return id.equals("lost-drifter-bone-shiv");
+        }
     }
     private static Weapon w(String id, LostNpcCatalog.Kind kind, Slot slot,
           Delivery delivery, double reach, int hp, int sanity, double windup,

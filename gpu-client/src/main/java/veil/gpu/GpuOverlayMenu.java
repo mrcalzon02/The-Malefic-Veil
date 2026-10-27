@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -330,14 +330,8 @@ public final class GpuOverlayMenu {
             }
             case BOOK->{} // Owns its list and detail navigation; never crafts items.
             case CREW->{
-                if(gameplay.gpuCraftFaction()==veil.CraftingEraRegistry.Faction.ALL){
-                    add("JOIN UNRAVELED",()->gameplay.gpuEnrollFaction(
-                        veil.CharacterRoster.Faction.THE_UNRAVELED));
-                    add("JOIN PENITENT",()->gameplay.gpuEnrollFaction(
-                        veil.CharacterRoster.Faction.THE_PENITENT));
-                    add("JOIN BEGOTTEN",()->gameplay.gpuEnrollFaction(
-                        veil.CharacterRoster.Faction.THE_BEGOTTEN));
-                }
+                if(gameplay.gpuCraftFaction()==veil.CraftingEraRegistry.Faction.ALL)
+                    add("CHOOSE PERMANENT FACTION",()->show(Screen.FACTION));
                 if(gameplay.gpuHasNetworkCrew()){
                 add("CREATE CREW",()->beginCrewInput("CREATE"));
                 add("INVITE PLAYER ID",()->beginCrewInput("INVITE"));
@@ -349,6 +343,23 @@ public final class GpuOverlayMenu {
                 add("DISBAND CREW",()->show(Screen.CONFIRM_DISBAND));
                 }
                 add("BACK",()->show(Screen.PAUSE));
+            }
+            case FACTION->{
+                if(gameplay.gpuCraftFaction()==veil.CraftingEraRegistry.Faction.ALL){
+                    add("JOIN UNRAVELED",()->{
+                        gameplay.gpuEnrollFaction(veil.CharacterRoster.Faction.THE_UNRAVELED);
+                        show(Screen.GAME);
+                    });
+                    add("JOIN PENITENT",()->{
+                        gameplay.gpuEnrollFaction(veil.CharacterRoster.Faction.THE_PENITENT);
+                        show(Screen.GAME);
+                    });
+                    add("JOIN BEGOTTEN",()->{
+                        gameplay.gpuEnrollFaction(veil.CharacterRoster.Faction.THE_BEGOTTEN);
+                        show(Screen.GAME);
+                    });
+                }
+                add("BACK TO CREW / FACTION",()->show(Screen.CREW));
             }
             case CREW_INPUT->{
                 add("SUBMIT "+crewAction,this::submitCrew);
@@ -385,7 +396,8 @@ public final class GpuOverlayMenu {
             Gdx.input.isKeyJustPressed(Input.Keys.F11)){
             if(screen==Screen.GAME)show(Screen.PAUSE);
             else if(screen==Screen.PAUSE)show(Screen.GAME);
-            else if(screen==Screen.CREW_INPUT||screen==Screen.CONFIRM_DISBAND)show(Screen.CREW);
+            else if(screen==Screen.CREW_INPUT||screen==Screen.CONFIRM_DISBAND||
+                    screen==Screen.FACTION)show(Screen.CREW);
             else show(Screen.PAUSE);
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.F10))

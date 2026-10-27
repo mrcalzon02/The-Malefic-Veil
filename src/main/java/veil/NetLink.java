@@ -26,7 +26,17 @@ public final class NetLink implements AutoCloseable {
     public record DeviceEvent(int index,int kind,double x,double y,int hp){}
     public record FieldEvent(int id,int blueprint,double x,double y,double height,int hp,long remaining,boolean flying){}
     public record FieldBurst(double x,double y,int faction){}
-    public record NpcEvent(int index,double x,double y,int hp){}
+    /** Host-only NPC pose and attack intent; legacy five-field NPCs remain readable. */
+    public record NpcEvent(int index,double x,double y,int hp,int attackPhase,int attackTargetId){}
+    static NpcEvent decodeNpc(String[] fields){
+        if(fields.length!=5&&fields.length!=7)return null;
+        int phase=fields.length==7?Integer.parseInt(fields[5]):0;
+        int target=fields.length==7?Integer.parseInt(fields[6]):-1;
+        if(phase<LostBoneShiv.IDLE||phase>LostBoneShiv.RECOVERY)return null;
+        return new NpcEvent(Integer.parseInt(fields[1]),
+            Double.parseDouble(fields[2]),Double.parseDouble(fields[3]),
+            Integer.parseInt(fields[4]),phase,target);
+    }
     public record ShotEvent(long sequence,boolean fired,String outcome,int targetId,int damage,int ammo){}
     public record BuildEvent(int kind,String reason,int cashCost,int suppliesCost){}
     public record Car(int id,double x,double y,double heading,double speed,double fuel,int hp,int driverId){}
@@ -280,8 +290,8 @@ public final class NetLink implements AutoCloseable {
                                 }
                             }
                             case "NPC" -> {
-                                if(s.length==5)npcs.add(new NpcEvent(Integer.parseInt(s[1]),
-                                    Double.parseDouble(s[2]),Double.parseDouble(s[3]),Integer.parseInt(s[4])));
+                                NpcEvent event=decodeNpc(s);
+                                if(event!=null)npcs.add(event);
                             }
                             case "SHOT" -> {
                                 if(s.length==7)shots.add(new ShotEvent(Long.parseLong(s[1]),

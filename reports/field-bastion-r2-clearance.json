@@ -1,0 +1,4829 @@
+[
+  {
+    "id": "bastion-panel",
+    "asset_sha256": "94315c2fdaf65fc9eb4f30162dac1513010a901b181def79624469f096abafa2",
+    "tested_pair_samples": 31540,
+    "scope": {
+      "clips": [
+        "PACKED",
+        "DEPLOYING",
+        "ACTIVE"
+      ],
+      "rules": [
+        {
+          "id": "wall-armor-tiles-separate",
+          "moving": [
+            "armor_tile_*"
+          ],
+          "obstacles": [
+            "armor_tile_*"
+          ],
+          "relation": "separate"
+        }
+      ]
+    },
+    "failures": [
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.425,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.45,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.475,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "DEPLOYING",
+        "time_s": 1.5,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.0,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.1,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.2,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.3,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.4,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.5,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.6,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.7,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.8,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 0.9,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.0,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.1,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.2,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.3,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.4,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.5,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.6,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.7,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.8,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 1.9,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_0_1",
+        "obstacle": "armor_tile_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_0_2",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_0_3",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_1_0",
+        "obstacle": "armor_tile_0_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_0_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_1_1",
+        "obstacle": "armor_tile_2_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_0_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_1_2",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_1_3",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_2_0",
+        "obstacle": "armor_tile_1_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_1_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_2_1",
+        "obstacle": "armor_tile_3_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_1_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_2_2",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_2_3",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_3_0",
+        "obstacle": "armor_tile_2_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_2_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_3_1",
+        "obstacle": "armor_tile_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_2_3",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_3_2",
+        "obstacle": "armor_tile_4_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_3_3",
+        "obstacle": "armor_tile_4_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_4_0",
+        "obstacle": "armor_tile_3_1",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_4_1",
+        "obstacle": "armor_tile_3_2",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "wall-armor-tiles-separate",
+        "clip": "ACTIVE",
+        "time_s": 2.0,
+        "part": "armor_tile_4_2",
+        "obstacle": "armor_tile_3_3",
+        "defect": "INTERSECTION"
+      }
+    ],
+    "status": "FAIL"
+  }
+]

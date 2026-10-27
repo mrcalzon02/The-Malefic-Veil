@@ -1,5 +1,5 @@
 {
-  "status": "PAUSED_AT_USER_REQUEST_WORK_IN_PROGRESS",
+  "status": "STOPPED_AT_FIVE_HOUR_ALLOWANCE_CUTOFF_WORK_IN_PROGRESS",
   "production_complete": 0,
   "files": [
     {
@@ -4336,6 +4336,26 @@
       "path": "previews/field-pilots-r9/sentry-mki/gpu/thrown.png",
       "bytes": 21290,
       "sha256": "e92c541235b1c750a90185b5a6f8175e7d47ed57788f61bd3ae1ea39210afcc9"
+    },
+    {
+      "path": "build/candidates/field-bastion-r1/bastion-panel/bastion-panel.blend",
+      "bytes": 705332,
+      "sha256": "8a6c1e785c14391349ae2d6eab2473ad6b5c2f90735f293f7d2b87d08fce3f0b"
+    },
+    {
+      "path": "build/candidates/field-bastion-r1/bastion-panel/bastion-panel.glb",
+      "bytes": 364404,
+      "sha256": "0b222f23f96b29706f1746e81b130d52f589908d1c236aaf31c333f56eea2ab0"
+    },
+    {
+      "path": "build/candidates/field-bastion-r2/bastion-panel/bastion-panel.blend",
+      "bytes": 691317,
+      "sha256": "8a746d0d4c2956c8cee0089edfe8653dd00d6e6ee2324c4b0b78d14654468c5b"
+    },
+    {
+      "path": "build/candidates/field-bastion-r2/bastion-panel/bastion-panel.glb",
+      "bytes": 498412,
+      "sha256": "94315c2fdaf65fc9eb4f30162dac1513010a901b181def79624469f096abafa2"
     }
   ]
 }

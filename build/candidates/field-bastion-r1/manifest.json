@@ -1,0 +1,19 @@
+[
+  {
+    "id": "bastion-panel",
+    "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\build\\candidates\\field-bastion-r1\\bastion-panel\\bastion-panel.glb",
+    "category": "candidate",
+    "faction": "unraveled",
+    "role": "wall",
+    "sha256": "0b222f23f96b29706f1746e81b130d52f589908d1c236aaf31c333f56eea2ab0",
+    "triangles": 4388,
+    "status": "REJECTED_MECHANISM_REPAIR_REQUIRED",
+    "remaining": [
+      "Lateral slide nesting and load-path redesign/verification",
+      "Continuous cover silhouette and collider match",
+      "Full articulation and part-clearance audit",
+      "Failure-specific destruction and persistent damage",
+      "Purpose/art acceptance and live-world integration"
+    ]
+  }
+]

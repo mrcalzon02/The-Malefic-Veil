@@ -1,3 +1,13 @@
+# Stopped at the requested usage cutoff: 2026-10-27
+
+The user resumed development. The allowance initially reported 44% used / 56% remaining; the next check after the Bastion study was started reported 51% used / 49% remaining. New design stopped at that observation, and the running export/audit was collected for this checkpoint. The usage limit is account-wide. Resume only on instruction.
+
+New work: tools/refine_bastion_panel.py; staged translation windows in the shared animation writer; scoped self-excluding armor tile clearance checks; a first Bastion model and a reduced-bolt revision. r2 remains rejected: 3,748 triangles, packed 0.460 x 0.490 x 0.522 m, and 600 intersecting pair samples (96 deploying, 504 active) across 31,540 directed pair samples. Diagonal tile pairs share depth and overlap. Fix the lap-depth arrangement, reduce geometry, repair the lateral rail nesting/load path, and then re-audit before further refinement. GPU review, purposeful operating motion and distinct destruction remain pending. See reports/bastion-mechanism-review.md.
+
+The four retained pilots remain Sentry r10, Medic r7, Censer r13 and Heart r9. No production-complete assets; 17 require redesign, including Bastion. No runtime normals/maps. The broader weapon/structure/terrain/prop scope remains outstanding.
+
+Previous checkpoint details follow for continuity:
+
 # Paused at user request
 
 The user requested: hold here, finish out and commit. No further design should start until the user resumes. The last usage check was 45% used / 55% remaining in the selected five-hour allowance; the 50% cutoff was not reached before this requested pause.

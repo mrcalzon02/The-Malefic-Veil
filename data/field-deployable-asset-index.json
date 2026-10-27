@@ -7,7 +7,8 @@
     "production_complete": 0,
     "refined_pilots": 4,
     "candidate_repair_required": 0,
-    "redesign_required": 17
+    "redesign_required": 17,
+    "rejected_mechanism_studies": 1
   },
   "items": [
     {
@@ -39,7 +40,14 @@
         "Exported geometry inspection",
         "Actual rendered and animation review",
         "Host-event and GPU gameplay integration"
-      ]
+      ],
+      "mechanism_study": {
+        "candidate": "build/candidates/field-bastion-r2/bastion-panel/bastion-panel.glb",
+        "asset_sha256": "94315c2fdaf65fc9eb4f30162dac1513010a901b181def79624469f096abafa2",
+        "triangles": 3748,
+        "status": "REJECTED_MECHANISM_REPAIR_REQUIRED",
+        "review": "reports/bastion-mechanism-review.md"
+      }
     },
     {
       "index": 2,

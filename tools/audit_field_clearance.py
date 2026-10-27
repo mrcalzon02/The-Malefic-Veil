@@ -35,6 +35,7 @@ for record in json.loads((SOURCE/'manifest.json').read_text()):
         rules.append((rule,moving,obstacles))
     failures=[];tested=0
     for clip,duration in durations.items():
+        if clip not in contract.get('clips',durations):continue
         samples=1 if clip=='PACKED' else 61 if clip=='DEPLOYING' else 21
         for sample in range(samples):
             time=duration*sample/max(1,samples-1);pose(doc,blob,clip,time);deps=bpy.context.evaluated_depsgraph_get();trees={};vertices={}
@@ -44,6 +45,7 @@ for record in json.loads((SOURCE/'manifest.json').read_text()):
             for rule,moving,obstacles in rules:
                 for part in moving:
                     for obstacle in obstacles:
+                        if part==obstacle:continue
                         tested+=1;overlap=bool(trees[part.name].overlap(trees[obstacle.name]))
                         attached=overlap or rule['relation']=='attached' and inside(trees[obstacle.name],vertices[part.name][0])
                         fail=overlap if rule['relation']=='separate' else not attached

@@ -1,6 +1,6 @@
 # Thrown field deployables: paused checkpoint
 
-Paused at the user request to hold, finish out and commit. **No production-complete assets.** Four refined studies and 17 original candidates awaiting independent redesign.
+Stopped at the requested five-hour allowance cutoff on 2026-10-27 (51% used / 49% remaining at observation). **No production-complete assets.** Four refined studies and 17 original candidates awaiting independent redesign.
 
 - [Current asset index](../reports/field-deployable-asset-index.md)
 - [Current scoped audit and unresolved issues](../reports/current-field-audit.md)
@@ -22,3 +22,5 @@ Current GLBs and editable modeling/animation projects are retained. Earlier revi
 Validation: current pilot animation/normal-free checks and actual nine-state GPU renders pass. ThrownActivationTest covers all 21 role effects and destruction timing. FieldReplicationTest passes actual loopback sockets for old/current snapshots, clocks/tracking/stock, wire craft/throw, active late join and two-peer collapse/removal. ThrownDeployablesTest passes host lifetime, cover, death and expiry checks. The GPU module builds. These checks are scoped evidence, not final art or full gameplay certification.
 
 Use Blender 5.0 and Java 17. New geometry from the current generator should use a new revision (default r14), preserving the archived current studies. Logs, caches, compiled output, Blender backup files and private reference sources are excluded from publication.
+
+Bastion mechanism study r2 is retained as rejected: tile overlaps, over-budget geometry and lateral rail/load-path issues. See [Bastion review](../reports/bastion-mechanism-review.md). It remains among the 17 requiring redesign.

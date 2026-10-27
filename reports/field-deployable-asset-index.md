@@ -1,8 +1,8 @@
 # Field deployable asset index
 
-Paused at the user request. Resume only on instruction; the five-hour 50% cutoff remains the next usage limit.
+Stopped at the user-requested five-hour allowance cutoff: the account reported 51% used / 49% remaining. Resume only on instruction.
 
-21 required: 0 production complete, 4 refined pilots awaiting review, 17 awaiting independent redesign.
+21 required: 0 production complete, 4 refined pilots awaiting review, 17 requiring redesign, including the rejected Bastion mechanism study.
 
 | # | Faction | Item | Status |
 |---|---|---|---|

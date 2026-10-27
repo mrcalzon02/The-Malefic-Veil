@@ -347,7 +347,7 @@ def write_clips(path,pilot):
         q=Quaternion(Vector(axis),angle);convert=Quaternion((1,0,0),-math.pi/2);q=convert@q@convert.inverted();return [q.x,q.y,q.z,q.w]
     durations={'ACTIVE':2.,'PACKED':1.,'THROWN':.7,'IMPACT':.15,'DEPLOYING':1.5,'OPERATING':.65,'DAMAGED':.45,'EXPIRING':1.,'DESTROYED':.8}
     for clip,duration in durations.items():
-        anim=dict(name=clip,samplers=[],channels=[]);fractions=[i/20 for i in range(21)] if pilot=='field-medic' else [0,.15,.35,.55,.75,1];time=accessor([[f*duration] for f in fractions],1)
+        anim=dict(name=clip,samplers=[],channels=[]);fractions=[i/60 for i in range(61)] if pilot=='bastion-panel' else [i/20 for i in range(21)] if pilot=='field-medic' else [0,.15,.35,.55,.75,1];time=accessor([[f*duration] for f in fractions],1)
         def track(node,path,values):
             width=1 if path=='weights' else len(values[0]);sampler=len(anim['samplers']);anim['samplers'].append(dict(input=time,output=accessor(values,width),interpolation='LINEAR'));anim['channels'].append(dict(sampler=sampler,target=dict(node=node,path=path)))
         for i,node in enumerate(doc['nodes']):
@@ -398,7 +398,12 @@ def write_clips(path,pilot):
                     values.append([base[k]+delta[k] for k in range(3)])
                 track(i,'translation',values)
             if motion['move'] is not None and not(name.startswith('SatelliteCenser') and deploy):
-                delta=cv(motion['move']);track(i,'translation',[[base[k]+delta[k]*(1 if packed else 1-f*f*(3-2*f) if deploy else f if clip=='DESTROYED' else 0) for k in range(3)] for f in fractions])
+                delta=cv(motion['move']);values=[]
+                for f in fractions:
+                    start,end=motion.get('deploy_window',(0,1));progress=max(0,min(1,(f-start)/(end-start)))
+                    factor=1 if packed else 1-progress*progress*(3-2*progress) if deploy else f if clip=='DESTROYED' else 0
+                    values.append([base[k]+delta[k]*factor for k in range(3)])
+                track(i,'translation',values)
             if name.startswith('IronLeg') and deploy:
                 # Lift the curved toe during its hinge sweep, then settle it onto the floor.
                 track(i,'translation',[[base[0],base[1]+.020*math.sin(f*math.pi),base[2]] for f in fractions])

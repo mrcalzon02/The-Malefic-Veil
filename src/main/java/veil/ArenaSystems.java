@@ -1004,14 +1004,20 @@ public final class ArenaSystems {
             SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(conveyor.routeItem);
             var route=ConveyorLogistics.between(conveyor,world.devices);
             if(!ConveyorLogistics.ready(route,item))continue;
+            boolean sorted=ConveyorLogistics.sorted(conveyor,world.devices);
+            int demand=sorted?ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
             World.Device power=ElectricUtility.available(world.devices,conveyor,
-                ConveyorLogistics.DEMAND,electricDraw);
+                demand,electricDraw);
             if(power==null)continue;
-            electricDraw.merge(power,ConveyorLogistics.DEMAND,Integer::sum);
+            electricDraw.merge(power,demand,Integer::sum);
             conveyor.routeMs=Math.min(ConveyorLogistics.TICK_MS,conveyor.routeMs+ms);
             if(conveyor.routeMs>=ConveyorLogistics.TICK_MS){
-                if(ConveyorLogistics.moveOne(route,item))
+                if(ConveyorLogistics.moveOne(route,item)){
+                    // Additional throughput is paid by a real powered sorter,
+                    // and never overfills the receiving warehouse.
+                    if(sorted)ConveyorLogistics.moveOne(route,item);
                     conveyor.routeMs=0;
+                }
             }
         }
         for(World.Device generator:electricDraw.keySet())

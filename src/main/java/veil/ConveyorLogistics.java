@@ -6,6 +6,7 @@ import java.util.*;
  * shared faction stock or temporary deployables. */
 public final class ConveyorLogistics {
     public static final int DEMAND=2;
+    public static final int SORTED_DEMAND=4;
     public static final long TICK_MS=5_000;
     private ConveyorLogistics(){}
     public record Route(World.Device source,World.Device destination){}
@@ -25,6 +26,20 @@ public final class ConveyorLogistics {
             if(dx>0&&dist<eastDist){east=d;eastDist=dist;}
         }
         return west==null||east==null||west==east?null:new Route(west,east);
+    }
+    /** An actual powered automatic sorter mounted near the belt improves
+     * throughput. It never changes recipe/faction stock ownership or acts as
+     * free automation merely because it exists in the registry. */
+    public static boolean sorted(World.Device conveyor,List<World.Device> devices){
+        if(conveyor==null||conveyor.hp<=0||
+           conveyor.kind!=ArenaSystems.CONVEYOR_LINE||
+           conveyor.ownerKey==null)return false;
+        for(World.Device device:devices)
+            if(device.kind==ArenaSystems.AUTOMATIC_SORTER&&device.hp>0&&
+               conveyor.ownerKey.equals(device.ownerKey)&&
+               Math.hypot(device.x-conveyor.x,device.y-conveyor.y)<=3.5)
+                return true;
+        return false;
     }
     public static boolean ready(Route route,SurvivalCrafting.Item item){
         return route!=null&&item!=null&&

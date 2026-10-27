@@ -1005,11 +1005,11 @@ public final class ArenaSystems {
             var route=ConveyorLogistics.between(conveyor,world.devices);
             if(!ConveyorLogistics.ready(route,item))continue;
             boolean sorted=ConveyorLogistics.sorted(conveyor,world.devices);
-            int demand=sorted?ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
+            int beltLoad=sorted?ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
             World.Device power=ElectricUtility.available(world.devices,conveyor,
-                demand,electricDraw);
+                beltLoad,electricDraw);
             if(power==null)continue;
-            electricDraw.merge(power,demand,Integer::sum);
+            electricDraw.merge(power,beltLoad,Integer::sum);
             conveyor.routeMs=Math.min(ConveyorLogistics.TICK_MS,conveyor.routeMs+ms);
             if(conveyor.routeMs>=ConveyorLogistics.TICK_MS){
                 if(ConveyorLogistics.moveOne(route,item)){

@@ -115,6 +115,9 @@ public final class LostSpawnSites {
             npc.hp=80;
             npc.x=site.x+.5;npc.y=site.y+.5;
             npc.cooldown=0;
+            npc.attackPhase=LostBoneShiv.IDLE;
+            npc.attackTargetId=-1;
+            npc.attackMs=0;
             site.lastLiving++;
             site.nextAt=now+COOLDOWN_MS;generation++;
         }

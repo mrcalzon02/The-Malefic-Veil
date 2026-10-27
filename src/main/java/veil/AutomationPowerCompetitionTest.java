@@ -63,6 +63,10 @@ public final class AutomationPowerCompetitionTest {
         check(!host.programNextAutomation(1,recipeId),
             "Overbooked a third work order in two one-slot machines");
         tick(host,1);
+        operator.x=second.x;operator.y=second.y;
+        check(host.inspectFactory(1).state().equals("WAIT_CAPACITY"),
+            "Grid competition must show actionable E5 capacity stall");
+        operator.x=x;operator.y=y+1;
         check(first.productionActive&&!second.productionActive&&
             second.queuedRecipeId.equals(recipeId),
             "Conveyor load plus first machine did not block second start");

@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,UTILITIES,CONVEYOR,SITES,WORK_ORDERS,QUEUE_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,FACTORY_STATUS,UTILITIES,CONVEYOR,SITES,WORK_ORDERS,QUEUE_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -63,6 +63,10 @@ public final class GpuOverlayMenu {
         gameplay.gpuRequestCampStock();show(Screen.CONVEYOR);
     }
     public void openWorkOrders(){pageOffset=0;show(Screen.WORK_ORDERS);}
+    public void openFactoryInspection(){
+        gameplay.gpuRequestFactoryInspection();
+        show(Screen.FACTORY_STATUS);
+    }
     public void openStorage(){
         pageOffset=0;
         gameplay.gpuRequestCampStock();
@@ -263,7 +267,7 @@ public final class GpuOverlayMenu {
                 add("START FACTION WORK ORDER",()->{
                     gameplay.gpuStartFactionBatch();show(Screen.GAME);
                 });
-                add("INSPECT WORKSITE PROGRESS",gameplay::gpuInspectFactionBatch);
+                add("INSPECT WORKSITE PROGRESS",this::openFactoryInspection);
                 add("POWER UTILITIES",()->show(Screen.UTILITIES));
                 add("CONFIGURE CONVEYOR",this::openConveyor);
                 add("BUILD SHARED / E3 FACILITIES",this::openSites);
@@ -274,6 +278,10 @@ public final class GpuOverlayMenu {
                 add("CAMP CRATE INVENTORY",this::openStorage);
                 add("FULL INDUSTRIAL RECIPE INDEX",this::openBook);
                 add("BACK TO CRAFTING",this::openCraft);
+            }
+            case FACTORY_STATUS->{
+                add("REFRESH AUTHORIZED WORKSITE",gameplay::gpuRequestFactoryInspection);
+                add("RETURN TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case UTILITIES->{
                 add("STOKE STEAM BOILER",gameplay::gpuFuelSteamBoiler);
@@ -504,9 +512,12 @@ public final class GpuOverlayMenu {
             skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
          }else if(screen==Screen.INDUSTRY){
             skin.font().draw(sprites,"SEPARATE FACTION SYSTEMS / LIVE HOST ACTIONS",147,331);
+        }else if(screen==Screen.FACTORY_STATUS){
+            skin.font().draw(sprites,
+                "AUTHORITATIVE NEAREST OWNED WORKSITE",147,331);
         }else if(screen==Screen.CONVEYOR){
             skin.font().draw(sprites,
-                "OWNED CRATES / WEST SOURCE > EAST TARGET / PAID POWER",147,331);
+                "OWNED CRATES / DIRECTIONAL ROUTE / PAID POWER",147,331);
         }else if(screen==Screen.SITES||screen==Screen.WORK_ORDERS){
             skin.font().draw(sprites,
                 "HOST CHECKS REAL COSTS / LOCATION / DEPENDENCIES",147,331);
@@ -537,6 +548,27 @@ public final class GpuOverlayMenu {
                     var index=veil.CraftingRecipeIndex.recipe(id.startsWith("field:")?
                         "throw:"+id.substring(6):"hand:"+id);
                     if(index!=null)book.drawIcon(sprites,index.output(),146,row+1,19);
+                }
+            }
+        }
+        if(screen==Screen.FACTORY_STATUS){
+            var report=gameplay.gpuFactoryInspection();
+            skin.panel(sprites,143,95,365,147);
+            if(report==null){
+                skin.font().draw(sprites,"AWAITING HOST INSPECTION",151,220);
+            }else{
+                String[] lines={
+                    "SITE: "+report.facility().replace('-',' ').toUpperCase(Locale.ROOT),
+                    "PROCESS: "+report.recipe().replace('-',' ').toUpperCase(Locale.ROOT),
+                    "STATE: "+report.state().replace('_',' '),
+                    "DETAIL: "+report.detail().replace('_',' '),
+                    "PROGRESS: "+report.elapsed()+"/"+report.duration()+" SEC   DONE: "+report.completed(),
+                    "NEXT: "+report.next().replace('-',' ').toUpperCase(Locale.ROOT)
+                };
+                for(int i=0;i<lines.length;i++){
+                    String line=lines[i];
+                    if(line.length()>45)line=line.substring(0,44)+"~";
+                    skin.font().draw(sprites,line,151,222-i*22);
                 }
             }
         }

@@ -736,6 +736,11 @@ public final class LanServer implements AutoCloseable {
                             peer.send("FACTORY_RESULT|"+
                                 match.factionBatchStatus(peer.id));
                         }
+                        case "FACTORY_INSPECT" -> {
+                            if(s.length!=1)continue;
+                            peer.send("FACTORY_INSPECTION|"+
+                                match.inspectFactory(peer.id).wire());
+                        }
                         case "STOCK_QUERY" -> {
                             if(s.length!=1)continue;
                             peer.send(campStockPacket(peer.id));

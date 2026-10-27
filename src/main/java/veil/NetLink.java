@@ -107,6 +107,8 @@ public final class NetLink implements AutoCloseable {
         return Math.max(0,respawnRemainingMs-elapsed);
     }
     public final ConcurrentLinkedQueue<String> respawnResults=new ConcurrentLinkedQueue<>();
+    /** Authenticated, authoritative inspection for one nearby owned factory. */
+    public volatile ArenaSystems.FactoryInspection factoryInspection;
     public NetLink(String host,int port)throws IOException {
         socket=new Socket();
         socket.connect(new InetSocketAddress(host,port),4000);
@@ -343,6 +345,21 @@ public final class NetLink implements AutoCloseable {
                             case "FACTORY_RESULT" -> {
                                 if(s.length==2&&factoryResults.size()<32)factoryResults.add(s[1]);
                             }
+                            case "FACTORY_INSPECTION" -> {
+                                if(s.length!=9)continue;
+                                boolean safe=true;
+                                for(int j=1;j<9;j++)
+                                    if(s[j].length()>90||!s[j].matches("[A-Za-z0-9_-]+")){
+                                        safe=false;break;
+                                    }
+                                if(!safe)continue;
+                                long elapsed=Long.parseLong(s[5]);
+                                long duration=Long.parseLong(s[6]);
+                                int completed=Integer.parseInt(s[7]);
+                                if(elapsed<0||duration<0||completed<0)continue;
+                                factoryInspection=new ArenaSystems.FactoryInspection(
+                                    s[1],s[2],s[3],s[4],elapsed,duration,completed,s[8]);
+                            }
                             case "STOCK_RESULT" -> {
                                 if(s.length==2&&campStockResults.size()<32)
                                     campStockResults.add(s[1]);
@@ -477,6 +494,9 @@ public final class NetLink implements AutoCloseable {
     public void startFactionBatch(String recipe){send("FACTION_PRODUCE|"+recipe);}
     public void queueAutomation(String recipe){send("AUTOMATION_QUEUE|"+recipe);}
     public void inspectFactionBatch(){send("FACTORY_QUERY");}
+    public void inspectFactory(){
+        factoryInspection=null;send("FACTORY_INSPECT");
+    }
     public void transferCampStock(boolean taking,String item,int amount){
         send((taking?"STOCK_TAKE":"STOCK_PUT")+"|"+item+"|"+amount);
     }

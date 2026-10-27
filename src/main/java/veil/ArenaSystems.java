@@ -994,12 +994,22 @@ public final class ArenaSystems {
             if(recipe==null||recipe.era()!=CraftingEraRegistry.Era.AUTOMATION||
                !recipe.facility().equals(factionFacility(d.kind))||
                d.ownerKey==null)continue;
+            d.factoryHold="";
             if((d.kind==PENITENT_WARD_SANCTUM||d.kind==TERROR_COLLECTOR)&&
-               liturgicalWitnesses(d)==0)continue;
+               liturgicalWitnesses(d)==0){
+                d.factoryHold="WAIT_WITNESS";
+                continue;
+            }
             World.Device generator=ElectricUtility.available(world.devices,d,
                 recipe.utilityDemand(),allocated);
-            if(generator==null)continue;
+            if(generator==null){
+                d.factoryHold=ElectricUtility.available(world.devices,d,
+                    recipe.utilityDemand(),Map.of())==null?
+                    "WAIT_POWER":"WAIT_CAPACITY";
+                continue;
+            }
             var inputs=processInputs(recipe.id());
+            boolean paid=false;
             for(World.Device crate:world.devices){
                 if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
                    !d.ownerKey.equals(crate.ownerKey)||
@@ -1010,8 +1020,10 @@ public final class ArenaSystems {
                 d.productionRecipeId=recipe.id();
                 d.queuedRecipeId="";
                 allocated.merge(generator,recipe.utilityDemand(),Integer::sum);
+                paid=true;
                 break;
             }
+            if(!paid)d.factoryHold=missingFactoryInputs(d,inputs);
         }
     }
     /** Legacy two-field commands retain historical west-to-east direction. */
@@ -1050,6 +1062,7 @@ public final class ArenaSystems {
         Map<World.Device,Integer> electricDraw=new IdentityHashMap<>();
         for(World.Device d:world.devices){
             if(d.hp<=0||!d.productionActive)continue;
+            d.factoryHold="";
             var recipe=CraftingEraRegistry.process(d.productionRecipeId);
             if(recipe==null)continue;
             long needMs=recipe.seconds()*1000L;
@@ -1057,18 +1070,31 @@ public final class ArenaSystems {
             // ritual when no allied witness is present to perform it.
             if((d.kind==PENITENT_CANTOR_DAIS||d.kind==PENITENT_CHOIR_RELAY||
                 d.kind==PENITENT_WARD_SANCTUM||d.kind==TERROR_COLLECTOR)&&
-               liturgicalWitnesses(d)==0&&d.productionMs<needMs)continue;
+               liturgicalWitnesses(d)==0&&d.productionMs<needMs){
+                d.factoryHold="WAIT_WITNESS";
+                continue;
+            }
             if(recipe.era().ordinal()>=CraftingEraRegistry.Era.ELECTRIC.ordinal()&&
                recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device generator=ElectricUtility.available(world.devices,d,
                     recipe.utilityDemand(),electricDraw);
-                if(generator==null)continue;
+                if(generator==null){
+                    d.factoryHold=ElectricUtility.available(world.devices,d,
+                        recipe.utilityDemand(),Map.of())==null?
+                        "WAIT_POWER":"WAIT_CAPACITY";
+                    continue;
+                }
                 electricDraw.merge(generator,recipe.utilityDemand(),Integer::sum);
                 advanceFactionBatch(d,ms);
             }else if(recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device boiler=SteamUtility.available(world.devices,d,
                     recipe.utilityDemand(),demand);
-                if(boiler==null)continue;
+                if(boiler==null){
+                    d.factoryHold=SteamUtility.available(world.devices,d,
+                        recipe.utilityDemand(),Map.of())==null?
+                        "WAIT_STEAM":"WAIT_CAPACITY";
+                    continue;
+                }
                 demand.merge(boiler,recipe.utilityDemand(),Integer::sum);
                 advanceFactionBatch(d,ms);
             }else advanceFactionBatch(d,ms);
@@ -1202,31 +1228,131 @@ public final class ArenaSystems {
             device.productionCompleted++;
             return;
         }
-        // Completed production waits for physical storage capacity: no
-        // material appears from thin air or off-screen remote transactions.
+        // The paid output remains on this machine until a real crate accepts it.
+        device.factoryHold="WAIT_OUTPUT";
     }
-    /** No client-predicted industrial progress or hidden remote machine access. */
-    public synchronized String factionBatchStatus(int id){
-        Player p=players.get(id);
-        if(p==null||p.dead)return "NO_LIVE_OPERATOR";
+    /** Diagnostic data is generated exclusively from the host's physical
+     * machines and stock. A remote client never enumerates another account's
+     * factories or probes a device beyond the ordinary interaction radius. */
+    public record FactoryInspection(String facility,String recipe,String state,
+                                    String detail,long elapsed,long duration,
+                                    int completed,String next){
+        public String wire(){
+            return facility+"|"+recipe+"|"+state+"|"+detail+"|"+
+                elapsed+"|"+duration+"|"+completed+"|"+next;
+        }
+        public static FactoryInspection unavailable(){
+            return new FactoryInspection("-","-","NO_OWN_WORKSITE","-",0,0,0,"-");
+        }
+    }
+    private String missingFactoryInputs(World.Device machine,
+            Map<SurvivalCrafting.Item,Integer> costs){
+        List<World.Device> crates=new ArrayList<>();
+        for(World.Device crate:world.devices)
+            if(crate.hp>0&&crate.kind==STORAGE_CRATE&&
+               machine.ownerKey!=null&&machine.ownerKey.equals(crate.ownerKey)&&
+               Math.hypot(crate.x-machine.x,crate.y-machine.y)<=5.5)
+                crates.add(crate);
+        if(crates.isEmpty())return "WAIT_STORAGE";
+        for(World.Device crate:crates){
+            boolean sufficient=true;
+            for(var cost:costs.entrySet())
+                if(crate.storage.count(cost.getKey())<cost.getValue()){
+                    sufficient=false;break;
+                }
+            if(sufficient)return "READY";
+        }
+        List<SurvivalCrafting.Item> items=new ArrayList<>(costs.keySet());
+        items.sort(Comparator.comparing(Enum::name));
+        for(var item:items){
+            int total=0;
+            for(World.Device crate:crates)total+=crate.storage.count(item);
+            if(total<costs.get(item))return "WAIT_INPUT_"+item.name()+"_"+(costs.get(item)-total);
+        }
+        return "WAIT_COMBINE"; // distributed stock cannot pay one atomic batch
+    }
+    private boolean factoryWitnessRequired(World.Device d){
+        return d.kind==PENITENT_VOTIVE_ALTAR||d.kind==PENITENT_RELIQUARY||
+            d.kind==PENITENT_CANTOR_DAIS||d.kind==PENITENT_CHOIR_RELAY||
+            d.kind==PENITENT_WARD_SANCTUM||d.kind==TERROR_COLLECTOR;
+    }
+    private String currentFactoryHold(World.Device d,
+            CraftingEraRegistry.Process job,boolean queued){
+        if(factoryWitnessRequired(d)&&liturgicalWitnesses(d)==0)
+            return "WAIT_WITNESS";
+        if(job.utilityDemand()>0){
+            boolean electric=job.era().ordinal()>=
+                CraftingEraRegistry.Era.ELECTRIC.ordinal();
+            boolean on=electric?
+                ElectricUtility.available(world.devices,d,job.utilityDemand(),Map.of())!=null:
+                SteamUtility.available(world.devices,d,job.utilityDemand(),Map.of())!=null;
+            if(!on)return electric?"WAIT_POWER":"WAIT_STEAM";
+        }
+        if(d.factoryHold.equals("WAIT_CAPACITY"))return "WAIT_CAPACITY";
+        if(queued)return missingFactoryInputs(d,processInputs(job.id()));
+        return "RUNNING";
+    }
+    public synchronized FactoryInspection inspectFactory(int playerId){
+        Player p=players.get(playerId);
+        if(p==null||p.dead||p.accountKey==null||
+           !p.accountKey.startsWith("acct_")||
+           vehicles.carDrivenBy(playerId)>=0)return FactoryInspection.unavailable();
+        World.Device nearest=null;
+        double best=Double.MAX_VALUE;
         for(World.Device d:world.devices){
             if(d.hp<=0||firstProcess(d.kind)==null||
-               !p.accountKey.equals(d.ownerKey)||
-               Math.hypot(p.x-d.x,p.y-d.y)>3.0)continue;
-            if(!d.productionActive)continue;
-            var process=CraftingEraRegistry.process(d.productionRecipeId);
-            long duration=process.seconds();
-            return "RUNNING_"+d.productionRecipeId+"_"+
-                (d.productionMs/1000)+"_OF_"+duration+"_SECONDS"+
-                (d.queuedRecipeId.isEmpty()?"":"_NEXT_"+d.queuedRecipeId);
+               !p.accountKey.equals(d.ownerKey))continue;
+            double distance=Math.hypot(p.x-d.x,p.y-d.y);
+            if(distance>3.0||distance>=best||
+               !world.lineClear(p.x,p.y,d.x,d.y))continue;
+            nearest=d;best=distance;
         }
-        for(World.Device d:world.devices)
-            if(d.hp>0&&firstProcess(d.kind)!=null&&
-               p.accountKey.equals(d.ownerKey)&&
-               Math.hypot(p.x-d.x,p.y-d.y)<=3.0)
-                return "IDLE_"+factionFacility(d.kind)+"_COMPLETED_"+d.productionCompleted+
-                    (d.queuedRecipeId.isEmpty()?"":"_WAITING_NEXT_"+d.queuedRecipeId);
-        return "NO_OWN_WORKSITE_IN_REACH";
+        if(nearest==null)return FactoryInspection.unavailable();
+        World.Device d=nearest;
+        String facility=factionFacility(d.kind);
+        String next=d.queuedRecipeId.isEmpty()?"-":d.queuedRecipeId;
+        if(d.productionActive){
+            var job=CraftingEraRegistry.process(d.productionRecipeId);
+            if(job==null)return FactoryInspection.unavailable();
+            long duration=job.seconds();
+            String state;
+            if(d.productionMs>=duration*1000L){
+                SurvivalCrafting.Item output=SurvivalCrafting.Item.valueOf(job.output());
+                boolean deliverable=false;
+                for(World.Device crate:world.devices)
+                    if(crate.hp>0&&crate.kind==STORAGE_CRATE&&
+                       d.ownerKey.equals(crate.ownerKey)&&
+                       Math.hypot(d.x-crate.x,d.y-crate.y)<=5.5&&
+                       crate.storage.canAdd(output,job.quantity())){
+                        deliverable=true;break;
+                    }
+                state=deliverable?"DELIVERING":"WAIT_OUTPUT";
+            }else state=currentFactoryHold(d,job,false);
+            String detail=state.equals("WAIT_OUTPUT")?
+                job.output()+"_"+job.quantity():"-";
+            return new FactoryInspection(facility,job.id(),state,detail,
+                d.productionMs/1000L,duration,d.productionCompleted,next);
+        }
+        if(!d.queuedRecipeId.isEmpty()){
+            var job=CraftingEraRegistry.process(d.queuedRecipeId);
+            if(job==null)return FactoryInspection.unavailable();
+            String state=currentFactoryHold(d,job,true),detail="-";
+            if(state.startsWith("WAIT_INPUT_")){
+                detail=state.substring("WAIT_INPUT_".length());
+                state="WAIT_INPUT";
+            }
+            return new FactoryInspection(facility,job.id(),state,detail,
+                0,job.seconds(),d.productionCompleted,next);
+        }
+        return new FactoryInspection(facility,"-","IDLE","-",
+            0,0,d.productionCompleted,"-");
+    }
+    /** Retained for older clients; new inspection provides full progress and
+     * exact causes without truncating details into a single toast. */
+    public synchronized String factionBatchStatus(int id){
+        FactoryInspection status=inspectFactory(id);
+        return status.state()+"_"+status.facility()+
+            (status.recipe().equals("-")?"":"_"+status.recipe());
     }
     /** All base PvP damage passes through this gate, including future explosives. */
     public synchronized boolean damageDevice(int attackerId,int deviceIndex,int amount,long utcMillis){

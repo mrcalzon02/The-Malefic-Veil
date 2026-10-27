@@ -282,6 +282,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 toast(localHost.factionBatchStatus(1).replace('_',' '));
         });
     }
+    /** Inspection has no client-minted status or remote access to other accounts. */
+    public void gpuRequestFactoryInspection(){
+        if(net!=null)net.inspectFactory();
+    }
+    public ArenaSystems.FactoryInspection gpuFactoryInspection(){
+        if(net!=null)return net.factoryInspection;
+        return localHost==null?ArenaSystems.FactoryInspection.unavailable():
+            localHost.inspectFactory(1);
+    }
     /** Listed entries have a real physical blueprint and host-paid build path;
      * the UI never offers registry-only late-game machinery as functional. */
     public java.util.List<String> gpuSupportedFacilities(){

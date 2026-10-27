@@ -5,12 +5,12 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.zip.CRC32;
 
-/** Actual V1 -> V10 read and re-save, without silent world or NPC catalog reset. */
+/** Actual V1 -> V11 read and re-save, without silent world or NPC catalog reset. */
 public final class V1RealmCompatibilityTest {
     private static void check(boolean ok,String why){if(!ok)throw new AssertionError(why);}
     static byte[] downgradeForTest(byte[] current)throws Exception{
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(current,0,current.length-8))){
-            check(in.readInt()==0x5645494c&&in.readInt()==10,"Fixture is V10");
+            check(in.readInt()==0x5645494c&&in.readInt()==11,"Fixture is V11");
             in.readLong();in.readLong();
             int devices=in.readInt();
             for(int i=0;i<devices;i++){
@@ -19,6 +19,7 @@ public final class V1RealmCompatibilityTest {
                 for(int j=0;j<stacks;j++){in.readInt();in.readInt();}
                 in.readBoolean();in.readLong();in.readInt();in.readUTF();in.readLong();in.readLong();
                 in.readUTF();in.readLong();in.readUTF();
+                in.readBoolean(); // V11 adds a direction bit after each device receipt.
             }
             int cars=in.readInt();
             for(int i=0;i<cars;i++){
@@ -58,13 +59,13 @@ public final class V1RealmCompatibilityTest {
             check(reopened.cargo.sites().stream().allMatch(x->x.stock()==1),
                 "New cargo economy must initialize exactly once on v1 migration");
             DurableRealm.save(reopened,dir);
-            byte[] v10=Files.readAllBytes(DurableRealm.file(dir));
-            check(v10[7]==10,"V1 realm was not upgraded on save");
+            byte[] v11=Files.readAllBytes(DurableRealm.file(dir));
+            check(v11[7]==11,"V1 realm was not upgraded on save");
             ArenaSystems again=new ArenaSystems(20261020L);
-            check(DurableRealm.load(again,dir),"Upgraded V10 world is unreadable");
+            check(DurableRealm.load(again,dir),"Upgraded V11 world is unreadable");
             check(again.world.pickups.get(0).taken&&again.world.npcs.get(0).hp==51,
-                "Legacy world data disappeared during V10 roundtrip");
-            System.out.println("PASS V1RealmCompatibilityTest: exact legacy header accepted and promoted to V10");
+                "Legacy world data disappeared during V11 roundtrip");
+            System.out.println("PASS V1RealmCompatibilityTest: exact legacy header accepted and promoted to V11");
         }finally{
             try(var stream=Files.walk(dir)){
                 stream.sorted(Comparator.reverseOrder()).forEach(path->{

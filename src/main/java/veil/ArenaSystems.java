@@ -144,6 +144,8 @@ public final class ArenaSystems {
         public String accountKey;
         public long lastHurt=-100000,shotAt=-100000,shadeUntil,abilityAt=-100000,respawnAt=-100000,moveAt;
         public boolean dead;
+        /** Elapsed host time with at least one empty need; never shared across players. */
+        public long deprivationMs;
         public long protectedUntil,lastSpawnAt=-100000;
         public int lastSpawnIndex=-1;
         public final int[] earlySpawnDeaths=new int[3];
@@ -328,6 +330,7 @@ public final class ArenaSystems {
         p.lastHurt=clock;
         if(p.hp==0){
             p.dead=true;p.respawnAt=clock;p.protectedUntil=0;
+            p.deprivationMs=0;
             if(hardcore){
                 p.progression.resetCharacter();
                 p.frags=0;
@@ -1313,6 +1316,7 @@ public final class ArenaSystems {
         p.protectedUntil=clock+5000+respawnRandom.nextInt(3001);
         p.ready=true;
         p.hp=100;p.sanity=75;p.dead=false;p.moveAt=clock;
+        p.deprivationMs=0;
         // No free weapons/ammo are magically returned after death.
         refreshVisibility(p);return true;
     }
@@ -1487,11 +1491,18 @@ public final class ArenaSystems {
             SurvivalCrafting.Status vitals=p.survival.status();
             boolean starving=vitals.hunger()==0;
             boolean dehydrated=vitals.hydration()==0;
-            // Empty need meters must matter. Every five seconds of simulated
-            // host time, hunger removes 2 HP and thirst 3 HP. Both stack.
-            // Tactical shield bubbles cannot absorb biological deprivation.
-            if((starving||dehydrated)&&clock%5000<ms)
-                applyDeprivationDamage(p,(starving?2:0)+(dehydrated?3:0));
+            // Each player's unmet-need clock starts when their own hunger or
+            // hydration first reaches zero. The world clock must not charge a
+            // newly dehydrated/joined player for another player's elapsed time.
+            // Hunger removes 2 HP and thirst 3 HP per five unmet-need seconds.
+            // Tactical shields cannot absorb deprivation; login grace still applies.
+            if(starving||dehydrated){
+                p.deprivationMs+=ms;
+                if(p.deprivationMs>=5000){
+                    p.deprivationMs-=5000;
+                    applyDeprivationDamage(p,(starving?2:0)+(dehydrated?3:0));
+                }
+            }else p.deprivationMs=0;
             // Never passively heal the damage away while either need is empty.
             // Food/water consumption resumes normal recovery after combat rest.
             if(!p.dead&&!starving&&!dehydrated&&clock-p.lastHurt>=5000&&

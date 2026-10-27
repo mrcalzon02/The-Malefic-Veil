@@ -41,7 +41,7 @@ jobs:
           if-no-files-found: error
 
   gpu-desktop:
-    needs: source-portraits:
+    needs: source-portraits
     strategy:
       fail-fast: false
       matrix:

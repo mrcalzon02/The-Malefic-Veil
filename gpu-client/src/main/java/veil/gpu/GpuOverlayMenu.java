@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,UTILITIES,SITES,WORK_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -259,7 +259,7 @@ public final class GpuOverlayMenu {
                     gameplay.gpuStartFactionBatch();show(Screen.GAME);
                 });
                 add("INSPECT WORKSITE PROGRESS",gameplay::gpuInspectFactionBatch);
-                add("STOKE STEAM BOILER",gameplay::gpuFuelSteamBoiler);
+                add("POWER UTILITIES",()->show(Screen.UTILITIES));
                 add("BUILD SHARED / E3 FACILITIES",this::openSites);
                 add("SELECT INDUSTRIAL RECIPE",this::openWorkOrders);
                 add("DEPLOY CRAFTED CRATE",()->{
@@ -268,6 +268,11 @@ public final class GpuOverlayMenu {
                 add("CAMP CRATE INVENTORY",this::openStorage);
                 add("FULL INDUSTRIAL RECIPE INDEX",this::openBook);
                 add("BACK TO CRAFTING",this::openCraft);
+            }
+            case UTILITIES->{
+                add("STOKE STEAM BOILER",gameplay::gpuFuelSteamBoiler);
+                add("CHARGE ELECTRIC GENERATOR",gameplay::gpuChargeGenerator);
+                add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case SITES->{
                 var ids=gameplay.gpuSupportedFacilities();

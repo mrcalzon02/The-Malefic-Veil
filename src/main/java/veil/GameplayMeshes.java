@@ -25,7 +25,10 @@ public final class GameplayMeshes {
         "facility-begotten-spore-basin",
         "facility-steam-boiler","facility-mechanical-shaft","facility-metal-press",
         "facility-unraveled-pressure-shop","facility-penitent-cantor-dais",
-        "facility-begotten-chitin-vat"};
+        "facility-begotten-chitin-vat",
+        "facility-generator","facility-electric-bus","facility-precision-lathe",
+        "facility-water-works","facility-unraveled-sensor-lab",
+        "facility-penitent-choir-relay","facility-begotten-membrane-lab"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -474,6 +477,80 @@ public final class GameplayMeshes {
         }
         chitinVat.diamond(0,2.21,0,.32,.62,0xC69E7E);
         meshes.put(DEVICE[33],chitinVat.done());
+
+
+        // E4: individually modeled physical electrical utility and faction
+        // plants. Utilities are shared, but their factory outputs are NOT.
+        Model generator=new Model();
+        generator.box(0,.21,0,2.61,.30,2.13,0x4C5662);
+        generator.barrel(-.48,1.04,.10,.55,1.15,0x7B7E73);
+        generator.barrel(.64,.91,.10,.41,.87,0xA48B64);
+        generator.box(0,1.84,.22,2.24,.15,.26,0xB9A05B);
+        generator.box(-.74,1.40,-.61,.34,.98,.24,0x566271);
+        generator.box(.84,1.52,-.59,.21,1.17,.28,0xA0AAB2);
+        meshes.put(DEVICE[34],generator.done());
+
+        Model bus=new Model();
+        bus.box(0,.20,0,2.30,.31,1.75,0x52575E);
+        for(int side=-1;side<=1;side+=2){
+            bus.box(side*.85,.92,0,.29,1.40,.36,0x6C7881);
+            bus.box(side*.85,1.72,0,.42,.17,.47,0xD9B15C);
+        }
+        bus.box(0,1.72,0,2.23,.25,.25,0x92876A);
+        for(int j=-1;j<=1;j++)
+            bus.box(j*.48,1.93,.13,.11,.25,.20,0xD8BD76);
+        meshes.put(DEVICE[35],bus.done());
+
+        Model lathe=new Model();
+        lathe.box(0,.22,0,2.72,.31,1.88,0x515C67);
+        lathe.box(-.83,.87,0,.86,1.18,.98,0x728390);
+        lathe.box(.88,.65,0,.56,.72,.83,0x576875);
+        lathe.barrel(-.08,1.03,0,.28,.83,0xB9A270);
+        lathe.box(0,1.45,-.34,2.25,.20,.29,0xADB0A6);
+        lathe.box(.52,1.88,-.37,.17,.76,.17,0xC8AC65);
+        meshes.put(DEVICE[36],lathe.done());
+
+        Model waterworks=new Model();
+        waterworks.box(0,.21,0,2.65,.32,2.25,0x596770);
+        for(int side=-1;side<=1;side+=2){
+            waterworks.barrel(side*.67,.84,.19,.44,1.09,0x79929B);
+            waterworks.box(side*.70,1.57,.15,.66,.18,.68,0xACB8AF);
+        }
+        waterworks.box(0,1.56,-.53,2.00,.19,.24,0x4E859E);
+        waterworks.box(0,.83,-.92,1.83,.27,.19,0xA2B0AA);
+        meshes.put(DEVICE[37],waterworks.done());
+
+        Model sensor=new Model();
+        sensor.box(0,.21,0,2.61,.31,2.02,0x4C5562);
+        sensor.box(-.64,.91,.10,.89,1.10,.96,0x687D91);
+        sensor.box(.61,.81,.16,.76,.77,.91,0xA68F55);
+        sensor.barrel(0,1.73,.04,.28,1.17,0x748C95);
+        sensor.box(0,2.39,.04,1.51,.12,.24,0xCAA35D);
+        sensor.diamond(.56,1.50,-.43,.26,.43,0x7CB3C3);
+        meshes.put(DEVICE[38],sensor.done());
+
+        Model choir=new Model();
+        choir.box(0,.19,0,2.74,.32,2.26,0x54464F);
+        choir.box(0,.73,0,1.86,.73,1.64,0x827482);
+        for(int j=-1;j<=1;j++){
+            choir.box(j*.81,1.57,.57,.24,2.07,.22,0x64566D);
+            choir.diamond(j*.81,2.64,.57,.23,.52,0xC4A874);
+        }
+        choir.diamond(0,1.74,-.19,.49,.90,0x997187);
+        choir.box(0,2.31,.06,1.26,.12,.22,0xAAB4BC);
+        meshes.put(DEVICE[39],choir.done());
+
+        Model membrane=new Model();
+        membrane.box(0,.20,0,2.80,.32,2.38,0x584551);
+        membrane.box(0,.65,0,2.35,.60,1.94,0x906576);
+        membrane.diamond(0,1.37,0,.90,1.38,0xC3879B);
+        for(int j=0;j<8;j++){
+            double angle=j*Math.PI/4;
+            membrane.diamond(Math.cos(angle)*.98,.83,
+                Math.sin(angle)*.80,.20,.66,0xB18E8D);
+        }
+        membrane.diamond(0,2.24,0,.37,.61,0x9BC2AD);
+        meshes.put(DEVICE[40],membrane.done());
 
         // Reuse selected CC0 Beckenburg models, not the full source library.
         try {

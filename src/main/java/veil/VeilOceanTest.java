@@ -30,6 +30,28 @@ public final class VeilOceanTest {
                 }
             }
         check(found>0&&dry>0,"Seed has no real land/sea interface");
+        boolean surf=false;
+        for(int x=1;x<ContinentLayout.SIZE-1&&!surf;x++)
+            for(int z=1;z<ContinentLayout.SIZE-1&&!surf;z++){
+                if(world.continent().biome(x,z)!=ContinentLayout.Biome.WATER)continue;
+                double wx=vista.cityPlates().worldX(x),wz=vista.cityPlates().worldZ(z);
+                double size=World.PARCEL_METERS,eps=.20;
+                double[][] nearLand={
+                    {wx+eps,wz+size*.5,x-1,z},
+                    {wx+size-eps,wz+size*.5,x+1,z},
+                    {wx+size*.5,wz+eps,x,z-1},
+                    {wx+size*.5,wz+size-eps,x,z+1}
+                };
+                for(double[] edge:nearLand)
+                    if(world.continent().biome((int)edge[2],(int)edge[3])!=
+                        ContinentLayout.Biome.WATER){
+                        check(ocean.wet(edge[0],edge[1])&&
+                            ocean.bottom(edge[0],edge[1])>-.7,
+                            "Actual coastline does not shallow for wave run-up and foam");
+                        surf=true;break;
+                    }
+            }
+        check(surf,"Seeded map never exercises a real land-to-ocean surf boundary");
         check(Double.isNaN(ocean.height(landX,landZ,1,"CLEAR"))&&
             ocean.color(landX,landZ,1,"CLEAR")==0,
             "Water renderer shaded dry land");

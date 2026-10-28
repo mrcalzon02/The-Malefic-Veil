@@ -43,6 +43,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private int health=100,sanity=100,cash=150,scrap=4,medkits=2,pistolReserve=48,shellReserve=18,pistolClip=12,shellClip=6;
     private int gun=0,spawn=0,frags=0,previousMouse=-1,previousMouseY=-1;
     private double cameraPitch=0;
+    /** Active movement stamina; only Shift+movement consumes it. */
+    private double sprintEnergy=100;
+    private boolean sprintExhausted;
     private boolean mapVisible=false,continentVisible=false,help=true,dead=false;
     private boolean inventoryVisible=false,skillsVisible=false;
     private boolean aircraftShowroom=false;
@@ -66,7 +69,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.List<GpuCraftRecipe> crafts,
         java.util.List<UrbanScene.ModelInstance> dynamic,
         ArsenalSystems.View arsenalState,boolean arsenalMenu,int arsenalChoice,
-        String weatherPreset,double rain,double snow,double flash) {}
+        String weatherPreset,double rain,double snow,double flash,
+        double sprintEnergy,String interactPrompt) {}
     public record GpuCraftRecipe(String id,String station,String description,
                                  boolean affordable) {}
     private volatile GpuFrame gpuFrame;
@@ -629,9 +633,17 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             noticeTicks>0?notice:"",java.util.Map.copyOf(carried()),
             java.util.List.copyOf(stats),gpuCraftingSnapshot(),
             java.util.List.copyOf(actors),equipped,arsenalMenuVisible,arsenalMenuChoice,
-            weather.current(),weather.rain(),weather.snow(),weather.flash());
+            weather.current(),weather.rain(),weather.snow(),weather.flash(),
+            sprintEnergy,gpuInteractionPrompt());
     }
 
+    private String gpuInteractionPrompt(){
+        InteractionFocus.Target focus=focusTarget();
+        if(focus==null)return "";
+        String action=focus.kind()==InteractionFocus.Kind.PICKUP?"GRAB":
+            focus.kind()==InteractionFocus.Kind.RESOURCE?"HARVEST":"USE";
+        return "E  "+action+" "+focus.name();
+    }
     private java.util.List<ArsenalSystems.Loot> arsenalLootVisuals(){
         // Client and host use the same deterministic loot schedule.
         return arsenalVisualHost.arsenal.loot;
@@ -1004,6 +1016,19 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                     "GATHER REJECTED: "+result.substring(result.indexOf('|')+1));
         }
         double step=.033;
+        boolean walking=down(KeyEvent.VK_W)||down(KeyEvent.VK_A)||
+            down(KeyEvent.VK_S)||down(KeyEvent.VK_D);
+        boolean sprintRequested=!dead&&walking&&down(KeyEvent.VK_SHIFT)&&
+            !down(KeyEvent.VK_C)&&
+            (net==null?localVehicles.carDrivenBy(1)<0:net.drivenCar()<0);
+        if(sprintRequested&&!sprintExhausted){
+            sprintEnergy=Math.max(0,sprintEnergy-24*step);
+            if(sprintEnergy<=0)sprintExhausted=true;
+        }else{
+            sprintEnergy=Math.min(100,sprintEnergy+17*step);
+            if(sprintEnergy>=28)sprintExhausted=false;
+        }
+        boolean sprinting=sprintRequested&&!sprintExhausted;
         abilityCooldown=Math.max(0,abilityCooldown-step);
         abilitySeconds=Math.max(0,abilitySeconds-step);
         fireCooldown=Math.max(0,fireCooldown-step);
@@ -1120,7 +1145,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             if(ticks%3==0){
                 if(net.drivenCar()>=0)net.drive((down(KeyEvent.VK_W)?1:0)-(down(KeyEvent.VK_S)?1:0),
                     (down(KeyEvent.VK_D)?1:0)-(down(KeyEvent.VK_A)?1:0));
-                else net.state(px,py,angle,(down(KeyEvent.VK_C)?1:0)|(down(KeyEvent.VK_SHIFT)?2:0));
+                else net.state(px,py,angle,(down(KeyEvent.VK_C)?1:0)|(sprinting?2:0));
             }
             if(ticks%90==0)net.ping();
         }
@@ -1150,7 +1175,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             double m=Math.hypot(forward,sideways);
             if(m>0){
                 forward/=m;sideways/=m;
-                double speed=down(KeyEvent.VK_C)?1.1:down(KeyEvent.VK_SHIFT)?4.2:2.8;
+                double speed=down(KeyEvent.VK_C)?1.1:sprinting?4.2:2.8;
                 slide((Math.cos(angle)*forward-Math.sin(angle)*sideways)*speed*step,
                     (Math.sin(angle)*forward+Math.cos(angle)*sideways)*speed*step);
             }
@@ -1346,9 +1371,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.List<InteractionFocus.Candidate> objects=new java.util.ArrayList<>();
         for(int i=0;i<world.pickups.size();i++){
             var p=world.pickups.get(i);
-            if(!p.taken&&Math.hypot(p.x-px,p.y-py)<1.2)
+            if(!p.taken&&Math.hypot(p.x-px,p.y-py)<=InteractionFocus.PICKUP_REACH)
                 objects.add(new InteractionFocus.Candidate(InteractionFocus.Kind.PICKUP,
-                    i,InteractionFocus.pickupName(p.kind),p.x,p.y,.30,.75));
+                    i,InteractionFocus.pickupName(p.kind),p.x,p.y,
+                    InteractionFocus.PICKUP_RADIUS,InteractionFocus.PICKUP_REACH));
         }
         if(net!=null){
             for(var car:net.cars.values())if(car.driverId()<0&&car.hp()>0)

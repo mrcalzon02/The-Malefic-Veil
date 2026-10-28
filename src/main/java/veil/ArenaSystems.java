@@ -20,6 +20,11 @@ public final class ArenaSystems {
     private final Map<String,CharacterProgression.Snapshot> accountSkills=new LinkedHashMap<>();
     private final Map<String,SurvivalCrafting.Status> accountSurvival=new LinkedHashMap<>();
     private final java.security.SecureRandom respawnRandom=new java.security.SecureRandom();
+    /** Last bounded host simulation interval. Real dedicated servers tick at
+     * 100ms, while deterministic tests may advance in 1-1000ms increments.
+     * Inspections must not promise power at a lower threshold than execution.
+     * Transient diagnostics only; never persisted as a machine resource. */
+    private long lastUtilityTickMs=100;
     /** Persistent host-owned account snapshot, excluding transient socket/vehicle ownership. */
     public record Profile(int hp,int sanity,int cash,int scrap,int medkits,int pistolReserve,
         int shellReserve,int pistolClip,int shellClip,int classId,int frags,boolean dead,
@@ -1350,7 +1355,8 @@ public final class ArenaSystems {
                 if(stock==0)state="WAIT_INPUT";
                 else if(!route.destination().storage.canAdd(item,1))
                     state="WAIT_STORAGE";
-                else if(ElectricUtility.available(world.devices,belt,load,Map.of())==null)
+                else if(ElectricUtility.available(world.devices,belt,load,
+                    Map.of(),lastUtilityTickMs)==null)
                     state="WAIT_POWER";
                 else if(belt.factoryHold.equals("WAIT_CAPACITY"))
                     state="WAIT_CAPACITY";
@@ -1413,8 +1419,10 @@ public final class ArenaSystems {
             boolean electric=job.era().ordinal()>=
                 CraftingEraRegistry.Era.ELECTRIC.ordinal();
             boolean on=electric?
-                ElectricUtility.available(world.devices,d,job.utilityDemand(),Map.of())!=null:
-                SteamUtility.available(world.devices,d,job.utilityDemand(),Map.of())!=null;
+                ElectricUtility.available(world.devices,d,job.utilityDemand(),
+                    Map.of(),lastUtilityTickMs)!=null:
+                SteamUtility.available(world.devices,d,job.utilityDemand(),
+                    Map.of(),lastUtilityTickMs)!=null;
             if(!on)return electric?"WAIT_POWER":"WAIT_STEAM";
         }
         if(d.factoryHold.equals("WAIT_CAPACITY"))return "WAIT_CAPACITY";
@@ -1531,7 +1539,8 @@ public final class ArenaSystems {
                           transfer.route().destination().y-d.y)>5.5)continue;
             int load=ConveyorLogistics.sorted(belt,world.devices)?
                 ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
-            return ElectricUtility.available(world.devices,belt,load,Map.of())!=null?
+            return ElectricUtility.available(world.devices,belt,load,
+                Map.of(),lastUtilityTickMs)!=null?
                 "AUTO_FEED_VIA_CONVEYOR_"+i:
                 "RESTORE_AUTO_CONVEYOR_POWER_"+i;
         }
@@ -1858,6 +1867,7 @@ public final class ArenaSystems {
     public synchronized void advance(long ms){
         if(ms<=0||ms>1000)throw new IllegalArgumentException("bounded fixed tick required");
         clock+=ms;
+        lastUtilityTickMs=ms;
         thrown.advance(ms);
         arsenal.advance(ms);
         vehicles.advance(ms);

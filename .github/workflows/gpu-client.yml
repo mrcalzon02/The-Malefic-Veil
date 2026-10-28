@@ -151,7 +151,8 @@ jobs:
         run: |
           set -euo pipefail
           xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
-            timeout 100s java -Djava.awt.headless=false \
+            timeout 120s java -Djava.awt.headless=false \
+              -Dveil.gpu.oceanBenchmark=true \
               -jar gpu-client/target/MaleficVeil-GPU.jar \
               --gallery --seed=887766 --city=C |
             tee build/test-visuals/gpu-ocean-performance.log
@@ -159,7 +160,9 @@ jobs:
             build/test-visuals/gpu-ocean-performance.log
           grep -Eq 'OCEAN_GPU_PERF .*chunks=[1-9][0-9]* .*triangles=[1-9][0-9]* .*uploadedFrameBytes=0' \
             build/test-visuals/gpu-ocean-performance.log
-          test -s build/test-visuals/gallery-seed-887766-city-C-01-generated-plate-overhead.png
+          grep -q 'PASS GPU_OCEAN_BENCHMARK samples=' \
+            build/test-visuals/gpu-ocean-performance.log
+          test -s build/test-visuals/gpu-ocean-coastal-benchmark.png
           echo 'PASS GPU_OCEAN_STATIC_VBO nonzero real ocean triangles and no frame uploads'
           {
             echo '### Native ocean GPU diagnostics (real coastal City C, seed 887766)'
@@ -245,6 +248,7 @@ jobs:
             build/test-visuals/gallery-seed-*.png
             build/test-visuals/gallery-seed-*.log
             build/test-visuals/gpu-ocean-performance.log
+            build/test-visuals/gpu-ocean-coastal-benchmark.png
             build/test-visuals/gpu-standalone-editor-live-viewport.png
             build/test-visuals/editor-kit.log
             build/test-visuals/psx-source-audit.log

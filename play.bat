@@ -2,7 +2,7 @@
 setlocal
 cd /d "%~dp0"
 if not exist out mkdir out
-javac --release 17 -encoding UTF-8 -d out src\main\java\veil\*.java src\main\java\dev\mrcalzon\water\*.java
+javac --release 17 -encoding UTF-8 -d out src\main\java\hbnet\*.java src\main\java\veil\*.java src\main\java\dev\mrcalzon\water\*.java
 if errorlevel 1 (echo Java 17 compiler build failed. & pause & exit /b 1)
 java -cp out veil.WorldSelfTest
 if errorlevel 1 (echo City checks failed. & pause & exit /b 1)

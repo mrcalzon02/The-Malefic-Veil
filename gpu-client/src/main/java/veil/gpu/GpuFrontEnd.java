@@ -48,6 +48,10 @@ public final class GpuFrontEnd extends ApplicationAdapter {
     private String enemy="normal",loot="normal",address="127.0.0.1",portText="7777";
     private int ai=6,capacity=12;
     private boolean hardcore;
+    private hbnet.LocalProfile network;
+    private int networkPage,networkOffset,selectedServer=-1,selectedFriend=-1;
+    private boolean secureJoin=true,exportArmed;
+    private String roomSecret="",serverFingerprint="",friendCard="",friendLabel="",friendNotes="";
     private WorldCreationConfig chosenWorld;
     private CharacterRoster.Faction faction=CharacterRoster.Faction.THE_UNRAVELED;
     private volatile MaleficVeil ready;
@@ -65,6 +69,8 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         DesktopDiagnostics.install("desktop");
         DesktopDiagnostics.note("UNIFIED_GPU_MAIN_MENU");
         settings=GpuClientSettings.load();
+        try{network=new hbnet.LocalProfile(java.nio.file.Path.of(System.getProperty("hbnet.profile",System.getProperty("user.home")+"/.malefic-veil/network")));}
+        catch(Exception invalid){message="Local network profile requires recovery (NET-20)";}
         ui=new SpriteBatch();
         skin=new PsxHorrorMenu(true);
         modelPortraits=new GpuItemPortraits();
@@ -76,6 +82,9 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         applyVideo();
         typing=new InputAdapter(){
             @Override public boolean keyDown(int key){
+                if(key==Input.Keys.V&&(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)||Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))&&selected>=0&&selected<entries.size()){
+                    String field=entries.get(selected).textField();if(field!=null){String value=Gdx.app.getClipboard().getContents();if(value==null||value.length()>fieldLimit(field)||value.chars().anyMatch(c->c<32||c>126)){note("Invalid printable ASCII input (NET-01)");return true;}setText(field,value);replaceFieldOnType=false;return true;}
+                }
                 if((key==Input.Keys.A)&&
                     (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)||
                      Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) &&
@@ -98,7 +107,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                     }else if(!val.isEmpty())setText(field,val.substring(0,val.length()-1));
                     return true;
                 }
-                if(character>=32&&character<=126&&val.length()<50){
+                if(character>=32&&character<=126&&val.length()<fieldLimit(field)){
                     setText(field,(replaceFieldOnType?"":val)+character);
                     replaceFieldOnType=false;
                     return true;
@@ -109,15 +118,53 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         Gdx.input.setInputProcessor(typing);
         rebuild();
     }
+    private static int fieldLimit(String key){return switch(key){case "address"->253;case "port"->5;case "password"->128;case "fingerprint"->64;case "card"->4096;case "notes"->256;default->64;};}
+    private static String masked(String value){return "*".repeat(Math.min(32,value.length()));}
+    private interface NetworkAction{void run()throws Exception;}
+    private void networkAction(NetworkAction action){try{action.run();rebuild(false);}catch(Exception invalid){note("Network action unavailable; check private input (NET-04)");}}
+    private void networkEntries(){
+        if(network==null){item("LOCAL PROFILE RECOVERY REQUIRED",()->{});item("BACK",()->gotoScreen(Screen.HOME));return;}
+        if(networkPage==0){
+            edit("HOST / IP: "+masked(address)+"_","address");edit("PORT: "+masked(portText)+"_","port");
+            edit("FINGERPRINT: "+masked(serverFingerprint)+"_","fingerprint");edit("ROOM KEY: "+masked(roomSecret)+"_","password");
+            item("TRANSPORT: "+(secureJoin?"PINNED TLS":"TRUSTED LAN (UNENCRYPTED)"),()->{secureJoin=!secureJoin;rebuild(false);});
+            item("STREAM SAFE: "+(network.streamSafe()?"ON":"OFF"),()->networkAction(()->network.streamSafe(!network.streamSafe())));
+            item("SAVED SERVERS",()->{networkPage=1;networkOffset=0;rebuild();});item("FRIENDS",()->{networkPage=2;networkOffset=0;rebuild();});
+            item("SELECT FACTION",()->networkAction(()->{hbnet.Hbnet.host(address);hbnet.Hbnet.port(portText);if(secureJoin){hbnet.Hbnet.pin(serverFingerprint);hbnet.Hbnet.password(roomSecret.toCharArray());}chosenWorld=null;gotoScreen(Screen.FACTION);}));
+            item("BACK",()->gotoScreen(Screen.HOME));return;
+        }
+        if(networkPage==1){
+            var saved=network.servers();for(int n=networkOffset;n<Math.min(saved.size(),networkOffset+4);n++){final int at=n;var server=saved.get(n);item(network.serverLabel(server,n),()->{selectedServer=at;address=server.host();portText=Integer.toString(server.port());serverFingerprint=server.pin();friendLabel=server.label();secureJoin=true;networkPage=0;rebuild();});}
+            edit("PRIVATE LABEL: "+masked(friendLabel)+"_","label");
+            item("SAVE / EDIT CURRENT ENDPOINT",()->networkAction(()->network.server(selectedServer>=0&&selectedServer<saved.size()?saved.get(selectedServer).id():null,friendLabel,address,hbnet.Hbnet.port(portText),serverFingerprint)));
+            item("FAVORITE SELECTED",()->networkAction(()->{if(selectedServer>=0&&selectedServer<saved.size())network.favoriteServer(saved.get(selectedServer).id(),!saved.get(selectedServer).favorite());}));
+            item("REMOVE SELECTED",()->networkAction(()->{if(selectedServer>=0&&selectedServer<saved.size()){network.removeServer(saved.get(selectedServer).id());selectedServer=-1;}}));
+            if(saved.size()>4)item("MORE / FIRST",()->{networkOffset=networkOffset+4<saved.size()?networkOffset+4:0;rebuild();});
+        }else if(networkPage==2){
+            var contacts=network.friends();for(int n=networkOffset;n<Math.min(contacts.size(),networkOffset+4);n++){final int at=n;var friend=contacts.get(n);item(network.friendLabel(friend,n)+" / "+friend.state(),()->{selectedFriend=at;friendLabel=friend.label();friendNotes=friend.notes();networkPage=3;rebuild();});}
+            edit("CARD / INVITE: "+masked(friendCard)+"_","card");edit("PRIVATE LABEL: "+masked(friendLabel)+"_","label");
+            item("IMPORT CARD / SIGNED INVITE",()->networkAction(()->{if(friendCard.startsWith("HBI1.")){var invite=hbnet.Invitation.parse(friendCard,"malefic-veil");address=invite.host();portText=Integer.toString(invite.port());serverFingerprint=invite.fingerprint();secureJoin=true;networkPage=0;}else network.importCard(friendCard,friendLabel);friendCard="";}));
+            item(exportArmed?"CONFIRM PRIVATE COPY OF OWN CARD":"EXPORT OWN CARD (PRIVATE CLIPBOARD)",()->networkAction(()->{if(!exportArmed){exportArmed=true;note("Clipboard / other apps may be captured. Select again to confirm.");}else{Gdx.app.getClipboard().setContents(network.identity.card());exportArmed=false;note("Private card copied. Presence is unknown until directly observed.");}}));
+            if(contacts.size()>4)item("MORE / FIRST",()->{networkOffset=networkOffset+4<contacts.size()?networkOffset+4:0;rebuild();});
+        }else{
+            var contacts=network.friends();if(selectedFriend<0||selectedFriend>=contacts.size()){networkPage=2;networkEntries();return;}var friend=contacts.get(selectedFriend);
+            edit("PRIVATE LABEL: "+masked(friendLabel)+"_","label");edit("PRIVATE NOTES: "+masked(friendNotes)+"_","notes");
+            item("SAVE NAME / NOTES / FAVORITE",()->networkAction(()->network.edit(friend.id(),friendLabel,friendNotes,!friend.favorite())));
+            for(var state:hbnet.LocalProfile.ContactState.values())item(state==hbnet.LocalProfile.ContactState.PENDING?"UNBLOCK TO PENDING":state.name(),()->networkAction(()->network.state(friend.id(),state)));
+            item("REMOVE CONTACT",()->networkAction(()->{network.removeFriend(friend.id());networkPage=2;}));
+            item("PRESENCE: UNKNOWN / LAST DIRECT OBSERVATION",()->note("No global friend tracking or arbitrary offline join is available."));
+        }
+        item("BACK",()->{networkPage=0;rebuild();});
+    }
     private String getText(String key){return switch(key){
         case "world"->worldName;case "seed"->seedText;
-        case "address"->address;case "port"->portText;
+        case "address"->address;case "port"->portText;case "password"->roomSecret;case "fingerprint"->serverFingerprint;case "card"->friendCard;case "label"->friendLabel;case "notes"->friendNotes;
         default->throw new IllegalArgumentException("Unknown input");
     };}
     private void setText(String key,String value){
         switch(key){
             case "world"->worldName=value;case "seed"->seedText=value;
-            case "address"->address=value;case "port"->portText=value;
+            case "address"->address=value;case "port"->portText=value;case "password"->roomSecret=value;case "fingerprint"->serverFingerprint=value;case "card"->friendCard=value;case "label"->friendLabel=value;case "notes"->friendNotes=value;
             default->throw new IllegalArgumentException("Unknown input");
         }
         rebuild(false);
@@ -137,7 +184,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             case CONNECTING -> "Connecting... ESC or Cancel returns to classes.";
         };
     }
-    private void note(String value){message=value;System.out.println("GPU_MENU "+value);}
+    private void note(String value){message=hbnet.Privacy.enabled?(value.contains("NET-")?"Operation unavailable (NET-04)":"Private session update (Stream Safe)"):value;System.out.println("GPU_MENU_UPDATE");}
     private void item(String label,Runnable action){
         entries.add(new Entry(label,action,null,null,null));
     }
@@ -169,7 +216,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                 item("BACK",()->gotoScreen(Screen.HOME));
             }
             case CREATE -> {
-                edit("WORLD NAME: "+worldName+"_", "world");
+                edit("WORLD NAME: "+(hbnet.Privacy.enabled?masked(worldName):worldName)+"_", "world");
                 edit("SEED (BLANK=RANDOM): "+seedText+"_", "seed");
                 adjustable("MODE: "+(hardcore?"HARDCORE":"NORMAL")+
                     " < >",()->{hardcore=!hardcore;rebuild(false);},
@@ -194,20 +241,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                     item("MORE WORLDS",()->{loadOffset+=9;rebuild();});
                 item("BACK",()->gotoScreen(Screen.WORLDS));
             }
-            case JOIN -> {
-                edit("HOST / IP: "+address+"_", "address");
-                edit("PORT: "+portText+"_", "port");
-                item("SELECT FACTION",()->{
-                    try{
-                        if(address.isBlank()||address.length()>253)throw new IllegalArgumentException("Host required");
-                        int port=Integer.parseInt(portText);
-                        if(port<1||port>65535)throw new IllegalArgumentException("Port must be 1-65535");
-                        chosenWorld=null;gotoScreen(Screen.FACTION);
-                    }catch(NumberFormatException invalid){note("Invalid network port");}
-                    catch(IllegalArgumentException invalid){note(invalid.getMessage());}
-                });
-                item("BACK",()->gotoScreen(Screen.HOME));
-            }
+            case JOIN -> networkEntries();
             case FACTION -> {
                 for(CharacterRoster.Faction f:CharacterRoster.Faction.values())
                     item(f.display.toUpperCase(Locale.ROOT),()->{
@@ -323,7 +357,8 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             final int port=mode.equals("join")?Integer.parseInt(portText):0;
             MaleficVeil.GpuLaunch request=new MaleficVeil.GpuLaunch(
                 mode.equals("join")?null:chosenWorld,
-                mode.equals("join")?address:null,port,faction,role);
+                mode.equals("join")?address:null,port,faction,role,
+                mode.equals("join")&&secureJoin?new hbnet.Hbnet.Client(serverFingerprint,"malefic-veil",java.util.Objects.requireNonNull(network).identity,roomSecret.toCharArray()):null);
             gotoScreen(Screen.CONNECTING);
             note("Connecting to authoritative world...");
             final int ticket=connectionAttempt.incrementAndGet();
@@ -638,7 +673,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             if(screen==Screen.CONNECTING&&failedAttempt==connectionAttempt.get()){
                 gotoScreen(Screen.CLASS);
                 Throwable root=why.getCause()==null?why:why.getCause();
-                note("Cannot join/start world: "+root.getMessage());
+                note("Cannot join/start world (NET-04). No insecure fallback.");
             }
         }
         input();

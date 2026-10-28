@@ -709,7 +709,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
      * host-side authority remains with LanServer and NetLink.
      */
     public record GpuLaunch(WorldCreationConfig world,String joinHost,int joinPort,
-                            CharacterRoster.Faction faction,FactionClasses.Role role) {
+                            CharacterRoster.Faction faction,FactionClasses.Role role,hbnet.Hbnet.Client transport) {
+        public GpuLaunch(WorldCreationConfig world,String joinHost,int joinPort,CharacterRoster.Faction faction,FactionClasses.Role role){this(world,joinHost,joinPort,faction,role,null);}
         public GpuLaunch {
             if(faction==null||role==null||role.faction()!=faction||!role.playable())
                 throw new IllegalArgumentException("Choose a playable faction class");
@@ -744,7 +745,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 link=new NetLink("127.0.0.1",host.port());
                 worldSeed=options.seed();
             }else{
-                link=new NetLink(requested.joinHost(),requested.joinPort());
+                link=new NetLink(requested.joinHost(),requested.joinPort(),requested.transport());
                 worldSeed=link.seed;
             }
             link.selectFaction(requested.faction());
@@ -924,21 +925,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                         config.hardcore(),bots);
                     link=new NetLink("127.0.0.1",hostedServer.port());
                 } else {
-                    String host=JOptionPane.showInputDialog(null,
-                        "Host IP / hostname and port (default 7777)","127.0.0.1:7777");
-                    if(host==null||host.isBlank())return;
-                    String address=host.trim();int port=7777;
-                    if(address.contains(":")){
-                        int separator=address.lastIndexOf(':');
-                        port=Integer.parseInt(address.substring(separator+1));
-                        address=address.substring(0,separator);
-                    }
-                    link=new NetLink(address,port);
+                    hbnet.LocalProfile network=new hbnet.LocalProfile(java.nio.file.Path.of(System.getProperty("hbnet.profile",System.getProperty("user.home")+"/.malefic-veil/network")));
+                    hbnet.JoinDialog.Request request=hbnet.JoinDialog.show(null,network,"malefic-veil",7777);
+                    if(request==null)return;
+                    link=new NetLink(request.host(),request.port(),request.transport());
                 }
-            } catch(IOException|IllegalArgumentException ex) {
+            } catch(IOException|IllegalArgumentException|java.security.GeneralSecurityException ex) {
                 DesktopDiagnostics.note("SESSION_CONNECT_FAILURE "+
-                    ex.getClass().getSimpleName()+": "+ex.getMessage());
-                JOptionPane.showMessageDialog(null,"LAN connection failed: "+ex.getMessage(),"Network error",JOptionPane.ERROR_MESSAGE);
+                    ex.getClass().getSimpleName());
+                JOptionPane.showMessageDialog(null,"Connection unavailable (NET-04)","Network error",JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if(link!=null)seed=link.seed;

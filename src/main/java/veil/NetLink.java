@@ -61,12 +61,12 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentHashMap<String,Integer> survivalInventory=new ConcurrentHashMap<>();
 
     public final ConcurrentHashMap<Integer,ResourceNode> resourceNodes=new ConcurrentHashMap<>();
-    public final ConcurrentLinkedQueue<String> harvestResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> harvestResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
     public final ConcurrentHashMap<Integer,SalvageNode> salvageNodes=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Long,LooseItem> looseItems=new ConcurrentHashMap<>();
-    public final ConcurrentLinkedQueue<String> itemResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<String> arsenalResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<Integer> arsenalPicked=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> itemResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<String> arsenalResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<Integer> arsenalPicked=new hbnet.BoundedEventQueue<>(2048,this::overflow);
     public final ConcurrentHashMap<Integer,Integer> benchTiers=new ConcurrentHashMap<>();
     private volatile ArsenalSystems.View arsenalView;
     private volatile java.util.List<ArsenalSystems.Effect> arsenalEffects=java.util.List.of();
@@ -86,22 +86,22 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentHashMap<Integer,String> truckCargo=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,CargoYard> cargoYards=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,CargoDrop> cargoDrops=new ConcurrentHashMap<>();
-    public final ConcurrentLinkedQueue<String> cargoResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> cargoResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
     public final ConcurrentHashMap<String,Integer> campStock=new ConcurrentHashMap<>();
-    public final ConcurrentLinkedQueue<String> campStockResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<String> factoryResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<String> factionResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<String> craftResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<String> consumeResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<String> rideResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<Integer> pickedUp=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<DeviceEvent> structures=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> campStockResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<String> factoryResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<String> factionResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<String> craftResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<String> consumeResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<String> rideResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<Integer> pickedUp=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<DeviceEvent> structures=new hbnet.BoundedEventQueue<>(2048,this::overflow);
     public final ConcurrentHashMap<Integer,FieldEvent> activeFields=new ConcurrentHashMap<>();
-    public final ConcurrentLinkedQueue<FieldBurst> fieldBursts=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<String> fieldResults=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<NpcEvent> npcs=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<ShotEvent> shots=new ConcurrentLinkedQueue<>();
-    public final ConcurrentLinkedQueue<BuildEvent> buildResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<FieldBurst> fieldBursts=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<String> fieldResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<NpcEvent> npcs=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<ShotEvent> shots=new hbnet.BoundedEventQueue<>(2048,this::overflow);
+    public final ConcurrentLinkedQueue<BuildEvent> buildResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
     private final AtomicLong shotIds=new AtomicLong();
     private volatile Self self;
     private volatile String accountKey;
@@ -116,32 +116,36 @@ public final class NetLink implements AutoCloseable {
         long elapsed=TimeUnit.NANOSECONDS.toMillis(Math.max(0,System.nanoTime()-respawnTimerReceivedAt));
         return Math.max(0,respawnRemainingMs-elapsed);
     }
-    public final ConcurrentLinkedQueue<String> respawnResults=new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<String> respawnResults=new hbnet.BoundedEventQueue<>(2048,this::overflow);
     /** Authenticated, authoritative inspection for one nearby owned factory. */
     public volatile ArenaSystems.FactoryInspection factoryInspection;
     public volatile ArenaSystems.ConveyorInspection conveyorInspection;
     public volatile ArenaSystems.ProductionOverview productionOverview;
+    private void overflow(){connected=false;try{if(socket!=null)socket.close();}catch(IOException ignored){}}
     public NetLink(String host,int port)throws IOException {
-        socket=new Socket();
-        socket.connect(new InetSocketAddress(host,port),4000);
+        this(host,port,null);
+    }
+    public NetLink(String host,int port,hbnet.Hbnet.Client transport)throws IOException {
+        socket=transport==null?new Socket():transport.connect(host,port);
+        if(transport==null)socket.connect(new InetSocketAddress(hbnet.Hbnet.lanAddress(host),port),4000);
         // A TCP peer can accept and then never send WELCOME. Bound the
         // handshake too, or cancel/back leaves a stuck background client.
         socket.setSoTimeout(4000);
         BufferedReader reader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
-        String hello=reader.readLine();
+        String hello=hbnet.Lines.read(reader,16384);
         socket.setSoTimeout(0);
         String[] parts=hello==null?new String[0]:hello.split("\\|");
         if(parts.length!=4||!parts[0].equals("WELCOME")||!parts[3].equals("3"))
             throw new IOException("Unsupported or invalid LAN protocol");
         try{id=Integer.parseInt(parts[1]);seed=Long.parseLong(parts[2]);}
         catch(NumberFormatException e){throw new IOException("Malformed host greeting",e);}
-        writer.println("AUTH|"+PlayerIdentity.forServer(host,port));
+        if(transport==null)writer.println("AUTH|"+PlayerIdentity.forServer(host,port));
         if(writer.checkError())throw new IOException("Authentication greeting not sent");
         Thread t=new Thread(()->{
             String line;
             try{
-                while((line=reader.readLine())!=null){
+                while((line=hbnet.Lines.read(reader,16384))!=null){
                     String[] s=line.split("\\|");
                     try{
                         switch(s[0]){

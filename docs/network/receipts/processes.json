@@ -1,0 +1,16 @@
+{
+  "game": "veil",
+  "mode": "explicit trusted loopback, no TLS claim",
+  "clients": [
+    {
+      "exit": 0,
+      "output": "PASS independent veil client: identity admission and peer stance replication"
+    },
+    {
+      "exit": 0,
+      "output": "PASS independent veil client: identity admission and peer stance replication"
+    }
+  ],
+  "server_exit": 0,
+  "port_released": true
+}

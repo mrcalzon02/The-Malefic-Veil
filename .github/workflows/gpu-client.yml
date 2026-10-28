@@ -77,7 +77,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p build/classes
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/hbnet/*.java src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
           java -cp build/classes veil.WorldDayNightTest
           java -cp build/classes veil.UrbanLightingTest
       - name: Resolve pinned standalone Beckenburg editor dependency

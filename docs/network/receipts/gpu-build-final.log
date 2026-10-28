@@ -1,0 +1,138 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< veil:malefic-gpu-client >-----------------------
+[INFO] Building The Malefic Veil - PSX GPU Client 0.1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- build-helper:3.6.1:add-source (include-authoritative-engine) @ malefic-gpu-client ---
+[INFO] Source directory: C:\Users\Admin\Documents\ChatGPT\Phasmaphobia alike\multiplayer\The-Malefic-Veil\gpu-client\..\src\main\java added.
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ malefic-gpu-client ---
+[INFO] Copying 15 resources from src\main\resources to target\classes
+[INFO] Copying 8 resources from ..\assets\game to target\classes
+[INFO] skip non existing resourceDirectory C:\Users\Admin\Documents\ChatGPT\Phasmaphobia alike\multiplayer\The-Malefic-Veil\gpu-client\..\build\generated\item-portraits
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ malefic-gpu-client ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 250 source files with javac [debug release 17] to target\classes
+[INFO] /C:/Users/Admin/Documents/ChatGPT/Phasmaphobia alike/multiplayer/The-Malefic-Veil/src/main/java/veil/VeilWeather.java: C:\Users\Admin\Documents\ChatGPT\Phasmaphobia alike\multiplayer\The-Malefic-Veil\gpu-client\..\src\main\java\veil\VeilWeather.java uses unchecked or unsafe operations.
+[INFO] /C:/Users/Admin/Documents/ChatGPT/Phasmaphobia alike/multiplayer/The-Malefic-Veil/src/main/java/veil/VeilWeather.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ malefic-gpu-client ---
+[INFO] skip non existing resourceDirectory C:\Users\Admin\Documents\ChatGPT\Phasmaphobia alike\multiplayer\The-Malefic-Veil\gpu-client\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ malefic-gpu-client ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ malefic-gpu-client ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.0:jar (default-jar) @ malefic-gpu-client ---
+[INFO] Building jar: C:\Users\Admin\Documents\ChatGPT\Phasmaphobia alike\multiplayer\The-Malefic-Veil\gpu-client\target\MaleficVeil-GPU.jar
+[INFO] 
+[INFO] --- shade:3.6.1:shade (default) @ malefic-gpu-client ---
+[WARNING] lwjgl-stb-3.3.3-natives-linux.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/x64/org/lwjgl/stb/liblwjgl_stb.so.sha1
+[WARNING] lwjgl-jemalloc-3.3.3-natives-windows-x86.jar, lwjgl-jemalloc-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x86/org/lwjgl/jemalloc/jemalloc.dll.sha1
+[WARNING] lwjgl-stb-3.3.3-natives-linux-arm32.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm32/org/lwjgl/stb/liblwjgl_stb.so.sha1
+[WARNING] lwjgl-jemalloc-3.3.3-natives-macos.jar, lwjgl-jemalloc-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/x64/org/lwjgl/jemalloc/libjemalloc.dylib.sha1
+[WARNING] lwjgl-glfw-3.3.3-natives-linux-arm32.jar, lwjgl-glfw-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm32/org/lwjgl/glfw/libglfw.so.sha1
+[WARNING] lwjgl-glfw-3.3.3-natives-windows.jar, lwjgl-glfw-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x64/org/lwjgl/glfw/glfw.dll.sha1
+[WARNING] lwjgl-jemalloc-3.3.3-natives-macos-arm64.jar, lwjgl-jemalloc-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/arm64/org/lwjgl/jemalloc/libjemalloc.dylib.sha1
+[WARNING] lwjgl-glfw-3.3.3-natives-windows-x86.jar, lwjgl-glfw-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x86/org/lwjgl/glfw/glfw.dll.sha1
+[WARNING] lwjgl-opengl-3.3.3-natives-linux-arm32.jar, lwjgl-opengl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm32/org/lwjgl/opengl/liblwjgl_opengl.so.sha1
+[WARNING] lwjgl-opengl-3.3.3-natives-windows.jar, lwjgl-opengl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x64/org/lwjgl/opengl/lwjgl_opengl.dll.sha1
+[WARNING] lwjgl-openal-3.3.3-natives-macos-arm64.jar, lwjgl-openal-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/arm64/org/lwjgl/openal/libopenal.dylib.sha1
+[WARNING] lwjgl-openal-3.3.3-natives-linux-arm32.jar, lwjgl-openal-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm32/org/lwjgl/openal/libopenal.so.sha1
+[WARNING] lwjgl-opengl-3.3.3-natives-macos-arm64.jar, lwjgl-opengl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/arm64/org/lwjgl/opengl/liblwjgl_opengl.dylib.sha1
+[WARNING] lwjgl-jemalloc-3.3.3-natives-linux-arm32.jar, lwjgl-jemalloc-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm32/org/lwjgl/jemalloc/libjemalloc.so.sha1
+[WARNING] lwjgl-jemalloc-3.3.3-natives-windows.jar, lwjgl-jemalloc-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x64/org/lwjgl/jemalloc/jemalloc.dll.sha1
+[WARNING] lwjgl-3.3.3-natives-macos-arm64.jar, lwjgl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/arm64/org/lwjgl/liblwjgl.dylib.sha1
+[WARNING] lwjgl-stb-3.3.3-natives-macos.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/x64/org/lwjgl/stb/liblwjgl_stb.dylib.sha1
+[WARNING] lwjgl-stb-3.3.3-natives-windows.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x64/org/lwjgl/stb/lwjgl_stb.dll.sha1
+[WARNING] lwjgl-3.3.3-natives-linux-arm64.jar, lwjgl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm64/org/lwjgl/liblwjgl.so.sha1
+[WARNING] lwjgl-glfw-3.3.3-natives-linux.jar, lwjgl-glfw-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/x64/org/lwjgl/glfw/libglfw.so.sha1
+[WARNING] lwjgl-openal-3.3.3-natives-linux-arm64.jar, lwjgl-openal-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm64/org/lwjgl/openal/libopenal.so.sha1
+[WARNING] MaleficVeil-GPU.jar, gdx-1.14.2.jar, gdx-backend-lwjgl3-1.14.2.jar, gdx-jnigen-loader-2.5.2.jar, gdx-platform-1.14.2-natives-desktop.jar, jlayer-1.0.1-gdx.jar, jorbis-0.0.17.jar, level-editor-kit-0.1.31.jar, lwjgl-3.3.3-natives-linux-arm32.jar, lwjgl-3.3.3-natives-linux-arm64.jar, lwjgl-3.3.3-natives-linux.jar, lwjgl-3.3.3-natives-macos-arm64.jar, lwjgl-3.3.3-natives-macos.jar, lwjgl-3.3.3-natives-windows-x86.jar, lwjgl-3.3.3-natives-windows.jar, lwjgl-3.3.3.jar, lwjgl-glfw-3.3.3-natives-linux-arm32.jar, lwjgl-glfw-3.3.3-natives-linux-arm64.jar, lwjgl-glfw-3.3.3-natives-linux.jar, lwjgl-glfw-3.3.3-natives-macos-arm64.jar, lwjgl-glfw-3.3.3-natives-macos.jar, lwjgl-glfw-3.3.3-natives-windows-x86.jar, lwjgl-glfw-3.3.3-natives-windows.jar, lwjgl-glfw-3.3.3.jar, lwjgl-jemalloc-3.3.3-natives-linux-arm32.jar, lwjgl-jemalloc-3.3.3-natives-linux-arm64.jar, lwjgl-jemalloc-3.3.3-natives-linux.jar, lwjgl-jemalloc-3.3.3-natives-macos-arm64.jar, lwjgl-jemalloc-3.3.3-natives-macos.jar, lwjgl-jemalloc-3.3.3-natives-windows-x86.jar, lwjgl-jemalloc-3.3.3-natives-windows.jar, lwjgl-jemalloc-3.3.3.jar, lwjgl-openal-3.3.3-natives-linux-arm32.jar, lwjgl-openal-3.3.3-natives-linux-arm64.jar, lwjgl-openal-3.3.3-natives-linux.jar, lwjgl-openal-3.3.3-natives-macos-arm64.jar, lwjgl-openal-3.3.3-natives-macos.jar, lwjgl-openal-3.3.3-natives-windows-x86.jar, lwjgl-openal-3.3.3-natives-windows.jar, lwjgl-openal-3.3.3.jar, lwjgl-opengl-3.3.3-natives-linux-arm32.jar, lwjgl-opengl-3.3.3-natives-linux-arm64.jar, lwjgl-opengl-3.3.3-natives-linux.jar, lwjgl-opengl-3.3.3-natives-macos-arm64.jar, lwjgl-opengl-3.3.3-natives-macos.jar, lwjgl-opengl-3.3.3-natives-windows-x86.jar, lwjgl-opengl-3.3.3-natives-windows.jar, lwjgl-opengl-3.3.3.jar, lwjgl-stb-3.3.3-natives-linux-arm32.jar, lwjgl-stb-3.3.3-natives-linux-arm64.jar, lwjgl-stb-3.3.3-natives-linux.jar, lwjgl-stb-3.3.3-natives-macos-arm64.jar, lwjgl-stb-3.3.3-natives-macos.jar, lwjgl-stb-3.3.3-natives-windows-x86.jar, lwjgl-stb-3.3.3-natives-windows.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/MANIFEST.MF
+[WARNING] lwjgl-glfw-3.3.3-natives-linux-arm64.jar, lwjgl-glfw-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm64/org/lwjgl/glfw/libglfw.so.sha1
+[WARNING] lwjgl-3.3.3-natives-macos.jar, lwjgl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/x64/org/lwjgl/liblwjgl.dylib.sha1
+[WARNING] lwjgl-3.3.3-natives-windows.jar, lwjgl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x64/org/lwjgl/lwjgl.dll.sha1
+[WARNING] lwjgl-glfw-3.3.3-natives-macos.jar, lwjgl-glfw-3.3.3.jar define 2 overlapping resources: 
+[WARNING]   - META-INF/macos/x64/org/lwjgl/glfw/libglfw.dylib.sha1
+[WARNING]   - META-INF/macos/x64/org/lwjgl/glfw/libglfw_async.dylib.sha1
+[WARNING] lwjgl-3.3.3-natives-linux-arm32.jar, lwjgl-3.3.3-natives-linux-arm64.jar, lwjgl-3.3.3-natives-linux.jar, lwjgl-3.3.3-natives-macos-arm64.jar, lwjgl-3.3.3-natives-macos.jar, lwjgl-3.3.3-natives-windows-x86.jar, lwjgl-3.3.3-natives-windows.jar, lwjgl-3.3.3.jar, lwjgl-glfw-3.3.3-natives-linux-arm32.jar, lwjgl-glfw-3.3.3-natives-linux-arm64.jar, lwjgl-glfw-3.3.3-natives-linux.jar, lwjgl-glfw-3.3.3-natives-macos-arm64.jar, lwjgl-glfw-3.3.3-natives-macos.jar, lwjgl-glfw-3.3.3-natives-windows-x86.jar, lwjgl-glfw-3.3.3-natives-windows.jar, lwjgl-glfw-3.3.3.jar, lwjgl-jemalloc-3.3.3-natives-linux-arm32.jar, lwjgl-jemalloc-3.3.3-natives-linux-arm64.jar, lwjgl-jemalloc-3.3.3-natives-linux.jar, lwjgl-jemalloc-3.3.3-natives-macos-arm64.jar, lwjgl-jemalloc-3.3.3-natives-macos.jar, lwjgl-jemalloc-3.3.3-natives-windows-x86.jar, lwjgl-jemalloc-3.3.3-natives-windows.jar, lwjgl-jemalloc-3.3.3.jar, lwjgl-openal-3.3.3-natives-linux-arm32.jar, lwjgl-openal-3.3.3-natives-linux-arm64.jar, lwjgl-openal-3.3.3-natives-linux.jar, lwjgl-openal-3.3.3-natives-macos-arm64.jar, lwjgl-openal-3.3.3-natives-macos.jar, lwjgl-openal-3.3.3-natives-windows-x86.jar, lwjgl-openal-3.3.3-natives-windows.jar, lwjgl-openal-3.3.3.jar, lwjgl-opengl-3.3.3-natives-linux-arm32.jar, lwjgl-opengl-3.3.3-natives-linux-arm64.jar, lwjgl-opengl-3.3.3-natives-linux.jar, lwjgl-opengl-3.3.3-natives-macos-arm64.jar, lwjgl-opengl-3.3.3-natives-macos.jar, lwjgl-opengl-3.3.3-natives-windows-x86.jar, lwjgl-opengl-3.3.3-natives-windows.jar, lwjgl-opengl-3.3.3.jar, lwjgl-stb-3.3.3-natives-linux-arm32.jar, lwjgl-stb-3.3.3-natives-linux-arm64.jar, lwjgl-stb-3.3.3-natives-linux.jar, lwjgl-stb-3.3.3-natives-macos-arm64.jar, lwjgl-stb-3.3.3-natives-macos.jar, lwjgl-stb-3.3.3-natives-windows-x86.jar, lwjgl-stb-3.3.3-natives-windows.jar, lwjgl-stb-3.3.3.jar define 1 overlapping classes: 
+[WARNING]   - META-INF.versions.9.module-info
+[WARNING] lwjgl-openal-3.3.3-natives-linux.jar, lwjgl-openal-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/x64/org/lwjgl/openal/libopenal.so.sha1
+[WARNING] lwjgl-opengl-3.3.3-natives-linux.jar, lwjgl-opengl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/x64/org/lwjgl/opengl/liblwjgl_opengl.so.sha1
+[WARNING] lwjgl-stb-3.3.3-natives-windows-x86.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x86/org/lwjgl/stb/lwjgl_stb.dll.sha1
+[WARNING] lwjgl-stb-3.3.3-natives-macos-arm64.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/arm64/org/lwjgl/stb/liblwjgl_stb.dylib.sha1
+[WARNING] lwjgl-jemalloc-3.3.3-natives-linux.jar, lwjgl-jemalloc-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/x64/org/lwjgl/jemalloc/libjemalloc.so.sha1
+[WARNING] lwjgl-opengl-3.3.3-natives-linux-arm64.jar, lwjgl-opengl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm64/org/lwjgl/opengl/liblwjgl_opengl.so.sha1
+[WARNING] lwjgl-opengl-3.3.3-natives-windows-x86.jar, lwjgl-opengl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x86/org/lwjgl/opengl/lwjgl_opengl.dll.sha1
+[WARNING] lwjgl-jemalloc-3.3.3-natives-linux-arm64.jar, lwjgl-jemalloc-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm64/org/lwjgl/jemalloc/libjemalloc.so.sha1
+[WARNING] lwjgl-3.3.3-natives-linux.jar, lwjgl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/x64/org/lwjgl/liblwjgl.so.sha1
+[WARNING] lwjgl-openal-3.3.3-natives-windows.jar, lwjgl-openal-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x64/org/lwjgl/openal/OpenAL.dll.sha1
+[WARNING] lwjgl-opengl-3.3.3-natives-macos.jar, lwjgl-opengl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/x64/org/lwjgl/opengl/liblwjgl_opengl.dylib.sha1
+[WARNING] lwjgl-openal-3.3.3-natives-windows-x86.jar, lwjgl-openal-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x86/org/lwjgl/openal/OpenAL.dll.sha1
+[WARNING] lwjgl-stb-3.3.3-natives-linux-arm64.jar, lwjgl-stb-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm64/org/lwjgl/stb/liblwjgl_stb.so.sha1
+[WARNING] lwjgl-3.3.3-natives-windows-x86.jar, lwjgl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/windows/x86/org/lwjgl/lwjgl.dll.sha1
+[WARNING] lwjgl-openal-3.3.3-natives-macos.jar, lwjgl-openal-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/macos/x64/org/lwjgl/openal/libopenal.dylib.sha1
+[WARNING] lwjgl-glfw-3.3.3-natives-macos-arm64.jar, lwjgl-glfw-3.3.3.jar define 2 overlapping resources: 
+[WARNING]   - META-INF/macos/arm64/org/lwjgl/glfw/libglfw.dylib.sha1
+[WARNING]   - META-INF/macos/arm64/org/lwjgl/glfw/libglfw_async.dylib.sha1
+[WARNING] lwjgl-3.3.3-natives-linux-arm32.jar, lwjgl-3.3.3.jar define 1 overlapping resource: 
+[WARNING]   - META-INF/linux/arm32/org/lwjgl/liblwjgl.so.sha1
+[WARNING] maven-shade-plugin has detected that some files are
+[WARNING] present in two or more JARs. When this happens, only one
+[WARNING] single version of the file is copied to the uber jar.
+[WARNING] Usually this is not harmful and you can skip these warnings,
+[WARNING] otherwise try to manually exclude artifacts based on
+[WARNING] mvn dependency:tree -Ddetail=true and the above output.
+[WARNING] See https://maven.apache.org/plugins/maven-shade-plugin/
+[INFO] Replacing original artifact with shaded artifact.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.757 s
+[INFO] Finished at: 2026-10-28T15:49:14-08:00
+[INFO] ------------------------------------------------------------------------

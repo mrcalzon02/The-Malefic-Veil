@@ -10,3 +10,12 @@ build/
 .vscode/
 assets/private/
 assets/runtime/
+
+# Local-first multiplayer private runtime state
+/network-profile/
+/server-network/
+keystore.pass
+room.secret
+server.p12
+room.verifier*
+invitation.secret

@@ -12,6 +12,8 @@ import java.util.concurrent.*;
  */
 public final class LanServer implements AutoCloseable {
     private final ServerSocket listener;
+    private final hbnet.Hbnet.Server secureTransport;
+    private final Set<Socket> transports=ConcurrentHashMap.newKeySet();
     private final ExecutorService workers=Executors.newCachedThreadPool();
     private final ScheduledExecutorService ticks=Executors.newSingleThreadScheduledExecutor();
     private final ScheduledExecutorService saves=Executors.newSingleThreadScheduledExecutor();
@@ -32,11 +34,12 @@ public final class LanServer implements AutoCloseable {
         int id;
         Socket socket;
         PrintWriter out;
+        hbnet.Lines.Outbox outbound;
         boolean authenticated;
         int commands;
         long commandWindow=System.nanoTime();
         double lastResourceX=Double.NaN,lastResourceY=Double.NaN;
-        synchronized void send(String message){out.println(message);}
+        void send(String message){outbound.send(message);}
     }
     public LanServer(int port,long seed)throws IOException {this(port,seed,null,false);}
     public LanServer(int port,long seed,Path saveDir)throws IOException {
@@ -49,6 +52,12 @@ public final class LanServer implements AutoCloseable {
     /** Explicit host AI settings, validated before binding the listening socket. */
     public LanServer(int port,long seed,Path saveDir,boolean hardcore,
                      HostAiSettings.Rules aiSettings)throws IOException {
+        this(port,seed,saveDir,hardcore,aiSettings,null);
+    }
+    /** Secure admission precedes world allocation. Same persistent host, never a second simulation. */
+    public LanServer(int port,long seed,Path saveDir,boolean hardcore,
+                     HostAiSettings.Rules aiSettings,hbnet.Hbnet.Server transport)throws IOException {
+        secureTransport=transport;
         dataDirectory=saveDir;
         int playerLimit=32;
         if(saveDir!=null&&Files.exists(saveDir.resolve("world.properties"))){
@@ -78,7 +87,7 @@ public final class LanServer implements AutoCloseable {
         }
         ai=new FactionAiDirector(match,harvesting,boundAI);
         if(saveDir!=null)ai.load(saveDir);
-        listener=saveDir==null?new ServerSocket(port):
+        listener=transport!=null?transport.listen(System.getProperty("veil.bind","127.0.0.1"),port):saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
         if(saveDir!=null){
             saves.scheduleWithFixedDelay(()->{
@@ -156,10 +165,11 @@ public final class LanServer implements AutoCloseable {
             while(running)try{
                 Socket s=listener.accept();
                 if(!connectionSlots.tryAcquire()){s.close();continue;}
+                transports.add(s);
                 workers.execute(()->{
-                    try{serve(s);}finally{connectionSlots.release();}
+                    try{serve(s);}finally{transports.remove(s);connectionSlots.release();}
                 });
-            }catch(IOException e){if(running)System.err.println("Accept failed: "+e);}
+            }catch(IOException e){if(running)System.err.println("Accept failed (NET-04)");}
         });
     }
     private synchronized int id(){return ++nextId;}
@@ -317,10 +327,19 @@ public final class LanServer implements AutoCloseable {
             BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true)){
             socket.setSoTimeout(30000);
+            if(secureTransport==null&&!hbnet.Hbnet.trustedLan(socket.getInetAddress()))return;
+            String signer=secureTransport==null?null:secureTransport.admit(socket,"malefic-veil");
             peer.out=out;
+            peer.outbound=new hbnet.Lines.Outbox(out,socket);
             ArenaSystems.Player actor=match.join(peer.id);
+            if(signer!=null){
+                String account="acct_"+signer;
+                if((moderation!=null&&!moderation.permitted(account))||!match.assignAccount(peer.id,account))return;
+                peer.authenticated=true;
+            }
             match.beginLoading(peer.id);
             peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|3");
+            if(signer!=null)peer.send("AUTH_OK|acct_"+signer);
             peer.send("SERVER_MODE|"+(match.hardcore?"HARDCORE":"NORMAL"));
             peer.send(weatherPacket());
             connections.put(peer.id,peer);
@@ -335,7 +354,7 @@ public final class LanServer implements AutoCloseable {
             factionStateTo(actor,peer);
             broadcast(peerPacket(actor),peer.id);
             String line;
-            while((line=in.readLine())!=null){
+            while((line=hbnet.Lines.read(in,4096))!=null){
                 if(line.length()>256)break;
                 long nowNanos=System.nanoTime();
                 if(nowNanos-peer.commandWindow>1_000_000_000L){
@@ -362,6 +381,7 @@ public final class LanServer implements AutoCloseable {
                     }
                     switch(s[0]){
                         case "AUTH" -> {
+                            if(secureTransport!=null){peer.send("AUTH_DENIED|ACCESS");return;}
                             if(s.length!=2)continue;
                             String account;
                             try{account=PlayerIdentity.account(s[1]);}
@@ -864,6 +884,7 @@ public final class LanServer implements AutoCloseable {
             }
         }catch(IOException ignored){
         }finally{
+            if(peer.outbound!=null)peer.outbound.close();
             if(peer.authenticated) audit("logout id="+peer.id);
             connections.remove(peer.id);
             match.leave(peer.id);
@@ -929,6 +950,7 @@ public final class LanServer implements AutoCloseable {
         running=false;
         listener.close();
         for(Peer p:connections.values())try{p.socket.close();}catch(IOException ignored){}
+        for(Socket s:transports)try{s.close();}catch(IOException ignored){}
         ticks.shutdownNow();saves.shutdownNow();workers.shutdownNow();
         synchronized(weather){weather.close();}
         if(dataDirectory!=null)saveNow();
@@ -950,15 +972,13 @@ public final class LanServer implements AutoCloseable {
         if(positional.size()>3)throw new IllegalArgumentException("Expected port seed save-path [--hardcore]");
         HostAiSettings.Rules hostAI=aiOptions.isEmpty()?
             HostAiSettings.fromProperties():HostAiSettings.fromOptions(aiOptions);
-        LanServer host=new LanServer(port,seed,root,hardcore,hostAI);
-        DesktopDiagnostics.note("HOST_LISTENING port="+host.port());
+        String secureRoot=System.getProperty("veil.secure");
+        LanServer host=new LanServer(port,seed,root,hardcore,hostAI,secureRoot==null?null:hbnet.Hbnet.Server.load(Path.of(secureRoot)));
+        DesktopDiagnostics.note("HOST_LISTENING");
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             try{host.close();}catch(IOException e){System.err.println("Shutdown save failed: "+e);}
         },"Veil-server-shutdown"));
-        System.out.println("Malefic Veil dedicated host "+host.port()+" seed "+seed+
-            " mode="+(hardcore?"HARDCORE":"NORMAL")+
-            " bind="+host.listener.getInetAddress().getHostAddress()+" storage="+root+
-            " "+host.ai.settings().description());
+        System.out.println("Malefic Veil private dedicated host ready. Inspect local configuration privately; endpoints and storage paths are hidden.");
         System.out.println("Host AI: --ai-count=6 --ai-mode=SINGLE_FACTION --ai-team=3 --ai-level=5");
         System.out.println("Or --ai-count=5 --ai-mode=BALANCED; group size is always 3.");
         System.out.println("Commands: status, players, ai, weather [PRESET|auto], save, kick ID,"+
@@ -996,7 +1016,7 @@ public final class LanServer implements AutoCloseable {
                 };
                 System.out.println(result);
                 if(!host.running)break;
-            }catch(Exception e){System.err.println("Admin command rejected: "+e.getMessage());}
+            }catch(Exception e){System.err.println("Admin command rejected (NET-ADMIN)");}
         }
         if(host.running)new CountDownLatch(1).await(); // no console under systemd; shutdown hook owns save
     }

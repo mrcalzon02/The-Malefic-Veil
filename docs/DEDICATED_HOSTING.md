@@ -87,3 +87,8 @@ The service manager—not the JVM—keeps a process alive across an unexpected e
 3. **Persistence:** per-account inventories/recovery, clans/team claims, device and construction mutations across chunks, transactional building undo/redo, backups retention and crash consistency tests including disk full, power loss, restart during save and world migration.
 4. **QoL/administration:** claim/upkeep preview and raid timers visible in UI; dedicated console/API permission roles, player reports/appeals, kick reason, audit search, rollback, moderation tooling, server metrics/alarms and graceful maintenance windows.
 5. **Real hosting acceptance:** minimum 4–16 clients, 2+ hour soak, loss/latency/load injection, full host restart and reconnect without duplication, no item/device corruption, real human desktop traversal/vehicle tests and explicit operator signoff.
+
+
+## Local-first TLS implementation (2026-10-28)
+
+See [current dedicated commands](network/DEDICATED_SERVER.md), [security gate](network/SECURITY_MODEL.md) and [fresh test receipts](network/TEST_RECEIPTS.md). TLS and signed installation identity are implemented in the existing host; local strict-TLS tests currently fail certificate pin verification. This does not supersede the existing persistence/backup limits or establish Internet readiness.

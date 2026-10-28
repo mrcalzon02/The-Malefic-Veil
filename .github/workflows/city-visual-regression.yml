@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/classes build/test-visuals
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/hbnet/*.java src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
           java -Djava.awt.headless=true -cp build/classes veil.ContinentVistaTest
           java -Djava.awt.headless=true -cp build/classes veil.CityPlateTerrainTest
           java -Djava.awt.headless=true -cp build/classes veil.CityVisualRegressionTest |

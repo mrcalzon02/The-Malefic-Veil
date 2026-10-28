@@ -997,7 +997,7 @@ public final class ArenaSystems {
     /** Queued E5 work requires power LEFT after already-operating factories,
      * conveyors and sorters. Reservation is per host tick and per generator.
      * Never debit a queued recipe merely because an overloaded grid exists. */
-    private void advanceQueuedAutomation(Map<World.Device,Integer> allocated){
+    private void advanceQueuedAutomation(Map<World.Device,Integer> allocated,long ms){
         for(World.Device d:fairGridOrder(dev->!dev.productionActive&&
                 !dev.queuedRecipeId.isEmpty())){
             if(d.hp<=0||d.productionActive||d.queuedRecipeId.isEmpty())continue;
@@ -1012,10 +1012,10 @@ public final class ArenaSystems {
                 continue;
             }
             World.Device generator=ElectricUtility.available(world.devices,d,
-                recipe.utilityDemand(),allocated);
+                recipe.utilityDemand(),allocated,ms);
             if(generator==null){
                 d.factoryHold=ElectricUtility.available(world.devices,d,
-                    recipe.utilityDemand(),Map.of())==null?
+                    recipe.utilityDemand(),Map.of(),ms)==null?
                     "WAIT_POWER":"WAIT_CAPACITY";
                 continue;
             }
@@ -1112,10 +1112,10 @@ public final class ArenaSystems {
             if(recipe.era().ordinal()>=CraftingEraRegistry.Era.ELECTRIC.ordinal()&&
                recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device generator=ElectricUtility.available(world.devices,d,
-                    recipe.utilityDemand(),electricDraw);
+                    recipe.utilityDemand(),electricDraw,ms);
                 if(generator==null){
                     d.factoryHold=ElectricUtility.available(world.devices,d,
-                        recipe.utilityDemand(),Map.of())==null?
+                        recipe.utilityDemand(),Map.of(),ms)==null?
                         "WAIT_POWER":"WAIT_CAPACITY";
                     continue;
                 }
@@ -1123,10 +1123,10 @@ public final class ArenaSystems {
                 advanceFactionBatch(d,ms);
             }else if(recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device boiler=SteamUtility.available(world.devices,d,
-                    recipe.utilityDemand(),demand);
+                    recipe.utilityDemand(),demand,ms);
                 if(boiler==null){
                     d.factoryHold=SteamUtility.available(world.devices,d,
-                        recipe.utilityDemand(),Map.of())==null?
+                        recipe.utilityDemand(),Map.of(),ms)==null?
                         "WAIT_STEAM":"WAIT_CAPACITY";
                     continue;
                 }
@@ -1139,7 +1139,7 @@ public final class ArenaSystems {
         if(!beltFirst)advanceConveyors(ms,electricDraw);
         // Unpaid E5 work may use only power LEFT after paid active factories
         // and physical transport. Its launch never advances process time.
-        advanceQueuedAutomation(new IdentityHashMap<>(electricDraw));
+        advanceQueuedAutomation(new IdentityHashMap<>(electricDraw),ms);
         for(World.Device generator:electricDraw.keySet())
             generator.electricMs=Math.max(0,generator.electricMs-ms);
     }
@@ -1162,10 +1162,10 @@ public final class ArenaSystems {
             boolean sorted=ConveyorLogistics.sorted(conveyor,world.devices);
             int beltLoad=sorted?ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
             World.Device power=ElectricUtility.available(world.devices,conveyor,
-                beltLoad,electricDraw);
+                beltLoad,electricDraw,ms);
             if(power==null){
                 conveyor.factoryHold=ElectricUtility.available(world.devices,conveyor,
-                    beltLoad,Map.of())==null?"WAIT_POWER":"WAIT_CAPACITY";
+                    beltLoad,Map.of(),ms)==null?"WAIT_POWER":"WAIT_CAPACITY";
                 continue;
             }
             electricDraw.merge(power,beltLoad,Integer::sum);

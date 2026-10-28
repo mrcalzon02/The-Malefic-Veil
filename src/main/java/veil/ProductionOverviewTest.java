@@ -67,6 +67,13 @@ public final class ProductionOverviewTest {
             queued.entries().get(3).index()==game.world.devices.indexOf(third),
             "Production pages changed stable world device order or included foreign property");
         var firstEntry=queued.entries().get(0);
+        generator.electricMs=1;
+        var lowCharge=game.productionOverview(1,0).entries().get(0);
+        check(lowCharge.state().equals("WAIT_POWER")&&
+            lowCharge.remedy().equals("RESTORE_ELECTRIC_SUPPLY")&&
+            first.queuedRecipeId.equals(repeat)&&generator.electricMs==1,
+            "Remote overview suggested a queued machine can run on sub-tick power");
+        generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
         check(firstEntry.state().equals("WAIT_INPUT")&&
             firstEntry.recipe().equals("precision-feedlines")&&
             firstEntry.detail().equals("CONDUCTOR_WIRE_3")&&

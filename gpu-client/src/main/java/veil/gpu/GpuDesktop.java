@@ -17,8 +17,12 @@ public final class GpuDesktop {
         cfg.setTitle("THE MALEFIC VEIL");
         cfg.setWindowedMode(960,600);
         cfg.setResizable(true);
-        cfg.useVsync(true);
-        cfg.setForegroundFPS(60);
+        // Production uses its 60 Hz cap; the explicit CI ocean benchmark
+        // must be uncapped or the paired baseline/ocean timings both report
+        // exactly 16.67 ms regardless of real rendering cost.
+        boolean oceanBenchmark=Boolean.getBoolean("veil.gpu.oceanBenchmark");
+        cfg.useVsync(!oceanBenchmark);
+        cfg.setForegroundFPS(oceanBenchmark?0:60);
         cfg.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30,3,3);
         return cfg;
     }

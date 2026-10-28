@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'src/main/java/veil/**'
+      - 'src/main/java/dev/mrcalzon/water/**'
       - 'assets/game/kenney/**'
       - '.github/workflows/desktop-input.yml'
   workflow_dispatch:
@@ -29,7 +30,7 @@ jobs:
       - name: Compile Java 17 game and test
         run: |
           mkdir -p build/classes
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
       - name: Render actual Swing window and drive keyboard/mouse
         run: xvfb-run -a -s "-screen 0 1280x900x24" timeout 40s java -Djava.awt.headless=false -cp build/classes veil.DesktopInputTest
       - name: Upload actual desktop screenshot

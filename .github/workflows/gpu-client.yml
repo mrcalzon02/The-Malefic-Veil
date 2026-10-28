@@ -6,6 +6,7 @@ on:
     paths:
       - 'gpu-client/**'
       - 'src/main/java/veil/**'
+      - 'src/main/java/dev/mrcalzon/water/**'
       - 'assets/game/kenney/**'
       - 'assets/game/arsenal/**'
       - 'assets/game/aircraft/**'
@@ -76,7 +77,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p build/classes
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
           java -cp build/classes veil.WorldDayNightTest
           java -cp build/classes veil.UrbanLightingTest
       - name: Resolve pinned standalone Beckenburg editor dependency

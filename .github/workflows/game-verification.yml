@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p build/classes
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
       - name: City generation and geometry
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest
@@ -45,6 +45,12 @@ jobs:
       - name: Continental coastline, biome, road and plot topology
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ContinentLayoutTest
+      - name: Shared water SDK and real seeded ocean boundary
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.VeilOceanTest
+      - name: Host-owned LAN weather and late-join synchronization
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WeatherLanTest
       - name: Authoritative combat, regeneration, pickups, medicine, turrets, structures
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArenaSystemsTest

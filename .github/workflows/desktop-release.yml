@@ -39,7 +39,7 @@ jobs:
       - name: Compile Java 17
         run: |
           mkdir -p build/classes build/package
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
       - name: Release tests
         run: |
           set -e

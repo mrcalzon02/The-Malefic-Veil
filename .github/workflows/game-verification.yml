@@ -48,6 +48,18 @@ jobs:
       - name: Shared water SDK and real seeded ocean boundary
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.VeilOceanTest
+      - name: Water SDK regression WaterModuleTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterModuleTest
+      - name: Water SDK regression WaterEffectsTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterEffectsTest
+      - name: Water SDK regression WaterEditorModelTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterEditorModelTest
+      - name: Water SDK regression WaterShapesSnapTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterShapesSnapTest
       - name: Host-owned LAN weather and late-join synchronization
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WeatherLanTest

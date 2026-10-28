@@ -1486,7 +1486,7 @@ public final class ArenaSystems {
      * distant machine. No faction-allied or other account stock is exposed. */
     public static final int OVERVIEW_PAGE_SIZE=4;
     public record ProductionEntry(int index,String facility,String recipe,
-            String state,String detail,String next,int completed){}
+            String state,String detail,String next,int completed,String remedy){}
     public record ProductionOverview(int page,int total,List<ProductionEntry> entries){
         public String wire(){
             StringBuilder out=new StringBuilder(page+"|"+total+"|"+entries.size());
@@ -1494,13 +1494,48 @@ public final class ArenaSystems {
                 out.append('|').append(e.index()).append('|').append(e.facility())
                     .append('|').append(e.recipe()).append('|').append(e.state())
                     .append('|').append(e.detail()).append('|').append(e.next())
-                    .append('|').append(e.completed());
+                    .append('|').append(e.completed()).append('|').append(e.remedy());
             }
             return out.toString();
         }
         public static ProductionOverview unavailable(int page){
             return new ProductionOverview(page,0,List.of());
         }
+    }
+    /** Read-only recovery guidance derived strictly from the live worksite.
+     * No resource, energy, queue or inventory mutations are permitted here. */
+    private String productionRemedy(World.Device d,String state,String detail){
+        boolean conveyor=d.kind==CONVEYOR_LINE;
+        return switch(state){
+            case "WAIT_INPUT" -> conveyor?"STOCK_CONVEYOR_SOURCE_CRATE":
+                "STOCK_REQUIRED_INPUT_NEAR_SITE";
+            case "WAIT_COMBINE" -> "COMBINE_ALL_INGREDIENTS_IN_ONE_CRATE";
+            case "WAIT_STORAGE" -> conveyor?"FREE_RECEIVING_CRATE_SPACE":
+                "PLACE_OWNED_INPUT_CRATE_NEAR_SITE";
+            case "WAIT_OUTPUT" -> {
+                boolean hasCrate=false;
+                for(World.Device crate:world.devices)
+                    if(crate.hp>0&&crate.kind==STORAGE_CRATE&&
+                       d.ownerKey.equals(crate.ownerKey)&&
+                       Math.hypot(d.x-crate.x,d.y-crate.y)<=5.5){
+                        hasCrate=true;break;
+                    }
+                yield hasCrate?"FREE_NEARBY_OUTPUT_CRATE_SPACE":
+                    "PLACE_OWNED_OUTPUT_CRATE_NEAR_SITE";
+            }
+            case "WAIT_WITNESS" -> "BRING_PENITENT_WITNESS_TO_SITE";
+            case "WAIT_POWER" -> "RESTORE_ELECTRIC_SUPPLY";
+            case "WAIT_STEAM" -> "SUPPLY_PRESSURIZED_STEAM";
+            case "WAIT_CAPACITY" -> conveyor?"FREE_ELECTRIC_GRID_CAPACITY":
+                "FREE_SHARED_UTILITY_CAPACITY";
+            case "WAIT_ROUTE" -> detail.equals("NO_RECEIVER")?
+                "PLACE_OWNED_RECEIVING_CRATE":"CHECK_CONVEYOR_CRATE_ROUTE";
+            case "WAIT_DEMAND" -> detail.equals("NO_DEFICIT")?
+                "NO_QUEUED_INPUT_DEFICIT":"QUEUE_AUTOMATION_RECIPE";
+            case "DISABLED" -> "PROGRAM_CONVEYOR_ROUTE_LOCALLY";
+            case "IDLE" -> "PROGRAM_WORKSITE_LOCALLY";
+            default -> "-";
+        };
     }
     public synchronized ProductionOverview productionOverview(int playerId,int page){
         if(page<0||page>10_000)return ProductionOverview.unavailable(0);
@@ -1519,12 +1554,14 @@ public final class ArenaSystems {
                 if(d.kind==CONVEYOR_LINE){
                     ConveyorInspection status=inspectConveyorDevice(d);
                     entries.add(new ProductionEntry(i,"CONVEYOR_LINE",
-                        status.mode(),status.state(),status.detail(),"-",0));
+                        status.mode(),status.state(),status.detail(),"-",0,
+                        productionRemedy(d,status.state(),status.detail())));
                 }else{
                     FactoryInspection status=inspectFactoryDevice(d);
                     entries.add(new ProductionEntry(i,status.facility(),
                         status.recipe(),status.state(),status.detail(),
-                        status.next(),status.completed()));
+                        status.next(),status.completed(),
+                        productionRemedy(d,status.state(),status.detail())));
                 }
             }
             total++;

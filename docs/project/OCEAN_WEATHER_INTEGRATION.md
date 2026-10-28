@@ -20,10 +20,17 @@ Only `Biome.WATER` parcels are wet. A local read-only optical shallowing at
 real land/water transitions drives imported shoreline foam and run-up;
 this does **not** alter server elevation or swimming physics.
 
-`GpuOcean` renders source-driven geometry from `WaterEffects.surface` and
-the two independent scrolling water-texture layers. It owns reusable
-depth-tested, alpha-blended world chunks and is drawn in the native OpenGL
-game and editor viewport, before first-person equipment and HUD.
+`GpuOcean` creates immutable world-space mesh buffers at scene load
+from `VeilOcean.sourceSeaParcels`, clipped to the actual source 6-metre water
+parcels. The native **vertex shader** evaluates the independent SDK's two-phase
+coherent-noise wave shape with host-weather amplitude; its **fragment shader**
+reads the two original water texture layers, performs depth absorption, coarse
+Fresnel reflection and broken shallow/shoreline foam. It draws depth-tested,
+alpha-blended chunks before first-person equipment and HUD. It does **not**
+invoke Java `WaterEffects.surface` or `VeilOcean.color` per vertex per frame,
+and has **zero per-frame ocean VBO uploads**. Analytic GPU wave interpolation is
+not bit-identical to the Java module's piecewise-planar collision/reference ray
+mesh, and more fidelity validation remains required.
 
 `VeilWeather` remains the sole Java 17 shared-weather adapter. Dedicated LAN
 hosts own the preset/day clock; network clients follow those broadcasts.
@@ -44,6 +51,20 @@ The original independent module test suites
 full host GitHub Actions matrix, along with `WeatherLanTest`. Root host
 compilation, GPU desktop, visual regression, multiplayer soak and desktop
 packaging include the new SDK source paths.
+
+## Performance and real-ocean GPU diagnostics
+
+The default City A camera contains no visible ocean and cannot establish
+ocean frame rate or correctness. The native GPU workflow additionally runs
+an OpenGL **City E coastal** gallery for seed `20261020`, requiring a
+nonempty source-ocean mesh, nonzero drawn triangles, and zero frame-by-frame
+water vertex upload bytes. `OCEAN_GPU_PERF` logs record visible chunk count,
+draw calls, triangles, static buffer bytes, CPU OpenGL submission milliseconds,
+and measured viewport FPS. These are published in the GPU workflow summary
+and uploaded `gpu-ocean-performance.log` artifact. CPU submission time is
+not GPU execution time, and software-rendered CI FPS should not be treated as
+a native hardware benchmark. Full frame-time comparison with the old
+CPU-updated ocean remains a separate performance acceptance task.
 
 ## Still not completed
 

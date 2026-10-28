@@ -134,6 +134,7 @@ jobs:
             tee build/test-visuals/gpu-psx-ui-menu.log
           grep -q 'PASS PSX_HORROR_UI_MENU_RENDER' build/test-visuals/gpu-psx-ui-menu.log
           grep -q 'PSX_HORROR_UI_READY' build/test-visuals/gpu-psx-ui-menu.log
+          grep -q 'OCEAN_WATER_SDK_READY' build/test-visuals/gpu-psx-ui-menu.log
           test -s build/test-visuals/gpu-kenney-city.png
           test -s build/test-visuals/gpu-kenney-night.png
           test -s build/test-visuals/gpu-psx-menu.png

@@ -585,7 +585,7 @@ public final class GpuOverlayMenu {
             skin.font().draw(sprites,
                 "HOST CHECKS REAL COSTS / LOCATION / DEPENDENCIES",147,331);
         }else if(screen==Screen.STORAGE){
-            skin.font().draw(sprites,"STAND BY YOUR OWN CRATE / ONE UNIT PER ACTION",147,331);
+            skin.font().draw(sprites,"OWN CRATE / HOST VALIDATES BULK TRANSFERS",147,331);
         }
         for(int i=0;i<items.size();i++){
             float row=297-i*24;
@@ -599,8 +599,10 @@ public final class GpuOverlayMenu {
                 new TreeMap<>(gameplay.gpuCampStock()).forEach((id,count)->{
                     if(count>0)materialIds.add(id);
                 });
-                int source=pageOffset+i;
-                if(i<7&&source<materialIds.size())
+                // Row zero is the quantity selector, not an inventory item.
+                // Remaining row icons must follow the paginated item index.
+                int source=pageOffset+i-1;
+                if(i>=1&&i<=7&&source<materialIds.size())
                     book.drawIcon(sprites,materialIds.get(source),146,row+1,19);
             }
             if(screen==Screen.CRAFT){

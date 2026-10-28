@@ -362,14 +362,17 @@ public final class NetLink implements AutoCloseable {
                                 int page=Integer.parseInt(s[1]);
                                 int total=Integer.parseInt(s[2]);
                                 int count=Integer.parseInt(s[3]);
+                                // The seven-field legacy packet still decodes; the new
+                                // eight-field packet includes host recovery guidance.
+                                int fields=s.length==4+count*8?8:7;
                                 if(page<0||page>10_000||total<0||total>100_000||
                                    count<0||count>ArenaSystems.OVERVIEW_PAGE_SIZE||
-                                   s.length!=4+count*7)continue;
+                                   s.length!=4+count*fields)continue;
                                 boolean safe=true;
                                 java.util.List<ArenaSystems.ProductionEntry> entries=
                                     new java.util.ArrayList<>();
                                 for(int i=0;i<count;i++){
-                                    int offset=4+i*7;
+                                    int offset=4+i*fields;
                                     int index=Integer.parseInt(s[offset]);
                                     int completed=Integer.parseInt(s[offset+6]);
                                     if(index<0||completed<0){
@@ -382,10 +385,15 @@ public final class NetLink implements AutoCloseable {
                                             safe=false;break;
                                         }
                                     }
+                                    if(fields==8&&
+                                       (s[offset+7].length()>90||
+                                        !s[offset+7].matches("[A-Za-z0-9_-]+")))
+                                        safe=false;
                                     if(!safe)break;
                                     entries.add(new ArenaSystems.ProductionEntry(index,
                                         s[offset+1],s[offset+2],s[offset+3],
-                                        s[offset+4],s[offset+5],completed));
+                                        s[offset+4],s[offset+5],completed,
+                                        fields==8?s[offset+7]:"-"));
                                 }
                                 if(!safe||entries.size()>total)continue;
                                 productionOverview=new ArenaSystems.ProductionOverview(

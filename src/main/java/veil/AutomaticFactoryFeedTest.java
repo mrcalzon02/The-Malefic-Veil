@@ -212,7 +212,94 @@ public final class AutomaticFactoryFeedTest {
                 .filter(d->d.kind==ArenaSystems.CONVEYOR_LINE)
                 .allMatch(d->d.routeItem.equals("AUTO")&&d.routeReverse),
                 "Dual active E5 receipts or programmed reverse direction lost");
+
+            // Complete both already-paid E5 manufacturing receipts, rather
+            // than ending the chain test after downstream factory launch.
+            // First prove a genuine grid outage cannot advance either job.
+            var finishWorker=checked.join(1);
+            check(checked.assignAccount(1,owner),"Completion worker lost saved owner");
+            var finishedProducer=checked.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.INDUSTRIAL_WORKSHOP&&d.x==x-8)
+                .findFirst().orElseThrow();
+            var finishedConsumer=checked.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.INDUSTRIAL_WORKSHOP&&d.x==x+8)
+                .findFirst().orElseThrow();
+            var finishedGenerator=checked.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.GENERATOR).findFirst().orElseThrow();
+            var outputWarehouse=checked.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.STORAGE_CRATE&&d.x==x+5)
+                .findFirst().orElseThrow();
+            long producerBefore=finishedProducer.productionMs;
+            long consumerBefore=finishedConsumer.productionMs;
+            finishedGenerator.electricMs=0; // explicit physical outage fixture
+            tick(checked,7);
+            check(finishedProducer.productionMs==producerBefore&&
+                finishedConsumer.productionMs==consumerBefore&&
+                finishedProducer.factoryHold.equals("WAIT_POWER")&&
+                finishedConsumer.factoryHold.equals("WAIT_POWER"),
+                "A depleted E5 generator advanced a paid production receipt");
+
+            // Restore power via the ACTUAL authenticated generator action,
+            // consuming physical fuel and stored steam startup pressure.
+            var steam=add(checked,ArenaSystems.STEAM_BOILER,x+.4,y+3.5,owner);
+            steam.steamMs=120_000;
+            var fuel=add(checked,ArenaSystems.STORAGE_CRATE,x,y+4.0,owner);
+            stock(fuel,"CHARCOAL",3);
+            stock(fuel,"CLEAN_WATER",2);
+            finishWorker.x=finishedGenerator.x;finishWorker.y=finishedGenerator.y;
+            check(checked.chargeGenerator(1)&&
+                finishedGenerator.electricMs==ElectricUtility.MAX_CHARGE_MS&&
+                steam.steamMs==120_000-ElectricUtility.STEAM_STARTUP_MS&&
+                fuel.storage.count(SurvivalCrafting.Item.CHARCOAL)==0&&
+                fuel.storage.count(SurvivalCrafting.Item.CLEAN_WATER)==0,
+                "Restart manufactured electricity without fuel or pressurized steam");
+            // A finished downstream recipe cannot claim completion if its
+            // only reachable same-owner output crate is physically full.
+            stock(outputWarehouse,"EDIBLES",CampStockpile.MAX_UNITS);
+            tick(checked,CraftingEraRegistry.process("ballistic-resupply").seconds());
+            check(finishedProducer.productionCompleted==2&&
+                !finishedProducer.productionActive&&
+                finishedConsumer.productionActive&&
+                finishedConsumer.productionMs==
+                    CraftingEraRegistry.process("ballistic-resupply").seconds()*1000L&&
+                finishedConsumer.factoryHold.equals("WAIT_OUTPUT")&&
+                finishedConsumer.productionCompleted==0&&
+                outputWarehouse.storage.count(SurvivalCrafting.Item.BALLISTIC_SUPPLY)==0,
+                "Completed downstream work bypassed full physical output storage");
+            check(outputWarehouse.storage.consume(
+                Map.of(SurvivalCrafting.Item.EDIBLES,CampStockpile.MAX_UNITS)),
+                "Could not free real output warehouse space");
+            tick(checked,1);
+            int physicalSupply=checked.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.STORAGE_CRATE&&
+                    owner.equals(d.ownerKey))
+                .mapToInt(d->d.storage.count(SurvivalCrafting.Item.BALLISTIC_SUPPLY))
+                .sum();
+            int physicalFeedlines=checked.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.STORAGE_CRATE&&
+                    owner.equals(d.ownerKey))
+                .mapToInt(d->d.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE))
+                .sum();
+            check(!finishedConsumer.productionActive&&
+                finishedConsumer.productionCompleted==1&&
+                physicalSupply==2&&physicalFeedlines==3&&
+                movedAlien.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE)==9,
+                "Recovery minted output, double-spent upstream goods or touched foreign inventory");
+            HostCheckpoint.save(checked,root);
+            var last=new ArenaSystems(seed);
+            check(HostCheckpoint.load(last,root),"Finished two-stage receipts failed V11 restart");
+            check(last.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.INDUSTRIAL_WORKSHOP)
+                .noneMatch(d->d.productionActive)&&
+                last.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.INDUSTRIAL_WORKSHOP)
+                .mapToInt(d->d.productionCompleted).sum()==3&&
+                last.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.STORAGE_CRATE&&owner.equals(d.ownerKey))
+                .mapToInt(d->d.storage.count(SurvivalCrafting.Item.BALLISTIC_SUPPLY))
+                .sum()==2,
+                "Cold restart repeated, erased or duplicated completed downstream E5 output");
         }finally{cleanup(root);}
-        System.out.println("PASS AutomaticFactoryFeedTest: real two-stage E5, sorter, prioritized crates, reverse routing, V11 restart, owner isolation");
+        System.out.println("PASS AutomaticFactoryFeedTest: paid two-stage E5 completion, real grid outage/refuel, output backpressure, sorted reverse routing, V11 restart, owner isolation");
     }
 }

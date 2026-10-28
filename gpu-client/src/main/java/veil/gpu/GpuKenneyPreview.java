@@ -855,6 +855,20 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             gameplay.gpuFrame().weatherPreset():"CLEAR";
         oceanSeconds+=Math.max(0,Math.min(.05,Gdx.graphics.getDeltaTime()));
         ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10);
+        // These counters are measured in the actual OpenGL viewport; CPU
+        // submission time is explicitly NOT presented as GPU execution time.
+        if((smoke||gallery||playSmoke||editorSmoke)&&frames%15==0){
+            var sea=ocean.stats();
+            if(sea.vertexUploadBytes()!=0)
+                throw new IllegalStateException("Ocean re-uploaded animated vertices every frame");
+            System.out.println("OCEAN_GPU_PERF frame="+frames+
+                " chunks="+sea.visibleChunks()+" triangles="+sea.drawnTriangles()+
+                " calls="+sea.drawCalls()+" staticBytes="+sea.allocatedStaticBytes()+
+                " uploadedFrameBytes="+sea.vertexUploadBytes()+
+                " cpuSubmitMs="+String.format(java.util.Locale.ROOT,"%.3f",
+                    sea.cpuSubmitNanos()/1_000_000.0)+
+                " fps="+Gdx.graphics.getFramesPerSecond());
+        }
         if(gameplay!=null){
             MaleficVeil.GpuFrame live=gameplay.gpuFrame();
             if(live!=null)renderLiveWeapon(live);

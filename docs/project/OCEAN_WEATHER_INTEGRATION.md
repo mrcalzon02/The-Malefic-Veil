@@ -74,6 +74,17 @@ The comparison estimates additional GPU ocean cost on software Mesa; it is
 not an old CPU water vs new GPU water benchmark, and order/driver caches can
 bias the result. A native-hardware comparison remains a separate gate.
 
+**Reference CI measurement (2026-10-28, GPU workflow 40713768938,
+uncapped pre-frustum-optimization):** on seed 887766 City C with the
+same camera and scene, the 150-sample baseline averaged **11.737 ms**
+(85.20 FPS), while enabling GPU water averaged **12.835 ms**
+(77.91 FPS): an additional **1.098 ms**. P95 increased from **12.956 ms**
+to **15.414 ms**. Water comprised 14 batches and 4,970 triangles,
+298,200 static vertex bytes, and zero per-frame vertex buffer uploads.
+These figures are software-Mesa CI diagnostics, not hardware-specific
+performance promises. The reference is preserved to compare future
+revisions and inform regression budgets.
+
 ## Still not completed
 
 - Continental water is currently a **visual** surface; true streamed,

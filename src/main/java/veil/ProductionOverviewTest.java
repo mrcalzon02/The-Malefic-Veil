@@ -70,10 +70,13 @@ public final class ProductionOverviewTest {
         check(firstEntry.state().equals("WAIT_INPUT")&&
             firstEntry.recipe().equals("precision-feedlines")&&
             firstEntry.detail().equals("CONDUCTOR_WIRE_3")&&
-            firstEntry.next().equals("REPEAT_precision-feedlines"),
+            firstEntry.next().equals("REPEAT_precision-feedlines")&&
+            firstEntry.remedy().equals("STOCK_REQUIRED_INPUT_NEAR_SITE"),
             "Overview lost real queued recipe, shortage or repeat authorization");
         check(queued.entries().get(2).state().equals("DISABLED")&&
-            queued.entries().get(2).facility().equals("CONVEYOR_LINE"),
+            queued.entries().get(2).facility().equals("CONVEYOR_LINE")&&
+            queued.entries().get(2).remedy().equals("PROGRAM_CONVEYOR_ROUTE_LOCALLY")&&
+            queued.entries().get(1).remedy().equals("PROGRAM_WORKSITE_LOCALLY"),
             "Overview omitted real conveyor status");
         var later=game.productionOverview(1,1);
         check(later.total()==6&&later.entries().size()==2&&
@@ -104,7 +107,7 @@ public final class ProductionOverviewTest {
             "Settlement overview incorrectly required local machine proximity");
         var originalStock=stock.storage.snapshot();
         long remaining=generator.electricMs;
-        check(("PRODUCTION_OVERVIEW|"+game.productionOverview(1,0).wire()).split("\\|").length==32&&
+        check(("PRODUCTION_OVERVIEW|"+game.productionOverview(1,0).wire()).split("\\|").length==36&&
             stock.storage.snapshot().equals(originalStock)&&generator.electricMs==remaining&&
             first.queuedRecipeId.equals(repeat),
             "Read-only overview mutated stock, energy or future work");
@@ -142,7 +145,9 @@ public final class ProductionOverviewTest {
             until(()->client.productionOverview!=null,"TCP first production page");
             check(client.productionOverview.total()==5&&
                 client.productionOverview.entries().size()==4&&
-                client.productionOverview.page()==0,
+                client.productionOverview.page()==0&&
+                client.productionOverview.entries().get(0).remedy().equals(
+                    "PROGRAM_WORKSITE_LOCALLY"),
                 "LAN failed to deserialize the authentic first four own worksites");
             client.requestProductionOverview(1);
             until(()->client.productionOverview!=null&&

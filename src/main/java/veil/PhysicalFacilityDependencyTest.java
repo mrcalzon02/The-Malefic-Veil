@@ -61,6 +61,88 @@ public final class PhysicalFacilityDependencyTest {
             }
         throw new AssertionError("No legal near-camp footprint for "+id);
     }
+    /** A construction can consume a split material bill, but only with
+     * complete same-account stock in physically nearby persistent crates.
+     * Unlike E5 factory recipes, no single crate must hold all ingredients. */
+    private static void splitWarehouseConstruction()throws Exception{
+        final long seed=20261020L;
+        String owner="acct_"+"e".repeat(64),foreign="acct_"+"a".repeat(64);
+        ArenaSystems host=new ArenaSystems(seed);
+        ArenaSystems.Player p=host.join(1);
+        check(host.assignAccount(1,owner),
+            "Split construction operator needs host account ownership");
+        double[] point=site(host);
+        double x=point[0],y=point[1];
+        seeded(host,ArenaSystems.CAMP_STAKE,x-1.2,y,owner);
+        World.Device timber=seeded(host,ArenaSystems.STORAGE_CRATE,x+1.2,y,owner);
+        World.Device stone=seeded(host,ArenaSystems.STORAGE_CRATE,x-1.2,y+1.3,owner);
+        World.Device alien=seeded(host,ArenaSystems.STORAGE_CRATE,x+1.2,y+1.3,foreign);
+        check(timber.storage.delivered(SurvivalCrafting.Item.TIMBER,12)&&
+            stone.storage.delivered(SurvivalCrafting.Item.FIELD_STONE,12)&&
+            stone.storage.delivered(SurvivalCrafting.Item.FIBER,6)&&
+            alien.storage.delivered(SurvivalCrafting.Item.FIELD_STONE,3),
+            "Could not stage authentically owned split construction inputs");
+        // Pick a legal wilderness footprint while all genuine materials
+        // exist, then hold those exact player coordinates for denied/paid
+        // preflights. The previous single-crate rule made this impossible.
+        boolean available=false;
+        for(double dx=-4.2;dx<=4.2&&!available;dx+=1.4)
+            for(double dy=-4.2;dy<=4.2;dy+=1.4){
+                p.x=x+dx-1.1;p.y=y+dy;p.angle=0;
+                if(host.reviewBuild(1,ArenaSystems.CLAIM_HEART).allowed()){
+                    available=true;break;
+                }
+            }
+        check(available,"Two owner crates could not fund a legal claim heart");
+        int before=host.world.devices.size();
+        check(stone.storage.consume(Map.of(SurvivalCrafting.Item.FIELD_STONE,1)),
+            "Cannot create a real one-unit material deficit");
+        Map<SurvivalCrafting.Item,Integer> timberBefore=timber.storage.snapshot();
+        Map<SurvivalCrafting.Item,Integer> stoneBefore=stone.storage.snapshot();
+        Map<SurvivalCrafting.Item,Integer> alienBefore=alien.storage.snapshot();
+        check(host.reviewBuild(1,ArenaSystems.CLAIM_HEART).reason().equals(
+                "NEEDS_STOCKED_OWN_CRATE")&&
+            !host.build(1,ArenaSystems.CLAIM_HEART)&&
+            host.world.devices.size()==before&&
+            timber.storage.snapshot().equals(timberBefore)&&
+            stone.storage.snapshot().equals(stoneBefore)&&
+            alien.storage.snapshot().equals(alienBefore),
+            "Insufficient owned stock or foreign materials partially funded construction");
+        check(stone.storage.delivered(SurvivalCrafting.Item.FIELD_STONE,1),
+            "Cannot reintroduce the one genuinely missing owned stone");
+        ArenaSystems.BuildOutcome outcome=host.buildOutcome(1,ArenaSystems.CLAIM_HEART);
+        check(outcome.built()&&outcome.deviceIndex()==before&&
+            timber.storage.snapshot().isEmpty()&&stone.storage.snapshot().isEmpty()&&
+            alien.storage.snapshot().equals(alienBefore)&&
+            host.world.devices.get(before).kind==ArenaSystems.CLAIM_HEART&&
+            owner.equals(host.world.devices.get(before).ownerKey),
+            "Split construction did not debit both exact owned crates once");
+        check(!host.build(1,ArenaSystems.CLAIM_HEART)&&
+            host.world.devices.size()==before+1,
+            "Constructed claim heart can be duplicated without paying again");
+        Path root=Files.createTempDirectory("veil-split-construction-");
+        try{
+            HostCheckpoint.save(host,root);
+            ArenaSystems restored=new ArenaSystems(seed);
+            check(HostCheckpoint.load(restored,root),
+                "Paid split construction did not survive durable checkpoint");
+            check(restored.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.CLAIM_HEART&&owner.equals(d.ownerKey))
+                .count()==1&&
+                restored.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.STORAGE_CRATE&&owner.equals(d.ownerKey))
+                .allMatch(d->d.storage.snapshot().isEmpty())&&
+                restored.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.STORAGE_CRATE&&foreign.equals(d.ownerKey))
+                .mapToInt(d->d.storage.count(SurvivalCrafting.Item.FIELD_STONE)).sum()==3,
+                "Restart duplicated materials or crossed an account's warehouse boundary");
+        }finally{
+            try(var walk=Files.walk(root)){
+                for(Path file:walk.sorted(Comparator.reverseOrder()).toList())
+                    Files.deleteIfExists(file);
+            }
+        }
+    }
     public static void main(String[] args)throws Exception{
         long seed=20261020L;
         String owner="acct_"+"9".repeat(64);
@@ -137,6 +219,7 @@ public final class PhysicalFacilityDependencyTest {
                     Files.deleteIfExists(pth);
             }
         }
-        System.out.println("PASS PhysicalFacilityDependencyTest: 14 permanent authorized support sites, real prerequisites, paid forge inputs, recipe-select output, paired save");
+        splitWarehouseConstruction();
+        System.out.println("PASS PhysicalFacilityDependencyTest: 14 support sites, split owned construction payments, denied partial/foreign costs, persisted paid forge and checkpoint");
     }
 }

@@ -81,6 +81,16 @@ public final class SteamEraProductionTest {
             recipe.utilityDemand()==3,"E3 must demand genuine 3-unit steam");
         deposit(crate.storage,recipe.inputs());
         actor.x=factory.x+.5;actor.y=factory.y;
+        boiler.steamMs=1;
+        check(!host.startFactionBatch(1,recipeId)&&
+            !factory.productionActive&&factory.productionRecipeId.isEmpty()&&
+            boiler.steamMs==1,
+            "An almost empty boiler accepted a paid E3 factory launch");
+        for(var input:recipe.inputs().entrySet())
+            check(crate.storage.count(SurvivalCrafting.Item.valueOf(input.getKey()))==
+                input.getValue(),
+                "Failed E3 steam preflight spent real "+input.getKey());
+        boiler.steamMs=0;
         check(!host.startFactionBatch(1,recipeId),
             "Machine ran while connected boiler had no fuel pressure");
         check(!factory.productionActive&&boiler.steamMs==0,

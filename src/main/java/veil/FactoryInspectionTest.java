@@ -89,6 +89,18 @@ public final class FactoryInspectionTest {
         game.advance(1000);
         check(shop.productionMs==0&&generator.electricMs==1,
             "Sub-tick electricity incorrectly showed paid E5 work as running");
+        // Exercise the actual 100ms dedicated server tick, not only test's
+        // one-second steps: 99ms cannot fund one tick; exactly 100ms can.
+        generator.electricMs=99;
+        game.advance(100);
+        inspect(game,"WAIT_POWER");
+        check(shop.productionMs==0&&generator.electricMs==99,
+            "An underfunded 100ms E5 host tick advanced production");
+        generator.electricMs=100;
+        game.advance(100);
+        check(shop.productionMs==100&&generator.electricMs==0&&
+            inspect(game,"WAIT_POWER").elapsed()==0,
+            "Exactly one funded 100ms E5 tick failed or overstated charge");
         generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
         check(game.programNextAutomation(1,jobId),
             "Cannot queue another job while a paid batch runs");

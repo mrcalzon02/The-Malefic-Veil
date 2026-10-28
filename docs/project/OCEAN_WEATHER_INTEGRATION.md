@@ -56,15 +56,19 @@ packaging include the new SDK source paths.
 
 The default City A camera contains no visible ocean and cannot establish
 ocean frame rate or correctness. The native GPU workflow additionally runs
-an OpenGL **City C coastal** gallery for seed `887766`, requiring a
+a real OpenGL **City C coastal** benchmark for seed `887766`, requiring a
 nonempty source-ocean mesh, nonzero drawn triangles, and zero frame-by-frame
-water vertex upload bytes. `OCEAN_GPU_PERF` logs record visible chunk count,
-draw calls, triangles, static buffer bytes, CPU OpenGL submission milliseconds,
-and measured viewport FPS. These are published in the GPU workflow summary
-and uploaded `gpu-ocean-performance.log` artifact. CPU submission time is
-not GPU execution time, and software-rendered CI FPS should not be treated as
-a native hardware benchmark. Full frame-time comparison with the old
-CPU-updated ocean remains a separate performance acceptance task.
+water vertex upload bytes. The diagnostic holds the identical actual camera
+for two 180-frame phases: the city/terrain with ocean draws disabled, then the
+same scene with GPU ocean enabled, excluding 30 warmup frames in EACH phase.
+It reports average and 95th-percentile frame cadence, paired FPS estimates,
+ocean draw calls and static GPU buffer bytes. `OCEAN_GPU_PERF` additionally
+logs CPU OpenGL submission milliseconds (which are NOT GPU execution time).
+The report and `gpu-ocean-coastal-benchmark.png` screenshot are uploaded
+as artifacts and the pass metric is included in the workflow summary.
+The comparison estimates additional GPU ocean cost on software Mesa; it is
+not an old CPU water vs new GPU water benchmark, and order/driver caches can
+bias the result. A native-hardware comparison remains a separate gate.
 
 ## Still not completed
 

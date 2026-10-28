@@ -169,6 +169,7 @@ jobs:
             echo 'CPU submission is not GPU execution time; FPS is diagnostic.'
             echo '```text'
             grep 'OCEAN_GPU_PERF' build/test-visuals/gpu-ocean-performance.log | tail -n 4
+            grep 'PASS GPU_OCEAN_BENCHMARK' build/test-visuals/gpu-ocean-performance.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Unified in-engine main menu and real world/session flow

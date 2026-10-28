@@ -561,7 +561,10 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             if(flowSmoke){
                 gameFrames++;
                 if(gameFrames==65)gameRenderer.auditPause(true);
-                if(gameFrames==68)capture("gpu-frontend-live-pause");
+                if(gameFrames==68){
+                    gameRenderer.assertScreenOrientation();
+                    capture("gpu-frontend-live-pause");
+                }
                 if(gameFrames==70)gameRenderer.auditPanel("craft");
                 if(gameFrames==73)capture("gpu-frontend-live-crafting");
                 if(gameFrames==76)gameRenderer.auditPanel("crew");
@@ -648,7 +651,10 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(smoke){
             frames++;
             switch(frames){
-                case 10 -> capture("gpu-frontend-home");
+                case 10 -> {
+                    backdrop.assertScreenOrientation();
+                    capture("gpu-frontend-home");
+                }
                 case 20 -> gotoScreen(Screen.VIDEO);
                 case 24 -> capture("gpu-frontend-video");
                 case 28 -> gotoScreen(Screen.AUDIO);

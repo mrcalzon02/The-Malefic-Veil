@@ -162,7 +162,10 @@ jobs:
             build/test-visuals/gpu-ocean-performance.log
           grep -q 'PASS GPU_OCEAN_BENCHMARK samples=' \
             build/test-visuals/gpu-ocean-performance.log
+          test -s build/test-visuals/gpu-ocean-coastal-no-water.png
           test -s build/test-visuals/gpu-ocean-coastal-benchmark.png
+          grep -Eq 'PASS GPU_OCEAN_BENCHMARK .*changedPixels=[1-9][0-9]*' \
+            build/test-visuals/gpu-ocean-performance.log
           echo 'PASS GPU_OCEAN_STATIC_VBO nonzero real ocean triangles and no frame uploads'
           {
             echo '### Native ocean GPU diagnostics (real coastal City C, seed 887766)'
@@ -249,6 +252,7 @@ jobs:
             build/test-visuals/gallery-seed-*.png
             build/test-visuals/gallery-seed-*.log
             build/test-visuals/gpu-ocean-performance.log
+            build/test-visuals/gpu-ocean-coastal-no-water.png
             build/test-visuals/gpu-ocean-coastal-benchmark.png
             build/test-visuals/gpu-standalone-editor-live-viewport.png
             build/test-visuals/editor-kit.log

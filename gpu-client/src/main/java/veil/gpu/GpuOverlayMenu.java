@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,FACTORY_STATUS,UTILITIES,CONVEYOR,CONVEYOR_STATUS,SITES,WORK_ORDERS,QUEUE_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,PRODUCTION_OVERVIEW,FACTORY_STATUS,UTILITIES,CONVEYOR,CONVEYOR_STATUS,SITES,WORK_ORDERS,QUEUE_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -70,6 +70,11 @@ public final class GpuOverlayMenu {
     public void openConveyorInspection(){
         gameplay.gpuRequestConveyorInspection();
         show(Screen.CONVEYOR_STATUS);
+    }
+    public void openProductionOverview(){
+        pageOffset=0;
+        gameplay.gpuRequestProductionOverview(pageOffset);
+        show(Screen.PRODUCTION_OVERVIEW);
     }
     public void openStorage(){
         pageOffset=0;
@@ -272,6 +277,7 @@ public final class GpuOverlayMenu {
                     gameplay.gpuStartFactionBatch();show(Screen.GAME);
                 });
                 add("INSPECT WORKSITE PROGRESS",this::openFactoryInspection);
+                add("SETTLEMENT PRODUCTION OVERVIEW",this::openProductionOverview);
                 add("POWER UTILITIES",()->show(Screen.UTILITIES));
                 add("CONFIGURE CONVEYOR",this::openConveyor);
                 add("INSPECT CONVEYOR LOGISTICS",this::openConveyorInspection);
@@ -281,8 +287,31 @@ public final class GpuOverlayMenu {
                     gameplay.gpuPlaceStorage();show(Screen.GAME);
                 });
                 add("CAMP CRATE INVENTORY",this::openStorage);
-                add("FULL INDUSTRIAL RECIPE INDEX",this::openBook);
+                // The full recipe index remains in the Crafting menu;
+                // keep this crowded industry panel within the framebuffer.
                 add("BACK TO CRAFTING",this::openCraft);
+            }
+            case PRODUCTION_OVERVIEW->{
+                add("REFRESH PRODUCTION REPORT",()->{
+                    gameplay.gpuRequestProductionOverview(pageOffset);
+                });
+                add("PREVIOUS FOUR FACILITIES",()->{
+                    if(pageOffset==0){toast("FIRST PAGE");return;}
+                    pageOffset--;
+                    gameplay.gpuRequestProductionOverview(pageOffset);
+                    build();
+                });
+                add("NEXT FOUR FACILITIES",()->{
+                    var report=gameplay.gpuProductionOverview(pageOffset);
+                    if(report==null){toast("AWAITING HOST REPORT");return;}
+                    if((pageOffset+1)*veil.ArenaSystems.OVERVIEW_PAGE_SIZE>=report.total()){
+                        toast("END OF OWNED FACILITIES");return;
+                    }
+                    pageOffset++;
+                    gameplay.gpuRequestProductionOverview(pageOffset);
+                    build();
+                });
+                add("RETURN TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case FACTORY_STATUS->{
                 add("REFRESH AUTHORIZED WORKSITE",gameplay::gpuRequestFactoryInspection);
@@ -529,6 +558,11 @@ public final class GpuOverlayMenu {
         }else if(screen==Screen.FACTORY_STATUS){
             skin.font().draw(sprites,
                 "AUTHORITATIVE NEAREST OWNED WORKSITE",147,331);
+        }else if(screen==Screen.PRODUCTION_OVERVIEW){
+            var report=gameplay.gpuProductionOverview(pageOffset);
+            String line=report==null?"AWAITING HOST PRODUCTION REPORT":
+                "OWNED INDUSTRY: "+report.total()+" SITES  PAGE "+(pageOffset+1);
+            skin.font().draw(sprites,line,147,331);
         }else if(screen==Screen.CONVEYOR){
             skin.font().draw(sprites,
                 "OWNED CRATES / DIRECTIONAL ROUTE / PAID POWER",147,331);
@@ -586,6 +620,34 @@ public final class GpuOverlayMenu {
                     String line=lines[i];
                     if(line.length()>45)line=line.substring(0,44)+"~";
                     skin.font().draw(sprites,line,151,222-i*22);
+                }
+            }
+        }
+        if(screen==Screen.PRODUCTION_OVERVIEW){
+            var report=gameplay.gpuProductionOverview(pageOffset);
+            skin.panel(sprites,143,38,365,177);
+            if(report==null){
+                skin.font().draw(sprites,"AWAITING AUTHORIZED HOST SNAPSHOT",151,196);
+            }else if(report.entries().isEmpty()){
+                skin.font().draw(sprites,
+                    report.total()==0?"NO OWNED PRODUCTION FACILITIES":"NO SITES ON THIS PAGE",
+                    151,196);
+            }else{
+                for(int i=0;i<report.entries().size();i++){
+                    var entry=report.entries().get(i);
+                    String[] lines={
+                        "#"+entry.index()+" "+entry.facility().replace('-',' ').toUpperCase(Locale.ROOT)+
+                            " / "+entry.state().replace('_',' '),
+                        "JOB: "+entry.recipe().replace('-',' ').toUpperCase(Locale.ROOT)+
+                            "  NEED: "+entry.detail().replace('_',' '),
+                        "NEXT: "+entry.next().replace('-',' ').toUpperCase(Locale.ROOT)+
+                            "  DONE: "+entry.completed()
+                    };
+                    for(int j=0;j<lines.length;j++){
+                        String line=lines[j];
+                        if(line.length()>44)line=line.substring(0,43)+"~";
+                        skin.font().draw(sprites,line,151,199-i*38-j*13);
+                    }
                 }
             }
         }

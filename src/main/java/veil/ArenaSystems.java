@@ -1317,6 +1317,9 @@ public final class ArenaSystems {
             belt=d;closest=distance;
         }
         if(belt==null)return ConveyorInspection.unavailable();
+        return inspectConveyorDevice(belt);
+    }
+    private ConveyorInspection inspectConveyorDevice(World.Device belt){
         String direction=belt.routeReverse?"EAST_TO_WEST":"WEST_TO_EAST";
         String mode=belt.routeItem.isEmpty()?"NONE":belt.routeItem;
         int load=ConveyorLogistics.sorted(belt,world.devices)?
@@ -1434,7 +1437,9 @@ public final class ArenaSystems {
             nearest=d;best=distance;
         }
         if(nearest==null)return FactoryInspection.unavailable();
-        World.Device d=nearest;
+        return inspectFactoryDevice(nearest);
+    }
+    private FactoryInspection inspectFactoryDevice(World.Device d){
         String facility=factionFacility(d.kind);
         String next=d.queuedRecipeId.isEmpty()?"-":
             AutomationOrders.repeating(d.queuedRecipeId)?
@@ -1474,6 +1479,57 @@ public final class ArenaSystems {
         }
         return new FactoryInspection(facility,"-","IDLE","-",
             0,0,d.productionCompleted,"-");
+    }
+    /** Paginated snapshot of every LIVE production worksite or conveyor owned
+     * by this account. Unlike local inspection it is intentionally accessible
+     * from an owned settlement anywhere in the world, but cannot control a
+     * distant machine. No faction-allied or other account stock is exposed. */
+    public static final int OVERVIEW_PAGE_SIZE=4;
+    public record ProductionEntry(int index,String facility,String recipe,
+            String state,String detail,String next,int completed){}
+    public record ProductionOverview(int page,int total,List<ProductionEntry> entries){
+        public String wire(){
+            StringBuilder out=new StringBuilder(page+"|"+total+"|"+entries.size());
+            for(ProductionEntry e:entries){
+                out.append('|').append(e.index()).append('|').append(e.facility())
+                    .append('|').append(e.recipe()).append('|').append(e.state())
+                    .append('|').append(e.detail()).append('|').append(e.next())
+                    .append('|').append(e.completed());
+            }
+            return out.toString();
+        }
+        public static ProductionOverview unavailable(int page){
+            return new ProductionOverview(page,0,List.of());
+        }
+    }
+    public synchronized ProductionOverview productionOverview(int playerId,int page){
+        if(page<0||page>10_000)return ProductionOverview.unavailable(0);
+        Player p=players.get(playerId);
+        if(p==null||p.dead||p.accountKey==null||
+           !p.accountKey.startsWith("acct_")||
+           vehicles.carDrivenBy(playerId)>=0)
+            return ProductionOverview.unavailable(page);
+        List<ProductionEntry> entries=new ArrayList<>();
+        int total=0,start=page*OVERVIEW_PAGE_SIZE;
+        for(int i=0;i<world.devices.size();i++){
+            World.Device d=world.devices.get(i);
+            if(d.hp<=0||!p.accountKey.equals(d.ownerKey)||
+               (d.kind!=CONVEYOR_LINE&&firstProcess(d.kind)==null))continue;
+            if(total>=start&&entries.size()<OVERVIEW_PAGE_SIZE){
+                if(d.kind==CONVEYOR_LINE){
+                    ConveyorInspection status=inspectConveyorDevice(d);
+                    entries.add(new ProductionEntry(i,"CONVEYOR_LINE",
+                        status.mode(),status.state(),status.detail(),"-",0));
+                }else{
+                    FactoryInspection status=inspectFactoryDevice(d);
+                    entries.add(new ProductionEntry(i,status.facility(),
+                        status.recipe(),status.state(),status.detail(),
+                        status.next(),status.completed()));
+                }
+            }
+            total++;
+        }
+        return new ProductionOverview(page,total,List.copyOf(entries));
     }
     /** Retained for older clients; new inspection provides full progress and
      * exact causes without truncating details into a single toast. */

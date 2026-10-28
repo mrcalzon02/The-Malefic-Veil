@@ -302,6 +302,18 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         return localHost==null?ArenaSystems.ConveyorInspection.unavailable():
             localHost.inspectConveyor(1);
     }
+    /** Read-only paginated owner account production report: local or LAN. */
+    public void gpuRequestProductionOverview(int page){
+        if(net!=null)net.requestProductionOverview(page);
+    }
+    public ArenaSystems.ProductionOverview gpuProductionOverview(int page){
+        if(net!=null){
+            var report=net.productionOverview;
+            return report!=null&&report.page()==page?report:null;
+        }
+        return localHost==null?ArenaSystems.ProductionOverview.unavailable(page):
+            localHost.productionOverview(1,page);
+    }
     /** Listed entries have a real physical blueprint and host-paid build path;
      * the UI never offers registry-only late-game machinery as functional. */
     public java.util.List<String> gpuSupportedFacilities(){

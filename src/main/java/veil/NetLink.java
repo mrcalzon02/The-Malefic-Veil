@@ -120,6 +120,7 @@ public final class NetLink implements AutoCloseable {
     /** Authenticated, authoritative inspection for one nearby owned factory. */
     public volatile ArenaSystems.FactoryInspection factoryInspection;
     public volatile ArenaSystems.ConveyorInspection conveyorInspection;
+    public volatile ArenaSystems.ProductionOverview productionOverview;
     public NetLink(String host,int port)throws IOException {
         socket=new Socket();
         socket.connect(new InetSocketAddress(host,port),4000);
@@ -356,6 +357,40 @@ public final class NetLink implements AutoCloseable {
                             case "FACTORY_RESULT" -> {
                                 if(s.length==2&&factoryResults.size()<32)factoryResults.add(s[1]);
                             }
+                            case "PRODUCTION_OVERVIEW" -> {
+                                if(s.length<4)continue;
+                                int page=Integer.parseInt(s[1]);
+                                int total=Integer.parseInt(s[2]);
+                                int count=Integer.parseInt(s[3]);
+                                if(page<0||page>10_000||total<0||total>100_000||
+                                   count<0||count>ArenaSystems.OVERVIEW_PAGE_SIZE||
+                                   s.length!=4+count*7)continue;
+                                boolean safe=true;
+                                java.util.List<ArenaSystems.ProductionEntry> entries=
+                                    new java.util.ArrayList<>();
+                                for(int i=0;i<count;i++){
+                                    int offset=4+i*7;
+                                    int index=Integer.parseInt(s[offset]);
+                                    int completed=Integer.parseInt(s[offset+6]);
+                                    if(index<0||completed<0){
+                                        safe=false;break;
+                                    }
+                                    for(int k=1;k<=5;k++){
+                                        String field=s[offset+k];
+                                        if(field.length()>90||
+                                           !field.matches("[A-Za-z0-9_-]+")){
+                                            safe=false;break;
+                                        }
+                                    }
+                                    if(!safe)break;
+                                    entries.add(new ArenaSystems.ProductionEntry(index,
+                                        s[offset+1],s[offset+2],s[offset+3],
+                                        s[offset+4],s[offset+5],completed));
+                                }
+                                if(!safe||entries.size()>total)continue;
+                                productionOverview=new ArenaSystems.ProductionOverview(
+                                    page,total,java.util.List.copyOf(entries));
+                            }
                             case "CONVEYOR_INSPECTION" -> {
                                 if(s.length!=10)continue;
                                 boolean safe=true;
@@ -531,6 +566,11 @@ public final class NetLink implements AutoCloseable {
     }
     public void inspectConveyor(){
         conveyorInspection=null;send("CONVEYOR_INSPECT");
+    }
+    public void requestProductionOverview(int page){
+        if(page<0||page>10_000)return;
+        productionOverview=null;
+        send("PRODUCTION_OVERVIEW|"+page);
     }
     public void transferCampStock(boolean taking,String item,int amount){
         send((taking?"STOCK_TAKE":"STOCK_PUT")+"|"+item+"|"+amount);

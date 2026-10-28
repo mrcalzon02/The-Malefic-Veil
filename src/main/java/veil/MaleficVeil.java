@@ -1791,6 +1791,12 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         int h=getHeight(),w=getWidth();
         g.setFont(new Font(Font.MONOSPACED,Font.BOLD,15));
         g.setColor(new Color(10,11,16,225));g.fillRect(0,h-70,w,70);
+        // Software fallback mirrors the GPU HUD's REAL depletion/recovery.
+        g.setColor(new Color(33,29,32));g.fillRect(105,h-68,178,8);
+        g.setColor(sprintExhausted?new Color(155,53,49):new Color(181,154,93));
+        g.fillRect(106,h-67,(int)Math.round(176*sprintEnergy/100),6);
+        g.setColor(new Color(218,200,174));
+        g.drawString("SPRINT "+(int)sprintEnergy+"%",291,h-59);
         g.setColor(new Color(215,215,207));
         g.drawString("HP "+health+"   SAN "+sanity+"   CASH $"+cash+"   SUP "+scrap+"   MED "+medkits+"   KILLS "+frags,105,h-44);
         ArsenalSystems.View arsenal=arsenalView();int equippedIndex=arsenal==null?0:arsenal.selected();

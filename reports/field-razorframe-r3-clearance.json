@@ -1,0 +1,74 @@
+[
+  {
+    "id": "razorframe",
+    "asset_sha256": "4d77001e8b1d496ba1c4277e6963a738fc46f128de3fb6bb79cca5791fd44377",
+    "tested_pair_samples": 89936,
+    "scope": {
+      "clips": [
+        "PACKED",
+        "DEPLOYING",
+        "ACTIVE",
+        "OPERATING",
+        "DAMAGED",
+        "EXPIRING"
+      ],
+      "rules": [
+        {
+          "id": "opposing-scissor-layers-separate",
+          "moving": [
+            "rigid_scissor_bar_*_-1"
+          ],
+          "obstacles": [
+            "rigid_scissor_bar_*_1"
+          ],
+          "relation": "separate"
+        },
+        {
+          "id": "bars-versus-solid-guide-housings",
+          "moving": [
+            "rigid_scissor_bar_*"
+          ],
+          "obstacles": [
+            "sliding_guide_*"
+          ],
+          "relation": "separate"
+        },
+        {
+          "id": "top-rails-versus-scissor-hardware",
+          "moving": [
+            "overlap_top_rail_*"
+          ],
+          "obstacles": [
+            "rigid_scissor_bar_*",
+            "guide_post_*",
+            "sliding_guide_*",
+            "center_axle_*"
+          ],
+          "relation": "separate"
+        },
+        {
+          "id": "bored-guide-sleeves-clear-posts",
+          "moving": [
+            "sliding_guide_*"
+          ],
+          "obstacles": [
+            "guide_post_*"
+          ],
+          "relation": "separate"
+        },
+        {
+          "id": "guide-sleeves-clear-one-another",
+          "moving": [
+            "sliding_guide_*"
+          ],
+          "obstacles": [
+            "sliding_guide_*"
+          ],
+          "relation": "separate"
+        }
+      ]
+    },
+    "failures": [],
+    "status": "PASS_DECLARED_PAIRS"
+  }
+]

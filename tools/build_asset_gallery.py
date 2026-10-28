@@ -31,9 +31,9 @@ LABELS = {'field-medic-r1': 'Field Medic repair study', 'field-pilots-r1': 'Depl
           'weapon-refinement': 'Weapon refinement and retained failed studies'}
 
 FIELD_REVISIONS=tuple('field-medic-r'+str(i) for i in range(2,8))+tuple('field-pilots-r'+str(i) for i in range(7,14))
-GROUPS=('field-bastion-r3','field-bastion-r4','field-bastion-r5','field-razorframe-r1')+FIELD_REVISIONS+GROUPS
+GROUPS=('field-bastion-r3','field-bastion-r4','field-bastion-r5','field-razorframe-r1','field-razorframe-r2','field-razorframe-r3')+FIELD_REVISIONS+GROUPS
 LABELS.update({revision:revision.replace('-', ' ').title()+' — review required' for revision in FIELD_REVISIONS})
-LABELS.update({group:group.replace('-', ' ').title()+' — review required' for group in ('field-bastion-r3','field-bastion-r4','field-bastion-r5','field-razorframe-r1')})
+LABELS.update({group:group.replace('-', ' ').title()+' — review required' for group in ('field-bastion-r3','field-bastion-r4','field-bastion-r5','field-razorframe-r1','field-razorframe-r2','field-razorframe-r3')})
 
 
 def sha(path):

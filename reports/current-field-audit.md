@@ -16,13 +16,14 @@ Remaining: Purpose/art acceptance and final surface refinement; Full articulatio
 
 ## razorframe
 
-1,868 triangles. Current binary SHA-256: `58db08b76680103b97c30afbbd9ef57c005221b68f757681323d501a44c3ca76`.
+2,492 triangles. Current binary SHA-256: `4d77001e8b1d496ba1c4277e6963a738fc46f128de3fb6bb79cca5791fd44377`.
 
-- gpu_upload_and_pose: PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER (`previews/field-razorframe-r1/razorframe/gpu/gpu-audit.json`).
-- packing: MEASURED_ENVELOPE (`reports/field-razorframe-r1-packing.json`).
-- linkage: PASS_SCOPED_RIGID_LINKAGE (`reports/field-razorframe-r1-linkage.json`).
+- gpu_upload_and_pose: PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER (`previews/field-razorframe-r3/razorframe/gpu/gpu-audit.json`).
+- clearance: PASS_DECLARED_PAIRS (`reports/field-razorframe-r3-clearance.json`).
+- packing: MEASURED_ENVELOPE (`reports/field-razorframe-r3-packing.json`).
+- linkage: PASS_SCOPED_RIGID_LINKAGE (`reports/field-razorframe-r3-linkage.json`).
 
-Remaining: Purpose/art acceptance and final surface refinement; Full articulation/packing clearance beyond declared pairs; Persistent damage, deterioration and convincing failure-specific destruction poses; Live world gameplay and multiplayer acceptance beyond socket regression; Packed width 0.550 m exceeds target; Full part clearance, top-rail support and drive transmission remain unproven.
+Remaining: Purpose/art acceptance and final surface refinement; Full articulation/packing clearance beyond declared pairs; Persistent damage, deterioration and convincing failure-specific destruction poses; Live world gameplay and multiplayer acceptance beyond socket regression; Full part clearance, top-rail support and drive transmission remain unproven.
 
 ## sentry-mki
 
@@ -71,6 +72,6 @@ The Medic hose stays within 0.34 mm of its sockets over 61 samples in each of ni
 
 Bastion r5: 3,468 triangles; packed approximately 0.460 x 0.500 x 0.495 m; no armor tile intersections in 31,540 declared pair samples. Its operating pressure piston reacts to authoritative damage events; destruction now uses column sag/lean instead of the packed transform. Lateral slide nesting/load paths and other part pairs remain unproven.
 
-Razorframe r1: 1,868 triangles; five rigid scissor bays, sliding guides and nested vertical posts. The exact exported rod endpoints remain within 0.014 mm of declared guide centers across 121 samples per state in all nine states. Packed envelope approximately 0.550 x 0.485 x 0.370 m exceeds the width target. Full clearance, top-rail supports/nesting, drive transmission, failure motion and art acceptance remain pending.
+Razorframe r3: 2,492 triangles; five rigid scissor bays, bored guide sleeves and nested vertical posts. The exact exported rod endpoints remain within 0.014 mm of declared guide centers across 121 samples per state in all nine states. Packed envelope approximately 0.500 x 0.485 x 0.370 m meets the target. The expanded six-state clearance check passes 89,936 directed pair samples across opposing rod layers, rod/guide housings, header/hardware, sleeve/post and sleeve/sleeve pairs. r1 failed 2,920 rod/solid-guide pair samples; r2 retained four packed sleeve/neighbouring-post contacts, repaired with wider packed post spacing in r3. Full clearance, top-rail supports/nesting, drive transmission, failure motion and art acceptance remain pending.
 
 The GPU audit camera now frames the full active bounds and keeps that camera fixed across states. This fixes clipped wall evidence without hiding packing differences. Both current studies pass nine-state GPU checks. No runtime normal attributes/maps were added.

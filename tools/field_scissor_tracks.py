@@ -2,7 +2,7 @@
 import math
 LENGTH=.42
 OPEN=.36
-CLOSED=.04
+CLOSED=.045
 BAYS=5
 
 def values(spec,clip,f):

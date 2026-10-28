@@ -1,6 +1,6 @@
 # Construction test image gallery
 
-766 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
+784 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
 
 Private car/character reference renders and comparison panels containing them are excluded. Earlier studies remain visible; gallery inclusion does not imply approval.
 
@@ -35,6 +35,18 @@ Update and publish from the authoring workspace after each render batch: `python
 9 images Ã‚Â· [Full image index](field-razorframe-r1.md)
 
 [![Field Razorframe R1 — review required](images/field-razorframe-r1/razorframe/gpu/active.png)](field-razorframe-r1.md)
+
+## Field Razorframe R2 — review required
+
+9 images Ã‚Â· [Full image index](field-razorframe-r2.md)
+
+[![Field Razorframe R2 — review required](images/field-razorframe-r2/razorframe/gpu/active.png)](field-razorframe-r2.md)
+
+## Field Razorframe R3 — review required
+
+9 images Ã‚Â· [Full image index](field-razorframe-r3.md)
+
+[![Field Razorframe R3 — review required](images/field-razorframe-r3/razorframe/gpu/active.png)](field-razorframe-r3.md)
 
 ## Field Medic R2 — review required
 

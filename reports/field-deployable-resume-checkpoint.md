@@ -1,3 +1,11 @@
+# Latest Razorframe repair checkpoint: 2026-10-27
+
+Razorframe current candidate is r3, superseding r1. Current scope passes 89,936 clearance pair samples, all-nine-state rigid linkage checks and the approximately 0.500 x 0.485 x 0.370 m packing target. It is 2,492 triangles. The solid guide blocks and packed neighbouring-post contacts were repaired with bored sleeves and 45 mm packed bay spacing. r1/r2 failures remain archived. See reports/razorframe-feasibility-review.md for exact scope and outstanding work.
+
+No certification is claimed: top-rail supports, drive/load path, full untested-pair clearance, failure art/aging and live-world acceptance remain pending. Next model work should resolve these alongside Bastion lateral mechanics, then proceed through the remaining 15 independent deployable redesigns and the broader asset inventory. Six current candidates, zero production complete. Runtime normals/maps remain prohibited.
+
+Earlier checkpoint follows:
+
 # Latest checkpoint: 2026-10-27, continued at user request
 
 User explicitly authorized pushing beyond the prior 50% cutoff before the allowance reset. The five-hour allowance has now reset. The last check showed 89% remaining in that window and 2% remaining weekly. This batch is saved before weekly exhaustion; no claim of product completion.

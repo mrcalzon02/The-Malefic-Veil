@@ -43,8 +43,8 @@
     {
       "id": "thrown-unraveled-barricade",
       "pilot": "razorframe",
-      "asset_sha256": "58db08b76680103b97c30afbbd9ef57c005221b68f757681323d501a44c3ca76",
-      "triangles": 1868,
+      "asset_sha256": "4d77001e8b1d496ba1c4277e6963a738fc46f128de3fb6bb79cca5791fd44377",
+      "triangles": 2492,
       "runtime_normal_attributes": 0,
       "normal_maps": 0,
       "vertex_floats": 9,
@@ -55,17 +55,22 @@
       "evidence": [
         {
           "kind": "gpu_upload_and_pose",
-          "report": "previews/field-razorframe-r1/razorframe/gpu/gpu-audit.json",
+          "report": "previews/field-razorframe-r3/razorframe/gpu/gpu-audit.json",
           "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
         },
         {
+          "kind": "clearance",
+          "report": "reports/field-razorframe-r3-clearance.json",
+          "status": "PASS_DECLARED_PAIRS"
+        },
+        {
           "kind": "packing",
-          "report": "reports/field-razorframe-r1-packing.json",
+          "report": "reports/field-razorframe-r3-packing.json",
           "status": "MEASURED_ENVELOPE"
         },
         {
           "kind": "linkage",
-          "report": "reports/field-razorframe-r1-linkage.json",
+          "report": "reports/field-razorframe-r3-linkage.json",
           "status": "PASS_SCOPED_RIGID_LINKAGE"
         }
       ],
@@ -75,7 +80,6 @@
         "Full articulation/packing clearance beyond declared pairs",
         "Persistent damage, deterioration and convincing failure-specific destruction poses",
         "Live world gameplay and multiplayer acceptance beyond socket regression",
-        "Packed width 0.550 m exceeds target",
         "Full part clearance, top-rail support and drive transmission remain unproven"
       ]
     },

@@ -115,57 +115,61 @@
         "Full articulation/packing clearance beyond declared pairs",
         "Persistent damage, deterioration and convincing failure-specific destruction poses",
         "Live world gameplay and multiplayer acceptance beyond socket regression",
-        "Packed width 0.550 m exceeds target",
         "Full part clearance, top-rail support and drive transmission remain unproven"
       ],
       "superseded_candidates": [
         {
           "status": "REDESIGN_REQUIRED"
+        },
+        {
+          "candidate": "build/candidates/field-razorframe-r1/razorframe/razorframe.glb",
+          "asset_sha256": "58db08b76680103b97c30afbbd9ef57c005221b68f757681323d501a44c3ca76",
+          "status": "REFINED_PILOT_REVIEW_REQUIRED"
         }
       ],
-      "candidate": "build/candidates/field-razorframe-r1/razorframe/razorframe.glb",
-      "asset_sha256": "58db08b76680103b97c30afbbd9ef57c005221b68f757681323d501a44c3ca76",
-      "modeling_source": "build/candidates/field-razorframe-r1/razorframe/razorframe.blend",
-      "animated_source": "build/candidates/field-razorframe-r1/razorframe/razorframe-animated.blend",
-      "triangles": 1868,
+      "candidate": "build/candidates/field-razorframe-r3/razorframe/razorframe.glb",
+      "asset_sha256": "4d77001e8b1d496ba1c4277e6963a738fc46f128de3fb6bb79cca5791fd44377",
+      "modeling_source": "build/candidates/field-razorframe-r3/razorframe/razorframe.blend",
+      "animated_source": "build/candidates/field-razorframe-r3/razorframe/razorframe-animated.blend",
+      "triangles": 2492,
       "technical_review": "reports/current-field-audit.json",
       "refinement_review": "reports/current-field-audit.md",
       "renders": {
         "active": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/active.png",
-          "sha256": "0cc21410264a6e0e23cb6fb6e0ed1576e7e6fb1f3694a8c159c05bb786833832"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/active.png",
+          "sha256": "0592822d5c3bb4f30e1cf2a38ec14b3a046e0fda9f9cd19e15c27a55e058fbea"
         },
         "packed": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/packed.png",
-          "sha256": "7eca5642efb5377b1104b558ac867d4d7f9bc708bdda415c0e0a94c57738082a"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/packed.png",
+          "sha256": "d5c0743ff7c579825eb8dfa5bef855570af1617cfe49d72d51fc6e3ce310164b"
         },
         "deploying": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/deploying.png",
-          "sha256": "7fbbaa77c89747701abffa8b4a3a25e8e8b4d1552b20f8b6dd8fb8ee378ec18a"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/deploying.png",
+          "sha256": "3d84873d250397f815b07b5ad4b77b556842c52a3b1753ff06238ece5adc5506"
         },
         "operating": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/operating.png",
-          "sha256": "71fc27c4972c0bae5229cc382a897832a89463fe1db8824e4d89291dad23492a"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/operating.png",
+          "sha256": "b4c011063b92b97c7502989ec1b251ae227458b4bc79298ce703a134e033298e"
         },
         "thrown": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/thrown.png",
-          "sha256": "1e6512c16171d376e69059eb8fc266a6f6a9510016346050a943a5ab9434661f"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/thrown.png",
+          "sha256": "75a5e4eafee7ff1265e07808828679719b6170cd8568e9629cb4d85a4955df4e"
         },
         "impact": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/impact.png",
-          "sha256": "7ff49f5cc5dcc3dd6bedb2fbc059853ab889920835398bb95ef20d646a95aa91"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/impact.png",
+          "sha256": "4035b00f6b5b3d3a7c013408048324bcbb6d07dffe6fc949ac2632be6dd29199"
         },
         "damaged": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/damaged.png",
-          "sha256": "e2cdba4e96e0b592a4384d7e3edaacdb5d5b304fd52aa41265441be2b8212579"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/damaged.png",
+          "sha256": "ac1e51c6249cbdaf94e0115ab2b9ca4a3282f82ee2ab82c02952c3ec739e9152"
         },
         "expiring": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/expiring.png",
-          "sha256": "bbc3c603aaebfd68e319749e8b4cd45de16dca94a4c5e6471f727f9310504a21"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/expiring.png",
+          "sha256": "04b1eecd32cc7397464367dd37b495bb7a86313df6e65699d557914247bc4e8a"
         },
         "destroyed": {
-          "path": "previews/field-razorframe-r1/razorframe/gpu/destroyed.png",
-          "sha256": "9076f107cc83c39a623bd88ccdab39649724eb8fb9217de2dd2e382ab6f56309"
+          "path": "previews/field-razorframe-r3/razorframe/gpu/destroyed.png",
+          "sha256": "17fa22d843029cfdbc46e18defcc5c1d1451e96188751988b9663bb000e8e678"
         }
       }
     },

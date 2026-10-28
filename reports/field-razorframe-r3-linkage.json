@@ -1,0 +1,64 @@
+[
+  {
+    "id": "razorframe",
+    "asset_sha256": "4d77001e8b1d496ba1c4277e6963a738fc46f128de3fb6bb79cca5791fd44377",
+    "status": "PASS_SCOPED_RIGID_LINKAGE",
+    "scope": "Ten rigid rod endpoint rings against declared guide axle centers; 121 samples per state, including half-key interpolation times. Does not establish every part clearance or load capacity.",
+    "measurements": [
+      {
+        "clip": "PACKED",
+        "samples": 121,
+        "max_endpoint_error_m": 1.288325821294679e-07,
+        "max_length_error_m": 5.6548568050374115e-08
+      },
+      {
+        "clip": "THROWN",
+        "samples": 121,
+        "max_endpoint_error_m": 1.7691207124889344e-07,
+        "max_length_error_m": 2.6476390835306063e-07
+      },
+      {
+        "clip": "IMPACT",
+        "samples": 121,
+        "max_endpoint_error_m": 1.6100840855370693e-07,
+        "max_length_error_m": 1.4469161763175364e-07
+      },
+      {
+        "clip": "DEPLOYING",
+        "samples": 121,
+        "max_endpoint_error_m": 1.32370966158316e-05,
+        "max_length_error_m": 1.8377393246060691e-07
+      },
+      {
+        "clip": "ACTIVE",
+        "samples": 121,
+        "max_endpoint_error_m": 7.450580596923828e-08,
+        "max_length_error_m": 9.064164457894819e-08
+      },
+      {
+        "clip": "OPERATING",
+        "samples": 121,
+        "max_endpoint_error_m": 2.4027400458748785e-07,
+        "max_length_error_m": 1.9707854670425462e-07
+      },
+      {
+        "clip": "DAMAGED",
+        "samples": 121,
+        "max_endpoint_error_m": 2.47135881939858e-07,
+        "max_length_error_m": 2.414272639028603e-07
+      },
+      {
+        "clip": "EXPIRING",
+        "samples": 121,
+        "max_endpoint_error_m": 1.831464253855028e-07,
+        "max_length_error_m": 2.015134070165736e-07
+      },
+      {
+        "clip": "DESTROYED",
+        "samples": 121,
+        "max_endpoint_error_m": 6.090284552448443e-06,
+        "max_length_error_m": 1.615995763315503e-07
+      }
+    ]
+  }
+]

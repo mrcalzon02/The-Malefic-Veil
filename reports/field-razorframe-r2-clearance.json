@@ -1,0 +1,97 @@
+[
+  {
+    "id": "razorframe",
+    "asset_sha256": "1942c5ef394e344c01e6d436eb0eded0653b6d501e01b962a73b5ccc2e53a6cc",
+    "tested_pair_samples": 70664,
+    "scope": {
+      "clips": [
+        "PACKED",
+        "DEPLOYING",
+        "ACTIVE",
+        "OPERATING",
+        "DAMAGED",
+        "EXPIRING"
+      ],
+      "rules": [
+        {
+          "id": "opposing-scissor-layers-separate",
+          "moving": [
+            "rigid_scissor_bar_*_-1"
+          ],
+          "obstacles": [
+            "rigid_scissor_bar_*_1"
+          ],
+          "relation": "separate"
+        },
+        {
+          "id": "bars-versus-solid-guide-housings",
+          "moving": [
+            "rigid_scissor_bar_*"
+          ],
+          "obstacles": [
+            "sliding_guide_*"
+          ],
+          "relation": "separate"
+        },
+        {
+          "id": "top-rails-versus-scissor-hardware",
+          "moving": [
+            "overlap_top_rail_*"
+          ],
+          "obstacles": [
+            "rigid_scissor_bar_*",
+            "guide_post_*",
+            "sliding_guide_*",
+            "center_axle_*"
+          ],
+          "relation": "separate"
+        },
+        {
+          "id": "bored-guide-sleeves-clear-posts",
+          "moving": [
+            "sliding_guide_*"
+          ],
+          "obstacles": [
+            "guide_post_*"
+          ],
+          "relation": "separate"
+        }
+      ]
+    },
+    "failures": [
+      {
+        "rule": "bored-guide-sleeves-clear-posts",
+        "clip": "PACKED",
+        "time_s": 0.0,
+        "part": "sliding_guide_0_-1",
+        "obstacle": "guide_post_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "bored-guide-sleeves-clear-posts",
+        "clip": "PACKED",
+        "time_s": 0.0,
+        "part": "sliding_guide_5_-1",
+        "obstacle": "guide_post_4_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "bored-guide-sleeves-clear-posts",
+        "clip": "DEPLOYING",
+        "time_s": 0.0,
+        "part": "sliding_guide_0_-1",
+        "obstacle": "guide_post_1_0",
+        "defect": "INTERSECTION"
+      },
+      {
+        "rule": "bored-guide-sleeves-clear-posts",
+        "clip": "DEPLOYING",
+        "time_s": 0.0,
+        "part": "sliding_guide_5_-1",
+        "obstacle": "guide_post_4_0",
+        "defect": "INTERSECTION"
+      }
+    ],
+    "status": "FAIL"
+  }
+]

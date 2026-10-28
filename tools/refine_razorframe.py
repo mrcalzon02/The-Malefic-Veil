@@ -6,7 +6,7 @@ import refine_field_pilots as p
 from bake_field_lighting import bake
 from field_scissor_tracks import LENGTH,OPEN,BAYS
 b=p.b;ROOT=p.ROOT
-REVISION=sys.argv[sys.argv.index('--revision')+1] if '--revision' in sys.argv else 'field-razorframe-r1'
+REVISION=sys.argv[sys.argv.index('--revision')+1] if '--revision' in sys.argv else 'field-razorframe-r3'
 OUT=ROOT/'build/candidates'/REVISION
 
 def link(name,loc,kind,index,**extra):
@@ -24,10 +24,12 @@ def build():
         x=(end-BAYS/2)*OPEN;post=link('ScissorPost_'+str(end),(x,0,.04),'post',end)
         for upper,(radius,z) in enumerate(((.018,.035),(.012,.43))):
             parent=p.joint('PostTop_'+str(end),(x,0,.43),post,pack_move=(0,0,-.395)) if upper else post
-            p.lathe('guide_post_%d_%d'%(end,upper),[(radius,z),(radius,z+.43),(radius-.003,z+.43),(radius-.003,z),(radius,z)],1,parent,6,(x,0,0))
+            length=.43 if upper else .40
+            p.lathe('guide_post_%d_%d'%(end,upper),[(radius,z),(radius,z+length),(radius-.003,z+length),(radius-.003,z),(radius,z)],1,parent,6,(x,0,0))
         for level in (-1,1):
             z=.42+level*height/2;guide=link('ScissorGuide_%d_%d'%(end,level),(x,0,z),'guide',end,level=level)
-            b.box('sliding_guide_%d_%d'%(end,level),(x,0,z),(.032,.06,.028),0,guide,0)
+            outer,inner=(.022,.020) if level<0 else (.016,.014)
+            p.lathe('sliding_guide_%d_%d'%(end,level),[(outer,z-.014),(outer,z+.014),(inner,z+.014),(inner,z-.014),(outer,z-.014)],0,guide,8,(x,0,0))
             p.lathe('guide_axle_%d_%d'%(end,level),[(0,-.05),(.010,-.05),(.010,.05),(0,.05)],2,guide,6,(x,0,z),'Y')
         if end in (0,BAYS):
             for side in (-1,1):
@@ -41,7 +43,7 @@ def build():
         axle=link('ScissorCenter_'+str(bay),(x,0,.42),'center',bay)
         p.lathe('center_axle_'+str(bay),[(0,-.052),(.013,-.052),(.013,.052),(0,.052)],2,axle,6,(x,0,.42),'Y')
         rail=link('ScissorRail_'+str(bay),(x,.14+bay*.025,.84),'rail',bay)
-        b.box('overlap_top_rail_'+str(bay),(x,.14+bay*.025,.84),(.39,.020,.025),0,rail,.002)
+        b.box('overlap_top_rail_'+str(bay),(x,.14+bay*.025,.84),(.32,.020,.025),0,rail,.002)
         for k in (-1,1):
             p.profile('raised_warning_tooth_%d_%d'%(bay,k),[(x+k*.11-.022,.852),(x+k*.11+.022,.852),(x+k*.11,.885)],.012,'Y',2,rail).location.y+=.14+bay*.025
     meshes=b.unwrap_bake('razorframe');bake(meshes,b.MATS,'razorframe');dest=OUT/'razorframe';dest.mkdir(parents=True,exist_ok=True)

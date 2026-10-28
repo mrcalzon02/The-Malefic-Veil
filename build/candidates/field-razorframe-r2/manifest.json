@@ -1,0 +1,18 @@
+[
+  {
+    "id": "razorframe",
+    "path": "C:\\Users\\Admin\\Documents\\ChatGPT\\The Malefic Veil\\build\\field-deployables-main\\build\\candidates\\field-razorframe-r2\\razorframe\\razorframe.glb",
+    "category": "candidate",
+    "faction": "unraveled",
+    "role": "barricade",
+    "sha256": "1942c5ef394e344c01e6d436eb0eded0653b6d501e01b962a73b5ccc2e53a6cc",
+    "triangles": 2492,
+    "status": "MECHANISM_STUDY_REVIEW_REQUIRED",
+    "remaining": [
+      "Full part clearance, guide contact and load-path audit",
+      "Drive transmission and top-rail supports/nesting review",
+      "Distinct destruction/aging and material refinement",
+      "Collider match and live-world purpose/art acceptance"
+    ]
+  }
+]

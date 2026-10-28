@@ -1517,6 +1517,24 @@ public final class ArenaSystems {
             return "STOCK_REQUIRED_INPUT_NEAR_SITE";
         }
         if(missing<1)return "STOCK_REQUIRED_INPUT_NEAR_SITE";
+        // A genuinely programmed and routed AUTO belt can be the immediate
+        // recovery path. Verify both the deficit item and the actual receiving
+        // crate instead of guessing that any nearby belt will supply the job.
+        for(int i=0;i<world.devices.size();i++){
+            World.Device belt=world.devices.get(i);
+            if(belt.hp<=0||belt.kind!=CONVEYOR_LINE||
+               !"AUTO".equals(belt.routeItem)||
+               !d.ownerKey.equals(belt.ownerKey))continue;
+            var transfer=ConveyorLogistics.autoInput(belt,world.devices);
+            if(transfer==null||transfer.item()!=item||
+               Math.hypot(transfer.route().destination().x-d.x,
+                          transfer.route().destination().y-d.y)>5.5)continue;
+            int load=ConveyorLogistics.sorted(belt,world.devices)?
+                ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
+            return ElectricUtility.available(world.devices,belt,load,Map.of())!=null?
+                "AUTO_FEED_VIA_CONVEYOR_"+i:
+                "RESTORE_AUTO_CONVEYOR_POWER_"+i;
+        }
         int source=-1,units=0;
         for(int i=0;i<world.devices.size();i++){
             World.Device crate=world.devices.get(i);

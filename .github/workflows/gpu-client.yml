@@ -161,6 +161,13 @@ jobs:
             build/test-visuals/gpu-ocean-performance.log
           test -s build/test-visuals/gallery-seed-20261020-city-E-01-generated-plate-overhead.png
           echo 'PASS GPU_OCEAN_STATIC_VBO nonzero real ocean triangles and no frame uploads'
+          {
+            echo '### Native ocean GPU diagnostics (real coastal City E)'
+            echo 'CPU submission is not GPU execution time; FPS is diagnostic.'
+            echo '```text'
+            grep 'OCEAN_GPU_PERF' build/test-visuals/gpu-ocean-performance.log | tail -n 4
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Unified in-engine main menu and real world/session flow
         if: runner.os == 'Linux'
         shell: bash
@@ -237,6 +244,7 @@ jobs:
             build/test-visuals/gpu-kenney-foliage.png
             build/test-visuals/gallery-seed-*.png
             build/test-visuals/gallery-seed-*.log
+            build/test-visuals/gpu-ocean-performance.log
             build/test-visuals/gpu-standalone-editor-live-viewport.png
             build/test-visuals/editor-kit.log
             build/test-visuals/psx-source-audit.log

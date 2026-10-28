@@ -145,6 +145,9 @@ public final class GpuOcean implements AutoCloseable {
     private final VeilOcean water;
     private final Texture layerA,layerB;
     private final List<Chunk> chunks=new ArrayList<>();
+    // Reused visibility list avoids transient per-frame allocations; skip
+    // shader binding, uniform uploads and texture setup when water is hidden.
+    private final List<Chunk> visibleWater=new ArrayList<>();
     private long staticBytes;
     private Stats last=new Stats(0,0,0,0,0,0);
 
@@ -238,6 +241,16 @@ public final class GpuOcean implements AutoCloseable {
     public int render(PerspectiveCamera camera,WorldDayNight.Conditions day,
                       double seconds,String preset,float distance){
         long start=System.nanoTime();
+        visibleWater.clear();
+        for(Chunk chunk:chunks){
+            double dx=camera.position.x-chunk.midX,dz=camera.position.z-chunk.midZ;
+            double limit=distance+chunk.width;
+            if(dx*dx+dz*dz<=limit*limit)visibleWater.add(chunk);
+        }
+        if(visibleWater.isEmpty()){
+            last=new Stats(0,0,0,0,System.nanoTime()-start,staticBytes);
+            return 0; // Inland cities have no ocean GPU work at all.
+        }
         WaterEffects effects=water.effects(preset);
         WaterModule.Style style=water.module().bodies().get(0).style();
         shader.bind();
@@ -281,10 +294,7 @@ public final class GpuOcean implements AutoCloseable {
         Gdx.gl.glDepthMask(false);
         int drawn=0,triangles=0;
         try{
-            for(Chunk chunk:chunks){
-                double dx=camera.position.x-chunk.midX,dz=camera.position.z-chunk.midZ;
-                double limit=distance+chunk.width;
-                if(dx*dx+dz*dz>limit*limit)continue;
+            for(Chunk chunk:visibleWater){
                 chunk.mesh.render(shader,GL20.GL_TRIANGLES,0,chunk.vertexCount);
                 drawn++;triangles+=chunk.vertexCount/3;
             }

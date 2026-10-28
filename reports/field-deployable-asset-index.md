@@ -1,13 +1,11 @@
 # Field deployable asset index
 
-Stopped at the user-requested five-hour allowance cutoff: the account reported 51% used / 49% remaining. Resume only on instruction.
-
-21 required: 0 production complete, 4 refined pilots awaiting review, 17 requiring redesign, including the rejected Bastion mechanism study.
+Continued beyond the earlier cutoff at the user request. Six refined pilots await review; 15 require independent redesign; zero production complete.
 
 | # | Faction | Item | Status |
 |---|---|---|---|
-| 1 | unraveled | Bastion Panel | REDESIGN_REQUIRED |
-| 2 | unraveled | Razorframe | REDESIGN_REQUIRED |
+| 1 | unraveled | Bastion Panel | REFINED_PILOT_REVIEW_REQUIRED |
+| 2 | unraveled | Razorframe | REFINED_PILOT_REVIEW_REQUIRED |
 | 3 | unraveled | Sentry Mk.I | REFINED_PILOT_REVIEW_REQUIRED |
 | 4 | unraveled | Field Medic | REFINED_PILOT_REVIEW_REQUIRED |
 | 5 | unraveled | Munition Feeder | REDESIGN_REQUIRED |

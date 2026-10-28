@@ -1,5 +1,5 @@
 {
-  "status": "STOPPED_AT_FIVE_HOUR_ALLOWANCE_CUTOFF_WORK_IN_PROGRESS",
+  "status": "WORK_IN_PROGRESS_CONTINUED_AT_USER_REQUEST",
   "production_complete": 0,
   "files": [
     {
@@ -4356,6 +4356,206 @@
       "path": "build/candidates/field-bastion-r2/bastion-panel/bastion-panel.glb",
       "bytes": 498412,
       "sha256": "94315c2fdaf65fc9eb4f30162dac1513010a901b181def79624469f096abafa2"
+    },
+    {
+      "path": "build/candidates/field-bastion-r3/bastion-panel/bastion-panel.blend",
+      "bytes": 692986,
+      "sha256": "74d39d401e220d635297de729caa779557666c406a385b406fe54f1cfd3b2275"
+    },
+    {
+      "path": "build/candidates/field-bastion-r3/bastion-panel/bastion-panel.glb",
+      "bytes": 451820,
+      "sha256": "a9cb29783db29ef68220667338faa1869325c0bb9d4143a14b386e805212f0ec"
+    },
+    {
+      "path": "previews/field-bastion-r3/bastion-panel/gpu/active.png",
+      "bytes": 25350,
+      "sha256": "e1d7f6c1753c9d880077cf557c980d063aaec734e5021420bc96c44cd1e3b34f"
+    },
+    {
+      "path": "previews/field-bastion-r3/bastion-panel/gpu/deploying.png",
+      "bytes": 20333,
+      "sha256": "4387afdbd2d5f2d8ea74a6741b0a0e6f05df0bd49145a7124d4b554edb337040"
+    },
+    {
+      "path": "previews/field-bastion-r3/bastion-panel/gpu/packed.png",
+      "bytes": 12749,
+      "sha256": "9f1fea6554113b3e9fe6ff0f76353c1b97282bdff089a749482eb8c2f0823bdf"
+    },
+    {
+      "path": "build/candidates/field-bastion-r4/bastion-panel/bastion-panel.blend",
+      "bytes": 688835,
+      "sha256": "492a0e1a616c24de1cfeb8099405bcae0f209970bff76a7373259f5e5b7e36fb"
+    },
+    {
+      "path": "build/candidates/field-bastion-r4/bastion-panel/bastion-panel.glb",
+      "bytes": 477688,
+      "sha256": "dd0f11b097195580bc81b4352c72e39bacbf0358735f7203abaf1b08064046ce"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/active.png",
+      "bytes": 23978,
+      "sha256": "3001b0b56777534f0c6fed4492cba793ace35a4ef3573478c302871a37da49f5"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/damaged.png",
+      "bytes": 23995,
+      "sha256": "7faf12b06aa5478e02175d1e29557c2915f7f205bb64a0ee5a58d4b6fa03bfba"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/deploying.png",
+      "bytes": 16261,
+      "sha256": "c4813676621724b78ea9fd08e6e12f9ac34ab0dbe1a0d5d2757c6f896c35e286"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/destroyed.png",
+      "bytes": 14412,
+      "sha256": "6f00d6d4bda9d933b692a5d6d2a487b105520006ff7c0ae7fd3cf519dcba44c2"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/expiring.png",
+      "bytes": 23978,
+      "sha256": "3001b0b56777534f0c6fed4492cba793ace35a4ef3573478c302871a37da49f5"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/impact.png",
+      "bytes": 9689,
+      "sha256": "b77807eeea71a4b618f5f8d25e9de608ed5f8f453cc6dd1de14147b5e1984049"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/operating.png",
+      "bytes": 23969,
+      "sha256": "702a83c872c2092f3bc94c4879ac1a445956002855376963721b76ad20d50092"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/packed.png",
+      "bytes": 9593,
+      "sha256": "921cd7d0a5a417a3659daaa842cb102714fd6db833f8db343f3ee5e9f8fbf3dd"
+    },
+    {
+      "path": "previews/field-bastion-r4/bastion-panel/gpu/thrown.png",
+      "bytes": 10730,
+      "sha256": "10e31b121ab5c91a0e0f1dbce473729e0697c56ff349bf119bfac9627a4dbae1"
+    },
+    {
+      "path": "build/candidates/field-bastion-r5/bastion-panel/bastion-panel-animated.blend",
+      "bytes": 348146,
+      "sha256": "7a7e7f95d257f79e11d4dabf0057dccd1b4a7ad0ace72658fcd10c57b2c9c250"
+    },
+    {
+      "path": "build/candidates/field-bastion-r5/bastion-panel/bastion-panel.blend",
+      "bytes": 688618,
+      "sha256": "5805afba6473b963bc20089f68d2182583f977985a87bd3db63e2c1033770110"
+    },
+    {
+      "path": "build/candidates/field-bastion-r5/bastion-panel/bastion-panel.glb",
+      "bytes": 476732,
+      "sha256": "05821fe6925aca29a49cbfe07d2b08e0d4071d389350927ed9d5191b454f466c"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/active.png",
+      "bytes": 23978,
+      "sha256": "3001b0b56777534f0c6fed4492cba793ace35a4ef3573478c302871a37da49f5"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/damaged.png",
+      "bytes": 23995,
+      "sha256": "7faf12b06aa5478e02175d1e29557c2915f7f205bb64a0ee5a58d4b6fa03bfba"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/deploying.png",
+      "bytes": 16261,
+      "sha256": "c4813676621724b78ea9fd08e6e12f9ac34ab0dbe1a0d5d2757c6f896c35e286"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/destroyed.png",
+      "bytes": 14412,
+      "sha256": "6f00d6d4bda9d933b692a5d6d2a487b105520006ff7c0ae7fd3cf519dcba44c2"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/expiring.png",
+      "bytes": 23978,
+      "sha256": "3001b0b56777534f0c6fed4492cba793ace35a4ef3573478c302871a37da49f5"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/impact.png",
+      "bytes": 9689,
+      "sha256": "b77807eeea71a4b618f5f8d25e9de608ed5f8f453cc6dd1de14147b5e1984049"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/operating.png",
+      "bytes": 23969,
+      "sha256": "702a83c872c2092f3bc94c4879ac1a445956002855376963721b76ad20d50092"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/packed.png",
+      "bytes": 9593,
+      "sha256": "921cd7d0a5a417a3659daaa842cb102714fd6db833f8db343f3ee5e9f8fbf3dd"
+    },
+    {
+      "path": "previews/field-bastion-r5/bastion-panel/gpu/thrown.png",
+      "bytes": 10730,
+      "sha256": "10e31b121ab5c91a0e0f1dbce473729e0697c56ff349bf119bfac9627a4dbae1"
+    },
+    {
+      "path": "build/candidates/field-razorframe-r1/razorframe/razorframe-animated.blend",
+      "bytes": 565572,
+      "sha256": "c9beafc2ef5e290bb47a50a290fa5af6da639b8b4894e3aad41e5d054270165a"
+    },
+    {
+      "path": "build/candidates/field-razorframe-r1/razorframe/razorframe.blend",
+      "bytes": 713979,
+      "sha256": "0137a779de4dfd29d599f25c927dafa90f6e5d33b059e0de4e672ca78834022f"
+    },
+    {
+      "path": "build/candidates/field-razorframe-r1/razorframe/razorframe.glb",
+      "bytes": 741484,
+      "sha256": "58db08b76680103b97c30afbbd9ef57c005221b68f757681323d501a44c3ca76"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/active.png",
+      "bytes": 28596,
+      "sha256": "0cc21410264a6e0e23cb6fb6e0ed1576e7e6fb1f3694a8c159c05bb786833832"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/damaged.png",
+      "bytes": 28873,
+      "sha256": "e2cdba4e96e0b592a4384d7e3edaacdb5d5b304fd52aa41265441be2b8212579"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/deploying.png",
+      "bytes": 25567,
+      "sha256": "7fbbaa77c89747701abffa8b4a3a25e8e8b4d1552b20f8b6dd8fb8ee378ec18a"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/destroyed.png",
+      "bytes": 27198,
+      "sha256": "9076f107cc83c39a623bd88ccdab39649724eb8fb9217de2dd2e382ab6f56309"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/expiring.png",
+      "bytes": 28608,
+      "sha256": "bbc3c603aaebfd68e319749e8b4cd45de16dca94a4c5e6471f727f9310504a21"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/impact.png",
+      "bytes": 12994,
+      "sha256": "7ff49f5cc5dcc3dd6bedb2fbc059853ab889920835398bb95ef20d646a95aa91"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/operating.png",
+      "bytes": 28900,
+      "sha256": "71fc27c4972c0bae5229cc382a897832a89463fe1db8824e4d89291dad23492a"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/packed.png",
+      "bytes": 12999,
+      "sha256": "7eca5642efb5377b1104b558ac867d4d7f9bc708bdda415c0e0a94c57738082a"
+    },
+    {
+      "path": "previews/field-razorframe-r1/razorframe/gpu/thrown.png",
+      "bytes": 15851,
+      "sha256": "1e6512c16171d376e69059eb8fc266a6f6a9510016346050a943a5ab9434661f"
     }
   ]
 }

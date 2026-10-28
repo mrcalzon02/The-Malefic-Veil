@@ -56,6 +56,9 @@ public final class ThrownActivationTest {
                     check(host.thrown.occupied(landed.x(),landed.y()),"Completed cover absent");
                     check(host.thrown.blocksLine(landed.x()-2,landed.y(),landed.x()+2,landed.y()),"Completed cover does not block shots");
                     if(bp.role()==ThrownDeployables.Role.BARRICADE)check(host.thrown.moveFactor(enemy)<1,"Active barricade slow absent");
+                    check(host.thrown.damage(2,landed.id(),10),"Host cover impact rejected");
+                    check(host.thrown.views().get(0).state()==ThrownDeployables.State.DAMAGED&&host.thrown.views().get(0).operationAgeMs()==0,"Cover brace operation not tied to a real hit");
+                    tick(host,450);check(host.thrown.views().get(0).state()==ThrownDeployables.State.OPERATING,"Cover pressure recovery missing after damage reaction");
                 }
                 case HEALTH -> check(maker.hp>50&&active.operationAgeMs()==0,"Successful healing/event absent");
                 case TURRET -> {

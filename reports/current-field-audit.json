@@ -3,6 +3,83 @@
   "render_contract": "design/FIELD_RENDER_CONTRACT.md",
   "pilots": [
     {
+      "id": "thrown-unraveled-wall",
+      "pilot": "bastion-panel",
+      "asset_sha256": "05821fe6925aca29a49cbfe07d2b08e0d4071d389350927ed9d5191b454f466c",
+      "triangles": 3468,
+      "runtime_normal_attributes": 0,
+      "normal_maps": 0,
+      "vertex_floats": 9,
+      "texture_size": [
+        256,
+        256
+      ],
+      "evidence": [
+        {
+          "kind": "gpu_upload_and_pose",
+          "report": "previews/field-bastion-r5/bastion-panel/gpu/gpu-audit.json",
+          "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
+        },
+        {
+          "kind": "clearance",
+          "report": "reports/field-bastion-r5-clearance.json",
+          "status": "PASS_DECLARED_PAIRS"
+        },
+        {
+          "kind": "packing",
+          "report": "reports/field-bastion-r5-packing.json",
+          "status": "MEASURED_ENVELOPE"
+        }
+      ],
+      "production_complete": false,
+      "remaining": [
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression",
+        "Lateral rail nesting, locks and load path remain unproven"
+      ]
+    },
+    {
+      "id": "thrown-unraveled-barricade",
+      "pilot": "razorframe",
+      "asset_sha256": "58db08b76680103b97c30afbbd9ef57c005221b68f757681323d501a44c3ca76",
+      "triangles": 1868,
+      "runtime_normal_attributes": 0,
+      "normal_maps": 0,
+      "vertex_floats": 9,
+      "texture_size": [
+        256,
+        256
+      ],
+      "evidence": [
+        {
+          "kind": "gpu_upload_and_pose",
+          "report": "previews/field-razorframe-r1/razorframe/gpu/gpu-audit.json",
+          "status": "PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER"
+        },
+        {
+          "kind": "packing",
+          "report": "reports/field-razorframe-r1-packing.json",
+          "status": "MEASURED_ENVELOPE"
+        },
+        {
+          "kind": "linkage",
+          "report": "reports/field-razorframe-r1-linkage.json",
+          "status": "PASS_SCOPED_RIGID_LINKAGE"
+        }
+      ],
+      "production_complete": false,
+      "remaining": [
+        "Purpose/art acceptance and final surface refinement",
+        "Full articulation/packing clearance beyond declared pairs",
+        "Persistent damage, deterioration and convincing failure-specific destruction poses",
+        "Live world gameplay and multiplayer acceptance beyond socket regression",
+        "Packed width 0.550 m exceeds target",
+        "Full part clearance, top-rail support and drive transmission remain unproven"
+      ]
+    },
+    {
       "id": "thrown-unraveled-turret",
       "pilot": "sentry-mki",
       "asset_sha256": "41926018b56b7e609f9f6b60ba6f1c047763f52e185e45aa3d8c68c83aba6be3",

@@ -1,8 +1,28 @@
 # Current field asset audit
 
-Four refined pilots; 17 original candidates still require independent redesign. Zero production approvals.
+Six refined pilots; 15 original candidates still require independent redesign. Zero production approvals.
 
 The current exports contain no normal/tangent attributes, morph normals or normal maps. Offline form shading and AO share the existing 256 px color atlas. The runtime vertex layout remains nine floats and the shader adds no texture samples. Corrected atlas display encoding improves readability; this does not certify the art.
+
+## bastion-panel
+
+3,468 triangles. Current binary SHA-256: `05821fe6925aca29a49cbfe07d2b08e0d4071d389350927ed9d5191b454f466c`.
+
+- gpu_upload_and_pose: PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER (`previews/field-bastion-r5/bastion-panel/gpu/gpu-audit.json`).
+- clearance: PASS_DECLARED_PAIRS (`reports/field-bastion-r5-clearance.json`).
+- packing: MEASURED_ENVELOPE (`reports/field-bastion-r5-packing.json`).
+
+Remaining: Purpose/art acceptance and final surface refinement; Full articulation/packing clearance beyond declared pairs; Persistent damage, deterioration and convincing failure-specific destruction poses; Live world gameplay and multiplayer acceptance beyond socket regression; Lateral rail nesting, locks and load path remain unproven.
+
+## razorframe
+
+1,868 triangles. Current binary SHA-256: `58db08b76680103b97c30afbbd9ef57c005221b68f757681323d501a44c3ca76`.
+
+- gpu_upload_and_pose: PASS_SCOPED_GPU_UPLOAD_AND_POSE_RENDER (`previews/field-razorframe-r1/razorframe/gpu/gpu-audit.json`).
+- packing: MEASURED_ENVELOPE (`reports/field-razorframe-r1-packing.json`).
+- linkage: PASS_SCOPED_RIGID_LINKAGE (`reports/field-razorframe-r1-linkage.json`).
+
+Remaining: Purpose/art acceptance and final surface refinement; Full articulation/packing clearance beyond declared pairs; Persistent damage, deterioration and convincing failure-specific destruction poses; Live world gameplay and multiplayer acceptance beyond socket regression; Packed width 0.550 m exceeds target; Full part clearance, top-rail support and drive transmission remain unproven.
 
 ## sentry-mki
 
@@ -43,10 +63,14 @@ Remaining: Purpose/art acceptance and final surface refinement; Full articulatio
 
 Remaining: Purpose/art acceptance and final surface refinement; Full articulation/packing clearance beyond declared pairs; Persistent damage, deterioration and convincing failure-specific destruction poses; Live world gameplay and multiplayer acceptance beyond socket regression; Organic surface/color transitions and sparse dark atlas samples still need inspection.
 
-Java validation on these exports: FieldPilotAnimationTest passed all four, including absence of normals/maps, nine unique-channel clips, texture assignment, 31 deployment floor samples and actual TRS/morph changes. ThrownActivationTest passed all 21 craft/throw and activation-boundary cases, including turret target updates between attacks. ThrownDeployablesTest, ArsenalIntegrationTest and ArenaSystemsTest passed. FieldReplicationTest passed real sockets for legacy/current snapshots, tracking/stock/clocks, an active late join, collapse snapshots, wire craft/throw, and two-peer collapse/removal. All 21 role tests cover immediate effect shutdown, 800 ms visual lifetime and one harmless burst/removal, including exhausted shields. The actual field asset loader selects DESTROYED from the host destruction age for all four staged fixtures.
+Java validation on these exports: FieldPilotAnimationTest passed the four earlier pilots and both new studies, including absence of normals/maps, nine unique-channel clips, texture assignment, 31 deployment floor samples and actual TRS/morph changes. ThrownActivationTest passed all 21 craft/throw and activation-boundary cases, including turret target updates between attacks. ThrownDeployablesTest, ArsenalIntegrationTest and ArenaSystemsTest passed. FieldReplicationTest passed real sockets for legacy/current snapshots, tracking/stock/clocks, an active late join, collapse snapshots, wire craft/throw, and two-peer collapse/removal. All 21 role tests cover immediate effect shutdown, 800 ms visual lifetime and one harmless burst/removal, including exhausted shields. The actual field asset loader selects DESTROYED from the host destruction age for the staged fixtures.
 
 The Medic hose stays within 0.34 mm of its sockets over 61 samples in each of nine states; the injector/case clearance contract passes 8,760 pair samples. Heart cradle contacts pass the declared 292 pair samples. Censer r13 expanded checks cover 31 deployment samples of satellites against main vessels, bands/ribs/lid ribs, slides, feet and one another, plus central vessels against slides/feet. The expanded audit found 214 intersections in the superseded r9 study; r10/r11 also failed their narrower tested scope. r13 passes this expanded scope, but its packed width/depth still exceed the target. None of these checks establishes clearance for undeclared part pairs.
 
-## Bastion Panel rejected mechanism study
+## Latest work
 
-Bastion r2 is 3,748 triangles and approximately 0.460 x 0.490 x 0.522 m packed. The runtime export checks pass, but 600 intersecting pair samples were found across 31,540 armor-tile pair samples in PACKED, DEPLOYING and ACTIVE. It remains in the 17 items requiring redesign. Operating/failure motion and GPU art review remain incomplete. See `bastion-mechanism-review.md`.
+Bastion r5: 3,468 triangles; packed approximately 0.460 x 0.500 x 0.495 m; no armor tile intersections in 31,540 declared pair samples. Its operating pressure piston reacts to authoritative damage events; destruction now uses column sag/lean instead of the packed transform. Lateral slide nesting/load paths and other part pairs remain unproven.
+
+Razorframe r1: 1,868 triangles; five rigid scissor bays, sliding guides and nested vertical posts. The exact exported rod endpoints remain within 0.014 mm of declared guide centers across 121 samples per state in all nine states. Packed envelope approximately 0.550 x 0.485 x 0.370 m exceeds the width target. Full clearance, top-rail supports/nesting, drive transmission, failure motion and art acceptance remain pending.
+
+The GPU audit camera now frames the full active bounds and keeps that camera fixed across states. This fixes clipped wall evidence without hiding packing differences. Both current studies pass nine-state GPU checks. No runtime normal attributes/maps were added.

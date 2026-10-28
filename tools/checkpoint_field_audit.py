@@ -2,7 +2,9 @@
 import hashlib,json,struct
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-CURRENT={'thrown-unraveled-turret':('field-pilots-r10','sentry-mki'),
+CURRENT={'thrown-unraveled-wall':('field-bastion-r5','bastion-panel'),
+         'thrown-unraveled-barricade':('field-razorframe-r1','razorframe'),
+         'thrown-unraveled-turret':('field-pilots-r10','sentry-mki'),
          'thrown-unraveled-health':('field-medic-r7','field-medic'),
          'thrown-penitent-miasma':('field-pilots-r13','censer-of-dread'),
          'thrown-begotten-health':('field-pilots-r9','regeneration-heart')}
@@ -32,10 +34,12 @@ for item in index['items']:
     # Old render sequences are not evidence for the new binary.
     item.pop('animation_sequences',None)
     item['remaining']=['Purpose/art acceptance and final surface refinement','Full articulation/packing clearance beyond declared pairs','Persistent damage, deterioration and convincing failure-specific destruction poses','Live world gameplay and multiplayer acceptance beyond socket regression']
+    if identifier=='bastion-panel':item['remaining'].append('Lateral rail nesting, locks and load path remain unproven')
+    if identifier=='razorframe':item['remaining']+=['Packed width 0.550 m exceeds target','Full part clearance, top-rail support and drive transmission remain unproven']
     if identifier=='censer-of-dread':item['remaining'].append('Packing approximately 0.557 x 0.557 x 0.499 m still exceeds the 0.5 m target')
     if identifier=='regeneration-heart':item['remaining'].append('Organic surface/color transitions and sparse dark atlas samples still need inspection')
     evidence=[dict(kind='gpu_upload_and_pose',report=(gpu/'gpu-audit.json').as_posix(),status=gpu_report['status'])]
-    for suffix in ('attachments','clearance','motion-inspection','packing'):
+    for suffix in ('attachments','clearance','motion-inspection','packing','linkage'):
         report=ROOT/'reports'/(revision+'-'+suffix+'.json')
         if report.exists():
             for test in json.loads(report.read_text()):
@@ -43,24 +47,21 @@ for item in index['items']:
                     assert test['asset_sha256']==digest
                     evidence.append(dict(kind=suffix,report=report.relative_to(ROOT).as_posix(),status=test.get('status','MEASURED_ENVELOPE')))
     records.append(dict(id=item['id'],pilot=identifier,asset_sha256=digest,triangles=item['triangles'],runtime_normal_attributes=0,normal_maps=0,vertex_floats=9,texture_size=[256,256],evidence=evidence,production_complete=False,remaining=item['remaining']))
-index['counts'].update(refined_pilots=4,candidate_repair_required=0,redesign_required=17)
-study_manifest=ROOT/'build/candidates/field-bastion-r2/manifest.json'
-if study_manifest.exists():
-    study=json.loads(study_manifest.read_text())[0]
-    wall=next(item for item in index['items'] if item['id']=='thrown-unraveled-wall')
-    wall['mechanism_study']=dict(candidate=Path(study['path']).relative_to(ROOT).as_posix(),asset_sha256=study['sha256'],triangles=study['triangles'],status='REJECTED_MECHANISM_REPAIR_REQUIRED',review='reports/bastion-mechanism-review.md')
-    index['counts']['rejected_mechanism_studies']=1 # Subset of redesign_required, not another completed asset.
+index['counts'].update(refined_pilots=6,candidate_repair_required=0,redesign_required=15)
+for item in index['items']:
+    if item['id'] in CURRENT:item.pop('mechanism_study',None)
+index['counts'].pop('rejected_mechanism_studies',None)
 write(ROOT/'data/field-deployable-asset-index.json',index)
 write(ROOT/'reports/current-field-audit.json',dict(status='SCOPED_CHECKS_ONLY_ART_AND_GAMEPLAY_PENDING',render_contract='design/FIELD_RENDER_CONTRACT.md',pilots=records))
-lines=['# Current field asset audit\n\nFour refined pilots; 17 original candidates still require independent redesign. Zero production approvals.\n\nThe current exports contain no normal/tangent attributes, morph normals or normal maps. Offline form shading and AO share the existing 256 px color atlas. The runtime vertex layout remains nine floats and the shader adds no texture samples. Corrected atlas display encoding improves readability; this does not certify the art.\n\n']
+lines=['# Current field asset audit\n\nSix refined pilots; 15 original candidates still require independent redesign. Zero production approvals.\n\nThe current exports contain no normal/tangent attributes, morph normals or normal maps. Offline form shading and AO share the existing 256 px color atlas. The runtime vertex layout remains nine floats and the shader adds no texture samples. Corrected atlas display encoding improves readability; this does not certify the art.\n\n']
 for item in records:
     lines+=['## '+item['pilot']+'\n\n',f"{item['triangles']:,} triangles. Current binary SHA-256: `{item['asset_sha256']}`.\n\n"]
     lines+=['- '+e['kind']+': '+e['status']+' (`'+e['report']+'`).\n' for e in item['evidence']]
     lines+=['\nRemaining: '+ '; '.join(item['remaining'])+'.\n\n']
-lines+=['Java validation on these exports: FieldPilotAnimationTest passed all four, including absence of normals/maps, nine unique-channel clips, texture assignment, 31 deployment floor samples and actual TRS/morph changes. ThrownActivationTest passed all 21 craft/throw and activation-boundary cases, including turret target updates between attacks. ThrownDeployablesTest, ArsenalIntegrationTest and ArenaSystemsTest passed. FieldReplicationTest passed real sockets for legacy/current snapshots, tracking/stock/clocks, an active late join, collapse snapshots, wire craft/throw, and two-peer collapse/removal. All 21 role tests cover immediate effect shutdown, 800 ms visual lifetime and one harmless burst/removal, including exhausted shields. The actual field asset loader selects DESTROYED from the host destruction age for all four staged fixtures.\n\nThe Medic hose stays within 0.34 mm of its sockets over 61 samples in each of nine states; the injector/case clearance contract passes 8,760 pair samples. Heart cradle contacts pass the declared 292 pair samples. Censer r13 expanded checks cover 31 deployment samples of satellites against main vessels, bands/ribs/lid ribs, slides, feet and one another, plus central vessels against slides/feet. The expanded audit found 214 intersections in the superseded r9 study; r10/r11 also failed their narrower tested scope. r13 passes this expanded scope, but its packed width/depth still exceed the target. None of these checks establishes clearance for undeclared part pairs.\n']
-if study_manifest.exists():lines+=['\n## Bastion Panel rejected mechanism study\n\nBastion r2 is 3,748 triangles and approximately 0.460 x 0.490 x 0.522 m packed. The runtime export checks pass, but 600 intersecting pair samples were found across 31,540 armor-tile pair samples in PACKED, DEPLOYING and ACTIVE. It remains in the 17 items requiring redesign. Operating/failure motion and GPU art review remain incomplete. See `bastion-mechanism-review.md`.\n']
+lines+=['Java validation on these exports: FieldPilotAnimationTest passed the four earlier pilots and both new studies, including absence of normals/maps, nine unique-channel clips, texture assignment, 31 deployment floor samples and actual TRS/morph changes. ThrownActivationTest passed all 21 craft/throw and activation-boundary cases, including turret target updates between attacks. ThrownDeployablesTest, ArsenalIntegrationTest and ArenaSystemsTest passed. FieldReplicationTest passed real sockets for legacy/current snapshots, tracking/stock/clocks, an active late join, collapse snapshots, wire craft/throw, and two-peer collapse/removal. All 21 role tests cover immediate effect shutdown, 800 ms visual lifetime and one harmless burst/removal, including exhausted shields. The actual field asset loader selects DESTROYED from the host destruction age for the staged fixtures.\n\nThe Medic hose stays within 0.34 mm of its sockets over 61 samples in each of nine states; the injector/case clearance contract passes 8,760 pair samples. Heart cradle contacts pass the declared 292 pair samples. Censer r13 expanded checks cover 31 deployment samples of satellites against main vessels, bands/ribs/lid ribs, slides, feet and one another, plus central vessels against slides/feet. The expanded audit found 214 intersections in the superseded r9 study; r10/r11 also failed their narrower tested scope. r13 passes this expanded scope, but its packed width/depth still exceed the target. None of these checks establishes clearance for undeclared part pairs.\n']
+lines+=['\n## Latest work\n\nBastion r5: 3,468 triangles; packed approximately 0.460 x 0.500 x 0.495 m; no armor tile intersections in 31,540 declared pair samples. Its operating pressure piston reacts to authoritative damage events; destruction now uses column sag/lean instead of the packed transform. Lateral slide nesting/load paths and other part pairs remain unproven.\n\nRazorframe r1: 1,868 triangles; five rigid scissor bays, sliding guides and nested vertical posts. The exact exported rod endpoints remain within 0.014 mm of declared guide centers across 121 samples per state in all nine states. Packed envelope approximately 0.550 x 0.485 x 0.370 m exceeds the width target. Full clearance, top-rail supports/nesting, drive transmission, failure motion and art acceptance remain pending.\n\nThe GPU audit camera now frames the full active bounds and keeps that camera fixed across states. This fixes clipped wall evidence without hiding packing differences. Both current studies pass nine-state GPU checks. No runtime normal attributes/maps were added.\n']
 (ROOT/'reports/current-field-audit.md').write_text(''.join(lines),encoding='utf-8')
-table=['# Field deployable asset index\n\nStopped at the user-requested five-hour allowance cutoff: the account reported 51% used / 49% remaining. Resume only on instruction.\n\n21 required: 0 production complete, 4 refined pilots awaiting review, 17 requiring redesign, including the rejected Bastion mechanism study.\n\n| # | Faction | Item | Status |\n|---|---|---|---|\n']
+table=['# Field deployable asset index\n\nContinued beyond the earlier cutoff at the user request. Six refined pilots await review; 15 require independent redesign; zero production complete.\n\n| # | Faction | Item | Status |\n|---|---|---|---|\n']
 table += [f"| {i['index']} | {i['faction']} | {i['name']} | {i['status']} |\n" for i in index['items']]
 table+=['\nCurrent scoped evidence and unresolved issues: [current-field-audit.md](current-field-audit.md).\n']
 (ROOT/'reports/field-deployable-asset-index.md').write_text(''.join(table),encoding='utf-8')

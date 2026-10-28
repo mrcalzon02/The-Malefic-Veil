@@ -347,7 +347,7 @@ def write_clips(path,pilot):
         q=Quaternion(Vector(axis),angle);convert=Quaternion((1,0,0),-math.pi/2);q=convert@q@convert.inverted();return [q.x,q.y,q.z,q.w]
     durations={'ACTIVE':2.,'PACKED':1.,'THROWN':.7,'IMPACT':.15,'DEPLOYING':1.5,'OPERATING':.65,'DAMAGED':.45,'EXPIRING':1.,'DESTROYED':.8}
     for clip,duration in durations.items():
-        anim=dict(name=clip,samplers=[],channels=[]);fractions=[i/60 for i in range(61)] if pilot=='bastion-panel' else [i/20 for i in range(21)] if pilot=='field-medic' else [0,.15,.35,.55,.75,1];time=accessor([[f*duration] for f in fractions],1)
+        anim=dict(name=clip,samplers=[],channels=[]);fractions=[i/60 for i in range(61)] if pilot in ('bastion-panel','razorframe') else [i/20 for i in range(21)] if pilot=='field-medic' else [0,.15,.35,.55,.75,1];time=accessor([[f*duration] for f in fractions],1)
         def track(node,path,values):
             width=1 if path=='weights' else len(values[0]);sampler=len(anim['samplers']);anim['samplers'].append(dict(input=time,output=accessor(values,width),interpolation='LINEAR'));anim['channels'].append(dict(sampler=sampler,target=dict(node=node,path=path)))
         for i,node in enumerate(doc['nodes']):
@@ -386,7 +386,14 @@ def write_clips(path,pilot):
                     values.extend([[w] for w in weights])
                 track(i,'weights',values)
             if not motion:continue
+            if 'scissor' in motion:
+                from field_scissor_tracks import values as scissor_values
+                samples=[scissor_values(motion['scissor'],clip,f) for f in fractions]
+                track(i,'translation',[[base[k]+cv(delta)[k] for k in range(3)] for delta,angle in samples])
+                if samples[0][1] is not None:track(i,'rotation',[quaternion((0,1,0),angle) for delta,angle in samples])
+                continue
             packed=clip in ('PACKED','THROWN','IMPACT');deploy=clip=='DEPLOYING'
+            action=motion['operation'] if clip=='OPERATING' else motion['idle'] if clip=='ACTIVE' else None
             if name.startswith('SatelliteCenser') and deploy:
                 angle=motion['satellite_angle'];values=[]
                 for f in fractions:
@@ -397,8 +404,8 @@ def write_clips(path,pilot):
                     delta=cv((radius*math.cos(theta)-.27*math.cos(angle),radius*math.sin(theta)-.27*math.sin(angle),.30*(1-f*f*(3-2*f))))
                     values.append([base[k]+delta[k] for k in range(3)])
                 track(i,'translation',values)
-            if motion['move'] is not None and not(name.startswith('SatelliteCenser') and deploy):
-                delta=cv(motion['move']);values=[]
+            if motion['move'] is not None and not(name.startswith('SatelliteCenser') and deploy) and not(action and action[0] in ('move','advance')):
+                delta=cv(motion.get('destroy_move',motion['move']) if clip=='DESTROYED' else motion['move']);values=[]
                 for f in fractions:
                     start,end=motion.get('deploy_window',(0,1));progress=max(0,min(1,(f-start)/(end-start)))
                     factor=1 if packed else 1-progress*progress*(3-2*progress) if deploy else f if clip=='DESTROYED' else 0
@@ -407,19 +414,21 @@ def write_clips(path,pilot):
             if name.startswith('IronLeg') and deploy:
                 # Lift the curved toe during its hinge sweep, then settle it onto the floor.
                 track(i,'translation',[[base[0],base[1]+.020*math.sin(f*math.pi),base[2]] for f in fractions])
-            if motion['axis'] and (packed or deploy or clip=='DESTROYED'):
+            rotation_axis=motion.get('destroy_axis',motion['axis']) if clip=='DESTROYED' else motion['axis']
+            rotation_angle=motion.get('destroy_angle',motion['angle']) if clip=='DESTROYED' else motion['angle']
+            if rotation_axis and (packed or deploy or clip=='DESTROYED'):
                 values=[]
                 for f in fractions:
                     progress=max(0,min(1,(f-.35)/.65)) if name.startswith(('SatelliteCenser','SatelliteDish')) and deploy else f
                     factor=1 if packed else 1-progress*progress*(3-2*progress) if deploy else f if clip=='DESTROYED' else 0
-                    values.append(quaternion(motion['axis'],motion['angle']*factor))
+                    values.append(quaternion(rotation_axis,rotation_angle*factor))
                 track(i,'rotation',values)
             action=motion['operation'] if clip=='OPERATING' else motion['idle'] if clip=='ACTIVE' else None
             if action:
                 if action[0] in ('move','advance'):
                     delta=cv(action[1]);track(i,'translation',[[base[k]+delta[k]*(f if action[0]=='advance' else max(0,math.sin(f*math.tau))) for k in range(3)] for f in fractions])
                 else:track(i,'rotation',[quaternion(action[1],action[2]*(math.sin(f*math.pi) if action[0]=='open' else math.sin(f*math.tau))) for f in fractions])
-            if clip in ('DAMAGED','EXPIRING') and ('Mast' in name or 'Pendulum' in name or 'Cradle' in name):
+            if clip in ('DAMAGED','EXPIRING') and ('Mast' in name or 'Pendulum' in name or 'Cradle' in name or name.startswith('WallSpan')):
                 track(i,'rotation',[quaternion((1,0,0),(.045 if clip=='DAMAGED' else .025)*math.sin(f*math.tau)) for f in fractions])
         # Packed clips require nonempty channels even when only biological weights are present.
         doc['animations'].append(anim)

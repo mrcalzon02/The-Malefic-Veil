@@ -1,6 +1,6 @@
 # Construction test image gallery
 
-736 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
+766 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
 
 Private car/character reference renders and comparison panels containing them are excluded. Earlier studies remain visible; gallery inclusion does not imply approval.
 
@@ -11,6 +11,30 @@ Review labels: **ROUGH_STAGE_PASS** = current image and model hashes match a pas
 The HTML gallery runs locally after cloning: `python -m http.server 8000`, then open `http://localhost:8000/docs/asset-gallery/`.
 
 Update and publish from the authoring workspace after each render batch: `python tools/build_asset_gallery.py --publish`. This preserves superseded renders, commits only gallery files and its verification workflow, and pushes the current branch. `--check` verifies source coverage and checksums; `--verify-archive` verifies a GitHub clone without ignored authoring sources. GitHub Actions runs the archive check on gallery changes.
+
+## Field Bastion R3 — review required
+
+3 images Ã‚Â· [Full image index](field-bastion-r3.md)
+
+[![Field Bastion R3 — review required](images/field-bastion-r3/bastion-panel/gpu/active.png)](field-bastion-r3.md)
+
+## Field Bastion R4 — review required
+
+9 images Ã‚Â· [Full image index](field-bastion-r4.md)
+
+[![Field Bastion R4 — review required](images/field-bastion-r4/bastion-panel/gpu/active.png)](field-bastion-r4.md)
+
+## Field Bastion R5 — review required
+
+9 images Ã‚Â· [Full image index](field-bastion-r5.md)
+
+[![Field Bastion R5 — review required](images/field-bastion-r5/bastion-panel/gpu/active.png)](field-bastion-r5.md)
+
+## Field Razorframe R1 — review required
+
+9 images Ã‚Â· [Full image index](field-razorframe-r1.md)
+
+[![Field Razorframe R1 — review required](images/field-razorframe-r1/razorframe/gpu/active.png)](field-razorframe-r1.md)
 
 ## Field Medic R2 — review required
 

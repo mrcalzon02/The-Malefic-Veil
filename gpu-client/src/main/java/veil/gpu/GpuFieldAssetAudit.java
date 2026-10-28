@@ -42,7 +42,13 @@ public final class GpuFieldAssetAudit extends ApplicationAdapter {
             shader=new ShaderProgram(GpuKenneyPreview.VERTEX_SHADER,GpuKenneyPreview.FRAGMENT_SHADER);
             if(!shader.isCompiled())throw new IllegalStateException(shader.getLog());
             framebuffer=new FrameBuffer(Pixmap.Format.RGBA8888,W,H,true);
-            camera=new PerspectiveCamera(42,W,H);camera.position.set(1.55f,1.15f,-2.15f);camera.lookAt(0,.48f,0);camera.near=.02f;camera.far=20;camera.update();
+            float[] bounds=rig.pose("ACTIVE",0,0,0).bounds();
+            float cx=(bounds[0]+bounds[3])*.5f,cy=(bounds[1]+bounds[4])*.5f,cz=(bounds[2]+bounds[5])*.5f;
+            float dx=bounds[3]-bounds[0],dy=bounds[4]-bounds[1],dz=bounds[5]-bounds[2];
+            float radius=(float)Math.sqrt(dx*dx+dy*dy+dz*dz)*.5f;
+            float distance=Math.max(1.5f,radius/(float)Math.sin(Math.toRadians(21))*1.12f);
+            camera=new PerspectiveCamera(42,W,H);camera.position.set(1,.55f,-1.35f).nor().scl(distance).add(cx,cy,cz);
+            camera.lookAt(cx,cy,cz);camera.near=.02f;camera.far=20;camera.update();
         }catch(Exception error){throw new IllegalStateException("GPU candidate audit setup failed",error);}
     }
     @Override public void render(){

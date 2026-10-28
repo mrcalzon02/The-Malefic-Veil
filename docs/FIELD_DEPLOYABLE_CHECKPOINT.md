@@ -1,3 +1,11 @@
+# Latest field asset checkpoint
+
+Six refined candidates, zero production approvals. Fifteen deployables still require independent redesign. The earlier cutoff was overridden by the user request to continue before allowance reset. See [current audit](../reports/current-field-audit.md), [index](../reports/field-deployable-asset-index.md) and [resume notes](../reports/field-deployable-resume-checkpoint.md).
+
+Current new studies: Bastion r5 and Razorframe r1. Both have actual nine-state GPU evidence. Bastion tile clearance passes; Razorframe rod-to-guide attachment passes. Their remaining mechanical, clearance, material, failure-motion and gameplay issues prevent certification. No runtime normals/maps.
+
+Historical checkpoint below is superseded where it conflicts with the current index:
+
 # Thrown field deployables: paused checkpoint
 
 Stopped at the requested five-hour allowance cutoff on 2026-10-27 (51% used / 49% remaining at observation). **No production-complete assets.** Four refined studies and 17 original candidates awaiting independent redesign.

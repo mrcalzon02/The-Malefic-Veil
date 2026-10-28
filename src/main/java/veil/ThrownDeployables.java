@@ -279,6 +279,7 @@ public final class ThrownDeployables {
             if(attacker==null||attacker.dead||e==null||e.hp<=0||damage<1||damage>500||
                e.ownerKey.equals(attacker.accountKey)||
                host.factions.allied(e.ownerKey,attacker.accountKey))return false;
+            if(active(e)&&(e.blueprint.role()==Role.WALL||e.blueprint.role()==Role.BARRICADE))e.operatedAt=host.time();
             e.hp=Math.max(0,e.hp-damage);e.damagedAt=host.time();if(e.hp<=0)destroy(e);return true;
         }
     }

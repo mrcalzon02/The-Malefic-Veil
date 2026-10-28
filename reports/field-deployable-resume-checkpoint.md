@@ -1,3 +1,19 @@
+# Latest checkpoint: 2026-10-27, continued at user request
+
+User explicitly authorized pushing beyond the prior 50% cutoff before the allowance reset. The five-hour allowance has now reset. The last check showed 89% remaining in that window and 2% remaining weekly. This batch is saved before weekly exhaustion; no claim of product completion.
+
+Current studies: Bastion r5, Razorframe r1, Sentry r10, Medic r7, Censer r13, Heart r9. Six pilots await art/full-purpose acceptance; 15 deployables still require independent redesign. Zero production approvals.
+
+Bastion: tile overlaps repaired, budget reduced to 3,468 triangles, packed 0.460 x 0.500 x 0.495 m. Scoped tile clearance passes. Added visible pressure recovery driven by real host cover damage, and separate sag/lean destruction. Lateral rail nesting/load-path and undeclared pairs remain unproven.
+
+Razorframe: new independent five-bay scissor barricade, 1,868 triangles. Constant-length bars, sliding guides, nested vertical posts, folding ground claws and overlapping top rails. Exported endpoint-to-guide audit passes all nine states within 0.014 mm over 121 samples each. Packed width 0.550 m exceeds target; full clearance, top-rail support/drive and failure/art refinement remain open.
+
+Both new studies pass exported runtime checks and actual nine-state GPU checks. The GPU audit now fits the full active model and retains fixed framing across poses. All 21 host activation tests, cover hit recovery and destruction/expiry checks pass. No runtime normals or normal maps.
+
+Next: finish lateral mechanics/supports and expand declared pair clearance for both studies; improve surfaces and persistent damage; verify actual gameplay acceptance; continue the remaining deployables and the broader product inventory. See reports/current-field-audit.md and reports/field-deployable-asset-index.md.
+
+Earlier checkpoint follows for historical context:
+
 # Stopped at the requested usage cutoff: 2026-10-27
 
 The user resumed development. The allowance initially reported 44% used / 56% remaining; the next check after the Bastion study was started reported 51% used / 49% remaining. New design stopped at that observation, and the running export/audit was collected for this checkpoint. The usage limit is account-wide. Resume only on instruction.

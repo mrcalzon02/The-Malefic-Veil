@@ -40,8 +40,8 @@ public final class FieldPilotAnimationTest {
             }
             GlbMesh rest=rig.pose("ACTIVE",0,0,0),operating=rig.pose("OPERATING",.20,0,0),packed=rig.pose("PACKED",0,0,0);
             check(rest.triangleCount()==operating.triangleCount(),"Pose topology changed: "+id);
-            if(!id.equals("bastion-panel"))check(!rest.triangles().equals(operating.triangles()),"Operation frozen: "+id);
-            else check(!rest.triangles().equals(rig.pose("DEPLOYING",.75,0,0).triangles()),"Wall deployment frozen");
+            check(!rest.triangles().equals(operating.triangles()),"Operation frozen: "+id);
+            if(id.equals("bastion-panel"))check(!rest.triangles().equals(rig.pose("DEPLOYING",.75,0,0).triangles()),"Wall deployment frozen");
             check(rest.surfaces().stream().allMatch(s->s.texture()!=null),"Missing baked surface: "+id);
             float[] p=packed.bounds();
             System.out.printf(java.util.Locale.ROOT,"%s triangles=%d packed=%.3fx%.3fx%.3f minY=%.3f%n",id,rest.triangleCount(),p[3]-p[0],p[4]-p[1],p[5]-p[2],p[1]);
@@ -61,7 +61,7 @@ public final class FieldPilotAnimationTest {
             }
             if(id.equals("sentry-mki"))
                 check(!rest.triangles().equals(rig.pose("ACTIVE",0,1,.2).triangles()),"Host aim ignored");
-            int blueprint=switch(id){case "bastion-panel"->0;case "sentry-mki"->2;case "field-medic"->3;case "censer-of-dread"->12;case "regeneration-heart"->17;default->throw new IllegalArgumentException(id);};
+            int blueprint=switch(id){case "bastion-panel"->0;case "razorframe"->1;case "sentry-mki"->2;case "field-medic"->3;case "censer-of-dread"->12;case "regeneration-heart"->17;default->throw new IllegalArgumentException(id);};
             var bp=ThrownDeployables.blueprint(blueprint);
             Path fixture=Path.of("build/audit-field-loading",id);Path staged=fixture.resolve("assets/game/field-deployables-approved");
             Files.createDirectories(staged);Files.write(staged.resolve(bp.mesh()+".glb"),bytes);

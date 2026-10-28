@@ -1,0 +1,28 @@
+[
+  {
+    "id": "bastion-panel",
+    "asset_sha256": "dd0f11b097195580bc81b4352c72e39bacbf0358735f7203abaf1b08064046ce",
+    "tested_pair_samples": 31540,
+    "scope": {
+      "clips": [
+        "PACKED",
+        "DEPLOYING",
+        "ACTIVE"
+      ],
+      "rules": [
+        {
+          "id": "wall-armor-tiles-separate",
+          "moving": [
+            "armor_tile_*"
+          ],
+          "obstacles": [
+            "armor_tile_*"
+          ],
+          "relation": "separate"
+        }
+      ]
+    },
+    "failures": [],
+    "status": "PASS_DECLARED_PAIRS"
+  }
+]

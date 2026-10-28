@@ -518,6 +518,20 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             case CREDITS -> "CREDITS";
             case CONNECTING -> "WORLD LOADING";
         },38,341);
+        // The new original art atlas is part of the *actual* native launcher,
+        // not an inert design mockup. Menu labels and hitboxes stay unchanged.
+        int menuIcon=switch(screen){
+            case HOME -> 0;
+            case WORLDS,CREATE,LOAD -> 7;
+            case JOIN -> 4;
+            case FACTION,CLASS -> 3;
+            case VIDEO,AUDIO,CONTROLS -> 0;
+            case CREDITS -> 1;
+            case CONNECTING -> 2;
+        };
+        skin.originalMenuIcon(ui,menuIcon,399,338,23);
+        if(screen==Screen.WORLDS||screen==Screen.CREATE||screen==Screen.LOAD)
+            skin.originalFolderIcon(ui,screen==Screen.LOAD?3:0,371,339,22);
         for(int i=0;i<entries.size();i++){
             String label=entries.get(i).label();
             if(label.length()>49)label=label.substring(0,48)+"~";

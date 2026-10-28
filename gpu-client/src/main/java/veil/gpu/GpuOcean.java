@@ -148,6 +148,7 @@ public final class GpuOcean implements AutoCloseable {
     // Reused visibility list avoids transient per-frame allocations; skip
     // shader binding, uniform uploads and texture setup when water is hidden.
     private final List<Chunk> visibleWater=new ArrayList<>();
+    private final com.badlogic.gdx.math.Vector3 boundsCenter=new com.badlogic.gdx.math.Vector3();
     private long staticBytes;
     private Stats last=new Stats(0,0,0,0,0,0);
 
@@ -245,7 +246,14 @@ public final class GpuOcean implements AutoCloseable {
         for(Chunk chunk:chunks){
             double dx=camera.position.x-chunk.midX,dz=camera.position.z-chunk.midZ;
             double limit=distance+chunk.width;
-            if(dx*dx+dz*dz<=limit*limit)visibleWater.add(chunk);
+            if(dx*dx+dz*dz>limit*limit)continue;
+            // Include the complete chunk's diagonal and storm wave crest,
+            // never trim real visible shoreline triangles. Camera frustum
+            // culling prevents water behind the player from issuing draws.
+            float radius=(float)(chunk.width*.70710678119+1.0);
+            boundsCenter.set((float)chunk.midX,0,(float)chunk.midZ);
+            if(camera.frustum.sphereInFrustum(boundsCenter,radius))
+                visibleWater.add(chunk);
         }
         if(visibleWater.isEmpty()){
             last=new Stats(0,0,0,0,System.nanoTime()-start,staticBytes);

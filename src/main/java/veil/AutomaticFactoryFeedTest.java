@@ -283,7 +283,10 @@ public final class AutomaticFactoryFeedTest {
             check(!finishedConsumer.productionActive&&
                 finishedConsumer.productionCompleted==1&&
                 physicalSupply==2&&physicalFeedlines==3&&
-                movedAlien.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE)==9,
+                checked.world.devices.stream().filter(d->
+                    d.kind==ArenaSystems.STORAGE_CRATE&&foreign.equals(d.ownerKey))
+                    .mapToInt(d->d.storage.count(SurvivalCrafting.Item.PRECISION_FEEDLINE))
+                    .sum()==9,
                 "Recovery minted output, double-spent upstream goods or touched foreign inventory");
             HostCheckpoint.save(checked,root);
             var last=new ArenaSystems(seed);

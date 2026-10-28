@@ -19,8 +19,8 @@ DEST = ROOT / 'docs/asset-gallery'
 # Explicit authored-construction allowlist. Purchased source/reference media and
 # unrelated weapon source studies are deliberately outside the public archive.
 GROUPS = ('construction-plots', 'faction-structures', 'snap-kit',
-          'penitent-snap-kit', 'begotten-snap-kit', 'faction-foundations', 'production-kit', 'material-refresh', 'weapon-refinement')
-LABELS = {'construction-plots': 'Construction plot guides',
+          'penitent-snap-kit', 'begotten-snap-kit', 'faction-foundations', 'production-kit', 'material-refresh', 'weapon-refinement', 'begotten-surface-pilots')
+LABELS = {'begotten-surface-pilots': 'Begotten model-specific surface studies', 'construction-plots': 'Construction plot guides',
           'faction-structures': 'Faction structures and earlier studies',
           'snap-kit': 'Unraveled snap construction',
           'penitent-snap-kit': 'Penitent snap construction',

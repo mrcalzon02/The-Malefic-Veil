@@ -1,6 +1,6 @@
 # Construction test image gallery
 
-1705 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
+1718 original PNG renders and contact sheets. All four test views are included where generated: front, rear, closeup and neutral clay.
 
 Private car/character reference renders and comparison panels containing them are excluded. Earlier studies remain visible; gallery inclusion does not imply approval.
 
@@ -65,6 +65,12 @@ Update and publish from the authoring workspace after each render batch: `python
 349 images · [Full image index](weapon-refinement.md)
 
 [![Weapon refinement and retained failed studies](images/weapon-refinement/checkpoint-01/overview.png)](weapon-refinement.md)
+
+## Begotten model-specific surface studies
+
+13 images · [Full image index](begotten-surface-pilots.md)
+
+[![Begotten model-specific surface studies](images/begotten-surface-pilots/begotten-dry-storage/clay.png)](begotten-surface-pilots.md)
 
 ## Superseded renders
 

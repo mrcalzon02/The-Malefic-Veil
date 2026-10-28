@@ -549,7 +549,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     /** Every gameplay panel uses original heyheythere fog-theme source widgets.
      * The data still comes only from the authoritative host snapshot. */
     private void drawLiveHud(MaleficVeil.GpuFrame frame){
-        menu.panel(sprites,6,348,438,46);
+        menu.panel(sprites,6,344,620,50);
         var equipped=ArsenalCatalog.get(frame.weapon());
         String weaponName=equipped.name().toUpperCase(java.util.Locale.ROOT);
         var arsenal=frame.arsenalState();
@@ -559,11 +559,17 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             "  "+weaponName+" "+rounds+"  MED "+frame.medkits(),14,383);
         menu.progress(sprites,15,355,91,frame.health()/100f);
         menu.progress(sprites,119,355,91,frame.sanity()/100f);
+        menu.progress(sprites,223,355,91,(float)(frame.sprintEnergy()/100));
+        font.draw(sprites,"STA "+(int)frame.sprintEnergy()+"%",225,372);
         font.draw(sprites,"CASH "+frame.cash()+"  SCRAP "+frame.scrap()+
-            "  KILLS "+frame.frags(),221,364);
+            "  KILLS "+frame.frags(),330,364);
         font.draw(sprites,gameplay.gpuFieldStatus()+"   Z SELECT  Y THROW",14,337);
         // Source cursor sprite and source tooltip/dialogue are not impostor polygons.
         menu.marker(sprites,WIDTH/2f-4,HEIGHT/2f-4);
+        if(!frame.interactPrompt().isBlank()){
+            menu.tooltip(sprites,WIDTH/2f-118,HEIGHT/2f-39,236,27);
+            font.draw(sprites,frame.interactPrompt(),WIDTH/2f-107,HEIGHT/2f-20);
+        }
         if(!frame.notice().isBlank()){
             menu.tooltip(sprites,8,HEIGHT/2f+29,Math.min(WIDTH-16,450),30);
             font.draw(sprites,frame.notice(),16,HEIGHT/2f+49);

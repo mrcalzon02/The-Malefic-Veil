@@ -102,6 +102,23 @@ public final class ProductionOverviewTest {
             "TRANSFER_FROM_CRATE_"+sourceIndex)&&
             remote.storage.snapshot().equals(remoteBefore),
             "Owner's real remote input source was missed or report moved stock");
+        // Supplying remote material is NOT a remedy while every local
+        // receiving crate is full. The report must expose this physical
+        // blocker without consuming the source or any stored ingredients.
+        check(stock.storage.delivered(SurvivalCrafting.Item.EDIBLES,
+            CampStockpile.MAX_UNITS),"Cannot saturate genuine local input warehouse");
+        var blockedCrateBefore=stock.storage.snapshot();
+        check(game.productionOverview(1,0).entries().get(0).remedy().equals(
+            "FREE_NEARBY_INPUT_CRATE_SPACE")&&
+            stock.storage.snapshot().equals(blockedCrateBefore)&&
+            remote.storage.snapshot().equals(remoteBefore),
+            "Full input warehouse was incorrectly described as reachable remote stock");
+        check(stock.storage.consume(Map.of(
+            SurvivalCrafting.Item.EDIBLES,CampStockpile.MAX_UNITS)),
+            "Could not reopen local factory receiving space");
+        check(game.productionOverview(1,0).entries().get(0).remedy().equals(
+            "TRANSFER_FROM_CRATE_"+sourceIndex),
+            "Freeing the worksite warehouse did not restore the physical stock recommendation");
         check(remote.storage.consume(Map.of(SurvivalCrafting.Item.CONDUCTOR_WIRE,2)),
             "Could not stage partial source inventory");
         check(game.productionOverview(1,0).entries().get(0).remedy().equals(

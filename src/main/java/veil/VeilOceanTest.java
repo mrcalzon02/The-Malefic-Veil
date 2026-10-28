@@ -30,6 +30,23 @@ public final class VeilOceanTest {
                 }
             }
         check(found>0&&dry>0,"Seed has no real land/sea interface");
+        // City A can legitimately have no visible sea. A separate coastal
+        // viewport must source non-empty real water parcels, not pass a
+        // graphics test with a zero-triangle water mesh.
+        ContinentVista coastal=new ContinentVista(world,'E');
+        VeilOcean coastalOcean=new VeilOcean(world,coastal);
+        int coastalParcels=0;
+        for(ContinentVista.Patch patch:coastal.patches())
+            for(VeilOcean.SeaParcel parcel:coastalOcean.sourceSeaParcels(
+                patch.left(),patch.top(),
+                patch.left()+patch.width(),patch.top()+patch.depth())){
+                coastalParcels++;
+                check(coastalOcean.wet(parcel.west()+parcel.size()*.5,
+                        parcel.north()+parcel.size()*.5),
+                    "Generated water parcel is not physically wet");
+            }
+        check(coastalParcels>0,
+            "Coastal GPU test sector has no real ocean geometry to exercise");
         boolean surf=false;
         for(int x=1;x<ContinentLayout.SIZE-1&&!surf;x++)
             for(int z=1;z<ContinentLayout.SIZE-1&&!surf;z++){

@@ -115,6 +115,18 @@ public final class AutomationPowerCompetitionTest {
                 .filter(d->d.kind==ArenaSystems.INDUSTRIAL_WORKSHOP)
                 .allMatch(d->d.productionMs>0),
                 "Both recovered factories did not resume on real grid power");
+            var charged=restored.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.GENERATOR).findFirst().orElseThrow();
+            long before=restored.world.devices.stream()
+                .filter(d->d.kind==ArenaSystems.INDUSTRIAL_WORKSHOP)
+                .mapToLong(d->d.productionMs).sum();
+            charged.electricMs=1; // real meter has less than one tick of charge
+            tick(restored,1);
+            check(charged.electricMs==1&&
+                restored.world.devices.stream()
+                    .filter(d->d.kind==ArenaSystems.INDUSTRIAL_WORKSHOP)
+                    .mapToLong(d->d.productionMs).sum()==before,
+                "A one-millisecond grid reserve funded a full 1000ms factory tick");
         }finally{
             try(var walk=Files.walk(root)){
                 for(Path p:walk.sorted(Comparator.reverseOrder()).toList())

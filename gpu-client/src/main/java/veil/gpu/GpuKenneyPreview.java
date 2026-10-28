@@ -1238,9 +1238,64 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,
             Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
         sprites.begin();
+        // A FrameBuffer color texture has OpenGL's bottom-left origin.
+        // SpriteBatch's ordinary Texture draw uses v=1 at the bottom; that
+        // vertically inverts the whole composited city AND in-FBO menus.
+        // Present the offscreen pixels with bottom-left mapped to bottom-left.
         sprites.draw(framebuffer.getColorBufferTexture(),0,0,
-            Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),0,1,1,0);
+            Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),0,0,1,1);
         sprites.end();
+    }
+
+    /**
+     * Tests the actual default-framebuffer image, not just an offscreen FBO
+     * screenshot. In particular catches a vertically inverted desktop launch
+     * even when the source screenshot/gallery smoke tests all pass.
+     */
+    void assertScreenOrientation(){
+        if(framebuffer==null)throw new IllegalStateException("No rendered framebuffer");
+        int screenWidth=Gdx.graphics.getBackBufferWidth();
+        int screenHeight=Gdx.graphics.getBackBufferHeight();
+        Pixmap presented=Pixmap.createFromFrameBuffer(0,0,screenWidth,screenHeight);
+        Pixmap source=null;
+        try{
+            framebuffer.begin();
+            try{source=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);}
+            finally{framebuffer.end();}
+            long uprightDifference=0,upsideDownDifference=0;
+            int sampled=0;
+            for(int sy=22;sy<HEIGHT-22;sy+=29){
+                for(int sx=22;sx<WIDTH-22;sx+=31){
+                    int dx=Math.min(screenWidth-1,
+                        (int)((sx+.5)*screenWidth/WIDTH));
+                    int dy=Math.min(screenHeight-1,
+                        (int)((sy+.5)*screenHeight/HEIGHT));
+                    int actual=presented.getPixel(dx,dy);
+                    uprightDifference+=presentationRgbDistance(actual,source.getPixel(sx,sy));
+                    upsideDownDifference+=presentationRgbDistance(
+                        actual,source.getPixel(sx,HEIGHT-1-sy));
+                    sampled++;
+                }
+            }
+            // The same composed pixels must match the visible screen much
+            // more closely upright than when mirrored vertically.
+            if(upsideDownDifference<=uprightDifference*1.4+500)
+                throw new IllegalStateException("Desktop GPU presentation is upside down"+
+                    " uprightDifference="+uprightDifference+
+                    " invertedDifference="+upsideDownDifference+" samples="+sampled);
+            System.out.println("PASS GPU_FRAME_PRESENTATION_ORIENTATION"+
+                " screen="+screenWidth+"x"+screenHeight+
+                " uprightDifference="+uprightDifference+
+                " invertedDifference="+upsideDownDifference+" samples="+sampled);
+        }finally{
+            if(source!=null)source.dispose();
+            presented.dispose();
+        }
+    }
+    private static int presentationRgbDistance(int a,int b){
+        return Math.abs(((a>>>24)&255)-((b>>>24)&255))+
+            Math.abs(((a>>>16)&255)-((b>>>16)&255))+
+            Math.abs(((a>>>8)&255)-((b>>>8)&255));
     }
 
     /** Post-opaque GPU weather uses the host-synchronized weather state,

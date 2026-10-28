@@ -4,6 +4,7 @@ import dev.mrcalzon.water.*;
 import dev.mrcalzon.water.WaterModule.*;
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 /** Independent analytic/reference-ray checks for the animated module. */
 public final class WaterEffectsTest {
  static void check(boolean b,String s){if(!b)throw new AssertionError(s);}
@@ -21,7 +22,7 @@ public final class WaterEffectsTest {
   check(Double.isNaN(e.intersect(c,0,.5,1,0,2,180)),"Upward ray must not draw underwater plane");
   check(Math.abs(e.vertex(3,4,0)-e.vertex(3,4,1))>.001,"Waves actually animate");
   var bed=new GridBed(0,0,1,2,2,new double[]{0,1,3,2});check(Math.abs(bed.bottomY(.75,.25)-1)<1e-8&&Math.abs(bed.bottomY(.25,.75)-2)<1e-8,"Bed follows rendered triangle diagonal, not bilinear approximation");check(Double.isNaN(bed.bottomY(-1,0)),"Bed cannot extrapolate outside footprint");check(bed.triangles().size()==2,"Single grid cell exports two triangles");
-  var hull=HullSections.read(WaterEffectsTest.class.getResourceAsStream("/org/beckenburg/sites/hollow-creek-water-hull.tsv"));
+  var hull=HullSections.read(Files.newInputStream(Path.of("src/test/resources/hollow-creek-water-hull.tsv")));
   for(double y=-2.015;y<=-1.885;y+=.001){check(hull.excludes(23.9,y,-5),"Boat center stays dry for full wave cycle");check(!hull.excludes(23,y,-5)&&!hull.excludes(24.8,y,-5),"Hull cutout cannot swallow outside water");}
   check(!hull.excludes(23.9,-1.5,-5),"Profile does not create an infinitely tall exclusion");
   try{GridBed.read(new ByteArrayInputStream(new byte[40]));throw new AssertionError("Bad bed accepted");}catch(IOException expected){}

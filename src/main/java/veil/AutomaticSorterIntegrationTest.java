@@ -39,6 +39,15 @@ public final class AutomaticSorterIntegrationTest {
         check(source.storage.count(SurvivalCrafting.Item.MACHINE_PARTS)==3&&
             target.storage.count(SurvivalCrafting.Item.MACHINE_PARTS)==2,
             "Sorter must deliver two paid units per completed cycle");
+        // Almost-empty plants must not fund an entire conveyor tick.
+        generator.electricMs=1;
+        step(host,1);
+        check(source.storage.count(SurvivalCrafting.Item.MACHINE_PARTS)==3&&
+            target.storage.count(SurvivalCrafting.Item.MACHINE_PARTS)==2&&
+            conveyor.routeMs==0&&generator.electricMs==1&&
+            conveyor.factoryHold.equals("WAIT_POWER"),
+            "One millisecond of electricity granted free sorted belt progress");
+        generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
         sorter.hp=0;
         check(!ConveyorLogistics.sorted(conveyor,host.world.devices),
             "Destroyed sorter still accelerates logistics");

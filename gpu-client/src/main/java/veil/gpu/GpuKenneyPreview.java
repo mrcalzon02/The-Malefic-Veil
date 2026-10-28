@@ -1112,6 +1112,16 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                         .average().orElseThrow();
                     double seaP95=withWater.get((int)Math.ceil(withWater.size()*.95)-1);
                     double baseP95=withoutWater.get((int)Math.ceil(withoutWater.size()*.95)-1);
+                    // Runner-speed-independent catastrophic regression gate:
+                    // the same camera and world are measured in adjacent
+                    // phases. Slack permits software Mesa/CI noise while
+                    // catching runaway shaders or draw-call multipliers.
+                    if(seaAverage>baseAverage*1.8+4.0||
+                       seaP95>baseP95*2.0+6.0)
+                        throw new IllegalStateException(String.format(
+                            java.util.Locale.ROOT,
+                            "GPU ocean frame-cost budget exceeded baselineAvg=%.3f oceanAvg=%.3f baselineP95=%.3f oceanP95=%.3f",
+                            baseAverage,seaAverage,baseP95,seaP95));
                     System.out.printf(java.util.Locale.ROOT,
                         "PASS GPU_OCEAN_BENCHMARK samples=%d baselineAvgMs=%.3f oceanAvgMs=%.3f oceanDeltaMs=%.3f baselineP95Ms=%.3f oceanP95Ms=%.3f baselineFPS=%.2f oceanFPS=%.2f oceanChunks=%d triangles=%d calls=%d uploadedFrameBytes=%d staticBytes=%d changedPixels=%d%n",
                         withWater.size(),baseAverage,seaAverage,seaAverage-baseAverage,

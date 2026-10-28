@@ -70,9 +70,9 @@ public final class UrbanDressing {
                     if(category==CityLayout.Category.OPEN&&(pick&3)==0)continue;
                     double x=x0+1.5+Math.floorMod(pick,Math.max(1,width-3));
                     double y=y0+1.5+Math.floorMod(pick>>>24,Math.max(1,height-3));
-                    if(!clear(city,x,y,.48,spawns,out))continue;
+                    if(!clear(city,x,y,.70,spawns,out))continue;
                     out.add(new World.UrbanProp("detail-dumpster-closed",x,y,
-                        ((pick>>>9)&3)*Math.PI/2,1.0,.48,0));
+                        ((pick>>>9)&3)*Math.PI/2,2.4,.70,0));
                 }
             }
             // Keep Kenney trucks in depots and cargo yards. Parked civilian cars

@@ -998,7 +998,8 @@ public final class ArenaSystems {
      * conveyors and sorters. Reservation is per host tick and per generator.
      * Never debit a queued recipe merely because an overloaded grid exists. */
     private void advanceQueuedAutomation(Map<World.Device,Integer> allocated){
-        for(World.Device d:world.devices){
+        for(World.Device d:fairGridOrder(dev->!dev.productionActive&&
+                !dev.queuedRecipeId.isEmpty())){
             if(d.hp<=0||d.productionActive||d.queuedRecipeId.isEmpty())continue;
             var recipe=CraftingEraRegistry.process(AutomationOrders.recipe(d.queuedRecipeId));
             if(recipe==null||recipe.era()!=CraftingEraRegistry.Era.AUTOMATION||
@@ -1070,12 +1071,31 @@ public final class ArenaSystems {
         }
         return false;
     }
+    /** Fair grid order is derived from the simulation clock, not client
+     * input, and never changes the canonical durable device list. Every
+     * ten-second power epoch rotates priority among actual contenders. */
+    private List<World.Device> fairGridOrder(
+            java.util.function.Predicate<World.Device> eligible){
+        List<World.Device> ordered=new ArrayList<>();
+        for(World.Device d:world.devices)if(eligible.test(d))ordered.add(d);
+        if(ordered.size()>1)
+            Collections.rotate(ordered,
+                -(int)(Math.max(0,clock-1)/10_000L%ordered.size()));
+        return ordered;
+    }
+    private boolean beltPriorityWindow(){
+        // Five uninterrupted seconds on alternating 10-second periods allow
+        // a paid TICK_MS conveyor receipt even under saturated factory load.
+        return (Math.max(0,clock-1)/5_000L)%2L==0L;
+    }
     /** Supply is physically routed once per host tick, not generated from a
      * recipe descriptor. Competing powered machines share boiler capacity. */
     private void advanceFactoryUtilities(long ms){
         Map<World.Device,Integer> demand=new IdentityHashMap<>();
         Map<World.Device,Integer> electricDraw=new IdentityHashMap<>();
-        for(World.Device d:world.devices){
+        boolean beltFirst=beltPriorityWindow();
+        if(beltFirst)advanceConveyors(ms,electricDraw);
+        for(World.Device d:fairGridOrder(dev->dev.productionActive)){
             if(d.hp<=0||!d.productionActive)continue;
             d.factoryHold="";
             var recipe=CraftingEraRegistry.process(d.productionRecipeId);
@@ -1116,9 +1136,17 @@ public final class ArenaSystems {
         }
         for(World.Device boiler:demand.keySet())
             boiler.steamMs=Math.max(0,boiler.steamMs-ms);
-        // Each stationary conveyor is its own paid logistics mechanism,
-        // sharing exactly the same grid budget as adjacent E5 fabrication.
-        for(World.Device conveyor:world.devices){
+        if(!beltFirst)advanceConveyors(ms,electricDraw);
+        // Unpaid E5 work may use only power LEFT after paid active factories
+        // and physical transport. Its launch never advances process time.
+        advanceQueuedAutomation(new IdentityHashMap<>(electricDraw));
+        for(World.Device generator:electricDraw.keySet())
+            generator.electricMs=Math.max(0,generator.electricMs-ms);
+    }
+    /** A physical belt pays one full electric tick before any movement.
+     * Powered belts rotate priority with competing manufacturers. */
+    private void advanceConveyors(long ms,Map<World.Device,Integer> electricDraw){
+        for(World.Device conveyor:fairGridOrder(dev->dev.kind==CONVEYOR_LINE)){
             if(conveyor.kind!=CONVEYOR_LINE||conveyor.hp<=0||
                conveyor.routeItem.isEmpty())continue;
             boolean automatic=conveyor.routeItem.equals("AUTO");
@@ -1154,12 +1182,6 @@ public final class ArenaSystems {
                 }
             }
         }
-        // Launch unpaid E5 jobs only after active factory AND conveyor loads
-        // are known. A copy reserves capacity for multiple new starts without
-        // charging a factory for a tick in which it did not yet manufacture.
-        advanceQueuedAutomation(new IdentityHashMap<>(electricDraw));
-        for(World.Device generator:electricDraw.keySet())
-            generator.electricMs=Math.max(0,generator.electricMs-ms);
     }
     /** Refuel a real boiler at the player's own camp; fuel is consumed from
      * an owned nearby fixed crate and is never a temporary field deployable. */

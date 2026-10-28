@@ -178,30 +178,39 @@ public final class UrbanTileAssembler {
                 add(assembled,model,ox,oy,(local&3)*Math.PI/2,scale,0);
             }
         }
-        // City collision retains its deterministic one-metre grid.
-        // Source wall-b modules are only one metre high and wide. The former
-        // placement repeated them at 1:1, stacking at one metre to make tiny
-        // city façades. One *scaled* module is now an actual 3 m storey; a
-        // second storey begins exactly 3 m higher, with roof at 6 m.
-        // Each façade spans three collision tiles, not one.
-        for(int x=1;x<World.SIZE-3;x++)for(int y=1;y<World.SIZE-3;y++){
+        // One collision tile remains one metre. The licensed thin wall-type-b
+        // façade is 1 m wide, 0.5 m tall and 0.07 m deep at native scale.
+        // A single 6x section is therefore six metres wide, one THREE-METRE
+        // storey high and only 0.42 m deep. The former per-metre wall cubes
+        // made the player Godzilla-sized and violated walkable visual space.
+        // Host collider/LOS stays immutable; openings in that authoritative
+        // grid are NOT filled by stretching a façade over a doorway.
+        for(int x=1;x<World.SIZE-CELL;x++)for(int y=1;y<World.SIZE-CELL;y++){
             if(city.tile(x,y)==0)continue;
             boolean north=city.tile(x,y-1)==0;
             boolean south=city.tile(x,y+1)==0;
             boolean west=city.tile(x-1,y)==0;
             boolean east=city.tile(x+1,y)==0;
             if(!north&&!south&&!west&&!east)continue;
-            long hash=roll(seed,x,y,251);
-            String facade=from(hash,"wall-b","wall-b-window","wall-b","wall-b-corner");
-            if((north||south)&&x%3==0&&
-               city.tile(x+1,y)!=0&&city.tile(x+2,y)!=0){
-                add(assembled,facade,x+1.5,y+.5,0,3.0,0);
-                add(assembled,facade,x+1.5,y+.5,0,3.0,0,3.0);
+            if((north||south)&&x%CELL==0){
+                boolean uninterrupted=true;
+                for(int offset=1;offset<CELL;offset++)
+                    if(city.tile(x+offset,y)==0){uninterrupted=false;break;}
+                if(uninterrupted){
+                    add(assembled,"wall-type-b",x+CELL/2.0,y+.5,0,CELL,0);
+                    add(assembled,"wall-type-b",x+CELL/2.0,y+.5,0,CELL,0,3.0);
+                }
             }
-            if((west||east)&&y%3==0&&
-               city.tile(x,y+1)!=0&&city.tile(x,y+2)!=0){
-                add(assembled,facade,x+.5,y+1.5,Math.PI/2,3.0,0);
-                add(assembled,facade,x+.5,y+1.5,Math.PI/2,3.0,0,3.0);
+            if((west||east)&&y%CELL==0){
+                boolean uninterrupted=true;
+                for(int offset=1;offset<CELL;offset++)
+                    if(city.tile(x,y+offset)==0){uninterrupted=false;break;}
+                if(uninterrupted){
+                    add(assembled,"wall-type-b",x+.5,y+CELL/2.0,
+                        Math.PI/2,CELL,0);
+                    add(assembled,"wall-type-b",x+.5,y+CELL/2.0,
+                        Math.PI/2,CELL,0,3.0);
+                }
             }
         }
         // Distinct source-backed obstacles remain physical and co-located;

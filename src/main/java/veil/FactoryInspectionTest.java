@@ -50,6 +50,12 @@ public final class FactoryInspectionTest {
         check(dark.recipe().equals(jobId)&&dark.next().equals(jobId)&&
             shop.queuedRecipeId.equals(jobId)&&!shop.productionActive,
             "Unpowered queued job lost its real receipt");
+        generator.electricMs=1;
+        inspect(game,"WAIT_POWER");
+        game.advance(1000);
+        check(shop.queuedRecipeId.equals(jobId)&&!shop.productionActive&&
+            generator.electricMs==1,
+            "Sub-tick electricity made a queued E5 machine falsely ready");
         generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
         game.advance(1000);
         inspect(game,"WAIT_STORAGE");
@@ -78,6 +84,11 @@ public final class FactoryInspectionTest {
         game.advance(1000);
         inspect(game,"WAIT_POWER");
         check(shop.productionMs==0,"Dark factory progressed for free");
+        generator.electricMs=1;
+        inspect(game,"WAIT_POWER");
+        game.advance(1000);
+        check(shop.productionMs==0&&generator.electricMs==1,
+            "Sub-tick electricity incorrectly showed paid E5 work as running");
         generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
         check(game.programNextAutomation(1,jobId),
             "Cannot queue another job while a paid batch runs");

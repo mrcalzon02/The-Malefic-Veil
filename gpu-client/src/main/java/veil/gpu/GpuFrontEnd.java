@@ -549,11 +549,24 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         ui.end();
     }
     private void capture(String basename){
-        Pixmap pix=Pixmap.createFromFrameBuffer(0,0,
-            Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        var out=Gdx.files.absolute(new java.io.File(
-            "build/test-visuals/"+basename+".png").getAbsolutePath());
-        out.parent().mkdirs();PixmapIO.writePNG(out,pix);pix.dispose();
+        // glReadPixels starts at the bottom row; PNG images start at the top.
+        // Capture the *presented* window, not an offscreen approximation, and
+        // orient the saved evidence exactly as the user sees the desktop.
+        int width=Gdx.graphics.getBackBufferWidth();
+        int height=Gdx.graphics.getBackBufferHeight();
+        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,width,height);
+        Pixmap upright=new Pixmap(width,height,Pixmap.Format.RGBA8888);
+        try{
+            for(int row=0;row<height;row++)for(int col=0;col<width;col++)
+                upright.drawPixel(col,height-1-row,pixels.getPixel(col,row));
+            var out=Gdx.files.absolute(new java.io.File(
+                "build/test-visuals/"+basename+".png").getAbsolutePath());
+            out.parent().mkdirs();
+            PixmapIO.writePNG(out,upright);
+        }finally{
+            upright.dispose();
+            pixels.dispose();
+        }
     }
     @Override public void render(){
         if(gameRenderer!=null){

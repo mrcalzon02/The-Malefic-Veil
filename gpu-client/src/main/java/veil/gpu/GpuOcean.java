@@ -160,11 +160,16 @@ public final class GpuOcean implements AutoCloseable {
         result.setWrap(Texture.TextureWrap.Repeat,Texture.TextureWrap.Repeat);
         return result;
     }
-    private static void vertex(ArrayList<Float> out,double x,double z,VeilOcean water){
+    private static void vertex(com.badlogic.gdx.utils.FloatArray out,double x,double z,
+                               VeilOcean water,VeilOcean.SeaParcel parcel){
+        double sx=Math.max(parcel.west()+.001,
+            Math.min(parcel.west()+parcel.size()-.001,x));
+        double sz=Math.max(parcel.north()+.001,
+            Math.min(parcel.north()+parcel.size()-.001,z));
         out.add((float)x);
         out.add(0f);
         out.add((float)z);
-        out.add((float)Math.max(0.0,VeilOcean.SEA_LEVEL-water.bottom(x,z)));
+        out.add((float)Math.max(0.0,VeilOcean.SEA_LEVEL-water.bottom(sx,sz)));
         out.add(0f);
     }
     public GpuOcean(VeilOcean water,ContinentVista vista){
@@ -175,28 +180,39 @@ public final class GpuOcean implements AutoCloseable {
         layerA=upload(WaterTextures.builtin("water://ripple-a"));
         layerB=upload(WaterTextures.builtin("water://ripple-b"));
         var seen=new HashSet<Long>();
+        int acceptedParcels=0;
         for(ContinentVista.Patch patch:vista.patches()){
-            var vertices=new ArrayList<Float>();
-            for(int z=patch.top();z<patch.top()+patch.depth();z+=STEP)
-                for(int x=patch.left();x<patch.left()+patch.width();x+=STEP){
-                    // Source-biome interiors must all be wet. This bounds
-                    // water quads to real parcels, including irregular coasts.
-                    if(!water.wet(x+.02,z+.02)||
-                       !water.wet(x+STEP-.02,z+.02)||
-                       !water.wet(x+.02,z+STEP-.02)||
-                       !water.wet(x+STEP-.02,z+STEP-.02))continue;
-                    long cell=(((long)x)<<32)^(z&0xffffffffL);
-                    if(!seen.add(cell))continue;
-                    vertex(vertices,x,z,water);
-                    vertex(vertices,x+STEP,z,water);
-                    vertex(vertices,x+STEP,z+STEP,water);
-                    vertex(vertices,x,z,water);
-                    vertex(vertices,x+STEP,z+STEP,water);
-                    vertex(vertices,x,z+STEP,water);
-                }
-            if(vertices.isEmpty())continue;
-            float[] packed=new float[vertices.size()];
-            for(int i=0;i<packed.length;i++)packed[i]=vertices.get(i);
+            var vertices=new com.badlogic.gdx.utils.FloatArray();
+            for(VeilOcean.SeaParcel parcel:water.sourceSeaParcels(
+                    patch.left(),patch.top(),
+                    patch.left()+patch.width(),patch.top()+patch.depth())){
+                acceptedParcels++;
+                double fromX=Math.max(parcel.west(),patch.left());
+                double toX=Math.min(parcel.west()+parcel.size(),
+                    patch.left()+patch.width());
+                double fromZ=Math.max(parcel.north(),patch.top());
+                double toZ=Math.min(parcel.north()+parcel.size(),
+                    patch.top()+patch.depth());
+                // Clip geometry to the SOURCE 6-metre water parcel, not to
+                // uncertain corner samples of an independent terrain grid.
+                for(double z=fromZ;z<toZ;z+=STEP)
+                    for(double x=fromX;x<toX;x+=STEP){
+                        double x2=Math.min(x+STEP,toX),z2=Math.min(z+STEP,toZ);
+                        if(x2<=x||z2<=z||!water.wet((x+x2)*.5,(z+z2)*.5))
+                            continue;
+                        long cell=(((long)Math.round(x))<<32)^
+                            (Math.round(z)&0xffffffffL);
+                        if(!seen.add(cell))continue;
+                        vertex(vertices,x,z,water,parcel);
+                        vertex(vertices,x2,z,water,parcel);
+                        vertex(vertices,x2,z2,water,parcel);
+                        vertex(vertices,x,z,water,parcel);
+                        vertex(vertices,x2,z2,water,parcel);
+                        vertex(vertices,x,z2,water,parcel);
+                    }
+            }
+            if(vertices.size==0)continue;
+            float[] packed=Arrays.copyOf(vertices.items,vertices.size);
             int count=packed.length/STRIDE;
             Mesh mesh=new Mesh(Mesh.VertexDataType.VertexBufferObjectWithVAO,true,
                 count,0,VertexAttribute.Position(),VertexAttribute.TexCoords(0));
@@ -208,7 +224,7 @@ public final class GpuOcean implements AutoCloseable {
         }
         last=new Stats(0,0,0,0,0,staticBytes);
         System.out.println("OCEAN_WATER_SDK_READY chunks="+chunks.size()+
-            " staticBytes="+staticBytes+
+            " sourceParcels="+acceptedParcels+" staticBytes="+staticBytes+
             " source=seeded-coastline waves=vertex-shader color=dual-texture-gpu");
     }
     private static void tint(ShaderProgram shader,String name,int color){

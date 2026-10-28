@@ -703,20 +703,52 @@ public final class ArenaSystems {
             need.put(SurvivalCrafting.Item.valueOf(entry.getKey()),entry.getValue());
         return need;
     }
-    private World.Device fundedFactoryCrate(Player p,double x,double y,int kind){
+    /** Construction may pay a complete blueprint from several physical,
+     * nearby owned crates. Factory batch inputs intentionally remain atomic
+     * per crate and are not changed by this construction funding rule.
+     * The owner, geometry and each available quantity are checked BEFORE
+     * committing any debit under the synchronized host build operation. */
+    private List<World.Device> fundedFactoryCrates(Player p,double x,double y,int kind){
         Map<SurvivalCrafting.Item,Integer> need=facilityMaterialCost(kind);
-        for(World.Device d:world.devices){
-            if(d.hp<=0||d.kind!=STORAGE_CRATE||
-               !p.accountKey.equals(d.ownerKey)||
-               Math.hypot(d.x-x,d.y-y)>5.5)continue;
-            boolean complete=true;
-            for(var material:need.entrySet())
-                if(d.storage.count(material.getKey())<material.getValue()){
-                    complete=false;break;
-                }
-            if(complete)return d;
+        if(need.isEmpty())return List.of();
+        List<World.Device> candidates=new ArrayList<>();
+        for(World.Device d:world.devices)
+            if(d.hp>0&&d.kind==STORAGE_CRATE&&
+               p.accountKey.equals(d.ownerKey)&&
+               Math.hypot(d.x-x,d.y-y)<=5.5)
+                candidates.add(d);
+        if(candidates.isEmpty())return List.of();
+        for(var material:need.entrySet()){
+            long available=0;
+            for(World.Device crate:candidates)
+                available+=crate.storage.count(material.getKey());
+            if(available<material.getValue())return List.of();
         }
-        return null;
+        return candidates;
+    }
+    /** No alternate source of materials exists here: consume only verified
+     * owned crate quantities in world order, never carry fractional payment
+     * into a built structure or mint change back to player inventory. */
+    private static void spendFacilityMaterials(List<World.Device> crates,
+            Map<SurvivalCrafting.Item,Integer> costs){
+        EnumMap<SurvivalCrafting.Item,Integer> remaining=
+            new EnumMap<>(SurvivalCrafting.Item.class);
+        remaining.putAll(costs);
+        for(World.Device crate:crates){
+            EnumMap<SurvivalCrafting.Item,Integer> taken=
+                new EnumMap<>(SurvivalCrafting.Item.class);
+            for(var item:remaining.entrySet()){
+                int quantity=Math.min(item.getValue(),crate.storage.count(item.getKey()));
+                if(quantity>0)taken.put(item.getKey(),quantity);
+            }
+            if(!taken.isEmpty()&&!crate.storage.consume(taken))
+                throw new IllegalStateException("Preflighted construction stock changed");
+            for(var item:taken.entrySet())
+                remaining.put(item.getKey(),remaining.get(item.getKey())-item.getValue());
+        }
+        for(int quantity:remaining.values())
+            if(quantity!=0)
+                throw new IllegalStateException("Incomplete construction funding debit");
     }
     public record BuildReview(boolean allowed,String reason,int cashCost,int suppliesCost,double x,double y){}
     /** Returns a concrete rejection without mutating inventories. */
@@ -762,7 +794,7 @@ public final class ArenaSystems {
             if(!hasRealFacilityDependencies(p,kind,x,y))
                 return new BuildReview(false,"MISSING_PHYSICAL_PREREQUISITE",
                     price,supplies,x,y);
-            if(fundedFactoryCrate(p,x,y,kind)==null)
+            if(fundedFactoryCrates(p,x,y,kind).isEmpty())
                 return new BuildReview(false,"NEEDS_STOCKED_OWN_CRATE",
                     price,supplies,x,y);
         }
@@ -849,9 +881,11 @@ public final class ArenaSystems {
         if(kind==STORAGE_CRATE&&!p.survival.debit(SurvivalCrafting.Item.CRATE_KIT,1))
             throw new IllegalStateException("Crate kit changed after authoritative preflight");
         if(factionFacility(kind)!=null){
-            World.Device funded=fundedFactoryCrate(p,review.x(),review.y(),kind);
-            if(funded==null||!funded.storage.consume(facilityMaterialCost(kind)))
+            List<World.Device> funded=
+                fundedFactoryCrates(p,review.x(),review.y(),kind);
+            if(funded.isEmpty())
                 throw new IllegalStateException("Verified factory funding changed");
+            spendFacilityMaterials(funded,facilityMaterialCost(kind));
         }
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);

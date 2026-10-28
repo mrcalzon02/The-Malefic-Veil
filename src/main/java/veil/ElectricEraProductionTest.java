@@ -93,6 +93,16 @@ public final class ElectricEraProductionTest {
             "The factory was not registered in its separate E4 economy");
         supply(stock.storage,process.inputs());
         owner.x=plant.x+.4;owner.y=plant.y;
+        generator.electricMs=1;
+        check(!game.startFactionBatch(1,process.id())&&
+            !plant.productionActive&&plant.productionRecipeId.isEmpty()&&
+            generator.electricMs==1,
+            "Almost-empty generator accepted a fully paid E4 recipe");
+        for(var input:process.inputs().entrySet())
+            check(stock.storage.count(SurvivalCrafting.Item.valueOf(input.getKey()))==
+                input.getValue(),
+                "Failed E4 power preflight spent real "+input.getKey());
+        generator.electricMs=0;
         check(!game.startFactionBatch(1,process.id()),"Cold unpowered E4 factory ran");
         check(!game.startFactionBatch(2,process.id()),"Outsider started owner's E4 job");
         check(!game.chargeGenerator(2),"Outsider powered somebody else's generator");

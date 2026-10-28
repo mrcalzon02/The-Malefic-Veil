@@ -23,8 +23,14 @@ public final class ElectricUtility {
      * Each generating plant offers only CAPACITY per simulation tick. */
     public static World.Device available(List<World.Device> devices,World.Device machine,
                       int load,Map<World.Device,Integer> allocated){
+        return available(devices,machine,load,allocated,1);
+    }
+    /** Runtime reservation must hold enough actual charge for the ENTIRE
+     * requested simulation tick, not merely one remaining millisecond. */
+    public static World.Device available(List<World.Device> devices,World.Device machine,
+                      int load,Map<World.Device,Integer> allocated,long requiredMs){
         if(machine==null||machine.hp<=0||machine.ownerKey==null||
-           load<1||load>CAPACITY)return null;
+           load<1||load>CAPACITY||requiredMs<1)return null;
         for(World.Device bus:devices){
             if(bus.hp<=0||bus.kind!=ArenaSystems.ELECTRIC_BUS||
                !machine.ownerKey.equals(bus.ownerKey)||
@@ -33,7 +39,7 @@ public final class ElectricUtility {
                 if(generator.hp<=0||generator.kind!=ArenaSystems.GENERATOR||
                    !machine.ownerKey.equals(generator.ownerKey)||
                    Math.hypot(bus.x-generator.x,bus.y-generator.y)>8||
-                   generator.electricMs<=0)continue;
+                   generator.electricMs<requiredMs)continue;
                 if(allocated.getOrDefault(generator,0)+load<=CAPACITY)
                     return generator;
             }

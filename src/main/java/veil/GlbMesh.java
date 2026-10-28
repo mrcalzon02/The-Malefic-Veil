@@ -61,6 +61,13 @@ public final class GlbMesh {
     public List<Surface> surfaces(){return surfaces;}
     public float[] bounds(){return bounds.clone();}
     public int triangleCount(){return triangles.size();}
+    /** OBJ UVs are authored with a bottom-left V origin, while libGDX's
+     * Pixmap upload preserves the decoded PNG's top-to-bottom scanline order.
+     * Flip only OBJ-car V at GPU upload. CPU fallback already samples 1-v.
+     * GLB Kenney materials retain their own glTF texture convention. */
+    public static float gpuAtlasV(String id,float sourceV){
+        return id!=null&&id.startsWith("ggbot-")?1f-sourceV:sourceV;
+    }
     // The urban source pack is immutable for the lifetime of a game process.
     // One parsed mesh object is reused across scenes, world seeds and all instances.
     // Cache is bounded by the fixed 124-model Kenney catalog.

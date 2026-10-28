@@ -91,17 +91,19 @@ public final class UrbanTileAssembler {
                             };
                         };
                         add(assembled,ground,tx+.5,ty+.5,0,1,0);
-                        // The modular roof is also only ~1x1 source units;
-                        // one roof section per interior tile, not one giant wedge.
+                        // A 6x6 macrocell represents building footprint, NOT
+                        // 36 dollhouse-sized roof sections. One licensed mesh
+                        // covers a six-metre span at the second-storey roofline.
                         boolean roofIntact=category==CityLayout.Category.SAFE||
                             category==CityLayout.Category.RESOURCE&&(n&7)!=0||
                             category==CityLayout.Category.HAZARD&&(n&3)==0;
-                        if(!vacant&&category!=CityLayout.Category.OPEN&&roofIntact&&
-                           city.tile(tx,ty)==0){
+                        if(sx==0&&sy==0&&!vacant&&
+                           category!=CityLayout.Category.OPEN&&roofIntact&&
+                           city.tile(tx+CELL/2,ty+CELL/2)==0){
                             String roof=from(n>>>7,"roof-metal-type-a","roof-metal-type-b",
-                                "wall-a-roof","wall-b-roof");
-                            add(assembled,roof,tx+.5,ty+.5,
-                                ((n>>>9)&1)==0?0:Math.PI/2,1,0,2.0);
+                                "wall-b-roof");
+                            add(assembled,roof,tx+CELL/2.0,ty+CELL/2.0,
+                                ((n>>>9)&1)==0?0:Math.PI/2,CELL,0,6.0);
                         }
                     }
                 }
@@ -118,7 +120,9 @@ public final class UrbanTileAssembler {
                     if(city.tile(ex,ey)!=0)continue;
                     // The open frame is an aperture, not a collision override.
                     String frame=((roll(seed,ex,ey,71)&1)==0)?"wall-a-open":"wall-b-open";
-                    add(assembled,frame,ex+.5,ey+.5,side*Math.PI/2,1,0);
+                    // Source wall-open modules are metre-sized; an entrance
+                    // must be large enough for an adult, not a doll.
+                    add(assembled,frame,ex+.5,ey+.5,side*Math.PI/2,3.0,0);
                 }
             }
             // Lot dressing respects the existing authored plot categorization, rather
@@ -164,40 +168,48 @@ public final class UrbanTileAssembler {
                     case OPEN -> from(local,"tree-small","tree-shrub",
                         "detail-bench","tree-pine-small");
                 };
-                double scale=model.contains("light")?1.35:model.contains("tree")?1.65:
-                    model.contains("truck")?1.5:model.contains("scaffolding")?1.25:1.1;
+                double scale=model.contains("light")?3.0:
+                    model.contains("tree")?2.1:
+                    model.contains("truck")?1.5:
+                    model.contains("detail-bench")?3.2:
+                    model.contains("dumpster")?2.4:
+                    model.contains("barrier")?2.2:
+                    model.contains("scaffolding")?2.0:1.6;
                 add(assembled,model,ox,oy,(local&3)*Math.PI/2,scale,0);
             }
         }
-        // The old invisible tile wall map is still authoritative for collision.
-        // Each EXPOSED wall tile now receives an actual Kenney modular wall model;
-        // stacking two 1-m modules keeps eye-level sightlines aligned.
-        for(int x=1;x<World.SIZE-1;x++)for(int y=1;y<World.SIZE-1;y++){
+        // City collision retains its deterministic one-metre grid.
+        // Source wall-b modules are only one metre high and wide. The former
+        // placement repeated them at 1:1, stacking at one metre to make tiny
+        // city façades. One *scaled* module is now an actual 3 m storey; a
+        // second storey begins exactly 3 m higher, with roof at 6 m.
+        // Each façade spans three collision tiles, not one.
+        for(int x=1;x<World.SIZE-3;x++)for(int y=1;y<World.SIZE-3;y++){
             if(city.tile(x,y)==0)continue;
-            if(city.tile(x-1,y)!=0&&city.tile(x+1,y)!=0&&
-               city.tile(x,y-1)!=0&&city.tile(x,y+1)!=0)continue;
+            boolean north=city.tile(x,y-1)==0;
+            boolean south=city.tile(x,y+1)==0;
+            boolean west=city.tile(x-1,y)==0;
+            boolean east=city.tile(x+1,y)==0;
+            if(!north&&!south&&!west&&!east)continue;
             long hash=roll(seed,x,y,251);
-            boolean useB=(hash&1)!=0;
-            String wall;
-            if((hash&31)==0)
-                wall=useB?"wall-b-corner":"wall-a-corner";
-            else if((hash&15)==1)
-                wall=useB?"wall-b-window":"wall-a-window";
-            else if((hash&7)==2)
-                wall=useB?"wall-b":"wall-a-painted";
-            else
-                wall=useB?"wall-b":"wall-a";
-            double angle=(hash&3)*Math.PI/2;
-            add(assembled,wall,x+.5,y+.5,angle,1,0);
-            // Height stacking uses existing facade GLBs, not extruded proxy cubes.
-            add(assembled,wall,x+.5,y+.5,angle,1,0,1.0);
+            String facade=from(hash,"wall-b","wall-b-window","wall-b","wall-b-corner");
+            if((north||south)&&x%3==0&&
+               city.tile(x+1,y)!=0&&city.tile(x+2,y)!=0){
+                add(assembled,facade,x+1.5,y+.5,0,3.0,0);
+                add(assembled,facade,x+1.5,y+.5,0,3.0,0,3.0);
+            }
+            if((west||east)&&y%3==0&&
+               city.tile(x,y+1)!=0&&city.tile(x,y+2)!=0){
+                add(assembled,facade,x+.5,y+1.5,Math.PI/2,3.0,0);
+                add(assembled,facade,x+.5,y+1.5,Math.PI/2,3.0,0,3.0);
+            }
         }
-        // Reserve the existing spawn-near source-grounded proof props and obstacles.
-        // Their explicit physical radii intentionally participate in canWalk/lineClear.
-        add(assembled,"detail-barrier-type-a",5.2,1.5,0,1.7,.43);
-        add(assembled,"detail-bench",4.3,2.5,0,1.8,.58);
-        add(assembled,"detail-dumpster-closed",9.1,2.2,0,1.6,.59);
-        add(assembled,"detail-light-single",7.8,2.2,0,3.0,.15);
+        // Distinct source-backed obstacles remain physical and co-located;
+        // increase their visuals to adult-height street furniture.
+        add(assembled,"detail-barrier-type-a",5.2,1.5,0,2.4,.60);
+        add(assembled,"detail-bench",4.3,2.5,0,3.2,.74);
+        add(assembled,"detail-dumpster-closed",9.1,2.2,0,2.4,.78);
+        add(assembled,"detail-light-single",7.8,2.2,0,3.0,.20);
         return List.copyOf(assembled);
     }
     private static boolean clearSpawns(double x,double y,double[][] spawns,double range){

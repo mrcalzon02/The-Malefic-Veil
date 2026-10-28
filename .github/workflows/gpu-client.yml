@@ -143,6 +143,24 @@ jobs:
           test -s build/test-visuals/gpu-ggbot-city-cars.png
           test -s build/test-visuals/gpu-kenney-foliage.png
           file build/test-visuals/gpu-kenney-city.png
+      - name: Coastline ocean OpenGL draw and VBO upload diagnostics
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 100s java -Djava.awt.headless=false \
+              -jar gpu-client/target/MaleficVeil-GPU.jar \
+              --gallery --seed=20261020 --city=E |
+            tee build/test-visuals/gpu-ocean-performance.log
+          grep -Eq 'OCEAN_WATER_SDK_READY chunks=[1-9][0-9]*' \
+            build/test-visuals/gpu-ocean-performance.log
+          grep -Eq 'OCEAN_GPU_PERF .*chunks=[1-9][0-9]* .*triangles=[1-9][0-9]* .*uploadedFrameBytes=0' \
+            build/test-visuals/gpu-ocean-performance.log
+          test -s build/test-visuals/gallery-seed-20261020-city-E-01-generated-plate-overhead.png
+          echo 'PASS GPU_OCEAN_STATIC_VBO nonzero real ocean triangles and no frame uploads'
       - name: Unified in-engine main menu and real world/session flow
         if: runner.os == 'Linux'
         shell: bash

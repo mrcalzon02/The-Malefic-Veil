@@ -85,6 +85,27 @@ These figures are software-Mesa CI diagnostics, not hardware-specific
 performance promises. The reference is preserved to compare future
 revisions and inform regression budgets.
 
+**Indexed GPU memory validation (2026-10-28, GPU workflow 40715258254,
+Windows/Ubuntu passed):** shared shoreline-safe vertices and a static
+16-bit index buffer reduced full coastal-world water geometry from
+**298,200 bytes** of duplicated vertices to **88,740 bytes**, a 70.2%
+memory reduction. The same 4,970 world-water triangles remain, with
+zero frame-by-frame VBO uploads. In its separate paired OpenGL benchmark,
+a near-water camera measured 5.331 ms baseline and 6.715 ms with ocean,
+an additional 1.384 ms and 5,101 changed framebuffer samples. That is
+a different runner instance from the older measurements: only the
+static geometry-byte savings are directly comparable, not a claimed
+cross-run FPS improvement.
+
+**In-game diagnostics:** press **F8** in the GPU gameplay/viewer window
+to toggle a compact FPS, city/terrain draw, visible water batch/triangle,
+indexed ocean memory, and CPU draw-submission overlay. These figures
+are from the actual rendering path; CPU submission is not GPU execution
+latency. Release gameplay keeps the ordinary 60 FPS cap. The explicit
+`-Dveil.gpu.oceanBenchmark=true` diagnostic disables v-sync and
+the cap only for the paired benchmark.
+
+
 ## Still not completed
 
 - Continental water is currently a **visual** surface; true streamed,

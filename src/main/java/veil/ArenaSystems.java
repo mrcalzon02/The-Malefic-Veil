@@ -726,30 +726,6 @@ public final class ArenaSystems {
         }
         return candidates;
     }
-    /** No alternate source of materials exists here: consume only verified
-     * owned crate quantities in world order, never carry fractional payment
-     * into a built structure or mint change back to player inventory. */
-    private static void spendFacilityMaterials(List<World.Device> crates,
-            Map<SurvivalCrafting.Item,Integer> costs){
-        EnumMap<SurvivalCrafting.Item,Integer> remaining=
-            new EnumMap<>(SurvivalCrafting.Item.class);
-        remaining.putAll(costs);
-        for(World.Device crate:crates){
-            EnumMap<SurvivalCrafting.Item,Integer> taken=
-                new EnumMap<>(SurvivalCrafting.Item.class);
-            for(var item:remaining.entrySet()){
-                int quantity=Math.min(item.getValue(),crate.storage.count(item.getKey()));
-                if(quantity>0)taken.put(item.getKey(),quantity);
-            }
-            if(!taken.isEmpty()&&!crate.storage.consume(taken))
-                throw new IllegalStateException("Preflighted construction stock changed");
-            for(var item:taken.entrySet())
-                remaining.put(item.getKey(),remaining.get(item.getKey())-item.getValue());
-        }
-        for(int quantity:remaining.values())
-            if(quantity!=0)
-                throw new IllegalStateException("Incomplete construction funding debit");
-    }
     public record BuildReview(boolean allowed,String reason,int cashCost,int suppliesCost,double x,double y){}
     /** Returns a concrete rejection without mutating inventories. */
     public synchronized BuildReview reviewBuild(int id,int kind){
@@ -885,7 +861,10 @@ public final class ArenaSystems {
                 fundedFactoryCrates(p,review.x(),review.y(),kind);
             if(funded.isEmpty())
                 throw new IllegalStateException("Verified factory funding changed");
-            spendFacilityMaterials(funded,facilityMaterialCost(kind));
+            if(!ConstructionFunding.pay(
+                    funded.stream().map(d->d.storage).toList(),
+                    facilityMaterialCost(kind)))
+                throw new IllegalStateException("Preflighted construction stock changed");
         }
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);

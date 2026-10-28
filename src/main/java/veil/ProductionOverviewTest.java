@@ -78,6 +78,43 @@ public final class ProductionOverviewTest {
             queued.entries().get(2).remedy().equals("PROGRAM_CONVEYOR_ROUTE_LOCALLY")&&
             queued.entries().get(1).remedy().equals("PROGRAM_WORKSITE_LOCALLY"),
             "Overview omitted real conveyor status");
+        // The remedy must be based on physical, same-owner stock, never
+        // foreign-account warehouses or an invented material source.
+        var foreignCrate=add(game,ArenaSystems.STORAGE_CRATE,x+40,y+40,foreign);
+        check(foreignCrate.storage.delivered(SurvivalCrafting.Item.CONDUCTOR_WIRE,4),
+            "Could not stage foreign test inputs");
+        check(game.productionOverview(1,0).entries().get(0).remedy().equals(
+            "STOCK_REQUIRED_INPUT_NEAR_SITE"),
+            "Overview leaked a different account's remote supply");
+        var remote=add(game,ArenaSystems.STORAGE_CRATE,x+42,y+42,owner);
+        int sourceIndex=game.world.devices.indexOf(remote);
+        check(remote.storage.delivered(SurvivalCrafting.Item.CONDUCTOR_WIRE,3),
+            "Could not stage authentic owner stock");
+        var remoteBefore=remote.storage.snapshot();
+        check(game.productionOverview(1,0).entries().get(0).remedy().equals(
+            "TRANSFER_FROM_CRATE_"+sourceIndex)&&
+            remote.storage.snapshot().equals(remoteBefore),
+            "Owner's real remote input source was missed or report moved stock");
+        check(remote.storage.consume(Map.of(SurvivalCrafting.Item.CONDUCTOR_WIRE,2)),
+            "Could not stage partial source inventory");
+        check(game.productionOverview(1,0).entries().get(0).remedy().equals(
+            "PARTIAL_INPUT_AT_CRATE_"+sourceIndex),
+            "Partial remote inputs were incorrectly claimed sufficient");
+        game.world.devices.remove(remote);
+        game.world.devices.remove(foreignCrate);
+        // Atomic recipe payment requires every ingredient in ONE local crate,
+        // even when separate nearby crates jointly hold the entire recipe.
+        var split=add(game,ArenaSystems.STORAGE_CRATE,x-1,y,owner);
+        check(stock.storage.delivered(SurvivalCrafting.Item.CONDUCTOR_WIRE,3)&&
+            split.storage.delivered(SurvivalCrafting.Item.DRIVE_SHAFT,1),
+            "Could not stage split inputs");
+        var divided=game.productionOverview(1,0).entries().get(0);
+        check(divided.state().equals("WAIT_COMBINE")&&
+            divided.remedy().equals("COMBINE_ALL_INGREDIENTS_IN_ONE_CRATE"),
+            "Split owned inputs were not diagnosed as an atomic-payment blockage");
+        game.world.devices.remove(split);
+        check(stock.storage.consume(Map.of(SurvivalCrafting.Item.CONDUCTOR_WIRE,3)),
+            "Could not restore unstocked overview fixture");
         var later=game.productionOverview(1,1);
         check(later.total()==6&&later.entries().size()==2&&
             later.entries().get(0).index()==game.world.devices.indexOf(fourth)&&

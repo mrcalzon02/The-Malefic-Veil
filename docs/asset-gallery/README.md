@@ -74,4 +74,4 @@ Update and publish from the authoring workspace after each render batch: `python
 
 ## Superseded renders
 
-97 earlier test images retained. [Browse the history gallery](history.md).
+110 earlier test images retained. [Browse the history gallery](history.md).

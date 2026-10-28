@@ -104,7 +104,7 @@ public final class ProductionOverviewTest {
             "Settlement overview incorrectly required local machine proximity");
         var originalStock=stock.storage.snapshot();
         long remaining=generator.electricMs;
-        check(game.productionOverview(1,0).wire().split("\\|").length==32&&
+        check(("PRODUCTION_OVERVIEW|"+game.productionOverview(1,0).wire()).split("\\|").length==32&&
             stock.storage.snapshot().equals(originalStock)&&generator.electricMs==remaining&&
             first.queuedRecipeId.equals(repeat),
             "Read-only overview mutated stock, energy or future work");

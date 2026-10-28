@@ -18,6 +18,10 @@ public final class GGBotCarPackTest {
                 "ggbot-05-car5_police","ggbot-05-car5_taxi",
                 "ggbot-06-car6","ggbot-08-car8_mail"))
             check(library.names().contains(name),"Missing intended variant "+name);
+        check(GlbMesh.gpuAtlasV("ggbot-01-car",.2f)>.79f,
+            "GPU must flip GGBot OBJ V to agree with source PNG scanlines");
+        check(GlbMesh.gpuAtlasV("wall-b",.2f)==.2f,
+            "Kenney glTF texture UVs must remain untouched");
         int faceTotal=0;
         for(String id:library.names()){
             GlbMesh mesh=library.model(id);

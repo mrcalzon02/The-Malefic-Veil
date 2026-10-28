@@ -135,6 +135,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private int visibleTerrainTriangles;
     private long oceanBenchmarkPreviousNs;
     private final java.util.List<Double> oceanBenchmarkFrameMs=new java.util.ArrayList<>();
+    private final java.util.List<Double> oceanBaselineFrameMs=new java.util.ArrayList<>();
     private World world;
     private UrbanScene scene;
     private ShaderProgram shader;
@@ -856,7 +857,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         String weatherPreset=gameplay!=null&&gameplay.gpuFrame()!=null?
             gameplay.gpuFrame().weatherPreset():"CLEAR";
         oceanSeconds+=Math.max(0,Math.min(.05,Gdx.graphics.getDeltaTime()));
-        ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10);
+        // Paired diagnostic uses the SAME city, camera and seeded world;
+        // stage one measures the scene without ocean draws, stage two with.
+        // Neither mode changes host physics or climate.
+        boolean baselineOceanOff=gallery&&
+            Boolean.getBoolean("veil.gpu.oceanBenchmark")&&frames<180;
+        if(!baselineOceanOff)
+            ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10);
         // These counters are measured in the actual OpenGL viewport; CPU
         // submission time is explicitly NOT presented as GPU execution time.
         if((smoke||gallery||playSmoke||editorSmoke)&&frames%15==0){
@@ -970,8 +977,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         // swap/vsync delays. First 30 frames are warmup, not benchmark data.
         if(gallery&&Boolean.getBoolean("veil.gpu.oceanBenchmark")){
             long now=System.nanoTime();
-            if(oceanBenchmarkPreviousNs!=0&&frames>=30)
-                oceanBenchmarkFrameMs.add((now-oceanBenchmarkPreviousNs)/1_000_000.0);
+            if(oceanBenchmarkPreviousNs!=0){
+                double cadenceMs=(now-oceanBenchmarkPreviousNs)/1_000_000.0;
+                if(frames>=30&&frames<180)
+                    oceanBaselineFrameMs.add(cadenceMs);
+                else if(frames>=210&&frames<360)
+                    oceanBenchmarkFrameMs.add(cadenceMs);
+            }
             oceanBenchmarkPreviousNs=now;
         }
         if(menuBackdrop){
@@ -990,24 +1002,30 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(gallery){
             frames++;
             if(Boolean.getBoolean("veil.gpu.oceanBenchmark")){
-                if(frames==180){
+                if(frames==360){
                     var waterStats=ocean.stats();
                     if(waterStats.visibleChunks()==0||waterStats.drawnTriangles()==0||
                        waterStats.vertexUploadBytes()!=0||
-                       oceanBenchmarkFrameMs.size()<100)
+                       oceanBenchmarkFrameMs.size()<100||
+                       oceanBaselineFrameMs.size()<100)
                         throw new IllegalStateException(
-                            "Invalid coastal ocean benchmark: "+waterStats+
-                            " samples="+oceanBenchmarkFrameMs.size());
-                    var ordered=new java.util.ArrayList<>(oceanBenchmarkFrameMs);
-                    java.util.Collections.sort(ordered);
-                    double mean=ordered.stream().mapToDouble(Double::doubleValue)
+                            "Invalid paired coastal ocean benchmark: "+waterStats+
+                            " samples="+oceanBenchmarkFrameMs.size()+
+                            " baseline="+oceanBaselineFrameMs.size());
+                    var withWater=new java.util.ArrayList<>(oceanBenchmarkFrameMs);
+                    var withoutWater=new java.util.ArrayList<>(oceanBaselineFrameMs);
+                    java.util.Collections.sort(withWater);
+                    java.util.Collections.sort(withoutWater);
+                    double seaAverage=withWater.stream().mapToDouble(Double::doubleValue)
                         .average().orElseThrow();
-                    double p95=ordered.get(Math.min(ordered.size()-1,
-                        (int)Math.ceil(ordered.size()*.95)-1));
-                    double median=ordered.get(ordered.size()/2);
+                    double baseAverage=withoutWater.stream().mapToDouble(Double::doubleValue)
+                        .average().orElseThrow();
+                    double seaP95=withWater.get((int)Math.ceil(withWater.size()*.95)-1);
+                    double baseP95=withoutWater.get((int)Math.ceil(withoutWater.size()*.95)-1);
                     System.out.printf(java.util.Locale.ROOT,
-                        "PASS GPU_OCEAN_BENCHMARK samples=%d avgMs=%.3f medianMs=%.3f p95Ms=%.3f fps=%.2f oceanChunks=%d triangles=%d calls=%d uploadedFrameBytes=%d staticBytes=%d%n",
-                        ordered.size(),mean,median,p95,1000.0/mean,
+                        "PASS GPU_OCEAN_BENCHMARK samples=%d baselineAvgMs=%.3f oceanAvgMs=%.3f oceanDeltaMs=%.3f baselineP95Ms=%.3f oceanP95Ms=%.3f baselineFPS=%.2f oceanFPS=%.2f oceanChunks=%d triangles=%d calls=%d uploadedFrameBytes=%d staticBytes=%d%n",
+                        withWater.size(),baseAverage,seaAverage,seaAverage-baseAverage,
+                        baseP95,seaP95,1000.0/baseAverage,1000.0/seaAverage,
                         waterStats.visibleChunks(),waterStats.drawnTriangles(),
                         waterStats.drawCalls(),waterStats.vertexUploadBytes(),
                         waterStats.allocatedStaticBytes());

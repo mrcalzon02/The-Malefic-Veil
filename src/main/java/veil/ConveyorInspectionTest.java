@@ -159,31 +159,45 @@ public final class ConveyorInspectionTest {
         // Real TCP check: the client must receive the nine typed fields,
         // while a neighboring unauthenticated guest cannot probe owner stock.
         try(LanServer server=new LanServer(0,seed);
-            NetLink client=new NetLink("127.0.0.1",server.port());
-            NetLink stranger=new NetLink("127.0.0.1",server.port())){
-            check(server.match.assignAccount(client.id,owner),
-                "TCP operator account assignment failed");
+            NetLink client=new NetLink("127.0.0.1",server.port())){
+            // A real NetLink immediately sends AUTH. Do NOT race it with a
+            // manual account assignment: the host must decide who owns this
+            // session, and its AUTH_OK is the authoritative identity receipt.
+            long deadline=System.nanoTime()+5_000_000_000L;
+            while(client.accountKey()==null&&System.nanoTime()<deadline)
+                Thread.sleep(20);
+            String authenticated=client.accountKey();
+            check(authenticated!=null&&authenticated.startsWith("acct_")&&
+                authenticated.equals(server.match.player(client.id).accountKey),
+                "Real TCP handshake did not bind a persistent owner");
             synchronized(server.match){
                 var local=server.match.player(client.id);
                 local.x=x;local.y=y;
-                add(server.match,ArenaSystems.CONVEYOR_LINE,x,y,owner);
+                add(server.match,ArenaSystems.CONVEYOR_LINE,x,y,authenticated);
             }
             client.inspectConveyor();
-            long deadline=System.nanoTime()+5_000_000_000L;
+            deadline=System.nanoTime()+5_000_000_000L;
             while(client.conveyorInspection==null&&System.nanoTime()<deadline)
                 Thread.sleep(20);
             check(client.conveyorInspection!=null&&
                 client.conveyorInspection.state().equals("DISABLED"),
-                "LAN failed to parse the actual host-owned inspection reply");
-            var guest=server.match.player(stranger.id);
-            guest.x=x;guest.y=y;
-            stranger.inspectConveyor();
-            deadline=System.nanoTime()+5_000_000_000L;
-            while(stranger.conveyorInspection==null&&System.nanoTime()<deadline)
-                Thread.sleep(20);
-            check(stranger.conveyorInspection!=null&&
-                stranger.conveyorInspection.state().equals("NO_OWN_CONVEYOR"),
-                "Real TCP inspection leaked other account's conveyor existence");
+                "Authenticated LAN failed to parse its own conveyor inspection: "+
+                    client.conveyorInspection);
+            // Same-machine second connection must be a non-owner duplicate
+            // guest; it can receive NO_OWN_CONVEYOR, never owner stock.
+            try(NetLink stranger=new NetLink("127.0.0.1",server.port())){
+                synchronized(server.match){
+                    var guest=server.match.player(stranger.id);
+                    guest.x=x;guest.y=y;
+                }
+                stranger.inspectConveyor();
+                deadline=System.nanoTime()+5_000_000_000L;
+                while(stranger.conveyorInspection==null&&System.nanoTime()<deadline)
+                    Thread.sleep(20);
+                check(stranger.conveyorInspection!=null&&
+                    stranger.conveyorInspection.state().equals("NO_OWN_CONVEYOR"),
+                    "Real TCP inspection leaked other account's conveyor existence");
+            }
         }
         System.out.println("PASS ConveyorInspectionTest: private physical and TCP status, power, storage, AUTO deficits and V11 restart");
     }

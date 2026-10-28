@@ -43,6 +43,8 @@ public final class GpuOverlayMenu {
     private Screen screen=Screen.GAME;
     private int selected,pageOffset;
     private boolean conveyorReverse,repeatOrders;
+    /** One / ten / full stack; host still validates actual item and crate capacity. */
+    private int stockTransferSize=1;
     private String notice="",crewAction="",crewText="";
     public GpuOverlayMenu(PsxHorrorMenu skin,MaleficVeil game,
             GpuClientSettings settings,GpuAudioBus audio,
@@ -416,6 +418,12 @@ public final class GpuOverlayMenu {
                 add("BACK TO WORK ORDERS",()->show(Screen.WORK_ORDERS));
             }
             case STORAGE->{
+                add("TRANSFER SIZE: "+(stockTransferSize==128?"MAX 128":Integer.toString(stockTransferSize)),
+                    ()->{
+                        stockTransferSize=stockTransferSize==1?10:
+                            stockTransferSize==10?128:1;
+                        build();
+                    });
                 var carried=new java.util.TreeMap<>(gameplay.gpuCarriedItems());
                 var stored=new java.util.TreeMap<>(gameplay.gpuCampStock());
                 java.util.List<String[]> options=new java.util.ArrayList<>();
@@ -425,9 +433,13 @@ public final class GpuOverlayMenu {
                 for(int i=pageOffset;i<end;i++){
                     var option=options.get(i);
                     boolean take=option[0].equals("TAKE");
-                    add("    "+option[0]+" "+option[1]+" x"+option[2],()->{
-                        gameplay.gpuTransferCampStock(take,option[1],1);
-                        toast("HOST "+option[0]+" REQUEST");
+                    int available=Integer.parseInt(option[2]);
+                    int amount=Math.min(available,stockTransferSize);
+                    add("    "+option[0]+" "+option[1]+" x"+amount+"/"+available,()->{
+                        // Physical item movement remains one atomic host
+                        // transaction; never synthesize stock in the menu.
+                        gameplay.gpuTransferCampStock(take,option[1],amount);
+                        toast("HOST "+option[0]+" x"+amount+" REQUEST");
                     });
                 }
                 if(pageOffset>0)add("PREVIOUS MATERIALS",()->{

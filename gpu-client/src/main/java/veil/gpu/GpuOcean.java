@@ -135,7 +135,8 @@ public final class GpuOcean implements AutoCloseable {
         }
         """;
     private static final int STEP=2, STRIDE=5;
-    private record Chunk(Mesh mesh,int vertexCount,double midX,double midZ,double width){}
+    private record Chunk(Mesh mesh,int indexCount,double midX,double midZ,double width){}
+    private record VertexKey(float x,float z,float depth){}
     /** CPU submission time is NOT GPU wall time; record geometry and upload
      * counts separately from the whole-frame diagnostics in the viewport. */
     public record Stats(int visibleChunks,int drawnTriangles,int drawCalls,
@@ -164,17 +165,25 @@ public final class GpuOcean implements AutoCloseable {
         result.setWrap(Texture.TextureWrap.Repeat,Texture.TextureWrap.Repeat);
         return result;
     }
-    private static void vertex(com.badlogic.gdx.utils.FloatArray out,double x,double z,
-                               VeilOcean water,VeilOcean.SeaParcel parcel){
+    private static short vertex(com.badlogic.gdx.utils.FloatArray out,
+                                Map<VertexKey,Short> positions,
+                                double x,double z,
+                                VeilOcean water,VeilOcean.SeaParcel parcel){
         double sx=Math.max(parcel.west()+.001,
             Math.min(parcel.west()+parcel.size()-.001,x));
         double sz=Math.max(parcel.north()+.001,
             Math.min(parcel.north()+parcel.size()-.001,z));
-        out.add((float)x);
-        out.add(0f);
-        out.add((float)z);
-        out.add((float)Math.max(0.0,VeilOcean.SEA_LEVEL-water.bottom(sx,sz)));
-        out.add(0f);
+        float depth=(float)Math.max(0.0,VeilOcean.SEA_LEVEL-water.bottom(sx,sz));
+        VertexKey key=new VertexKey((float)x,(float)z,depth);
+        Short existing=positions.get(key);
+        if(existing!=null)return existing;
+        int at=out.size/STRIDE;
+        if(at>=65535)throw new IllegalStateException("Water chunk exceeds 16-bit indices");
+        short index=(short)at;
+        positions.put(key,index);
+        out.add((float)x);out.add(0f);out.add((float)z);
+        out.add(depth);out.add(0f);
+        return index;
     }
     public GpuOcean(VeilOcean water,ContinentVista vista){
         this.water=Objects.requireNonNull(water);
@@ -187,6 +196,8 @@ public final class GpuOcean implements AutoCloseable {
         int acceptedParcels=0;
         for(ContinentVista.Patch patch:vista.patches()){
             var vertices=new com.badlogic.gdx.utils.FloatArray();
+            var indices=new ArrayList<Short>();
+            var positions=new HashMap<VertexKey,Short>();
             for(VeilOcean.SeaParcel parcel:water.sourceSeaParcels(
                     patch.left(),patch.top(),
                     patch.left()+patch.width(),patch.top()+patch.depth())){
@@ -207,22 +218,28 @@ public final class GpuOcean implements AutoCloseable {
                         long cell=(((long)Math.round(x))<<32)^
                             (Math.round(z)&0xffffffffL);
                         if(!seen.add(cell))continue;
-                        vertex(vertices,x,z,water,parcel);
-                        vertex(vertices,x2,z,water,parcel);
-                        vertex(vertices,x2,z2,water,parcel);
-                        vertex(vertices,x,z,water,parcel);
-                        vertex(vertices,x2,z2,water,parcel);
-                        vertex(vertices,x,z2,water,parcel);
+                        short a=vertex(vertices,positions,x,z,water,parcel);
+                        short b=vertex(vertices,positions,x2,z,water,parcel);
+                        short c=vertex(vertices,positions,x2,z2,water,parcel);
+                        short d=vertex(vertices,positions,x,z2,water,parcel);
+                        // Same two geometric triangles as the original
+                        // nonindexed render; water depth is part of the key
+                        // so discontinuous shore shallows cannot merge.
+                        Collections.addAll(indices,a,b,c,a,c,d);
                     }
             }
             if(vertices.size==0)continue;
             float[] packed=Arrays.copyOf(vertices.items,vertices.size);
             int count=packed.length/STRIDE;
+            short[] elements=new short[indices.size()];
+            for(int i=0;i<elements.length;i++)elements[i]=indices.get(i);
             Mesh mesh=new Mesh(Mesh.VertexDataType.VertexBufferObjectWithVAO,true,
-                count,0,VertexAttribute.Position(),VertexAttribute.TexCoords(0));
-            mesh.setVertices(packed); // Exactly once at world load.
-            staticBytes+=(long)packed.length*Float.BYTES;
-            chunks.add(new Chunk(mesh,count,
+                count,elements.length,VertexAttribute.Position(),VertexAttribute.TexCoords(0));
+            mesh.setVertices(packed);
+            mesh.setIndices(elements); // Static VBO + index buffer, once at world load.
+            staticBytes+=(long)packed.length*Float.BYTES+
+                (long)elements.length*Short.BYTES;
+            chunks.add(new Chunk(mesh,elements.length,
                 patch.left()+patch.width()*.5,patch.top()+patch.depth()*.5,
                 Math.max(patch.width(),patch.depth())));
         }
@@ -303,8 +320,8 @@ public final class GpuOcean implements AutoCloseable {
         int drawn=0,triangles=0;
         try{
             for(Chunk chunk:visibleWater){
-                chunk.mesh.render(shader,GL20.GL_TRIANGLES,0,chunk.vertexCount);
-                drawn++;triangles+=chunk.vertexCount/3;
+                chunk.mesh.render(shader,GL20.GL_TRIANGLES,0,chunk.indexCount);
+                drawn++;triangles+=chunk.indexCount/3;
             }
         }finally{
             Gdx.gl.glDepthMask(true);

@@ -23,12 +23,13 @@ public final class KenneyCityAssemblyTest {
                 "Unverified source geometry: "+p.model());
             if(p.radius()>0)colliders++;
             if(p.model().startsWith("road-asphalt-")&&p.scale()==1.0)roads++;
-            if(p.model().startsWith("wall-")&&p.scale()==1.0){
-                if(p.heightOffset()==1.0)upper++;
+            if(p.model().startsWith("wall-")&&p.scale()==3.0){
+                if(p.heightOffset()==3.0)upper++;
                 if(p.heightOffset()==0.0)walls++;
                 if(p.model().endsWith("-open"))doors++;
             }
-            if((p.model().startsWith("roof-")||p.model().contains("-roof"))&&p.heightOffset()>1.5)roofs++;
+            if((p.model().startsWith("roof-")||p.model().contains("-roof"))&&
+               p.scale()==CityLayout.CELL&&p.heightOffset()>=6.0)roofs++;
             if(p.scale()==1.0 && p.heightOffset()==0 &&
                 (p.model().equals("grass")||p.model().startsWith("road-"))){
                 int gx=(int)(p.x()/CityLayout.CELL),gy=(int)(p.y()/CityLayout.CELL);
@@ -41,9 +42,13 @@ public final class KenneyCityAssemblyTest {
                     check(macroGround.getOrDefault(key(x,y),0)==CityLayout.CELL*CityLayout.CELL,
                         "Plot must contain exactly one source ground tile per world cell at "+x+","+y);
         check(roads>200,"Road network does not use real one-unit modular road pieces");
-        check(walls>200&&upper>200,"Building shell not assembled from wall tiles");
-        check(roofs>80,"Building roofs not represented by modular roofs");
+        check(walls>65&&upper>65,"Adult-height building façades and upper storeys missing");
+        check(roofs>20,"Six-metre macro roofs not represented by source meshes");
         check(doors>5,"Entrances not represented by open wall modules");
+        check(upper==walls,"Every lower façade must have a 3m-elevated upper storey");
+        for(World.UrbanProp prop:city.urbanProps)
+            if(prop.model().equals("detail-dumpster-closed"))
+                check(prop.scale()>=2.4,"Dumpsters remain miniature");
         check(colliders>=4,"Kenney scene lost source-backed collision obstacles");
         check(colliders<=worldSizeBound(city),"Unbounded collision-object density");
         check(scene.models().size()>25,"Too few distinct source construction modules");

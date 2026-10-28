@@ -44,7 +44,7 @@ jobs:
         run: |
           set -e
           python3 tools/validate_economy_csv.py
-          for test in ArsenalDeathInventoryTest SurvivalConsumptionTest WorldSelfTest CityLayoutTest ArenaSystemsTest SurvivalCraftingTest SurvivalNeedsIntegrationTest SurvivalPersistenceTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CampCargoUnloadTest CampStockpileIntegrationTest HostCheckpointTest FactionWorksiteConstructionTest FactionFirstProductionTest SecondEraFactionProductionTest PhysicalFacilityDependencyTest SteamEraProductionTest ElectricEraProductionTest ConveyorLogisticsTest AutomaticSorterIntegrationTest AutomationEraFactionTest AutomationQueueTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest DesktopDiagnosticsTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
+          for test in ArsenalDeathInventoryTest SurvivalConsumptionTest WorldSelfTest CityLayoutTest ArenaSystemsTest PickupInteractionRangeTest InteractionFocusTest KenneyCityAssemblyTest SurvivalCraftingTest SurvivalNeedsIntegrationTest SurvivalPersistenceTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CampCargoUnloadTest CampStockpileIntegrationTest HostCheckpointTest FactionWorksiteConstructionTest FactionFirstProductionTest SecondEraFactionProductionTest PhysicalFacilityDependencyTest SteamEraProductionTest ElectricEraProductionTest ConveyorLogisticsTest AutomaticSorterIntegrationTest AutomationEraFactionTest AutomationQueueTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest DesktopDiagnosticsTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
             java -Djava.awt.headless=true -cp build/classes "veil.$test"
           done
       - name: Resolve pinned standalone editor module
@@ -104,6 +104,7 @@ jobs:
             timeout 140s java -jar build/package/MaleficVeil.jar --frontend-smoke |
               tee build/test-visuals/release-frontend.log
           grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/release-frontend.log
+          grep -q 'VEIL_ORIGINAL_UI_ART_READY' build/test-visuals/release-frontend.log
           grep -q 'PASS GPU_FRAME_PRESENTATION_ORIENTATION' build/test-visuals/release-frontend.log
           test -s build/test-visuals/gpu-unified-front-end.png
           for label in home video audio controls create-world join; do

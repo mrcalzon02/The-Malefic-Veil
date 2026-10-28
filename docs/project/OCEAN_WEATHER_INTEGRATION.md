@@ -61,8 +61,12 @@ nonempty source-ocean mesh, nonzero drawn triangles, and zero frame-by-frame
 water vertex upload bytes. The diagnostic holds the identical actual camera
 for two 180-frame phases: the city/terrain with ocean draws disabled, then the
 same scene with GPU ocean enabled, excluding 30 warmup frames in EACH phase.
-It reports average and 95th-percentile frame cadence, paired FPS estimates,
-ocean draw calls and static GPU buffer bytes. `OCEAN_GPU_PERF` additionally
+It runs uncapped without v-sync (production stays capped at 60 FPS),
+reports average and 95th-percentile frame cadence, paired FPS estimates,
+ocean draw calls and static GPU buffer bytes, and uses a camera centered
+above a genuine water parcel to test visible ocean shading. It also records
+matched no-water and ocean screenshots and checks that a substantial number
+of sampled real framebuffer pixels change when the ocean is enabled. `OCEAN_GPU_PERF` additionally
 logs CPU OpenGL submission milliseconds (which are NOT GPU execution time).
 The report and `gpu-ocean-coastal-benchmark.png` screenshot are uploaded
 as artifacts and the pass metric is included in the workflow summary.

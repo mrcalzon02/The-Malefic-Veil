@@ -66,11 +66,12 @@ final class ConstructionFunding {
         int committed=0;
         try{
             for(int i=0;i<crates.size();i++){
-                if(!debits.get(i).isEmpty()){
-                    if(!crates.get(i).consume(debits.get(i)))
-                        throw new IllegalStateException("Construction stock changed during debit");
-                }
+                // Include the current crate in rollback even if a debit
+                // unexpectedly throws after starting its mutation.
                 committed=i+1;
+                if(!debits.get(i).isEmpty()&&
+                   !crates.get(i).consume(debits.get(i)))
+                    throw new IllegalStateException("Construction stock changed during debit");
             }
             return true;
         }catch(RuntimeException failure){

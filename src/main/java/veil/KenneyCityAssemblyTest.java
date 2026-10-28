@@ -24,9 +24,9 @@ public final class KenneyCityAssemblyTest {
             if(p.radius()>0)colliders++;
             if(p.model().startsWith("road-asphalt-")&&p.scale()==1.0)roads++;
             if(p.model().startsWith("wall-")&&p.scale()==3.0){
-                if(p.heightOffset()==3.0)upper++;
-                if(p.heightOffset()==0.0)walls++;
                 if(p.model().endsWith("-open"))doors++;
+                else if(p.heightOffset()==3.0)upper++;
+                else if(p.heightOffset()==0.0)walls++;
             }
             if((p.model().startsWith("roof-")||p.model().contains("-roof"))&&
                p.scale()==CityLayout.CELL&&p.heightOffset()>=6.0)roofs++;

@@ -129,6 +129,31 @@ public final class PsxHorrorMenu implements AutoCloseable {
         patch("slot",6,6,6,6);
         patch("slot_selected",6,6,6,6);
         patch("slot_equipped",6,6,6,6);
+        // Approved original Malefic Veil art: small indexed PNG atlases.
+        // Use nine-slicing so labels are always live text, never baked pixels.
+        // Keep the licensed PSX windows, progress, tooltip and bitmap font.
+        Texture originalButtons=new Texture(Gdx.files.classpath(
+            "veil-original-art/pack01/button-states-preview.png"));
+        Texture originalMenuIcons=new Texture(Gdx.files.classpath(
+            "veil-original-art/pack01/menu-icons-preview.png"));
+        Texture originalFolders=new Texture(Gdx.files.classpath(
+            "veil-original-art/pack01/folder-icons-preview.png"));
+        if(originalButtons.getWidth()!=240||originalButtons.getHeight()!=24||
+           originalMenuIcons.getWidth()!=256||originalMenuIcons.getHeight()!=32||
+           originalFolders.getWidth()!=256||originalFolders.getHeight()!=32)
+            throw new IllegalStateException("Original Veil UI atlas dimensions changed");
+        for(Texture atlas:new Texture[]{originalButtons,originalMenuIcons,originalFolders})
+            atlas.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
+        textures.put("veil_buttons",originalButtons);
+        textures.put("veil_menu_icons",originalMenuIcons);
+        textures.put("veil_folders",originalFolders);
+        patches.put("veil_button_normal",new NinePatch(
+            new TextureRegion(originalButtons,0,0,80,24),8,8,7,7));
+        patches.put("veil_button_hover",new NinePatch(
+            new TextureRegion(originalButtons,80,0,80,24),8,8,7,7));
+        patches.put("veil_button_pressed",new NinePatch(
+            new TextureRegion(originalButtons,160,0,80,24),8,8,7,7));
+        System.out.println("VEIL_ORIGINAL_UI_ART_READY buttons=3 menuIcons=8 folders=8");
         System.out.println("PSX_HORROR_UI_READY source=heyheythere sha256="+
             PsxHorrorUiSource.SHA256+" sprites="+textures.size()+
             " font=original fog-theme=yes");
@@ -182,9 +207,22 @@ public final class PsxHorrorMenu implements AutoCloseable {
     /** Standardized in-game menu row; original licensed normal/hover skin. */
     public void choice(SpriteBatch batch,String text,float x,float y,float width,
                        float height,boolean highlighted){
-        source(patches.get(highlighted?"button_hover":"button_normal"),
+        source(patches.get(highlighted?"veil_button_hover":"veil_button_normal"),
             batch,x,y,width,height);
         packFont.draw(batch,text,x+10,y+height-5);
+    }
+    /** Tile atlas graphics only. Real in-engine controls still own hitboxes. */
+    public void originalMenuIcon(SpriteBatch batch,int index,float x,float y,float size){
+        if(index<0||index>=8)throw new IllegalArgumentException("Menu icon");
+        batch.draw(new TextureRegion(textures.get("veil_menu_icons"),
+            index*32,0,32,32),x,y,size,size);
+        sourcedDraws++;
+    }
+    public void originalFolderIcon(SpriteBatch batch,int index,float x,float y,float size){
+        if(index<0||index>=8)throw new IllegalArgumentException("Folder icon");
+        batch.draw(new TextureRegion(textures.get("veil_folders"),
+            index*32,0,32,32),x,y,size,size);
+        sourcedDraws++;
     }
     public Screen screen(){return screen;}
     public void showMain(){screen=Screen.MAIN;selection=0;}
@@ -248,7 +286,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
     private void button(SpriteBatch batch,BitmapFont font,int index,String label){
         int y=OFFSET_Y+128-index*23;
         band(batch,OFFSET_X+54,y,212,20);
-        source(patches.get(index==selection?"button_hover":"button_normal"),
+        source(patches.get(index==selection?"veil_button_hover":"veil_button_normal"),
             batch,OFFSET_X+58,y+1,204,18);
         drawText(font,batch,(index==selection?"> ":"  ")+label,OFFSET_X+68,y+13);
     }

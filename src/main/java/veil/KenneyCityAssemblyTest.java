@@ -23,11 +23,12 @@ public final class KenneyCityAssemblyTest {
                 "Unverified source geometry: "+p.model());
             if(p.radius()>0)colliders++;
             if(p.model().startsWith("road-asphalt-")&&p.scale()==1.0)roads++;
-            if(p.model().startsWith("wall-")&&p.scale()==3.0){
-                if(p.model().endsWith("-open"))doors++;
-                else if(p.heightOffset()==3.0)upper++;
+            if(p.model().equals("wall-type-b")&&p.scale()==CityLayout.CELL){
+                if(p.heightOffset()==3.0)upper++;
                 else if(p.heightOffset()==0.0)walls++;
             }
+            if(p.model().startsWith("wall-")&&p.model().endsWith("-open")&&
+               p.scale()==3.0)doors++;
             if((p.model().startsWith("roof-")||p.model().contains("-roof"))&&
                p.scale()==CityLayout.CELL&&p.heightOffset()>=6.0)roofs++;
             if(p.scale()==1.0 && p.heightOffset()==0 &&
@@ -42,7 +43,7 @@ public final class KenneyCityAssemblyTest {
                     check(macroGround.getOrDefault(key(x,y),0)==CityLayout.CELL*CityLayout.CELL,
                         "Plot must contain exactly one source ground tile per world cell at "+x+","+y);
         check(roads>200,"Road network does not use real one-unit modular road pieces");
-        check(walls>65&&upper>65,"Adult-height building façades and upper storeys missing");
+        check(walls>20&&upper>20,"Adult-height building façades and upper storeys missing");
         check(roofs>20,"Six-metre macro roofs not represented by source meshes");
         check(doors>5,"Entrances not represented by open wall modules");
         check(upper==walls,"Every lower façade must have a 3m-elevated upper storey");

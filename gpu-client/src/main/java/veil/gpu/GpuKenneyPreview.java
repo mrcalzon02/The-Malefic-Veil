@@ -142,6 +142,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private BitmapFont font;
     private GpuSkybox skybox;
     private GpuContinentTerrain terrain;
+    private GpuOcean ocean;
+    private Texture weatherPixel;
+    private double oceanSeconds;
     private Texture cityMapTexture,continentMapTexture;
     private UrbanLighting lighting;
     private PsxHorrorMenu menu;
@@ -356,6 +359,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
         }
         terrain=new GpuContinentTerrain(continental);
+        ocean=new GpuOcean(new veil.VeilOcean(world,continental),continental);
         lighting=new UrbanLighting(world);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
@@ -373,6 +377,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         camera.near=0.08f;camera.far=300f;
         framebuffer=new FrameBuffer(Pixmap.Format.RGBA8888,WIDTH,HEIGHT,true);
         sprites=new SpriteBatch();
+        Pixmap weatherDot=new Pixmap(1,1,Pixmap.Format.RGBA8888);
+        weatherDot.setColor(1,1,1,1);weatherDot.fill();
+        weatherPixel=new Texture(weatherDot);weatherDot.dispose();
         font=new BitmapFont();
         font.getData().setScale(1.16f);
         skybox=new GpuSkybox();
@@ -844,6 +851,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 drawCalls++;
             }
         }
+        String weatherPreset=gameplay!=null&&gameplay.gpuFrame()!=null?
+            gameplay.gpuFrame().weatherPreset():"CLEAR";
+        oceanSeconds+=Math.max(0,Math.min(.05,Gdx.graphics.getDeltaTime()));
+        ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10);
         if(gameplay!=null){
             MaleficVeil.GpuFrame live=gameplay.gpuFrame();
             if(live!=null)renderLiveWeapon(live);
@@ -851,6 +862,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
         sprites.begin();
+        if(gameplay!=null&&gameplay.gpuFrame()!=null)
+            renderGpuWeather(sprites,gameplay.gpuFrame());
         if(menuBackdrop){
             // Foreground launcher paints its own source widgets; this viewport
             // is purely the live seeded world, never a fake static wallpaper.
@@ -1093,6 +1106,34 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         sprites.end();
     }
 
+    /** Post-opaque GPU weather uses the host-synchronized weather state,
+     * not a second random climate system. UI/menu panels draw over it. */
+    private void renderGpuWeather(SpriteBatch sprites,MaleficVeil.GpuFrame frame){
+        if(weatherPixel==null)return;
+        float rain=(float)Math.max(0,Math.min(1,frame.rain()));
+        float snow=(float)Math.max(0,Math.min(1,frame.snow()));
+        int rainCount=(int)(rain*170),snowCount=(int)(snow*115);
+        for(int i=0;i<rainCount;i++){
+            int h=i*198491317+(frames/2)*1103515245;
+            float px=(h&0x7fffffff)%WIDTH;
+            float py=((h>>>7)&0x7fffffff)%HEIGHT;
+            sprites.setColor(.71f,.80f,.88f,.17f+rain*.42f);
+            sprites.draw(weatherPixel,px,py,1f,6f+rain*7f);
+        }
+        for(int i=0;i<snowCount;i++){
+            int h=i*160481183+(frames/5)*734287;
+            float px=(h&0x7fffffff)%WIDTH;
+            float py=((h>>>6)&0x7fffffff)%HEIGHT;
+            sprites.setColor(.86f,.91f,.96f,.35f+snow*.35f);
+            sprites.draw(weatherPixel,px,py,2f,2f);
+        }
+        float flash=(float)Math.max(0,Math.min(.58,frame.flash()*.58));
+        if(flash>0){
+            sprites.setColor(.90f,.94f,1f,flash);
+            sprites.draw(weatherPixel,0,0,WIDTH,HEIGHT);
+        }
+        sprites.setColor(1,1,1,1);
+    }
     @Override public void dispose() {
         if(gameplayMenu!=null)gameplayMenu.dispose();
         for(List<GpuModel> groups:models.values())for(GpuModel model:groups)model.mesh.dispose();
@@ -1107,6 +1148,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(skybox!=null)skybox.close();
         if(Gdx.input!=null)Gdx.input.setCursorCatched(false);
         if(terrain!=null)terrain.close();
+        if(ocean!=null)ocean.close();
+        if(weatherPixel!=null)weatherPixel.dispose();
         if(editorDock!=null)editorDock.close();
         if(cityMapTexture!=null)cityMapTexture.dispose();
         if(continentMapTexture!=null)continentMapTexture.dispose();

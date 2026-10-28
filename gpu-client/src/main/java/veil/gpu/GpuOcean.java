@@ -151,6 +151,7 @@ public final class GpuOcean implements AutoCloseable {
     private final List<Chunk> visibleWater=new ArrayList<>();
     private final com.badlogic.gdx.math.Vector3 boundsCenter=new com.badlogic.gdx.math.Vector3();
     private long staticBytes;
+    private long unindexedReferenceBytes;
     private Stats last=new Stats(0,0,0,0,0,0);
 
     private static Texture upload(WaterModule.Texture source){
@@ -239,13 +240,17 @@ public final class GpuOcean implements AutoCloseable {
             mesh.setIndices(elements); // Static VBO + index buffer, once at world load.
             staticBytes+=(long)packed.length*Float.BYTES+
                 (long)elements.length*Short.BYTES;
+            unindexedReferenceBytes+=(long)elements.length*STRIDE*Float.BYTES;
             chunks.add(new Chunk(mesh,elements.length,
                 patch.left()+patch.width()*.5,patch.top()+patch.depth()*.5,
                 Math.max(patch.width(),patch.depth())));
         }
+        if(!chunks.isEmpty()&&staticBytes>=unindexedReferenceBytes)
+            throw new IllegalStateException("Indexed ocean mesh exceeds unindexed memory");
         last=new Stats(0,0,0,0,0,staticBytes);
         System.out.println("OCEAN_WATER_SDK_READY chunks="+chunks.size()+
             " sourceParcels="+acceptedParcels+" staticBytes="+staticBytes+
+            " rawTriangleBytes="+unindexedReferenceBytes+
             " source=seeded-coastline waves=vertex-shader color=dual-texture-gpu");
     }
     private static void tint(ShaderProgram shader,String name,int color){
@@ -332,6 +337,7 @@ public final class GpuOcean implements AutoCloseable {
         return drawn;
     }
     public Stats stats(){return last;}
+    public long rawTriangleBytes(){return unindexedReferenceBytes;}
     public int visibleChunks(){return last.visibleChunks();}
     public int visibleTriangles(){return last.drawnTriangles();}
     @Override public void close(){

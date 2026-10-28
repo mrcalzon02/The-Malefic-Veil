@@ -10,6 +10,9 @@ import java.util.List;
  * independently verified on the host when E is pressed.
  */
 public final class InteractionFocus {
+    /** World-metre reach shared by visible prompt, local interaction and host validation. */
+    public static final double PICKUP_REACH=1.8;
+    public static final double PICKUP_RADIUS=.55;
     public enum Kind { PICKUP, VEHICLE, CARGO_YARD, CARGO_DROP, RESOURCE }
     public record Candidate(Kind kind,int id,String name,double x,double y,
                             double radius,double maxReach) {}

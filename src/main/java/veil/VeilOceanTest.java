@@ -44,6 +44,17 @@ public final class VeilOceanTest {
         int color=ocean.color(seaX,seaZ,2,"RAIN");
         check((color>>>24)>0&&(color&0xffffff)!=0,
             "Independent scrolling water texture produces no visible surface color");
+        // Exercise the actual independent optical compositor, not just a
+        // Beckenburg class copied into the new source tree.
+        int[] pixels=new int[32*24];
+        double[] depth=new double[pixels.length];
+        Arrays.fill(pixels,0x213046);Arrays.fill(depth,100);
+        var view=new dev.mrcalzon.water.WaterModule.Camera(
+            seaX,2.2,seaZ,0,-.78,24,32,24);
+        var rendered=ocean.module().composite(view,pixels,depth,2.25);
+        check(rendered.pixels()>0&&
+            Arrays.stream(pixels).anyMatch(c->c!=0x213046),
+            "Original water module failed to composite real ocean pixels");
         check(!ocean.wet(vista.cityPlates().worldX(-1),vista.cityPlates().worldZ(-1)),
             "Sea renderer silently creates bodies beyond the bounded continent");
         System.out.println("PASS VeilOceanTest: "+found+" sea and "+dry+

@@ -78,7 +78,20 @@ public final class ConveyorInspectionTest {
         check(belt.routeMs==0&&generator.electricMs==1&&
             source.storage.count(SurvivalCrafting.Item.MACHINE_PARTS)==3,
             "Almost-empty source powered a supposedly-ready conveyor");
+        generator.electricMs=99;
+        host.advance(100);
+        expect(host,1,"WAIT_POWER");
+        check(belt.routeMs==0&&generator.electricMs==99,
+            "An underfunded 100ms host tick advanced a real conveyor");
+        generator.electricMs=100;
+        host.advance(100);
+        check(belt.routeMs==100&&generator.electricMs==0&&
+            source.storage.count(SurvivalCrafting.Item.MACHINE_PARTS)==3,
+            "Exactly 100ms of electric credit did not fund one physical belt tick");
+        expect(host,1,"WAIT_POWER");
         generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
+        check(host.programConveyor(1,"MACHINE_PARTS"),
+            "Could not reset belt after deterministic 100ms power boundary");
         var ready=expect(host,1,"READY");
         check(ready.source()==3&&ready.space()==128&&
             ready.detail().equals("MACHINE_PARTS"),

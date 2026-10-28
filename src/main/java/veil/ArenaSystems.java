@@ -355,7 +355,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead||itemIndex<0||itemIndex>=world.pickups.size())return false;
         World.Pickup item=world.pickups.get(itemIndex);
-        if(item.taken||Math.hypot(item.x-p.x,item.y-p.y)>.63)return false;
+        if(item.taken||Math.hypot(item.x-p.x,item.y-p.y)>InteractionFocus.PICKUP_REACH)return false;
         item.taken=true;
         breakGrace(p);
         p.progression.reward(CharacterProgression.Skill.SCAVENGING,8,clock,3000);
@@ -378,9 +378,10 @@ public final class ArenaSystems {
         List<InteractionFocus.Candidate> candidates=new ArrayList<>();
         for(int i=0;i<world.pickups.size();i++){
             World.Pickup item=world.pickups.get(i);
-            if(!item.taken&&Math.hypot(item.x-p.x,item.y-p.y)<1.2)
+            if(!item.taken&&Math.hypot(item.x-p.x,item.y-p.y)<=InteractionFocus.PICKUP_REACH)
                 candidates.add(new InteractionFocus.Candidate(InteractionFocus.Kind.PICKUP,
-                    i,InteractionFocus.pickupName(item.kind),item.x,item.y,.30,.75));
+                    i,InteractionFocus.pickupName(item.kind),item.x,item.y,
+                    InteractionFocus.PICKUP_RADIUS,InteractionFocus.PICKUP_REACH));
         }
         InteractionFocus.Target target=InteractionFocus.pick(p.x,p.y,p.angle,candidates,
             (x,y,a,b)->world.lineClear(x,y,a,b));

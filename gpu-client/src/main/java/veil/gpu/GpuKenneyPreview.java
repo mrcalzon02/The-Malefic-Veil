@@ -301,9 +301,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     float green=((rgb>>>8)&255)/255f;
                     float blue=(rgb&255)/255f;
                     float[] verts={
-                        tri.ax(),tri.ay(),tri.az(),surface.au(),surface.av(),
-                        tri.bx(),tri.by(),tri.bz(),surface.bu(),surface.bv(),
-                        tri.cx(),tri.cy(),tri.cz(),surface.cu(),surface.cv()
+                        tri.ax(),tri.ay(),tri.az(),surface.au(),
+                        GlbMesh.gpuAtlasV(group.getKey(),surface.av()),
+                        tri.bx(),tri.by(),tri.bz(),surface.bu(),
+                        GlbMesh.gpuAtlasV(group.getKey(),surface.bv()),
+                        tri.cx(),tri.cy(),tri.cz(),surface.cu(),
+                        GlbMesh.gpuAtlasV(group.getKey(),surface.cv())
                     };
                     for(int i=0;i<15;i+=5){
                         vertexData[cursor++]=verts[i];

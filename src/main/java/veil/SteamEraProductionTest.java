@@ -109,6 +109,13 @@ public final class SteamEraProductionTest {
         check(factory.productionActive&&factory.productionMs==100_000&&
             boiler.steamMs==SteamUtility.MAX_CHARGE_MS-100_000,
             "Active machine did not consume real steam at correct rate");
+        long remainingPressure=boiler.steamMs;
+        boiler.steamMs=1;
+        ticks(host,1);
+        check(factory.productionMs==100_000&&boiler.steamMs==1&&
+            factory.factoryHold.equals("WAIT_STEAM"),
+            "One millisecond of steam funded a full paid E3 manufacturing tick");
+        boiler.steamMs=remainingPressure;
 
         // A disconnected shaft must freeze processing, not run on a cached
         // boolean or refund materials. The paid steam reserve must survive.

@@ -44,6 +44,26 @@ public final class ProductionOverviewTest {
         double x=point[0],y=point[1];
         add(game,ArenaSystems.CAMP_STAKE,x-2,y-2,owner);
         var stock=add(game,ArenaSystems.STORAGE_CRATE,x+1,y+.1,owner);
+        // The GPU camp menu now exposes ten-at-once and full-stack requests.
+        // Verify those quantities remain one atomic host-owned transaction,
+        // not ten client-side mutations or an item minting shortcut.
+        int priorFiber=player.survival.count(SurvivalCrafting.Item.FIBER);
+        check(player.survival.acquire(SurvivalCrafting.Item.FIBER,10,true),
+            "Unable to stage genuine carried bulk material");
+        player.x=x;player.y=y;
+        check(game.transferCampStock(1,false,SurvivalCrafting.Item.FIBER,10)&&
+            stock.storage.count(SurvivalCrafting.Item.FIBER)==10&&
+            player.survival.count(SurvivalCrafting.Item.FIBER)==priorFiber,
+            "Ten-item host deposit failed to debit real carried inventory once");
+        check(!game.transferCampStock(1,false,SurvivalCrafting.Item.FIBER,128)&&
+            stock.storage.count(SurvivalCrafting.Item.FIBER)==10,
+            "Unaffordable full-stack deposit altered physical stock");
+        check(game.transferCampStock(1,true,SurvivalCrafting.Item.FIBER,10)&&
+            stock.storage.count(SurvivalCrafting.Item.FIBER)==0&&
+            player.survival.count(SurvivalCrafting.Item.FIBER)==priorFiber+10,
+            "Ten-item host withdrawal did not return exactly the stored inventory");
+        check(player.survival.debit(SurvivalCrafting.Item.FIBER,10),
+            "Cannot reset paid transfer fixture without a phantom item");
         var bus=add(game,ArenaSystems.ELECTRIC_BUS,x,y+3,owner);
         var generator=add(game,ArenaSystems.GENERATOR,x+.8,y+3,owner);
         generator.electricMs=ElectricUtility.MAX_CHARGE_MS;

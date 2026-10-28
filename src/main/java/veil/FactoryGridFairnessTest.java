@@ -73,6 +73,13 @@ public final class FactoryGridFairnessTest {
             ConveyorLogistics.sorted(belt,game.world.devices),
             "Did not configure physical sorted cargo belt");
         tick(game,20);
+        operator.x=belt.x;operator.y=belt.y;
+        var blocked=game.inspectConveyor(1);
+        check(blocked.state().equals("WAIT_CAPACITY")&&
+            blocked.mode().equals("MACHINE_PARTS")&&
+            blocked.source()==2&&blocked.load()==4&&
+            blocked.elapsed()==0&&blocked.space()==124,
+            "Saturated grid must expose exact belt capacity and physical stock");
         check(first.productionMs==15_000&&second.productionMs==15_000&&
             !third.productionActive&&third.productionMs==0,
             "Competing paid factories did not each receive fair 15-second service");

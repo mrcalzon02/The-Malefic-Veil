@@ -15,7 +15,7 @@ import java.util.*;
  * never client-side item minting or unilateral faction changes.
  */
 public final class GpuOverlayMenu {
-    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,FACTORY_STATUS,UTILITIES,CONVEYOR,SITES,WORK_ORDERS,QUEUE_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
+    public enum Screen { GAME,PAUSE,VIDEO,AUDIO,CONTROLS,CRAFT,INDUSTRY,FACTORY_STATUS,UTILITIES,CONVEYOR,CONVEYOR_STATUS,SITES,WORK_ORDERS,QUEUE_ORDERS,STORAGE,BOOK,CREW,FACTION,CREW_INPUT,CONFIRM_DISBAND }
     private static final int WIDTH=640,HEIGHT=400,MAX_RECIPES_PER_PAGE=4;
     private record Item(String label,Runnable action,Runnable prev,Runnable next){}
     private final PsxHorrorMenu skin;
@@ -66,6 +66,10 @@ public final class GpuOverlayMenu {
     public void openFactoryInspection(){
         gameplay.gpuRequestFactoryInspection();
         show(Screen.FACTORY_STATUS);
+    }
+    public void openConveyorInspection(){
+        gameplay.gpuRequestConveyorInspection();
+        show(Screen.CONVEYOR_STATUS);
     }
     public void openStorage(){
         pageOffset=0;
@@ -270,6 +274,7 @@ public final class GpuOverlayMenu {
                 add("INSPECT WORKSITE PROGRESS",this::openFactoryInspection);
                 add("POWER UTILITIES",()->show(Screen.UTILITIES));
                 add("CONFIGURE CONVEYOR",this::openConveyor);
+                add("INSPECT CONVEYOR LOGISTICS",this::openConveyorInspection);
                 add("BUILD SHARED / E3 FACILITIES",this::openSites);
                 add("SELECT INDUSTRIAL RECIPE",this::openWorkOrders);
                 add("DEPLOY CRAFTED CRATE",()->{
@@ -281,6 +286,11 @@ public final class GpuOverlayMenu {
             }
             case FACTORY_STATUS->{
                 add("REFRESH AUTHORIZED WORKSITE",gameplay::gpuRequestFactoryInspection);
+                add("RETURN TO INDUSTRY",()->show(Screen.INDUSTRY));
+            }
+            case CONVEYOR_STATUS->{
+                add("REFRESH OWNED CONVEYOR",gameplay::gpuRequestConveyorInspection);
+                add("PROGRAM THIS CONVEYOR",this::openConveyor);
                 add("RETURN TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case UTILITIES->{
@@ -311,9 +321,7 @@ public final class GpuOverlayMenu {
                 if(end<materials.size())add("MORE MATERIALS",()->{
                     pageOffset+=4;show(Screen.CONVEYOR);
                 });
-                add("REFRESH STOCK",()->{
-                    gameplay.gpuRequestCampStock();build();
-                });
+                add("INSPECT CONVEYOR STATUS",this::openConveyorInspection);
                 add("BACK TO INDUSTRY",()->show(Screen.INDUSTRY));
             }
             case SITES->{
@@ -524,6 +532,9 @@ public final class GpuOverlayMenu {
         }else if(screen==Screen.CONVEYOR){
             skin.font().draw(sprites,
                 "OWNED CRATES / DIRECTIONAL ROUTE / PAID POWER",147,331);
+        }else if(screen==Screen.CONVEYOR_STATUS){
+            skin.font().draw(sprites,
+                "HOST-VERIFIED NEAREST OWNED CONVEYOR",147,331);
         }else if(screen==Screen.SITES||screen==Screen.WORK_ORDERS){
             skin.font().draw(sprites,
                 "HOST CHECKS REAL COSTS / LOCATION / DEPENDENCIES",147,331);
@@ -570,6 +581,27 @@ public final class GpuOverlayMenu {
                     "DETAIL: "+report.detail().replace('_',' '),
                     "PROGRESS: "+report.elapsed()+"/"+report.duration()+" SEC   DONE: "+report.completed(),
                     "NEXT: "+report.next().replace('-',' ').toUpperCase(Locale.ROOT)
+                };
+                for(int i=0;i<lines.length;i++){
+                    String line=lines[i];
+                    if(line.length()>45)line=line.substring(0,44)+"~";
+                    skin.font().draw(sprites,line,151,222-i*22);
+                }
+            }
+        }
+        if(screen==Screen.CONVEYOR_STATUS){
+            var report=gameplay.gpuConveyorInspection();
+            skin.panel(sprites,143,95,365,147);
+            if(report==null){
+                skin.font().draw(sprites,"AWAITING HOST CONVEYOR INSPECTION",151,220);
+            }else{
+                String[] lines={
+                    "ROUTE: "+report.mode().replace('_',' '),
+                    "DIRECTION: "+report.direction().replace('_',' '),
+                    "STATE: "+report.state().replace('_',' '),
+                    "DETAIL: "+report.detail().replace('_',' '),
+                    "TRANSFER: "+report.elapsed()+"/"+report.duration()+" MS   LOAD: "+report.load(),
+                    "SOURCE: "+report.source()+"   RECEIVER FREE: "+report.space()
                 };
                 for(int i=0;i<lines.length;i++){
                     String line=lines[i];

@@ -78,6 +78,47 @@ public final class ConveyorLogistics {
         }
         return best;
     }
+
+    /** Explain why an automatic E5 feeder has no move, using ONLY nearby
+     * same-owner crates and real queued recipe deficits. No stock is moved. */
+    public static String autoBlockage(World.Device belt,List<World.Device> devices){
+        if(belt==null||belt.hp<=0||belt.ownerKey==null||devices==null)
+            return "NO_QUEUE";
+        boolean queued=false,receiver=false,shortage=false,full=false;
+        String missing="-";
+        for(World.Device machine:devices){
+            if(machine.hp<=0||machine.queuedRecipeId.isEmpty()||
+               !belt.ownerKey.equals(machine.ownerKey))continue;
+            var job=CraftingEraRegistry.process(AutomationOrders.recipe(machine.queuedRecipeId));
+            if(job==null||job.era()!=CraftingEraRegistry.Era.AUTOMATION||
+               !job.facility().equals(ArenaSystems.factionFacility(machine.kind)))continue;
+            queued=true;
+            for(World.Device target:devices){
+                if(!eligibleCrate(belt,target,belt.routeReverse)||
+                   Math.hypot(target.x-machine.x,target.y-machine.y)>5.5)continue;
+                receiver=true;
+                List<String> names=new ArrayList<>(job.inputs().keySet());
+                Collections.sort(names);
+                for(String name:names){
+                    var item=SurvivalCrafting.Item.valueOf(name);
+                    int deficit=job.inputs().get(name)-target.storage.count(item);
+                    if(deficit<=0)continue;
+                    if(!target.storage.canAdd(item,1)){full=true;continue;}
+                    shortage=true;
+                    for(World.Device from:devices)
+                        if(from!=target&&eligibleCrate(belt,from,!belt.routeReverse)&&
+                           from.storage.count(item)>0)
+                            return "NO_ROUTE";
+                    if(missing.equals("-"))missing="MISSING_"+item.name()+"_"+deficit;
+                }
+            }
+        }
+        if(!queued)return "NO_QUEUE";
+        if(!receiver)return "NO_RECEIVER";
+        if(full)return "FULL_RECEIVER";
+        if(shortage)return missing;
+        return "NO_DEFICIT";
+    }
     private static boolean eligibleCrate(World.Device belt,World.Device crate,boolean west){
         if(crate.hp<=0||crate.kind!=ArenaSystems.STORAGE_CRATE||
            !belt.ownerKey.equals(crate.ownerKey))return false;

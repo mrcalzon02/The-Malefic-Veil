@@ -119,6 +119,7 @@ public final class NetLink implements AutoCloseable {
     public final ConcurrentLinkedQueue<String> respawnResults=new ConcurrentLinkedQueue<>();
     /** Authenticated, authoritative inspection for one nearby owned factory. */
     public volatile ArenaSystems.FactoryInspection factoryInspection;
+    public volatile ArenaSystems.ConveyorInspection conveyorInspection;
     public NetLink(String host,int port)throws IOException {
         socket=new Socket();
         socket.connect(new InetSocketAddress(host,port),4000);
@@ -355,6 +356,27 @@ public final class NetLink implements AutoCloseable {
                             case "FACTORY_RESULT" -> {
                                 if(s.length==2&&factoryResults.size()<32)factoryResults.add(s[1]);
                             }
+                            case "CONVEYOR_INSPECTION" -> {
+                                if(s.length!=10)continue;
+                                boolean safe=true;
+                                for(int j=1;j<10;j++)
+                                    if(s[j].length()>90||!s[j].matches("[A-Za-z0-9_-]+")){
+                                        safe=false;break;
+                                    }
+                                if(!safe)continue;
+                                long elapsed=Long.parseLong(s[5]);
+                                long duration=Long.parseLong(s[6]);
+                                int load=Integer.parseInt(s[7]);
+                                int stock=Integer.parseInt(s[8]);
+                                int free=Integer.parseInt(s[9]);
+                                if(elapsed<0||duration<0||load<0||stock<0||free<0||
+                                   elapsed>ConveyorLogistics.TICK_MS||
+                                   duration>ConveyorLogistics.TICK_MS||
+                                   stock>CampStockpile.MAX_UNITS||
+                                   free>CampStockpile.MAX_UNITS)continue;
+                                conveyorInspection=new ArenaSystems.ConveyorInspection(
+                                    s[1],s[2],s[3],s[4],elapsed,duration,load,stock,free);
+                            }
                             case "FACTORY_INSPECTION" -> {
                                 if(s.length!=9)continue;
                                 boolean safe=true;
@@ -506,6 +528,9 @@ public final class NetLink implements AutoCloseable {
     public void inspectFactionBatch(){send("FACTORY_QUERY");}
     public void inspectFactory(){
         factoryInspection=null;send("FACTORY_INSPECT");
+    }
+    public void inspectConveyor(){
+        conveyorInspection=null;send("CONVEYOR_INSPECT");
     }
     public void transferCampStock(boolean taking,String item,int amount){
         send((taking?"STOCK_TAKE":"STOCK_PUT")+"|"+item+"|"+amount);

@@ -1147,6 +1147,7 @@ public final class ArenaSystems {
      * Powered belts rotate priority with competing manufacturers. */
     private void advanceConveyors(long ms,Map<World.Device,Integer> electricDraw){
         for(World.Device conveyor:fairGridOrder(dev->dev.kind==CONVEYOR_LINE)){
+            conveyor.factoryHold="";
             if(conveyor.kind!=CONVEYOR_LINE||conveyor.hp<=0||
                conveyor.routeItem.isEmpty())continue;
             boolean automatic=conveyor.routeItem.equals("AUTO");
@@ -1162,7 +1163,11 @@ public final class ArenaSystems {
             int beltLoad=sorted?ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
             World.Device power=ElectricUtility.available(world.devices,conveyor,
                 beltLoad,electricDraw);
-            if(power==null)continue;
+            if(power==null){
+                conveyor.factoryHold=ElectricUtility.available(world.devices,conveyor,
+                    beltLoad,Map.of())==null?"WAIT_POWER":"WAIT_CAPACITY";
+                continue;
+            }
             electricDraw.merge(power,beltLoad,Integer::sum);
             conveyor.routeMs=Math.min(ConveyorLogistics.TICK_MS,conveyor.routeMs+ms);
             if(conveyor.routeMs>=ConveyorLogistics.TICK_MS){
@@ -1281,6 +1286,76 @@ public final class ArenaSystems {
         }
         // The paid output remains on this machine until a real crate accepts it.
         device.factoryHold="WAIT_OUTPUT";
+    }
+
+    /** Read-only host inspection of the closest AUTHORIZED physical conveyor.
+     * No remote player coordinates, other owners' crates, or fabricated
+     * destination amounts are exposed by the LAN response. */
+    public record ConveyorInspection(String mode,String direction,String state,
+            String detail,long elapsed,long duration,int load,int source,int space){
+        public String wire(){
+            return mode+"|"+direction+"|"+state+"|"+detail+"|"+
+                elapsed+"|"+duration+"|"+load+"|"+source+"|"+space;
+        }
+        public static ConveyorInspection unavailable(){
+            return new ConveyorInspection("-","-","NO_OWN_CONVEYOR","-",0,0,0,0,0);
+        }
+    }
+    public synchronized ConveyorInspection inspectConveyor(int playerId){
+        Player p=players.get(playerId);
+        if(p==null||p.dead||p.accountKey==null||
+           !p.accountKey.startsWith("acct_")||
+           vehicles.carDrivenBy(playerId)>=0)return ConveyorInspection.unavailable();
+        World.Device belt=null;
+        double closest=Double.MAX_VALUE;
+        for(World.Device d:world.devices){
+            if(d.hp<=0||d.kind!=CONVEYOR_LINE||
+               !p.accountKey.equals(d.ownerKey))continue;
+            double distance=Math.hypot(p.x-d.x,p.y-d.y);
+            if(distance>3||distance>=closest||
+               !world.lineClear(p.x,p.y,d.x,d.y))continue;
+            belt=d;closest=distance;
+        }
+        if(belt==null)return ConveyorInspection.unavailable();
+        String direction=belt.routeReverse?"EAST_TO_WEST":"WEST_TO_EAST";
+        String mode=belt.routeItem.isEmpty()?"NONE":belt.routeItem;
+        int load=ConveyorLogistics.sorted(belt,world.devices)?
+            ConveyorLogistics.SORTED_DEMAND:ConveyorLogistics.DEMAND;
+        String state="DISABLED",detail="-";
+        int stock=0,space=0;
+        if(!belt.routeItem.isEmpty()){
+            boolean automatic=belt.routeItem.equals("AUTO");
+            var plan=automatic?ConveyorLogistics.autoInput(belt,world.devices):null;
+            var route=automatic?
+                (plan==null?null:plan.route()):
+                ConveyorLogistics.between(belt,world.devices);
+            var item=automatic?(plan==null?null:plan.item()):
+                SurvivalCrafting.Item.valueOf(belt.routeItem);
+            if(route==null||item==null){
+                state=automatic?"WAIT_DEMAND":"WAIT_ROUTE";
+                detail=automatic?ConveyorLogistics.autoBlockage(belt,world.devices):"-";
+                if(automatic&&!detail.equals("-")&&!detail.equals("NO_QUEUE")){
+                    if(detail.startsWith("MISSING_"))state="WAIT_INPUT";
+                    else if(detail.equals("FULL_RECEIVER"))state="WAIT_STORAGE";
+                    else if(detail.equals("NO_RECEIVER")||detail.equals("NO_ROUTE"))
+                        state="WAIT_ROUTE";
+                }
+            }else{
+                stock=route.source().storage.count(item);
+                space=CampStockpile.MAX_UNITS-route.destination().storage.units();
+                detail=item.name();
+                if(stock==0)state="WAIT_INPUT";
+                else if(!route.destination().storage.canAdd(item,1))
+                    state="WAIT_STORAGE";
+                else if(ElectricUtility.available(world.devices,belt,load,Map.of())==null)
+                    state="WAIT_POWER";
+                else if(belt.factoryHold.equals("WAIT_CAPACITY"))
+                    state="WAIT_CAPACITY";
+                else state=belt.routeMs>0?"MOVING":"READY";
+            }
+        }
+        return new ConveyorInspection(mode,direction,state,detail,belt.routeMs,
+            ConveyorLogistics.TICK_MS,load,stock,space);
     }
     /** Diagnostic data is generated exclusively from the host's physical
      * machines and stock. A remote client never enumerates another account's

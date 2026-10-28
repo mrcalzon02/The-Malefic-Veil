@@ -648,7 +648,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         menu.band(sprites,4,5,WIDTH-8,23);
         font.draw(sprites,"WASD MOVE  AIM/FIRE  Z FIELD  Y THROW  E USE  I INV  "+
-            "K ARSENAL  F11 MENU  ESC",12,20);
+            "K ARSENAL  F8 PERF  F11 MENU  ESC",12,20);
     }
     /** Foreground sourced weapon mesh, drawn as a camera-relative 3D object. */
     private void renderLiveWeapon(MaleficVeil.GpuFrame frame){
@@ -932,7 +932,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             font.draw(sprites,"THE MALEFIC VEIL  "+WorldDayNight.clock(environment.hour()),9,391);
             font.draw(sprites,"TILES "+visibleInstances+"  LAND "+visibleTerrain+"  DRAWS "+drawCalls+
                 "  LAMPS "+activeLights+"  VIEW "+(int)visualDistance,9,367);
-            font.draw(sprites,"WASD MOVE  MOUSE LOOK  PGUP/DN PITCH  [ ] TIME  F10 GRAPHICS  ESC MENU",9,20);
+            font.draw(sprites,"WASD MOVE  MOUSE LOOK  [ ] TIME  F8 PERF  F10 GRAPHICS  ESC MENU",9,20);
         }else{
             menu.draw(sprites,font,visualDistance,maxLights,timeSpeed);
         }

@@ -636,17 +636,18 @@ public final class GpuOverlayMenu {
                 for(int i=0;i<report.entries().size();i++){
                     var entry=report.entries().get(i);
                     String[] lines={
-                        "#"+entry.index()+" "+entry.facility().replace('-',' ').toUpperCase(Locale.ROOT)+
-                            " / "+entry.state().replace('_',' '),
+                        "#"+entry.index()+" "+entry.state().replace('_',' ')+
+                            " / "+entry.facility().replace('_',' '),
                         "JOB: "+entry.recipe().replace('-',' ').toUpperCase(Locale.ROOT)+
-                            "  NEED: "+entry.detail().replace('_',' '),
-                        "NEXT: "+entry.next().replace('-',' ').toUpperCase(Locale.ROOT)+
-                            "  DONE: "+entry.completed()
+                            "  DONE: "+entry.completed(),
+                        "NEED: "+entry.detail().replace('_',' ')+
+                            "  NEXT: "+entry.next().replace('-',' ').toUpperCase(Locale.ROOT),
+                        "FIX: "+entry.remedy().replace('_',' ')
                     };
                     for(int j=0;j<lines.length;j++){
                         String line=lines[j];
                         if(line.length()>44)line=line.substring(0,43)+"~";
-                        skin.font().draw(sprites,line,151,199-i*38-j*13);
+                        skin.font().draw(sprites,line,151,205-i*42-j*10);
                     }
                 }
             }

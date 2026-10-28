@@ -1502,13 +1502,41 @@ public final class ArenaSystems {
             return new ProductionOverview(page,0,List.of());
         }
     }
+    /** Locate real owner-only source inventory without moving a single unit.
+     * Inventory outside the five-and-a-half-unit payment radius cannot pay
+     * an atomic recipe until the player physically transfers it. */
+    private String factoryInputRemedy(World.Device d,String detail){
+        int split=detail.lastIndexOf('_');
+        if(split<1)return "STOCK_REQUIRED_INPUT_NEAR_SITE";
+        SurvivalCrafting.Item item;
+        int missing;
+        try{
+            item=SurvivalCrafting.Item.valueOf(detail.substring(0,split));
+            missing=Integer.parseInt(detail.substring(split+1));
+        }catch(IllegalArgumentException e){
+            return "STOCK_REQUIRED_INPUT_NEAR_SITE";
+        }
+        if(missing<1)return "STOCK_REQUIRED_INPUT_NEAR_SITE";
+        int source=-1,units=0;
+        for(int i=0;i<world.devices.size();i++){
+            World.Device crate=world.devices.get(i);
+            if(crate.hp<=0||crate.kind!=STORAGE_CRATE||
+               !d.ownerKey.equals(crate.ownerKey)||
+               Math.hypot(crate.x-d.x,crate.y-d.y)<=5.5)continue;
+            int available=crate.storage.count(item);
+            if(available>units){source=i;units=available;}
+        }
+        if(source>=0)return (units>=missing?
+            "TRANSFER_FROM_CRATE_":"PARTIAL_INPUT_AT_CRATE_")+source;
+        return "STOCK_REQUIRED_INPUT_NEAR_SITE";
+    }
     /** Read-only recovery guidance derived strictly from the live worksite.
      * No resource, energy, queue or inventory mutations are permitted here. */
     private String productionRemedy(World.Device d,String state,String detail){
         boolean conveyor=d.kind==CONVEYOR_LINE;
         return switch(state){
             case "WAIT_INPUT" -> conveyor?"STOCK_CONVEYOR_SOURCE_CRATE":
-                "STOCK_REQUIRED_INPUT_NEAR_SITE";
+                factoryInputRemedy(d,detail);
             case "WAIT_COMBINE" -> "COMBINE_ALL_INGREDIENTS_IN_ONE_CRATE";
             case "WAIT_STORAGE" -> conveyor?"FREE_RECEIVING_CRATE_SPACE":
                 "PLACE_OWNED_INPUT_CRATE_NEAR_SITE";

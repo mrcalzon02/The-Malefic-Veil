@@ -62,6 +62,23 @@ public final class VeilOcean {
             SEA_LEVEL,bed,WaterTextures.builtin("water://ripple-a"),
             settings.style(),List.of(),effect)));
     }
+    /** Source-owned parcel footprint for native chunk meshing. No floating
+     * corner sampling can incorrectly reject entire coastline sections. */
+    public record SeaParcel(double west,double north,double size){}
+    public List<SeaParcel> sourceSeaParcels(double west,double north,
+                                            double east,double south){
+        int x0=Math.max(0,world.parcelX(west));
+        int x1=Math.min(ContinentLayout.SIZE-1,world.parcelX(Math.nextDown(east)));
+        int z0=Math.max(0,world.parcelY(north));
+        int z1=Math.min(ContinentLayout.SIZE-1,world.parcelY(Math.nextDown(south)));
+        if(x0>x1||z0>z1)return List.of();
+        var found=new ArrayList<SeaParcel>();
+        for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++)
+            if(world.continent().biome(x,z)==ContinentLayout.Biome.WATER)
+                found.add(new SeaParcel(world.worldX(x),world.worldY(z),
+                    World.PARCEL_METERS));
+        return found;
+    }
     public WaterModule module(){return module;}
     public boolean wet(double x,double z){return module.bodies().get(0).wet(x,z);}
     public double bottom(double x,double z){return bed.bottomY(x,z);}

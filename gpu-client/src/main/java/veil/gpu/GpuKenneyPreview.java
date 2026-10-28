@@ -993,6 +993,23 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             " variedColors="+colors.size());
     }
 
+    /** Benchmark imagery has its OWN paired-pixel assertion below. Normal
+     * smoke/gallery captures retain their distinct city-geometry color gate. */
+    private void saveOceanBenchmarkFrame(String filename){
+        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);
+        Pixmap flip=new Pixmap(WIDTH,HEIGHT,Pixmap.Format.RGBA8888);
+        try{
+            for(int py=0;py<HEIGHT;py++)
+                for(int px=0;px<WIDTH;px++)
+                    flip.drawPixel(px,HEIGHT-1-py,pixels.getPixel(px,py));
+            FileHandle destination=Gdx.files.absolute(
+                new java.io.File("build/test-visuals/"+filename).getAbsolutePath());
+            destination.parent().mkdirs();
+            PixmapIO.writePNG(destination,flip);
+        }finally{
+            flip.dispose();pixels.dispose();
+        }
+    }
     /** A sparse paired RGB readback proves that OpenGL actually drew water
      * into the visible world. Merely submitting triangles is insufficient. */
     private int[] oceanSamplePixels(){
@@ -1038,7 +1055,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             if(Boolean.getBoolean("veil.gpu.oceanBenchmark")){
                 if(frames==179){
                     oceanBaselinePixels=oceanSamplePixels();
-                    saveFrame("gpu-ocean-coastal-no-water.png");
+                    saveOceanBenchmarkFrame("gpu-ocean-coastal-no-water.png");
                 }
                 if(frames==360){
                     var waterStats=ocean.stats();
@@ -1082,7 +1099,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                         waterStats.visibleChunks(),waterStats.drawnTriangles(),
                         waterStats.drawCalls(),waterStats.vertexUploadBytes(),
                         waterStats.allocatedStaticBytes(),changed);
-                    saveFrame("gpu-ocean-coastal-benchmark.png");
+                    saveOceanBenchmarkFrame("gpu-ocean-coastal-benchmark.png");
                     framebuffer.end();Gdx.app.exit();return;
                 }
             }else if(frames%5==0){

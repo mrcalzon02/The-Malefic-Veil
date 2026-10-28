@@ -163,6 +163,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final float[] lightUniforms=new float[8*4];
     private WorldDayNight.Conditions environment=WorldDayNight.atHour(12);
     private boolean shownFailure;
+    private boolean showGpuPerf;
     private boolean menuBackdrop;
     private Runnable launcherOverlay;
     /** Draw launcher text and city in one native framebuffer and orientation. */
@@ -935,6 +936,21 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }else{
             menu.draw(sprites,font,visualDistance,maxLights,timeSpeed);
         }
+        if(showGpuPerf){
+            var sea=ocean.stats();
+            menu.band(sprites,3,HEIGHT-59,342,54);
+            font.draw(sprites,"F8 PERFORMANCE  FPS "+Gdx.graphics.getFramesPerSecond()+
+                "  CITY DRAW "+drawCalls,10,HEIGHT-13);
+            font.draw(sprites,"LAND "+visibleTerrainPatches+" PATCHES / "+
+                visibleTerrainTriangles+" TRIANGLES  OBJECTS "+visibleInstances,
+                10,HEIGHT-27);
+            font.draw(sprites,"WATER "+sea.visibleChunks()+" BATCHES / "+
+                sea.drawnTriangles()+" TRIANGLES  STATIC "+sea.allocatedStaticBytes()/1024+" KiB",
+                10,HEIGHT-40);
+            font.draw(sprites,"WATER CPU SUBMIT "+
+                String.format(java.util.Locale.ROOT,"%.2f",sea.cpuSubmitNanos()/1_000_000.0)+
+                "ms  GPU TIME NOT MEASURED",10,HEIGHT-53);
+        }
         sprites.end();
     }
 
@@ -1024,6 +1040,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }finally{pixels.dispose();}
     }
     @Override public void render() {
+        // Purely visual diagnostics: F8 never enters host gameplay controls
+        // and never affects world simulation, purchases, or permissions.
+        if(Gdx.input!=null&&Gdx.input.isKeyJustPressed(Input.Keys.F8))
+            showGpuPerf=!showGpuPerf;
         // Real frame-start cadence, including prior GPU presentation and
         // swap/vsync delays. First 30 frames are warmup, not benchmark data.
         if(gallery&&Boolean.getBoolean("veil.gpu.oceanBenchmark")){

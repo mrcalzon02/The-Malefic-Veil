@@ -102,6 +102,33 @@ public final class ProductionOverviewTest {
             "Partial remote inputs were incorrectly claimed sufficient");
         game.world.devices.remove(remote);
         game.world.devices.remove(foreignCrate);
+        // The factory is short of conductor wire, but its queued job has
+        // a physically reachable, same-owner AUTO belt source. Diagnosis
+        // must recognize that actual transport path before saying to haul.
+        var feederSource=add(game,ArenaSystems.STORAGE_CRATE,x-7,y,owner);
+        var feeder=add(game,ArenaSystems.CONVEYOR_LINE,x-4,y,owner);
+        int feederIndex=game.world.devices.indexOf(feeder);
+        check(feederSource.storage.delivered(SurvivalCrafting.Item.CONDUCTOR_WIRE,3),
+            "Could not stage real automatic conveyor stock");
+        player.x=feeder.x;player.y=feeder.y;
+        check(game.programConveyor(1,"AUTO")&&feeder.routeItem.equals("AUTO"),
+            "Owner could not program source-connected AUTO belt");
+        player.x=x;player.y=y;
+        check(game.productionOverview(1,0).entries().get(0).remedy().equals(
+            "AUTO_FEED_VIA_CONVEYOR_"+feederIndex),
+            "Blocked factory failed to identify an actual owned AUTO feeder");
+        for(int n=0;n<5;n++)game.advance(1000);
+        check(stock.storage.count(SurvivalCrafting.Item.CONDUCTOR_WIRE)==1&&
+            feederSource.storage.count(SurvivalCrafting.Item.CONDUCTOR_WIRE)==2&&
+            first.queuedRecipeId.equals(repeat)&&!first.productionActive,
+            "Suggested AUTO recovery did not move exactly one real paid unit");
+        // Clean this isolated feeder test before checking durable overview
+        // pagination, original power and inventory read-only invariants.
+        check(stock.storage.consume(Map.of(SurvivalCrafting.Item.CONDUCTOR_WIRE,1)),
+            "Could not reset receiver after paid conveyor movement");
+        game.world.devices.remove(feeder);
+        game.world.devices.remove(feederSource);
+        generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
         // Atomic recipe payment requires every ingredient in ONE local crate,
         // even when separate nearby crates jointly hold the entire recipe.
         var split=add(game,ArenaSystems.STORAGE_CRATE,x-1,y,owner);

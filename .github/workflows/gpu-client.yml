@@ -153,16 +153,16 @@ jobs:
           xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
             timeout 100s java -Djava.awt.headless=false \
               -jar gpu-client/target/MaleficVeil-GPU.jar \
-              --gallery --seed=20261020 --city=E |
+              --gallery --seed=887766 --city=C |
             tee build/test-visuals/gpu-ocean-performance.log
           grep -Eq 'OCEAN_WATER_SDK_READY chunks=[1-9][0-9]*' \
             build/test-visuals/gpu-ocean-performance.log
           grep -Eq 'OCEAN_GPU_PERF .*chunks=[1-9][0-9]* .*triangles=[1-9][0-9]* .*uploadedFrameBytes=0' \
             build/test-visuals/gpu-ocean-performance.log
-          test -s build/test-visuals/gallery-seed-20261020-city-E-01-generated-plate-overhead.png
+          test -s build/test-visuals/gallery-seed-887766-city-C-01-generated-plate-overhead.png
           echo 'PASS GPU_OCEAN_STATIC_VBO nonzero real ocean triangles and no frame uploads'
           {
-            echo '### Native ocean GPU diagnostics (real coastal City E)'
+            echo '### Native ocean GPU diagnostics (real coastal City C, seed 887766)'
             echo 'CPU submission is not GPU execution time; FPS is diagnostic.'
             echo '```text'
             grep 'OCEAN_GPU_PERF' build/test-visuals/gpu-ocean-performance.log | tail -n 4

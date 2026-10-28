@@ -30,11 +30,11 @@ public final class VeilOceanTest {
                 }
             }
         check(found>0&&dry>0,"Seed has no real land/sea interface");
-        // City A can legitimately have no visible sea. A separate coastal
-        // viewport must source non-empty real water parcels, not pass a
-        // graphics test with a zero-triangle water mesh.
-        ContinentVista coastal=new ContinentVista(world,'E');
-        VeilOcean coastalOcean=new VeilOcean(world,coastal);
+        // City A and several other cities can have no visible sea. Verify
+        // a deliberately water-bearing independent seed and coastal city.
+        World shoreWorld=new World(887766L);
+        ContinentVista coastal=new ContinentVista(shoreWorld,'C');
+        VeilOcean coastalOcean=new VeilOcean(shoreWorld,coastal);
         int coastalParcels=0;
         for(ContinentVista.Patch patch:coastal.patches())
             for(VeilOcean.SeaParcel parcel:coastalOcean.sourceSeaParcels(

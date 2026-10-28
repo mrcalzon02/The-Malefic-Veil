@@ -56,7 +56,7 @@ packaging include the new SDK source paths.
 
 The default City A camera contains no visible ocean and cannot establish
 ocean frame rate or correctness. The native GPU workflow additionally runs
-an OpenGL **City E coastal** gallery for seed `20261020`, requiring a
+an OpenGL **City C coastal** gallery for seed `887766`, requiring a
 nonempty source-ocean mesh, nonzero drawn triangles, and zero frame-by-frame
 water vertex upload bytes. `OCEAN_GPU_PERF` logs record visible chunk count,
 draw calls, triangles, static buffer bytes, CPU OpenGL submission milliseconds,

@@ -938,9 +938,9 @@ public final class ArenaSystems {
                 if(process.utilityDemand()>0){
                     boolean powered=process.era().ordinal()>=CraftingEraRegistry.Era.ELECTRIC.ordinal()?
                         ElectricUtility.available(world.devices,device,
-                            process.utilityDemand(),Map.of())!=null:
+                            process.utilityDemand(),Map.of(),lastUtilityTickMs)!=null:
                         SteamUtility.available(world.devices,device,
-                            process.utilityDemand(),Map.of())!=null;
+                            process.utilityDemand(),Map.of(),lastUtilityTickMs)!=null;
                     if(!powered)continue;
                 }
                 if(!crate.storage.consume(inputs))continue;

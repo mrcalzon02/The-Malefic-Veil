@@ -136,6 +136,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private long oceanBenchmarkPreviousNs;
     private final java.util.List<Double> oceanBenchmarkFrameMs=new java.util.ArrayList<>();
     private final java.util.List<Double> oceanBaselineFrameMs=new java.util.ArrayList<>();
+    private int[] oceanBaselinePixels;
     private World world;
     private UrbanScene scene;
     private ShaderProgram shader;
@@ -362,7 +363,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
         }
         terrain=new GpuContinentTerrain(continental);
-        ocean=new GpuOcean(new veil.VeilOcean(world,continental),continental);
+        veil.VeilOcean seaModel=new veil.VeilOcean(world,continental);
+        ocean=new GpuOcean(seaModel,continental);
         lighting=new UrbanLighting(world);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
@@ -398,6 +400,25 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             visualDistance=Math.max(145,clientSettings.distance);
         }
         if(gallery)setGalleryView(galleryViews[0]);
+        if(gallery&&Boolean.getBoolean("veil.gpu.oceanBenchmark")){
+            // Use an actual seeded ocean parcel directly under the camera.
+            // A city-overhead pose can submit water triangles that are wholly
+            // out of view, concealing a broken water shader.
+            double cx=continental.cityCenterX(focusCity);
+            double cz=continental.cityCenterZ(focusCity);
+            var parcels=seaModel.sourceSeaParcels(cx-180,cz-180,cx+180,cz+180);
+            var nearest=parcels.stream().min(java.util.Comparator.comparingDouble(parcel->
+                Math.hypot(parcel.west()+parcel.size()*.5-cx,
+                           parcel.north()+parcel.size()*.5-cz)))
+                .orElseThrow(()->new IllegalStateException(
+                    "Coastal benchmark city has no real water parcel"));
+            x=nearest.west()+nearest.size()*.5;
+            y=nearest.north()+nearest.size()*.5;
+            cameraHeight=26;cameraPitch=-1.52;heading=.32;
+            visualDistance=Math.max(180,visualDistance);
+            System.out.println("OCEAN_BENCHMARK_CAMERA world="+x+","+y+
+                " source=authoritative-wet-parcel");
+        }
         if(gameplay!=null){
             buildGameplayMaps();
             gameplayMenu=new GpuOverlayMenu(menu,gameplay,clientSettings,audioBus,
@@ -972,6 +993,19 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             " variedColors="+colors.size());
     }
 
+    /** A sparse paired RGB readback proves that OpenGL actually drew water
+     * into the visible world. Merely submitting triangles is insufficient. */
+    private int[] oceanSamplePixels(){
+        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);
+        try{
+            int count=0;
+            int[] sampled=new int[((HEIGHT-72+3)/4)*((WIDTH-16+3)/4)];
+            for(int py=36;py<HEIGHT-36;py+=4)
+                for(int px=8;px<WIDTH-8;px+=4)
+                    sampled[count++]=pixels.getPixel(px,py);
+            return java.util.Arrays.copyOf(sampled,count);
+        }finally{pixels.dispose();}
+    }
     @Override public void render() {
         // Real frame-start cadence, including prior GPU presentation and
         // swap/vsync delays. First 30 frames are warmup, not benchmark data.
@@ -1002,8 +1036,27 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(gallery){
             frames++;
             if(Boolean.getBoolean("veil.gpu.oceanBenchmark")){
+                if(frames==179){
+                    oceanBaselinePixels=oceanSamplePixels();
+                    saveFrame("gpu-ocean-coastal-no-water.png");
+                }
                 if(frames==360){
                     var waterStats=ocean.stats();
+                    int[] nowPixels=oceanSamplePixels();
+                    if(oceanBaselinePixels==null||
+                       nowPixels.length!=oceanBaselinePixels.length)
+                        throw new IllegalStateException("Missing paired GPU water readback");
+                    int changed=0;
+                    for(int i=0;i<nowPixels.length;i++){
+                        int a=nowPixels[i],b=oceanBaselinePixels[i];
+                        int delta=Math.abs(((a>>>24)&255)-((b>>>24)&255))+
+                            Math.abs(((a>>>16)&255)-((b>>>16)&255))+
+                            Math.abs(((a>>>8)&255)-((b>>>8)&255));
+                        if(delta>36)changed++;
+                    }
+                    if(changed<200)
+                        throw new IllegalStateException("Ocean was not visibly rendered: changed="+
+                            changed+"/"+nowPixels.length+" sampled pixels");
                     if(waterStats.visibleChunks()==0||waterStats.drawnTriangles()==0||
                        waterStats.vertexUploadBytes()!=0||
                        oceanBenchmarkFrameMs.size()<100||
@@ -1023,12 +1076,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     double seaP95=withWater.get((int)Math.ceil(withWater.size()*.95)-1);
                     double baseP95=withoutWater.get((int)Math.ceil(withoutWater.size()*.95)-1);
                     System.out.printf(java.util.Locale.ROOT,
-                        "PASS GPU_OCEAN_BENCHMARK samples=%d baselineAvgMs=%.3f oceanAvgMs=%.3f oceanDeltaMs=%.3f baselineP95Ms=%.3f oceanP95Ms=%.3f baselineFPS=%.2f oceanFPS=%.2f oceanChunks=%d triangles=%d calls=%d uploadedFrameBytes=%d staticBytes=%d%n",
+                        "PASS GPU_OCEAN_BENCHMARK samples=%d baselineAvgMs=%.3f oceanAvgMs=%.3f oceanDeltaMs=%.3f baselineP95Ms=%.3f oceanP95Ms=%.3f baselineFPS=%.2f oceanFPS=%.2f oceanChunks=%d triangles=%d calls=%d uploadedFrameBytes=%d staticBytes=%d changedPixels=%d%n",
                         withWater.size(),baseAverage,seaAverage,seaAverage-baseAverage,
                         baseP95,seaP95,1000.0/baseAverage,1000.0/seaAverage,
                         waterStats.visibleChunks(),waterStats.drawnTriangles(),
                         waterStats.drawCalls(),waterStats.vertexUploadBytes(),
-                        waterStats.allocatedStaticBytes());
+                        waterStats.allocatedStaticBytes(),changed);
                     saveFrame("gpu-ocean-coastal-benchmark.png");
                     framebuffer.end();Gdx.app.exit();return;
                 }

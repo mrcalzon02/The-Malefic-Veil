@@ -1525,6 +1525,18 @@ public final class ArenaSystems {
             return "STOCK_REQUIRED_INPUT_NEAR_SITE";
         }
         if(missing<1)return "STOCK_REQUIRED_INPUT_NEAR_SITE";
+        // A remotely held item is not transferable into a packed worksite.
+        // Diagnose the real destination capacity before proposing hauling
+        // or a powered AUTO transfer that cannot move even one item.
+        boolean receivingSpace=false;
+        for(World.Device crate:world.devices)
+            if(crate.hp>0&&crate.kind==STORAGE_CRATE&&
+               d.ownerKey.equals(crate.ownerKey)&&
+               Math.hypot(crate.x-d.x,crate.y-d.y)<=5.5&&
+               crate.storage.canAdd(item,1)){
+                receivingSpace=true;break;
+            }
+        if(!receivingSpace)return "FREE_NEARBY_INPUT_CRATE_SPACE";
         // A genuinely programmed and routed AUTO belt can be the immediate
         // recovery path. Verify both the deficit item and the actual receiving
         // crate instead of guessing that any nearby belt will supply the job.

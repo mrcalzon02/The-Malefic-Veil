@@ -72,6 +72,12 @@ public final class ConveyorInspectionTest {
         check(source.storage.delivered(SurvivalCrafting.Item.MACHINE_PARTS,3),
             "Cannot stage actual paid transfer stock");
         expect(host,1,"WAIT_POWER");
+        generator.electricMs=1;
+        expect(host,1,"WAIT_POWER");
+        tick(host,1);
+        check(belt.routeMs==0&&generator.electricMs==1&&
+            source.storage.count(SurvivalCrafting.Item.MACHINE_PARTS)==3,
+            "Almost-empty source powered a supposedly-ready conveyor");
         generator.electricMs=ElectricUtility.MAX_CHARGE_MS;
         var ready=expect(host,1,"READY");
         check(ready.source()==3&&ready.space()==128&&

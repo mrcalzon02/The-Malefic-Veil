@@ -32,7 +32,26 @@ public final class VeilOcean {
             if(!world.continent().inBounds(px,pz)||
                 world.continent().biome(px,pz)!=ContinentLayout.Biome.WATER)
                 return SEA_LEVEL+.1; // dry land never qualifies as water
-            return Math.min(-.15,vista.sample(x,z).elevation());
+            double floor=Math.min(-.15,vista.sample(x,z).elevation());
+            // Optical bathymetry shallows only at REAL source-biome land
+            // borders. The terrain/collision mesh is never modified. This
+            // lets the independent shore-runup and foam system visibly break
+            // at the continent's actual coast instead of a fake global band.
+            double edge=Double.POSITIVE_INFINITY;
+            double x0=vista.cityPlates().worldX(px);
+            double z0=vista.cityPlates().worldZ(pz);
+            double size=World.PARCEL_METERS;
+            var land=world.continent();
+            if(land.inBounds(px-1,pz)&&land.biome(px-1,pz)!=ContinentLayout.Biome.WATER)
+                edge=Math.min(edge,x-x0);
+            if(land.inBounds(px+1,pz)&&land.biome(px+1,pz)!=ContinentLayout.Biome.WATER)
+                edge=Math.min(edge,x0+size-x);
+            if(land.inBounds(px,pz-1)&&land.biome(px,pz-1)!=ContinentLayout.Biome.WATER)
+                edge=Math.min(edge,z-z0);
+            if(land.inBounds(px,pz+1)&&land.biome(px,pz+1)!=ContinentLayout.Biome.WATER)
+                edge=Math.min(edge,z0+size-z);
+            return Double.isFinite(edge)?
+                Math.min(-.12,Math.max(floor,-Math.max(.12,edge*.55))):floor;
         };
         settings=new WaterSettings().with("wave.height",.16)
             .with("shore.height",.055).with("foam.depth",.7)

@@ -42,9 +42,23 @@ public final class ConstructionFundingTest {
         String owner="acct_"+"e".repeat(64);
         ArenaSystems host=new ArenaSystems(20261028L);
         check(host.assignAccount(host.join(1).id,owner),"Host owner binding");
+        // DurableRealm correctly refuses city-owned construction. Select
+        // three genuinely legal wilderness parcels rather than hard-coding
+        // coordinates that may fall inside the generated city.
+        List<double[]> parcels=new ArrayList<>();
+        for(int x=World.SIZE+3;x<World.SIZE+60&&parcels.size()<3;x++)
+            for(int y=2;y<World.SIZE+50&&parcels.size()<3;y++){
+                if(host.world.detailedCity(x,y)||!host.world.canWalk(x,y)||
+                   host.world.worldStructureAt(x,y,.55))continue;
+                boolean clear=true;
+                for(double[] at:parcels)
+                    if(Math.hypot(at[0]-x,at[1]-y)<2){clear=false;break;}
+                if(clear)parcels.add(new double[]{x,y});
+            }
+        check(parcels.size()==3,"Could not find three valid wilderness crate parcels");
         List<CampStockpile> crates=new ArrayList<>();
-        for(int i=0;i<3;i++){
-            World.Device device=new World.Device(150+i*1.5,12,
+        for(double[] at:parcels){
+            World.Device device=new World.Device(at[0],at[1],
                 ArenaSystems.STORAGE_CRATE);
             device.ownerKey=owner;
             host.world.devices.add(device);

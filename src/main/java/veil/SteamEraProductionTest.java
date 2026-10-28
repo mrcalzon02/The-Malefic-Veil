@@ -128,6 +128,11 @@ public final class SteamEraProductionTest {
         actor.x=factory.x+.5;actor.y=factory.y;
         check(host.inspectFactory(1).state().equals("WAIT_STEAM"),
             "E3 inspector declared factory RUNNING with less than one steam tick");
+        boiler.steamMs=99;
+        host.advance(100);
+        check(boiler.steamMs==99&&factory.productionMs==100_000&&
+            host.inspectFactory(1).state().equals("WAIT_STEAM"),
+            "Unfunded 100ms steam tick advanced E3 faction manufacturing");
         boiler.steamMs=remainingPressure;
 
         // A disconnected shaft must freeze processing, not run on a cached

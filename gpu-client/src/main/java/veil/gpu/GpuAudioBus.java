@@ -129,11 +129,11 @@ public final class GpuAudioBus implements AutoCloseable {
     private void play(Sound sound,float gain){
         if(available&&sound!=null&&gain>0) sound.play(Math.min(1,gain));
     }
-    public void click(){play(menuClick,settings.uiGain());}
+    public void click(){play(menuClick,settings.uiGain()*2.0f);}
     public void navigate(){play(cues[GpuAudioSynthesis.Cue.NAVIGATE.ordinal()],settings.uiGain()*.45f);}
-    public void confirm(){play(menuConfirm,settings.uiGain()*.8f);}
-    public void reject(){play(menuReject,settings.uiGain()*.8f);}
-    public void panel(){play(panelOpen,settings.uiGain()*.5f);}
+    public void confirm(){play(menuConfirm,settings.uiGain()*.9f);}
+    public void reject(){play(menuReject,settings.uiGain()*.40f);}
+    public void panel(){play(panelOpen,settings.uiGain()*.16f);}
     public void empty(){play(cues[GpuAudioSynthesis.Cue.EMPTY.ordinal()],settings.effectsGain()*.7f);}
     public void reload(){play(cues[GpuAudioSynthesis.Cue.RELOAD.ordinal()],settings.effectsGain()*.65f);}
     public void step(){

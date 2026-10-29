@@ -65,10 +65,12 @@ public final class GpuAudioQualityGate {
             for(var phase:GpuAudioSynthesis.DeployablePhase.values())
                 validate("field-"+faction+"-"+phase,
                     GpuAudioSynthesis.deployable(faction,phase),false);
+        for(var event:GpuAudioSynthesis.VehicleEvent.values())
+            validate("vehicle-"+event,GpuAudioSynthesis.vehicleEvent(event),false);
         validate("thunder",GpuAudioSynthesis.thunder(),false);
         for(var cue:GpuAudioSynthesis.Cue.values())
             validate("ui-"+cue,GpuAudioSynthesis.cue(cue),false);
-        if(tested!=154)throw new AssertionError("Expected 154 WAV audits, got "+tested);
+        if(tested!=159)throw new AssertionError("Expected 159 WAV audits, got "+tested);
         System.out.println("PASS GPU_AUDIO_QUALITY samples="+tested+
             " pcm=mono16/22050 complete=true loops=19 no-digital-clipping");
     }

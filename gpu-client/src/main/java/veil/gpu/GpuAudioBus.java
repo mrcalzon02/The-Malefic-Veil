@@ -22,6 +22,9 @@ public final class GpuAudioBus implements AutoCloseable {
     public static final String ORIGINAL_SHA="0e0b0e5bbad299d733938f907aa63fd62de9abad3dc61a00a8ee287fbe10a293";
     private Music music, ambience, combatMusic, campfireLoop;
     private final Music[] industryLoops=new Music[GpuIndustryAudioPlanner.Channel.values().length];
+    private Sound engineIdleSound,engineMotionSound;
+    private long engineIdleVoice=-1,engineMotionVoice=-1;
+    private final Sound[] motorEvents=new Sound[GpuAudioSynthesis.VehicleEvent.values().length];
     private final Music[] biomeLoops=new Music[GpuBiomeAudioPlanner.Bed.values().length];
     private final float[] biomeGains=new float[biomeLoops.length];
     private final float[] industryGain=new float[industryLoops.length];
@@ -110,7 +113,19 @@ public final class GpuAudioBus implements AutoCloseable {
             for(GpuAudioSynthesis.Impact type:GpuAudioSynthesis.Impact.values())
                 impacts[type.ordinal()]=synthesized("impact-"+type.name().toLowerCase(Locale.ROOT),
                     GpuAudioSynthesis.impact(type));
+            // Engine streams must support pitch control. Music cannot
+            // setPitch; bounded looping Sound voices can.
+            engineIdleSound=synthesized("engine-idle",
+                GpuAudioSynthesis.industry(GpuIndustryAudioPlanner.Channel.ENGINE_IDLE));
+            engineMotionSound=synthesized("engine-motion",
+                GpuAudioSynthesis.industry(GpuIndustryAudioPlanner.Channel.ENGINE_MOVING));
+            for(GpuAudioSynthesis.VehicleEvent type:GpuAudioSynthesis.VehicleEvent.values())
+                motorEvents[type.ordinal()]=synthesized("vehicle-"+
+                    type.name().toLowerCase(Locale.ROOT),
+                    GpuAudioSynthesis.vehicleEvent(type));
             for(GpuIndustryAudioPlanner.Channel channel:GpuIndustryAudioPlanner.Channel.values()){
+                if(channel.ordinal()>=GpuIndustryAudioPlanner.Channel.ENGINE_IDLE.ordinal())
+                    continue;
                 Music source=Gdx.audio.newMusic(new FileHandle(temp(
                     "industry-"+channel.name().toLowerCase(Locale.ROOT),".wav",
                     GpuAudioSynthesis.industry(channel)).toFile()));
@@ -216,6 +231,7 @@ public final class GpuAudioBus implements AutoCloseable {
         combatHold=combatGain=fireGain=0;
         for(Music bed:weatherBeds)if(bed!=null)bed.stop();
         for(Music bed:industryLoops)if(bed!=null)bed.stop();
+        stopEngine();
         Arrays.fill(weatherGains,0f);
         Arrays.fill(industryGain,0f);
         for(Music source:biomeLoops)if(source!=null)source.stop();
@@ -372,6 +388,49 @@ public final class GpuAudioBus implements AutoCloseable {
             }
         }
     }
+    /** Two voices for the strongest observed host car; pitch follows speed.
+     * Parked, empty, dead and out-of-range vehicles free their audio voices.
+     */
+    public void vehicle(GpuVehicleAudioDynamics.Mix state){
+        if(state==null||!available||!ingame)return;
+        float effectGain=settings.effectsGain();
+        engineIdleVoice=motorLayer(engineIdleSound,engineIdleVoice,
+            state.idleGain()*effectGain*.47f,state.pitch(),state.pan());
+        engineMotionVoice=motorLayer(engineMotionSound,engineMotionVoice,
+            state.runningGain()*effectGain*.46f,
+            Math.min(1.95f,state.pitch()*1.10f),state.pan());
+        if(state.event()!=GpuVehicleAudioDynamics.Event.NONE){
+            GpuAudioSynthesis.VehicleEvent event=switch(state.event()){
+                case IGNITION -> GpuAudioSynthesis.VehicleEvent.IGNITION;
+                case ACCELERATE -> GpuAudioSynthesis.VehicleEvent.ACCELERATE;
+                case BRAKE -> GpuAudioSynthesis.VehicleEvent.BRAKE;
+                case COLLISION -> GpuAudioSynthesis.VehicleEvent.COLLISION;
+                case SHUTDOWN -> GpuAudioSynthesis.VehicleEvent.SHUTDOWN;
+                case NONE -> throw new IllegalStateException("No vehicle event");
+            };
+            Sound cue=motorEvents[event.ordinal()];
+            if(cue!=null){
+                float gain=Math.min(1f,state.eventGain()*effectGain*.46f);
+                if(gain>.005f)cue.play(gain,1f,state.pan());
+            }
+        }
+    }
+    private static long motorLayer(Sound sound,long id,float volume,float pitch,float pan){
+        if(sound==null)return -1;
+        if(volume<=.004f){
+            if(id>=0)sound.stop(id);
+            return -1;
+        }
+        if(id<0)return sound.loop(Math.min(1f,volume),pitch,pan);
+        sound.setPitch(id,pitch);
+        sound.setPan(id,pan,Math.min(1f,volume));
+        return id;
+    }
+    private void stopEngine(){
+        if(engineIdleVoice>=0&&engineIdleSound!=null)engineIdleSound.stop(engineIdleVoice);
+        if(engineMotionVoice>=0&&engineMotionSound!=null)engineMotionSound.stop(engineMotionVoice);
+        engineIdleVoice=engineMotionVoice=-1;
+    }
     private float machineBusGain(int index){
         return index>=GpuIndustryAudioPlanner.Channel.ENGINE_IDLE.ordinal()?
             settings.effectsGain()*.39f:settings.ambienceGain()*.28f;
@@ -467,6 +526,11 @@ public final class GpuAudioBus implements AutoCloseable {
         }
         Set<Sound> disposed=Collections.newSetFromMap(new IdentityHashMap<>());
         for(Sound s:cues)if(s!=null&&disposed.add(s))s.dispose();
+        stopEngine();
+        for(Sound s:new Sound[]{engineIdleSound,engineMotionSound})
+            if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound s:motorEvents)if(s!=null&&disposed.add(s))s.dispose();
+        engineIdleSound=engineMotionSound=null;
         for(Sound s:impacts)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound[] bank:fieldSounds)
             for(Sound s:bank)if(s!=null&&disposed.add(s))s.dispose();
@@ -481,6 +545,7 @@ public final class GpuAudioBus implements AutoCloseable {
         for(Sound s:sourceFamily)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:new Sound[]{menuClick,menuConfirm,menuReject,panelOpen})
             if(s!=null&&disposed.add(s))s.dispose();
+        Arrays.fill(motorEvents,null);
         Arrays.fill(cues,null);Arrays.fill(impacts,null);Arrays.fill(weapon,null);
         for(Sound[] group:surfaceSteps)Arrays.fill(group,null);
         for(Sound[] bank:fieldSounds)Arrays.fill(bank,null);

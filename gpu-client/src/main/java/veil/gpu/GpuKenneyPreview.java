@@ -178,6 +178,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final GpuAudioEventGate audioEvents=new GpuAudioEventGate();
     private final GpuWorldAudioGate worldAudioEvents=new GpuWorldAudioGate();
     private final GpuDeployableAudioGate deployableAudioEvents=new GpuDeployableAudioGate();
+    private final GpuVehicleAudioDynamics vehicleDynamics=new GpuVehicleAudioDynamics();
     private final GpuCombatAudioGate combatAudioEvents=new GpuCombatAudioGate();
     private boolean gpuPrimaryFireHeld,gpuAlternateFireHeld;
     private GpuOverlayMenu gameplayMenu;
@@ -588,8 +589,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             // Only live, host-confirmed facilities, fuelled driven cars and
             // thrown equipment can have an industrial or deployment sound.
             var industryMix=GpuIndustryAudioPlanner.plan(observed.x(),observed.z(),
-                observed.yaw(),observed.audioMachines(),observed.audioVehicles());
+                observed.yaw(),observed.audioMachines());
             audioBus.industry(industryMix,Gdx.graphics.getDeltaTime());
+            // Live pitch, engine occupancy and cues use host-published
+            // speed, fuel, driver and HP. Never infer throttle from keys.
+            audioBus.vehicle(vehicleDynamics.accept(observed.audioVehicles(),
+                observed.x(),observed.z(),observed.yaw(),
+                Gdx.graphics.getDeltaTime()));
             audioBus.biome(GpuBiomeAudioPlanner.at(gameplay.gpuWorld(),
                     observed.x(),observed.z(),observed.hour()),
                 Gdx.graphics.getDeltaTime());

@@ -452,6 +452,38 @@ public final class GpuAudioSynthesis {
         return pcm(out);
     }
 
+    /** Engine state changes derived from host speed/health/driver snapshots. */
+    public enum VehicleEvent { IGNITION, ACCELERATE, BRAKE, COLLISION, SHUTDOWN }
+    public static byte[] vehicleEvent(VehicleEvent event) {
+        int count=(int)(RATE*(event==VehicleEvent.COLLISION?.65:.38));
+        double[] out=new double[count];
+        Random noise=new Random(733901L+event.ordinal()*199L);
+        double phase=0,filtered=0;
+        for(int i=0;i<count;i++){
+            double t=i/(double)count;
+            double n=noise.nextDouble()*2-1;
+            filtered=.87*filtered+.13*n;
+            double hz=switch(event){
+                case IGNITION -> 72+160*t;
+                case ACCELERATE -> 165+370*t;
+                case BRAKE -> 540-390*t;
+                case COLLISION -> 150-115*t;
+                case SHUTDOWN -> 210-172*t;
+            };
+            phase+=TAU*hz/RATE;
+            double wave=Math.sin(phase);
+            double value=switch(event){
+                case IGNITION -> wave*.37+filtered*.34+n*.10;
+                case ACCELERATE -> wave*.47+filtered*.22+n*.13;
+                case BRAKE -> wave*.31+filtered*.20+n*.27;
+                case COLLISION -> filtered*.62+n*.33+wave*.23;
+                case SHUTDOWN -> wave*.40+filtered*.33;
+            };
+            out[i]=value*Math.pow(1-t,event==VehicleEvent.COLLISION?1.4:1.8)*.54;
+        }
+        return pcm(out);
+    }
+
     /** Device-free deterministic integrity check for CI / headless builds. */
     public static void main(String[] args) {
         for(Impact kind:Impact.values()) {
@@ -475,6 +507,9 @@ public final class GpuAudioSynthesis {
         for(GpuBiomeAudioPlanner.Bed bed:GpuBiomeAudioPlanner.Bed.values())
             if(biome(bed).length!=44+RATE*4*2)
                 throw new IllegalStateException("Missing original soundscape "+bed);
+        for(VehicleEvent type:VehicleEvent.values())
+            if(vehicleEvent(type).length<44+RATE/4)
+                throw new IllegalStateException("Missing vehicle event "+type);
         Set<Integer> checksums = new HashSet<>();
         for(int i = 0; i < 32; i++) {
             byte[] wav = weapon(i);

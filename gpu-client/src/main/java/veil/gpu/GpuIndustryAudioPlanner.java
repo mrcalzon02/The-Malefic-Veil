@@ -29,10 +29,8 @@ public final class GpuIndustryAudioPlanner {
         };
     }
     public static EnumMap<Channel,Mix> plan(double x,double y,double yaw,
-            List<MaleficVeil.GpuMachineAudio> machines,
-            List<MaleficVeil.GpuVehicleAudio> vehicles) {
+            List<MaleficVeil.GpuMachineAudio> machines) {
         Objects.requireNonNull(machines);
-        Objects.requireNonNull(vehicles);
         EnumMap<Channel,Mix> result=new EnumMap<>(Channel.class);
         for(Channel channel:Channel.values())result.put(channel,new Mix(0,0));
         // Find the loudest ACTUAL operating source in each independently mixed
@@ -45,17 +43,8 @@ public final class GpuIndustryAudioPlanner {
                 Channel.UTILITY;
             put(result,channel,x,y,yaw,machine.x(),machine.y(),30,.74);
         }
-        for(var car:vehicles) {
-            if(car.hp()<=0||car.driverId()<0||car.fuel()<=0)continue;
-            double speed=Math.abs(car.speed());
-            // A driver occupying a fueled vehicle is an observable authority
-            // state. Stationary parked vehicles have no driver and are silent.
-            put(result,Channel.ENGINE_IDLE,x,y,yaw,car.x(),car.y(),
-                27,.30+Math.min(.22,speed*.028));
-            if(speed>.25)
-                put(result,Channel.ENGINE_MOVING,x,y,yaw,car.x(),car.y(),
-                    31,Math.min(.80,speed*.083));
-        }
+        // Vehicles have a separate speed-driven Sound mixer that can adjust
+        // pitch, rather than fixed-frequency streaming factory loops.
         return result;
     }
     private static void put(EnumMap<Channel,Mix> target,Channel channel,
@@ -80,26 +69,18 @@ public final class GpuIndustryAudioPlanner {
             new MaleficVeil.GpuMachineAudio(26,3,0,true),
             new MaleficVeil.GpuMachineAudio(27,4,0,true),
             new MaleficVeil.GpuMachineAudio(34,5,0,true));
-        var empty=plan(0,0,0,off,List.of());
+        var empty=plan(0,0,0,off);
         for(Channel lane:Channel.values())need(empty.get(lane).gain()==0,
             "Idle infrastructure must remain silent: "+lane);
-        var loud=plan(0,0,0,on,List.of());
+        var loud=plan(0,0,0,on);
         for(Channel lane:List.of(Channel.UNRAVELED,Channel.PENITENT,
                 Channel.BEGOTTEN,Channel.UTILITY))
             need(loud.get(lane).gain()>0,"Missing distinct faction/utility "+lane);
         need(loud.get(Channel.ENGINE_IDLE).gain()==0,"Engine without vehicle");
-        var parked=new MaleficVeil.GpuVehicleAudio(1,2,0,0,100,200,-1);
-        need(plan(0,0,0,List.of(),List.of(parked))
-            .get(Channel.ENGINE_IDLE).gain()==0,"Parked engine sounded");
-        var moving=new MaleficVeil.GpuVehicleAudio(1,2,0,7,99,200,1);
-        var traffic=plan(0,0,0,List.of(),List.of(moving));
-        need(traffic.get(Channel.ENGINE_IDLE).gain()>0,"No driver idle");
-        need(traffic.get(Channel.ENGINE_MOVING).gain()>0,"No moving engine");
-        var dry=new MaleficVeil.GpuVehicleAudio(1,2,0,7,0,200,1);
-        need(plan(0,0,0,List.of(),List.of(dry))
-            .get(Channel.ENGINE_MOVING).gain()==0,"Dry tank emits engine");
+        need(loud.get(Channel.ENGINE_MOVING).gain()==0,
+            "Vehicle audio belongs exclusively to speed-controlled mixer");
         need(faction(8)==0&&faction(9)==1&&faction(10)==2&&faction(34)==-1,
             "Faction mapping collapse");
-        System.out.println("PASS GPU_INDUSTRY_AUDIO three factions,utils,driving,silent idle");
+        System.out.println("PASS GPU_INDUSTRY_AUDIO three factories, utility, silent idle");
     }
 }

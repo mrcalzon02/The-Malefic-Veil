@@ -156,6 +156,13 @@ public final class GpuOverlayMenu {
             case "fov"->settings.fieldOfView=Math.max(55,
                 Math.min(100,settings.fieldOfView+direction*5));
             case "lights"->settings.lights=Math.max(0,Math.min(8,settings.lights+direction));
+            case "window"->{
+                settings.windowSize=Math.floorMod(
+                    settings.windowSize+direction,GpuClientSettings.WINDOWS.length);
+                settings.fullscreen=false;
+                int[] size=GpuClientSettings.WINDOWS[settings.windowSize];
+                Gdx.graphics.setWindowedMode(size[0],size[1]);
+            }
             case "vsync"->{settings.vsync=!settings.vsync;Gdx.graphics.setVSync(settings.vsync);}
             case "fullscreen"->{
                 settings.fullscreen=!settings.fullscreen;
@@ -222,6 +229,10 @@ public final class GpuOverlayMenu {
                     ()->changeVideo("lights",-1),()->changeVideo("lights",1));
                 slider("VSYNC "+(settings.vsync?"ON":"OFF"),
                     ()->changeVideo("vsync",0),()->changeVideo("vsync",0));
+                slider("WINDOW RESOLUTION "+
+                    GpuClientSettings.WINDOWS[settings.windowSize][0]+"x"+
+                    GpuClientSettings.WINDOWS[settings.windowSize][1],
+                    ()->changeVideo("window",-1),()->changeVideo("window",1));
                 slider("FULLSCREEN "+(settings.fullscreen?"YES":"NO"),
                     ()->changeVideo("fullscreen",0),()->changeVideo("fullscreen",0));
                 add("CONTROLS",()->show(Screen.CONTROLS));

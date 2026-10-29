@@ -763,9 +763,15 @@ public final class ArenaSystems {
             CharacterRoster.Faction needed=facilityFaction(kind);
             if(needed!=null&&factions.faction(p.accountKey)!=needed)
                 return new BuildReview(false,"WRONG_FACTION_FACILITY",price,supplies,x,y);
-            if(world.devices.stream().anyMatch(d->d.hp>0&&d.kind==kind&&
-               p.accountKey.equals(d.ownerKey)))
+            long ownedKind=world.devices.stream().filter(d->d.hp>0&&d.kind==kind&&
+                p.accountKey.equals(d.ownerKey)).count();
+            // Incursion's 25-load work requires two individually funded plants.
+            if(ownedKind>=(kind==GENERATOR?2:1))
                 return new BuildReview(false,"ALREADY_OWNS_FACTION_SITE",price,supplies,x,y);
+            if(kind==GENERATOR&&world.devices.stream().anyMatch(d->
+                d.hp>0&&d.kind==GENERATOR&&p.accountKey.equals(d.ownerKey)&&
+                Math.hypot(d.x-x,d.y-y)<1.0))
+                return new BuildReview(false,"GENERATOR_CLEARANCE",price,supplies,x,y);
             boolean ownsCamp=world.devices.stream().anyMatch(d->
                 d.hp>0&&d.kind==CAMP_STAKE&&p.accountKey.equals(d.ownerKey)&&
                 Math.hypot(x-d.x,y-d.y)<=8);
@@ -954,8 +960,8 @@ public final class ArenaSystems {
                    Math.hypot(crate.x-device.x,crate.y-device.y)>5.5)continue;
                 if(process.utilityDemand()>0){
                     boolean powered=process.era().ordinal()>=CraftingEraRegistry.Era.ELECTRIC.ordinal()?
-                        ElectricUtility.available(world.devices,device,
-                            process.utilityDemand(),Map.of(),lastUtilityTickMs)!=null:
+                        !ElectricUtility.allocation(world.devices,device,
+                            process.utilityDemand(),Map.of(),lastUtilityTickMs).isEmpty():
                         SteamUtility.available(world.devices,device,
                             process.utilityDemand(),Map.of(),lastUtilityTickMs)!=null;
                     if(!powered)continue;
@@ -1033,11 +1039,11 @@ public final class ArenaSystems {
                 d.factoryHold="WAIT_WITNESS";
                 continue;
             }
-            World.Device generator=ElectricUtility.available(world.devices,d,
+            Map<World.Device,Integer> sources=ElectricUtility.allocation(world.devices,d,
                 recipe.utilityDemand(),allocated,ms);
-            if(generator==null){
-                d.factoryHold=ElectricUtility.available(world.devices,d,
-                    recipe.utilityDemand(),Map.of(),ms)==null?
+            if(sources.isEmpty()){
+                d.factoryHold=ElectricUtility.allocation(world.devices,d,
+                    recipe.utilityDemand(),Map.of(),ms).isEmpty()?
                     "WAIT_POWER":"WAIT_CAPACITY";
                 continue;
             }
@@ -1055,7 +1061,8 @@ public final class ArenaSystems {
                 // cycle must independently obtain genuine ingredients/power.
                 if(!AutomationOrders.repeating(d.queuedRecipeId))
                     d.queuedRecipeId="";
-                allocated.merge(generator,recipe.utilityDemand(),Integer::sum);
+                for(var source:sources.entrySet())
+                    allocated.merge(source.getKey(),source.getValue(),Integer::sum);
                 paid=true;
                 break;
             }
@@ -1133,15 +1140,16 @@ public final class ArenaSystems {
             }
             if(recipe.era().ordinal()>=CraftingEraRegistry.Era.ELECTRIC.ordinal()&&
                recipe.utilityDemand()>0&&d.productionMs<needMs){
-                World.Device generator=ElectricUtility.available(world.devices,d,
+                Map<World.Device,Integer> sources=ElectricUtility.allocation(world.devices,d,
                     recipe.utilityDemand(),electricDraw,ms);
-                if(generator==null){
-                    d.factoryHold=ElectricUtility.available(world.devices,d,
-                        recipe.utilityDemand(),Map.of(),ms)==null?
+                if(sources.isEmpty()){
+                    d.factoryHold=ElectricUtility.allocation(world.devices,d,
+                        recipe.utilityDemand(),Map.of(),ms).isEmpty()?
                         "WAIT_POWER":"WAIT_CAPACITY";
                     continue;
                 }
-                electricDraw.merge(generator,recipe.utilityDemand(),Integer::sum);
+                for(var source:sources.entrySet())
+                    electricDraw.merge(source.getKey(),source.getValue(),Integer::sum);
                 advanceFactionBatch(d,ms);
             }else if(recipe.utilityDemand()>0&&d.productionMs<needMs){
                 World.Device boiler=SteamUtility.available(world.devices,d,
@@ -1436,8 +1444,8 @@ public final class ArenaSystems {
             boolean electric=job.era().ordinal()>=
                 CraftingEraRegistry.Era.ELECTRIC.ordinal();
             boolean on=electric?
-                ElectricUtility.available(world.devices,d,job.utilityDemand(),
-                    Map.of(),lastUtilityTickMs)!=null:
+                !ElectricUtility.allocation(world.devices,d,job.utilityDemand(),
+                    Map.of(),lastUtilityTickMs).isEmpty():
                 SteamUtility.available(world.devices,d,job.utilityDemand(),
                     Map.of(),lastUtilityTickMs)!=null;
             if(!on)return electric?"WAIT_POWER":"WAIT_STEAM";

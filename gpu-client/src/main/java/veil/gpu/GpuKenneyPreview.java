@@ -176,6 +176,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private GpuAudioBus audioBus;
     private double audioLastStepX=Double.NaN,audioLastStepZ=Double.NaN,audioStepDistance;
     private final GpuAudioEventGate audioEvents=new GpuAudioEventGate();
+    private final GpuWorldAudioGate worldAudioEvents=new GpuWorldAudioGate();
     private GpuOverlayMenu gameplayMenu;
     private Runnable onReturnMain;
     public void audioBus(GpuAudioBus bus){this.audioBus=bus;}
@@ -558,6 +559,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     case NONE -> {}
                 }
             }
+            for(var cue:worldAudioEvents.accept(observed.health(),observed.cash(),
+                    observed.dead(),observed.inventory(),observed.inventoryItems(),
+                    observed.notice()))audioBus.worldCue(cue);
             audioBus.weather(observed.weatherPreset(),observed.rain(),
                 observed.snow(),observed.flash(),Gdx.graphics.getDeltaTime());
         }

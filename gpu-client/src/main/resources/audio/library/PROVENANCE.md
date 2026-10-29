@@ -13,7 +13,12 @@ Selected from the connected owner's **Sounds** / **sound/ui** folders before loo
 | Lightning-crackle.mp3 | `1MYeRqRBmrMawnndRquVo7SD3lr88eKD3` | electric source layer | bundled, loaded |
 | FLAME.mp3 | `1T4wN8wPhVqrBl4DTK7hKjZF6mnk5RjDc` | explosive/propellant source layer | bundled, loaded |
 | Plas.mp3 | `1F-F_Sh6_kRCSAat5J1Xqmr5Bs9u8Vqrj` | cryo source layer (provisional) | bundled, loaded |
-| RELOAD.mp3 | `1bR4aczSliEitM6Cu-gXTNHMFdqbkfcQ3` | future weapon reload layer | bundled, **not yet event-wired** |
+| RELOAD.mp3 | `1bR4aczSliEitM6Cu-gXTNHMFdqbkfcQ3` | subdued layered reload cue | bundled, authoritative reload action |
+| Coins.wav | `1KwYATDrau5t2-P0TbyeMb-YjNg-SsfI9` | confirmed cash increase | bundled, loaded |
+| Drawer.wav | `1-6Rc4Cz0JTHvsBWSXOqNtfQNKRZ7Ehi9` | inventory panel opening | bundled, loaded |
+| Shifting_cloth.wav | `159kexDFReIWbytRsZAUVzAMIFR0sFmBE` | increased carried-item stock | bundled, loaded |
+| Granade.wav | `1-mskBupR-Wd_VEaqd5bTezrXVH0IA5iz` | provisional thrown-deployable acknowledgement | bundled, loaded |
+| Bash.mp3 | `1QKJP7i_gpJLNP3UPXrEB4nc4PYN3SLKe` | damage/death impact | bundled, loaded |
 
 Original audio under `gpu-client/src/main/resources/audio/cold-unresolved-drone.mp3.part00..07` is **separately** verified byte-for-byte against the approved Google Drive menu-music recording; see `../PROVENANCE.md`. Never repurpose these track pieces as effects or replace their checksum.
 

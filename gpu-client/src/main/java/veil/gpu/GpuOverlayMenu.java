@@ -131,7 +131,10 @@ public final class GpuOverlayMenu {
                signal.contains("CANNOT")||signal.contains("FIRST PAGE")||
                signal.contains("END OF")||signal.contains("AWAITING")||
                signal.contains("INVALID"))audio.reject();
-            else audio.confirm();
+            else if(signal.startsWith("OPTIONS SAVED")||
+                    signal.startsWith("SAVED "))audio.confirm();
+            // A request sent to the host is not confirmation of success.
+            // The published host notice drives definitive positive feedback.
         }
     }
     private void quickPanel(int key){

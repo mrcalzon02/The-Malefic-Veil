@@ -102,3 +102,12 @@ Inspected exact imported original recordings with ffprobe and ffmpeg's `volumede
 
 **Verification contract:** `GpuAudioEventGate.main` asserts no replay, first-snapshot silence, primary/alternate/reload/charge/equip transitions and invalid weapon rejection; `GpuAudioSynthesis.main` asserts all 32 primary, alternate and handling waveforms are valid/distinct and weather beds exist. Existing GPU Linux/Windows workflows run both. A CI pass validates generation and packaging, **not** whether each sound is artistically suitable or audible on every device.
 
+
+## Stage 3 — Confirmed world events and five more Drive assets
+
+- Added `GpuWorldAudioGate` to compare immutable host snapshots: injury, healing, death, increased cash, added inventory items and inventory-panel opening. The first frame establishes a baseline and does not play old events.
+- Triggers success, failure, and deployed-item cues from changed host notices, not merely the button that submitted a request.
+- Imported five more user-archived audio files: `Coins.wav`, `Drawer.wav`, `Shifting_cloth.wav`, `Granade.wav`, `Bash.mp3`. Asset rights remain a separate verification gate documented in the audio library provenance.
+- Removed premature success chimes from the in-game UI when it had only requested host action, not received host acceptance.
+- `GpuWorldAudioGate.main` is a device-free regression for event changes and historical-state suppression, included in the GPU CI.
+- Still pending: precise world-position/occlusion for doors, faction machinery, vehicle engines, biome soundscapes, sound mastering, dynamic music, realistic deployable mechanical transitions and material-specific footsteps.

@@ -28,7 +28,7 @@ public final class GpuAudioBus implements AutoCloseable {
     private final Sound[] weapon=new Sound[32];
     private final Sound[] alternate=new Sound[32];
     private final Sound[] handling=new Sound[32];
-    private Sound thunder,sourceReload;
+    private Sound thunder,sourceReload,sourceCoins,sourceDrawer,sourceCloth,sourceHurt,sourceField;
     private final Sound[] sourceFamily=new Sound[8];
     private Sound menuClick,menuConfirm,menuReject,panelOpen;
     private final List<Path> temporary=new ArrayList<>();
@@ -112,6 +112,11 @@ public final class GpuAudioBus implements AutoCloseable {
                 handling[i]=synthesized("weapon-handling-"+(i+1),GpuAudioSynthesis.handling(i));
             }
             sourceReload=sourced("RELOAD.mp3");
+            sourceCoins=sourced("Coins.wav");
+            sourceDrawer=sourced("Drawer.wav");
+            sourceCloth=sourced("Shifting_cloth.wav");
+            sourceHurt=sourced("Bash.mp3");
+            sourceField=sourced("Granade.wav");
             sourceFamily[0]=sourced("Shot.mp3");
             sourceFamily[1]=sourced("LAS.mp3");
             sourceFamily[2]=sourced("Lightning-crackle.mp3");
@@ -217,6 +222,24 @@ public final class GpuAudioBus implements AutoCloseable {
         play(cues[(footstep++%2==0?GpuAudioSynthesis.Cue.FOOTSTEP_A:
             GpuAudioSynthesis.Cue.FOOTSTEP_B).ordinal()],settings.effectsGain()*.23f);
     }
+    /** Play only events derived from observable gameplay changes, never client guesses. */
+    public void worldCue(GpuWorldAudioGate.Cue event){
+        switch(event){
+            case INVENTORY -> play(sourceDrawer,settings.uiGain()*.32f);
+            case PICKUP -> play(sourceCloth,settings.effectsGain()*.22f);
+            case MONEY -> play(sourceCoins,settings.effectsGain()*.47f);
+            case HURT -> play(sourceHurt,settings.effectsGain()*.52f);
+            case HEAL -> play(cues[GpuAudioSynthesis.Cue.CONFIRM.ordinal()],
+                settings.effectsGain()*.36f);
+            case DEATH -> {
+                play(sourceHurt,settings.effectsGain()*.7f);
+                play(thunder,settings.effectsGain()*.19f);
+            }
+            case DENIED -> play(menuReject,settings.uiGain()*.29f);
+            case CRAFTED -> play(menuConfirm,settings.uiGain()*.56f);
+            case DEPLOYED -> play(sourceField,settings.effectsGain()*.3f);
+        }
+    }
     /** Legacy entry point only; world code must supply its actual arsenal index. */
     public void shoot(){shoot(0);}
     public void shoot(int arsenalIndex){
@@ -236,13 +259,15 @@ public final class GpuAudioBus implements AutoCloseable {
         for(Sound s:weapon)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:alternate)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:handling)if(s!=null&&disposed.add(s))s.dispose();
-        for(Sound s:new Sound[]{thunder,sourceReload})if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound s:new Sound[]{thunder,sourceReload,sourceCoins,sourceDrawer,
+                sourceCloth,sourceHurt,sourceField})
+            if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:sourceFamily)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:new Sound[]{menuClick,menuConfirm,menuReject,panelOpen})
             if(s!=null&&disposed.add(s))s.dispose();
         Arrays.fill(cues,null);Arrays.fill(weapon,null);Arrays.fill(alternate,null);
         Arrays.fill(handling,null);Arrays.fill(sourceFamily,null);
-        thunder=sourceReload=null;
+        thunder=sourceReload=sourceCoins=sourceDrawer=sourceCloth=sourceHurt=sourceField=null;
         menuClick=menuConfirm=menuReject=panelOpen=null;
         available=false;
         for(Path path:temporary)try{Files.deleteIfExists(path);}catch(IOException ignored){}

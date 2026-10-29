@@ -177,6 +177,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private double audioLastStepX=Double.NaN,audioLastStepZ=Double.NaN,audioStepDistance;
     private final GpuAudioEventGate audioEvents=new GpuAudioEventGate();
     private final GpuWorldAudioGate worldAudioEvents=new GpuWorldAudioGate();
+    private boolean gpuPrimaryFireHeld,gpuAlternateFireHeld;
     private GpuOverlayMenu gameplayMenu;
     private Runnable onReturnMain;
     public void audioBus(GpuAudioBus bus){this.audioBus=bus;}
@@ -573,6 +574,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 gameplay.gpuKey(binding[1],pressed);
             }
         }
+        // A single transition updates host-side held fire; the host's existing
+        // 66ms firing loop implements charging, continuous fire and cooldown.
+        // Opening a menu immediately releases both buttons.
+        boolean primary=active&&Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+        boolean alternate=active&&Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+        if(primary!=gpuPrimaryFireHeld||alternate!=gpuAlternateFireHeld){
+            gpuPrimaryFireHeld=primary;gpuAlternateFireHeld=alternate;
+            gameplay.gpuHoldFire(primary,alternate);
+        }
         if(!active){
             Gdx.input.setCursorCatched(false);
             return;
@@ -588,7 +598,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             MaleficVeil.GpuFrame before=gameplay.gpuFrame();
-            gameplay.gpuFire(); // Async host request; its action snapshot triggers firing sound.
+            gameplay.gpuFire(false); // First request; held loop continues at the host.
             if(audioBus!=null&&before!=null&&before.arsenalState()!=null){
                 var state=before.arsenalState();
                 // Explicit dry-fire feedback is permitted for known empty clips;
@@ -596,6 +606,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(state.clip()[before.weapon()]<=0&&state.reloadRemaining()<=0)
                     audioBus.empty();
             }
+        }
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)){
+            gameplay.gpuFire(true); // Existing arsenal alternate fire, not a local approximation.
         }
         MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
         if(frame!=null){
@@ -1290,6 +1303,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 gameplay.gpuKey(KeyEvent.VK_W,false);
                 gameplay.gpuFire();
             }
+            if(frames==28)gameplay.gpuHoldFire(true,false);
+            if(frames==44)gameplay.gpuHoldFire(false,false);
+            if(frames==50)gameplay.gpuFire(true); // secondary fire, host-validated
+
             if(frames==60){
                 if(menu.sourcedDraws()<20)
                     throw new IllegalStateException("Gameplay HUD did not render original UI skin");

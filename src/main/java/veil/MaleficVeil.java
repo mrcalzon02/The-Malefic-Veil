@@ -104,7 +104,23 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 cameraPitch-Math.max(-120,Math.min(120,deltaY))*.004));
         });
     }
-    public void gpuFire(){SwingUtilities.invokeLater(()->{if(!dead)shoot(false);});}
+    public void gpuFire(){gpuFire(false);}
+    public void gpuFire(boolean alternate){
+        SwingUtilities.invokeLater(()->{if(!dead)shoot(alternate);});
+    }
+    /** GPU input mirrors Swing's held primary/secondary firing, including
+     * server-validated windup, sustained fire, heat, release and cooldown.
+     * Only state transitions cross the render/EDT boundary. */
+    public void gpuHoldFire(boolean primary,boolean alternate){
+        SwingUtilities.invokeLater(()->{
+            boolean wasHeld=primaryHeld||secondaryHeld;
+            primaryHeld=primary;secondaryHeld=alternate;
+            if(wasHeld&&!primary&&!alternate){
+                if(net!=null)net.arsenalRelease();
+                else localHost.arsenal.release(1);
+            }
+        });
+    }
     public void gpuSceneReady(){SwingUtilities.invokeLater(()->{
         if(net!=null)net.sceneReady();
         DesktopDiagnostics.note("GPU_PLAY_SESSION_READY");

@@ -111,3 +111,9 @@ Inspected exact imported original recordings with ffprobe and ffmpeg's `volumede
 - Removed premature success chimes from the in-game UI when it had only requested host action, not received host acceptance.
 - `GpuWorldAudioGate.main` is a device-free regression for event changes and historical-state suppression, included in the GPU CI.
 - Still pending: precise world-position/occlusion for doors, faction machinery, vehicle engines, biome soundscapes, sound mastering, dynamic music, realistic deployable mechanical transitions and material-specific footsteps.
+
+## GPU input continuity — primary/alternate fire
+
+The GPU client previously sent only a one-shot primary mouse press. Held firing was not forwarded to the real `MaleficVeil` simulation, and right-mouse alternate fire had no GPU entry point. The new `gpuHoldFire(primary,alternate)` path forwards **state transitions** to the existing Swing-EDT host gameplay input, keeping continuous fire, charge, spin-up and release under the same `ArsenalSystems` authoritative cooldown/ammunition handling as traditional play. Right-click sends `gpuFire(true)`; all sound still comes from confirmed `ArsenalSystems.View.actionAt`, never raw mouse input. Menu opening sends release to avoid firing behind overlays. GPU live smoke now exercises held primary and alternate host requests.
+
+Do not describe this as fully listening-tested until the GPU CI and real device pass. Host-side ballistic/hit rules are unchanged.

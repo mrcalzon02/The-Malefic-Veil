@@ -35,7 +35,8 @@ public final class GameplayMeshes {
         "facility-signal-relay","facility-security-grid",
         "facility-fuel-refinery","facility-terror-collector",
         "facility-nutrient-digestor","facility-unraveled-defense-works",
-        "facility-penitent-ward-sanctum","facility-begotten-organ-lattice"};
+        "facility-penitent-ward-sanctum","facility-begotten-organ-lattice",
+        "facility-unraveled-resilience-grid"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -562,7 +563,7 @@ public final class GameplayMeshes {
 
         // E5 has actual static, collidable, faction-distinct PSX 3D machinery,
         // not a common factory reskin or thrown deployment.
-        for(int index=41;index<=54;index++){
+        for(int index=41;index<=55;index++){
             Model machine=new Model();
             int frame=index==53?0x635363:index==54?0x76565E:0x535D64;
             machine.box(0,.18,0,2.62,.27,2.10,frame);
@@ -680,7 +681,17 @@ public final class GameplayMeshes {
                     }
                     machine.diamond(0,2.48,0,.32,.64,0xDAB4A2);
                 }
-                default -> throw new IllegalStateException("Missing E5 industrial geometry");
+                case 55 -> { // Unraveled resilience grid: four armored pylons and a reinforced lattice
+                    machine.box(0,.72,0,2.36,.35,1.86,0x556F79);
+                    for(int side:new int[]{-1,1})for(int end:new int[]{-1,1}){
+                        machine.box(side*.90,1.28,end*.66,.30,1.64,.30,0x8B9EA6);
+                        machine.diamond(side*.90,2.12,end*.66,.22,.39,0xA4C8D1);
+                    }
+                    machine.box(0,1.86,0,2.16,.16,.18,0xA7C2C9);
+                    machine.box(0,1.46,0,.17,.86,1.65,0xB5A76E);
+                    machine.diamond(0,1.75,0,.43,.53,0x82C9DB);
+                }
+                default -> throw new IllegalStateException("Missing E5/Incursion industrial geometry");
             }
             meshes.put(DEVICE[index],machine.done());
         }

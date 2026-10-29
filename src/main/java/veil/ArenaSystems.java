@@ -134,7 +134,7 @@ public final class ArenaSystems {
         SIGNAL_RELAY=47,SECURITY_GRID=48,FUEL_REFINERY=49,
         TERROR_COLLECTOR=50,NUTRIENT_DIGESTOR=51,
         UNRAVELED_DEFENSE_WORKS=52,PENITENT_WARD_SANCTUM=53,
-        BEGOTTEN_ORGAN_LATTICE=54;
+        BEGOTTEN_ORGAN_LATTICE=54,UNRAVELED_RESILIENCE_GRID=55;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -604,11 +604,12 @@ public final class ArenaSystems {
             case UNRAVELED_DEFENSE_WORKS -> "unraveled-defense-works";
             case PENITENT_WARD_SANCTUM -> "penitent-ward-sanctum";
             case BEGOTTEN_ORGAN_LATTICE -> "begotten-organ-lattice";
+            case UNRAVELED_RESILIENCE_GRID -> "resilience-grid";
             default -> null;
         };
     }
     public static int kindForFacility(String facility){
-        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_ORGAN_LATTICE;kind++)
+        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=UNRAVELED_RESILIENCE_GRID;kind++)
             if(java.util.Objects.equals(factionFacility(kind),facility))return kind;
         return -1;
     }
@@ -624,7 +625,8 @@ public final class ArenaSystems {
             case PENITENT_RELIQUARY,PENITENT_CANTOR_DAIS,PENITENT_CHOIR_RELAY,
                 TERROR_COLLECTOR,PENITENT_WARD_SANCTUM ->
                 CharacterRoster.Faction.THE_PENITENT;
-            case UNRAVELED_PRESSURE_SHOP,UNRAVELED_SENSOR_LAB,UNRAVELED_DEFENSE_WORKS ->
+            case UNRAVELED_PRESSURE_SHOP,UNRAVELED_SENSOR_LAB,UNRAVELED_DEFENSE_WORKS,
+                UNRAVELED_RESILIENCE_GRID ->
                 CharacterRoster.Faction.THE_UNRAVELED;
             default -> null;
         };
@@ -662,6 +664,7 @@ public final class ArenaSystems {
             case UNRAVELED_DEFENSE_WORKS -> "unraveled-defense-scanner";
             case PENITENT_WARD_SANCTUM -> "penitent-sanctify-shell";
             case BEGOTTEN_ORGAN_LATTICE -> "begotten-pulse-organ";
+            case UNRAVELED_RESILIENCE_GRID -> "resilience-core";
             default -> null;
         };
     }
@@ -733,7 +736,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>BEGOTTEN_ORGAN_LATTICE)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        if(kind<0||kind>UNRAVELED_RESILIENCE_GRID)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
         int price=kind>=FIELD_FIRE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind>=FIELD_FIRE?0:

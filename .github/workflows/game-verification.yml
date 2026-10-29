@@ -103,6 +103,7 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.SecondEraFactionProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.PhysicalFacilityDependencyTest
           java -Djava.awt.headless=true -cp build/classes veil.ConstructionFundingTest
+          java -Djava.awt.headless=true -cp build/classes veil.IncursionResilienceGridTest
           java -Djava.awt.headless=true -cp build/classes veil.SteamEraProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.ElectricEraProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.ConveyorLogisticsTest

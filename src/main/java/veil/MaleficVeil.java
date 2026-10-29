@@ -325,7 +325,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         CraftingEraRegistry.Faction selected=gpuCraftFaction();
         java.util.List<String> result=new java.util.ArrayList<>();
         for(int kind=ArenaSystems.CLAIM_HEART;
-                kind<=ArenaSystems.BEGOTTEN_ORGAN_LATTICE;kind++){
+                kind<=ArenaSystems.UNRAVELED_RESILIENCE_GRID;kind++){
             String id=ArenaSystems.factionFacility(kind);
             var facility=CraftingEraRegistry.facility(id);
             if(facility!=null&&(facility.faction()==CraftingEraRegistry.Faction.ALL||

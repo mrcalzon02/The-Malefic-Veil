@@ -1,0 +1,413 @@
+{
+  "kind": "SOURCE_ASSET_SCALE_STUDY",
+  "status": "SCALE_REVIEW_REQUIRED",
+  "storey_m": 3.0,
+  "user_approximate_nine_feet_m": 2.7432,
+  "facade_span_m": 6.0,
+  "vehicle_runtime_scale": 1.9,
+  "human_guide_m": 1.8,
+  "building_roof_note": "Original wall-a-roof at scale 6 adds 3m above the wall height; total heights are 6m and 9m.",
+  "not_runtime_screenshot": true,
+  "sources": {
+    "wall-type-b": {
+      "native_bounds_z_up": [
+        [
+          -0.5,
+          -0.03500000014901161,
+          0.0
+        ],
+        [
+          0.5,
+          0.03500000014901161,
+          0.5
+        ]
+      ],
+      "sha256": "b37ec43f05d28bb715bddcda8e772b5aac6af888ade6b8f258abe418abf44b9d"
+    },
+    "wall-a-roof": {
+      "native_bounds_z_up": [
+        [
+          -0.5,
+          -0.5,
+          0.0
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ]
+      ],
+      "sha256": "74b8263e1a28ecfca6b59e84709dd9dae1df9c9aa9b81ec0d3f83906c934545c"
+    },
+    "door-type-a": {
+      "native_bounds_z_up": [
+        [
+          -0.19889692962169647,
+          -0.02500000037252903,
+          0.0
+        ],
+        [
+          0.19889692962169647,
+          0.02500000037252903,
+          0.6277938485145569
+        ]
+      ],
+      "sha256": "84583c26676636e3e0274a9842d841b04684d18a8b6e7f58ebefb7d91e5a0142"
+    },
+    "window-wide-type-a": {
+      "native_bounds_z_up": [
+        [
+          -0.2988969385623932,
+          -0.02500000037252903,
+          0.0
+        ],
+        [
+          0.2988969385623932,
+          0.02500000037252903,
+          0.5977938771247864
+        ]
+      ],
+      "sha256": "30d570addbdda3ee49d5e7f3d45016b8ef552aea72351c89582b39684dddbc64"
+    },
+    "truck-green": {
+      "native_bounds_z_up": [
+        [
+          -0.41499999165534973,
+          -0.8217000365257263,
+          0.0
+        ],
+        [
+          0.41499999165534973,
+          0.8217000365257263,
+          1.0059599876403809
+        ]
+      ],
+      "sha256": "a322288e2dbdc56b126751951451cf5d3014f5b04232fa66e84b74d1a941f9f4",
+      "runtime_dimensions_m": [
+        1.577,
+        3.1225,
+        1.9113
+      ]
+    },
+    "truck-grey": {
+      "native_bounds_z_up": [
+        [
+          -0.41499999165534973,
+          -0.8217000365257263,
+          0.0
+        ],
+        [
+          0.41499999165534973,
+          0.8217000365257263,
+          1.0059599876403809
+        ]
+      ],
+      "sha256": "873e33b96f5c6509c08df3348164c38a5ed2633c34fd3c461df081d446e48737",
+      "runtime_dimensions_m": [
+        1.577,
+        3.1225,
+        1.9113
+      ]
+    }
+  },
+  "instances": [
+    {
+      "source": "wall-type-b",
+      "position": [
+        -4.6,
+        -3,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        -4.6,
+        3,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        -7.6,
+        0,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 1.5707963267948966
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        -1.5999999999999996,
+        0,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 1.5707963267948966
+    },
+    {
+      "source": "window-wide-type-a",
+      "position": [
+        -6.199999999999999,
+        -3.24,
+        0.85
+      ],
+      "uniform_scale": 2.3,
+      "yaw": 0
+    },
+    {
+      "source": "window-wide-type-a",
+      "position": [
+        -2.9999999999999996,
+        -3.24,
+        0.85
+      ],
+      "uniform_scale": 2.3,
+      "yaw": 0
+    },
+    {
+      "source": "wall-a-roof",
+      "position": [
+        -4.6,
+        0,
+        3
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "door-type-a",
+      "position": [
+        -4.6,
+        -3.25,
+        0
+      ],
+      "uniform_scale": 3,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        4.6,
+        -3,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        4.6,
+        3,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        1.5999999999999996,
+        0,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 1.5707963267948966
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        7.6,
+        0,
+        0.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 1.5707963267948966
+    },
+    {
+      "source": "window-wide-type-a",
+      "position": [
+        2.9999999999999996,
+        -3.24,
+        0.85
+      ],
+      "uniform_scale": 2.3,
+      "yaw": 0
+    },
+    {
+      "source": "window-wide-type-a",
+      "position": [
+        6.199999999999999,
+        -3.24,
+        0.85
+      ],
+      "uniform_scale": 2.3,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        4.6,
+        -3,
+        3.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        4.6,
+        3,
+        3.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        1.5999999999999996,
+        0,
+        3.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 1.5707963267948966
+    },
+    {
+      "source": "wall-type-b",
+      "position": [
+        7.6,
+        0,
+        3.0
+      ],
+      "uniform_scale": 6,
+      "yaw": 1.5707963267948966
+    },
+    {
+      "source": "window-wide-type-a",
+      "position": [
+        2.9999999999999996,
+        -3.24,
+        3.85
+      ],
+      "uniform_scale": 2.3,
+      "yaw": 0
+    },
+    {
+      "source": "window-wide-type-a",
+      "position": [
+        6.199999999999999,
+        -3.24,
+        3.85
+      ],
+      "uniform_scale": 2.3,
+      "yaw": 0
+    },
+    {
+      "source": "wall-a-roof",
+      "position": [
+        4.6,
+        0,
+        6
+      ],
+      "uniform_scale": 6,
+      "yaw": 0
+    },
+    {
+      "source": "door-type-a",
+      "position": [
+        4.6,
+        -3.25,
+        0
+      ],
+      "uniform_scale": 3,
+      "yaw": 0
+    },
+    {
+      "source": "truck-green",
+      "position": [
+        -4.6,
+        -6,
+        0
+      ],
+      "uniform_scale": 1.9,
+      "yaw": 1.5707963267948966
+    },
+    {
+      "source": "truck-grey",
+      "position": [
+        4.6,
+        -6,
+        0
+      ],
+      "uniform_scale": 1.9,
+      "yaw": 1.5707963267948966
+    }
+  ],
+  "views": {
+    "street-scale": {
+      "path": "previews/city-scale-comparison/street-scale.png",
+      "sha256": "78050eb8c1bd5d374bb411e582b35f47371befbb875b4d18f27715de15a1b27a",
+      "labels": [
+        {
+          "text": "1 storey / 6 x 6 m footprint",
+          "pixel": [
+            422,
+            348
+          ]
+        },
+        {
+          "text": "2 storey / 6 x 6 m footprint",
+          "pixel": [
+            952,
+            198
+          ]
+        }
+      ]
+    },
+    "elevated-scale": {
+      "path": "previews/city-scale-comparison/elevated-scale.png",
+      "sha256": "a1602759538c513100402270efa280d75ea21af9586279d725e07f87ee75c5db",
+      "labels": [
+        {
+          "text": "1 storey / 6 x 6 m footprint",
+          "pixel": [
+            407,
+            314
+          ]
+        },
+        {
+          "text": "2 storey / 6 x 6 m footprint",
+          "pixel": [
+            872,
+            315
+          ]
+        }
+      ]
+    }
+  },
+  "review": {
+    "date": "2026-10-29",
+    "decision": "scale-study-only",
+    "actual_images_viewed": [
+      "street-scale",
+      "elevated-scale"
+    ],
+    "findings": [
+      "Both images preserve common world scale and use actual Kenney GLB source geometry.",
+      "One- and two-storey examples, actual runtime-scaled trucks and 1.8m guides are visible together.",
+      "The original wall-type-b has large open bands; these example assemblies are not finished enclosed buildings or working interiors.",
+      "Native door-type-a at scale 3 is about 1.88m tall; the proposed usable interior doors will need explicit clearance rather than assuming the decorative source establishes it.",
+      "The steep native roof adds 3m; that additional roof height must not be confused with the 3m floor-to-floor height."
+    ],
+    "next_step": "Review size comparison before expanding the requested modular interior kit; use the reconciled main city geometry and placement contract."
+  }
+}

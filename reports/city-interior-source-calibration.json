@@ -1,0 +1,451 @@
+[
+  {
+    "id": "wall-a",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sha256": "6fceda24c30d2c22694f232f03fe2115fb1a462046fbbf719a90eea10dc9af00",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "wall_lines",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-a-flat",
+    "bounds_z_up": [
+      [
+        -0.5,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        0.0,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      0.0,
+      1.0
+    ],
+    "sha256": "c8e2d94e330ee62a476cd4350fb62fe1577ee87843d8d344e12c675c386a9408",
+    "images": [
+      {
+        "name": "wall_lines",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-a-door",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sha256": "554f1c0cedac9b31b73ee8c623395059a4bca05290ecf8f6a8920363d6f487bf",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "doors",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "metal",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "wall_lines",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-a-window",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sha256": "4a5ecc11c1c8820f555375ccabb426c6420ebd2bc9c7bcb5f2c472f655c3b03b",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "metal",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "wall_lines",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "windows",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-a-open",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sha256": "82b153c90f63dbec15fcde89dce20ce752b129c668225edfd0982e6e34a0797f",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "wall_lines",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-b",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sha256": "8fca42a344b37c34add41c6dda88ee35899b26444237f88b7f0fe9da14f09e28",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "metal_wall",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-b-window",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sha256": "b579cff0a0c17ff69a37abd87bb9ef9b9cd06ce4538a00368b75d3ed1a47e96f",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "metal",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "metal_wall",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "windows",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "door-type-a",
+    "bounds_z_up": [
+      [
+        -0.19889692962169647,
+        -0.02500000037252903,
+        0.0
+      ],
+      [
+        0.19889692962169647,
+        0.02500000037252903,
+        0.6277938485145569
+      ]
+    ],
+    "dimensions": [
+      0.39779385924339294,
+      0.05000000074505806,
+      0.6277938485145569
+    ],
+    "sha256": "84583c26676636e3e0274a9842d841b04684d18a8b6e7f58ebefb7d91e5a0142",
+    "images": [
+      {
+        "name": "doors",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "metal",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "window-wide-type-a",
+    "bounds_z_up": [
+      [
+        -0.2988969385623932,
+        -0.02500000037252903,
+        0.0
+      ],
+      [
+        0.2988969385623932,
+        0.02500000037252903,
+        0.5977938771247864
+      ]
+    ],
+    "dimensions": [
+      0.5977938771247864,
+      0.05000000074505806,
+      0.5977938771247864
+    ],
+    "sha256": "30d570addbdda3ee49d5e7f3d45016b8ef552aea72351c89582b39684dddbc64",
+    "images": [
+      {
+        "name": "metal",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "windows",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-a-corner",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        1.0
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "sha256": "d65f9899e415af46f1340220e3d83e8af217eecbb2dfef3012f69ba1f97a0e3a",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "wall_lines",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  },
+  {
+    "id": "wall-a-roof",
+    "bounds_z_up": [
+      [
+        -0.5,
+        -0.5,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        0.5
+      ]
+    ],
+    "dimensions": [
+      1.0,
+      1.0,
+      0.5
+    ],
+    "sha256": "74b8263e1a28ecfca6b59e84709dd9dae1df9c9aa9b81ec0d3f83906c934545c",
+    "images": [
+      {
+        "name": "concrete",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "roof",
+        "size": [
+          64,
+          64
+        ]
+      },
+      {
+        "name": "wall_lines",
+        "size": [
+          64,
+          64
+        ]
+      }
+    ]
+  }
+]

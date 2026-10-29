@@ -182,9 +182,14 @@ jobs:
           chmod +x build/package/play-release.sh
           printf '%s\n' "$GITHUB_SHA" > build/package/version.txt
           cd build/package
-          zip -qr "MaleficVeil-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt TheMaleficVeil.ico
+          # The versioned OTA payload must remain readable by every older
+          # pre-1.0 updater: icon is NOT a managed path in the pinned updater.
+          # The portable ZIP and native Windows installer retain the ICO.
+          zip -qr "MaleficVeil-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt
           zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt TheMaleficVeil.ico play-release.bat play-release.sh
           unzip -tq "MaleficVeil-${GITHUB_SHA:0:12}.zip"
+          ! unzip -Z1 "MaleficVeil-${GITHUB_SHA:0:12}.zip" | grep -Fxq TheMaleficVeil.ico
+          unzip -Z1 "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" | grep -Fxq TheMaleficVeil.ico
           unzip -tq "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip"
           sha256sum "MaleficVeil-${GITHUB_SHA:0:12}.zip" | awk '{print $1}' > checksum.txt
           printf 'version=%s\narchive=MaleficVeil-%s.zip\nsha256=%s\n' "$GITHUB_SHA" "${GITHUB_SHA:0:12}" "$(cat checksum.txt)" > update.properties

@@ -1,0 +1,57 @@
+{
+  "repository": "mrcalzon02/The-Malefic-Veil",
+  "branch": "main",
+  "remote_head": "4d4d799683ac0233a989cc9f61b8cfb07b3e3712",
+  "local_head": "4d4d799683ac0233a989cc9f61b8cfb07b3e3712",
+  "fetched_head": "4d4d799683ac0233a989cc9f61b8cfb07b3e3712",
+  "verified_by": [
+    "git fetch origin main",
+    "git ls-remote origin refs/heads/main",
+    "git show origin/main:path",
+    "compare exact Git-blob source bytes and evidence bytes"
+  ],
+  "files": [
+    {
+      "path": "src/main/java/hbnet/Hbnet.java",
+      "git_blob": "c478de7eedb108ff85622621b9dcd3fd0d3945a8",
+      "sha256": "d34f80abf7a22ede219d5bd652d731f5372a8e4f6f4ba8e68ef50ff98b2c9ca9",
+      "bytes": 22275,
+      "matches_local": true
+    },
+    {
+      "path": "src/main/java/veil/LanServer.java",
+      "git_blob": "73c5807a5e12d503859dc72e78fe9bae165b2aa1",
+      "sha256": "a61371f4e82d9110341d3aeaa803138dae18a9e16691b920aa524c306abe9001",
+      "bytes": 60071,
+      "matches_local": true
+    },
+    {
+      "path": "src/main/java/veil/NetLink.java",
+      "git_blob": "2d5a0fa3860506ce8eea130b9162e9db8ebbe88e",
+      "sha256": "21518a00aae77319c540a75a62636391f10aa3b7fe3eec9653c3deac707934bf",
+      "bytes": 37868,
+      "matches_local": true
+    },
+    {
+      "path": "gpu-client/src/main/java/veil/gpu/GpuFrontEnd.java",
+      "git_blob": "cc6af7a60330037691acb95523ff9ad3901fda63",
+      "sha256": "95309b4f9994268666765d5a9459c62ffc91f853e9bca58740d19358632b9449",
+      "bytes": 42344,
+      "matches_local": true
+    },
+    {
+      "path": "src/main/java/veil/SecureLanIntegrationTest.java",
+      "git_blob": "9d57d62ac9bc16cdcbd05adab891bc91cff6b3d9",
+      "sha256": "c88b79a94da83e1a331e7dc6678b70057405b5f88d496d77c506d2cb7b39001c",
+      "bytes": 3009,
+      "matches_local": true
+    },
+    {
+      "path": "docs/network/receipts/reconciled-final.json",
+      "git_blob": "79376fb0aed49519716e65a92a81ece22c206c86",
+      "sha256": "3248bb7bcf5ac111b1b5e45a04557b6f06c8cbb907b6e732e049da6c02c984b7",
+      "bytes": 12036,
+      "matches_local": true
+    }
+  ]
+}

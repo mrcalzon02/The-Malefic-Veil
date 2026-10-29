@@ -55,3 +55,7 @@ The reconciled native GPU Maven build also passed: [log](receipts/gpu-reconciled
 - `reconciled-final.log` SHA-256 `9a179dc44f2c04e53a5be7d0681f7a08ccf8b27ae6e50aeeaea863453f7ccd4c`
 
 Source parity uses UTF-8/LF Git-blob canonicalization so Windows checkout line endings cannot create false source drift; all three copies were compared and the checksummed verifier passed.
+
+## Remote implementation read-back
+
+Verified remote `main` at `4d4d799683ac0233a989cc9f61b8cfb07b3e3712` with independently read remote ref and fetched source/test/evidence blobs. [Exact blob IDs and SHA-256 read-back](receipts/remote-readback.json). This verifies delivery of the recorded implementation, not a passed TLS or Internet acceptance gate.

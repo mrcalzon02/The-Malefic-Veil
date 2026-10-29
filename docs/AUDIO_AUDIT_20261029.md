@@ -140,3 +140,10 @@ The prior two synthesized footstep clicks were replaced with **eight grounded su
 - `GpuFootstepSurface.main` validates city, road, biome, wet and snow classifications; `GpuAudioSynthesis.main` verifies all sixteen individual WAV waveforms are distinct. No additional external asset license is needed.
 
 **Outstanding sound work:** actual material probing underneath placed prefabs, interior reverb/occlusion, biome-specific wild animal ambience, operating factory/vehicle loops, cinematic music and release-grade loudness QA.
+
+## Stage 6 — PCM quality and loop seam integrity gate
+
+- `GpuAudioQualityGate` decodes and checks **132 generated WAV files**, with no sound-card or OpenAL requirement. Validates RIFF sizes, mono 16-bit PCM, 22,050 Hz rate, bounded peaks, nonzero RMS and sample-level endpoints for the six continuous ambient/music loops.
+- Corrected a real discontinuity in the low-frequency noise lane of `weatherBed`: its coarse noise grid previously jumped to zero when a 4-second loop wrapped. Now both the fine-noise and slow-noise lanes use circular interpolation.
+- The generator intentionally limits output to 23,000 / 32,767 peak amplitude, leaving digital headroom.
+- CI remains a **technical wave integrity** pass, not an equal-loudness/mastering or perceptual-quality signoff. Sourced Drive recordings remain unmodified; they require individual listening and dynamic-range inspection.

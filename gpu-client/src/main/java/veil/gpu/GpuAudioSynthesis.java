@@ -195,8 +195,14 @@ public final class GpuAudioSynthesis {
             // Smoothstep interpolation suppresses zippering from white noise.
             blend=blend*blend*(3-2*blend);
             double hiss=noise[start]*(1-blend)+noise[(start+1)%points]*blend;
-            double low=noise[(start/32)%points]*(1-blend)+
-                noise[((start/32)+1)%points]*blend;
+            // A separate 64-point circular noise lane must wrap to point
+            // zero, not jump from point 64 to point zero at the loop seam.
+            double slow=t*(points/32);
+            int slowAt=(int)slow;
+            double smooth=slow-slowAt;
+            smooth=smooth*smooth*(3-2*smooth);
+            double low=noise[(slowAt*32)%points]*(1-smooth)+
+                noise[(((slowAt+1)%(points/32))*32)%points]*smooth;
             double periodicWind=Math.sin(TAU*5*t)*.09 + Math.sin(TAU*11*t)*.05;
             samples[i]=switch(kind) {
                 case RAIN -> hiss*.25 + low*.05;

@@ -22,7 +22,7 @@ public final class GpuAudioBus implements AutoCloseable {
     public static final String ORIGINAL_SHA="0e0b0e5bbad299d733938f907aa63fd62de9abad3dc61a00a8ee287fbe10a293";
     private Music music, combatMusic, campfireLoop;
     private float enclosure,outdoorGain=1f;
-    private record Reflection(Sound sound,float gain,float pan,float wait) {}
+    private record Reflection(Sound sound,float gain,float pan,float remainingSeconds) {}
     private final ArrayDeque<Reflection> reflections=new ArrayDeque<>();
     private final Music[] industryLoops=new Music[GpuIndustryAudioPlanner.Channel.values().length];
     private Sound engineIdleSound,engineMotionSound;
@@ -306,7 +306,7 @@ public final class GpuAudioBus implements AutoCloseable {
         int count=reflections.size();
         for(int i=0;i<count;i++){
             Reflection echo=reflections.removeFirst();
-            float remaining=echo.wait()-dt;
+            float remaining=echo.remainingSeconds()-dt;
             if(remaining<=0){
                 echo.sound().play(echo.gain(),.94f,echo.pan());
             }else reflections.addLast(new Reflection(

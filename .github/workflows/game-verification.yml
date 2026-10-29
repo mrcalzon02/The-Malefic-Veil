@@ -39,6 +39,9 @@ jobs:
       - name: Paid Unraveled Incursion grid and restart acceptance
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IncursionResilienceGridTest
+      - name: Paid dual-generator 25-load resilience-core acceptance
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.IncursionDualGeneratorTest
       - name: City generation and geometry
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest

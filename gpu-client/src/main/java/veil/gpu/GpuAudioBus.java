@@ -411,7 +411,7 @@ public final class GpuAudioBus implements AutoCloseable {
             Sound cue=motorEvents[event.ordinal()];
             if(cue!=null){
                 float gain=Math.min(1f,state.eventGain()*effectGain*.46f);
-                if(gain>.005f)cue.play(gain,1f,state.pan());
+                if(gain>.005f)cue.play(gain,1f,state.eventPan());
             }
         }
     }

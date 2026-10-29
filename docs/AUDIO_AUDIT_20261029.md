@@ -190,3 +190,7 @@ Five distinct original transition signatures—ignition, acceleration, braking, 
 ### Vehicle damage correctness correction
 
 The host's vehicle HP decrease is authoritative evidence of **body damage**, not uniquely of a road collision: enemy fire may also damage cars. The audible event is therefore named `BODY_DAMAGE` and uses a metallic impact timbre. We do **not** claim a confirmed road crash without a dedicated host collision-event ID. Previous wording that interpreted every HP decrease as an authenticated collision was overly strong.
+
+### Parked and destroyed vehicle audio
+
+The vehicle damage observer now tests **all nearby host-reported car HP changes**, even when a vehicle is parked, unoccupied, out of fuel, or destroyed by the hit. The engine remains silent in those cases while the body-impact cue plays with independent source-relative panning. This also prevents a destroyed vehicle from being mislabeled as an ordinary ignition shutdown. Late-join snapshots remain silent and a missing packet never constitutes vehicle damage. Dedicated headless cases verify both a parked hit and total destruction.

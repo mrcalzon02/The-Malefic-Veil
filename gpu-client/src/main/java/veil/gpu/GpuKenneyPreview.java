@@ -142,6 +142,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private ShaderProgram shader;
     private PerspectiveCamera camera;
     private FrameBuffer framebuffer;
+    private int renderWidth=WIDTH;
     private SpriteBatch sprites;
     private BitmapFont font;
     private GpuSkybox skybox;
@@ -382,9 +383,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(!models.containsKey(entry.getKey()))
                     uploadGeometry(entry.getKey(),entry.getValue(),512);
         }
-        camera=new PerspectiveCamera(72,WIDTH,HEIGHT);
+        renderWidth=GpuScreenLayout.width(
+            Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        camera=new PerspectiveCamera(72,renderWidth,HEIGHT);
         camera.near=0.08f;camera.far=300f;
-        framebuffer=new FrameBuffer(Pixmap.Format.RGBA8888,WIDTH,HEIGHT,true);
+        framebuffer=new FrameBuffer(Pixmap.Format.RGBA8888,renderWidth,HEIGHT,true);
         sprites=new SpriteBatch();
         Pixmap weatherDot=new Pixmap(1,1,Pixmap.Format.RGBA8888);
         weatherDot.setColor(1,1,1,1);weatherDot.fill();
@@ -442,8 +445,28 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
         }
         System.out.println("GPU_KENNEY_READY seed="+seed+" placedTiles="+
-            scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+WIDTH+"x"+HEIGHT);
+            scene.instances().size()+" sourceMeshes="+models.size()+" resolution="+renderWidth+"x"+HEIGHT);
     }
+
+    /** Expand/crop only the inexpensive offscreen color target on resize.
+     * World VBOs, materials, authoritative simulation and menu hitboxes stay. */
+    @Override public void resize(int width,int height){
+        int next=GpuScreenLayout.width(width,height);
+        if(next==renderWidth&&framebuffer!=null)return;
+        renderWidth=next;
+        if(camera!=null){
+            camera.viewportWidth=renderWidth;
+            camera.viewportHeight=HEIGHT;
+            camera.update();
+        }
+        if(framebuffer!=null){
+            framebuffer.dispose();
+            framebuffer=new FrameBuffer(Pixmap.Format.RGBA8888,renderWidth,HEIGHT,true);
+        }
+        System.out.println("GPU_WIDESCREEN_VIEWPORT screen="+width+"x"+height+
+            " frame="+renderWidth+"x"+HEIGHT+" ui=left");
+    }
+    public int frameWidth(){return renderWidth;}
 
     private static int mapColor(ContinentLayout.Biome biome){
         return switch(biome){
@@ -568,13 +591,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             "  KILLS "+frame.frags(),330,343);
         font.draw(sprites,gameplay.gpuFieldStatus()+"   Z SELECT  Y THROW",14,315);
         // Source cursor sprite and source tooltip/dialogue are not impostor polygons.
-        menu.marker(sprites,WIDTH/2f-4,HEIGHT/2f-4);
+        menu.marker(sprites,renderWidth/2f-4,HEIGHT/2f-4);
         if(!frame.interactPrompt().isBlank()){
-            menu.tooltip(sprites,WIDTH/2f-118,HEIGHT/2f-39,236,27);
-            font.draw(sprites,frame.interactPrompt(),WIDTH/2f-107,HEIGHT/2f-20);
+            menu.tooltip(sprites,renderWidth/2f-118,HEIGHT/2f-39,236,27);
+            font.draw(sprites,frame.interactPrompt(),renderWidth/2f-107,HEIGHT/2f-20);
         }
         if(!frame.notice().isBlank()){
-            menu.tooltip(sprites,8,HEIGHT/2f+29,Math.min(WIDTH-16,450),30);
+            menu.tooltip(sprites,8,HEIGHT/2f+29,Math.min(renderWidth-16,450),30);
             font.draw(sprites,frame.notice(),16,HEIGHT/2f+49);
         }
         if(!frame.connected()){
@@ -587,27 +610,27 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             font.draw(sprites,"1/2/3 RESPAWN  ENTER DEPLOY",115,HEIGHT/2f-7);
         }
         if(frame.inventory()){
-            menu.frame(sprites,WIDTH-248,61,241,285);
-            font.draw(sprites,"INVENTORY  I CLOSE",WIDTH-231,HEIGHT-77);
-            menu.separator(sprites,WIDTH-229,HEIGHT-88,201);
+            menu.frame(sprites,renderWidth-248,61,241,285);
+            font.draw(sprites,"INVENTORY  I CLOSE",renderWidth-231,HEIGHT-77);
+            menu.separator(sprites,renderWidth-229,HEIGHT-88,201);
             int row=0;
             for(var item:frame.inventoryItems().entrySet()){
                 if(row>=11)break;
                 float top=HEIGHT-117-row*21;
-                menu.slot(sprites,WIDTH-230,top-5,20,row==0);
+                menu.slot(sprites,renderWidth-230,top-5,20,row==0);
                 font.draw(sprites,item.getKey()+" x"+item.getValue(),
-                    WIDTH-205,top+10);
+                    renderWidth-205,top+10);
                 row++;
             }
-            if(row==0)font.draw(sprites,"EMPTY",WIDTH-226,HEIGHT-115);
+            if(row==0)font.draw(sprites,"EMPTY",renderWidth-226,HEIGHT-115);
         }else if(frame.skills()){
-            menu.frame(sprites,WIDTH-311,69,304,277);
-            font.draw(sprites,"CHARACTER / SKILLS",WIDTH-294,HEIGHT-77);
-            menu.separator(sprites,WIDTH-294,HEIGHT-88,275);
+            menu.frame(sprites,renderWidth-311,69,304,277);
+            font.draw(sprites,"CHARACTER / SKILLS",renderWidth-294,HEIGHT-77);
+            menu.separator(sprites,renderWidth-294,HEIGHT-88,275);
             int row=0;
             for(String line:frame.skillStats()){
                 if(row>=11)break;
-                font.draw(sprites,line,WIDTH-294,HEIGHT-111-row*20);
+                font.draw(sprites,line,renderWidth-294,HEIGHT-111-row*20);
                 row++;
             }
         }
@@ -637,7 +660,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(frame.map()||frame.continent()){
             Texture source=frame.map()?cityMapTexture:continentMapTexture;
             if(source==null)throw new IllegalStateException("Missing authoritative GPU map");
-            float left=WIDTH-285,base=52;
+            float left=renderWidth-285,base=52;
             menu.frame(sprites,left-7,base-12,278,305);
             font.draw(sprites,frame.map()?"CITY MAP  M CLOSE":"CONTINENT  N CLOSE",
                 left+3,base+281);
@@ -655,7 +678,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             if(markerX>=0&&markerX<=255&&markerY>=0&&markerY<=255)
                 menu.marker(sprites,left+markerX-5,base+markerY-5);
         }
-        menu.band(sprites,4,5,WIDTH-8,23);
+        menu.band(sprites,4,5,renderWidth-8,23);
         font.draw(sprites,"WASD MOVE  AIM/FIRE  Z FIELD  Y THROW  E USE  I INV  "+
             "K ARSENAL  F8 PERF  F11 MENU  ESC",12,20);
     }
@@ -703,14 +726,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(editorDock==null||editorProject==null)return;
         if(!Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)||
            !Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))return;
-        float mouseX=Gdx.input.getX()*(WIDTH/(float)Gdx.graphics.getWidth());
-        float mouseY=(Gdx.graphics.getHeight()-Gdx.input.getY())*
-            (HEIGHT/(float)Gdx.graphics.getHeight());
+        float mouseX=GpuScreenLayout.pointerX(
+            Gdx.input.getX(),Gdx.graphics.getWidth(),renderWidth);
+        float mouseY=GpuScreenLayout.pointerY(Gdx.input.getY(),Gdx.graphics.getHeight());
         MaleficEditorProject.Placement best=null;
         float bestPixels=22f*22f;
         for(MaleficEditorProject.Placement item:editorProject.placements()){
             Vector3 point=camera.project(new Vector3((float)item.x(),
-                (float)(item.elevation()+.7),(float)item.z()),0,0,WIDTH,HEIGHT);
+                (float)(item.elevation()+.7),(float)item.z()),0,0,renderWidth,HEIGHT);
             if(point.z<0||point.z>1)continue;
             float dx=point.x-mouseX,dy=point.y-mouseY;
             float score=dx*dx+dy*dy;
@@ -914,7 +937,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             if(live!=null)renderLiveWeapon(live);
         }
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-        sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,WIDTH,HEIGHT));
+        sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,renderWidth,HEIGHT));
         sprites.begin();
         if(gameplay!=null&&gameplay.gpuFrame()!=null)
             renderGpuWeather(sprites,gameplay.gpuFrame());
@@ -926,7 +949,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             font.draw(sprites,"LEVEL EDITOR KIT / CITY A  F11 DOCK  CTRL+CLICK PICK",14,381);
             font.draw(sprites,"SEED "+seed+"  LAYER "+
                 editorProject.placements().size()+"  MESHES "+visibleInstances,14,364);
-            menu.band(sprites,4,5,WIDTH-8,23);
+            menu.band(sprites,4,5,renderWidth-8,23);
             font.draw(sprites,"WASD FLY  MOUSE LOOK  SPACE UP  CTRL DOWN  F11 PALETTE",12,20);
         }else if(menu.running()&&gameplay!=null){
             // While configuring/crafting, avoid drawing a second HUD, map,
@@ -989,16 +1012,16 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
 
     private void saveFrame(String filename) {
         // Read back the *actual* GPU framebuffer, correcting GL's bottom-left origin.
-        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);
-        Pixmap flipped=new Pixmap(WIDTH,HEIGHT,Pixmap.Format.RGBA8888);
-        for(int row=0;row<HEIGHT;row++)for(int col=0;col<WIDTH;col++)
+        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,renderWidth,HEIGHT);
+        Pixmap flipped=new Pixmap(renderWidth,HEIGHT,Pixmap.Format.RGBA8888);
+        for(int row=0;row<HEIGHT;row++)for(int col=0;col<renderWidth;col++)
             flipped.drawPixel(col,HEIGHT-1-row,pixels.getPixel(col,row));
         FileHandle destination=Gdx.files.absolute(
             new java.io.File("build/test-visuals/"+filename).getAbsolutePath());
         destination.parent().mkdirs();
         PixmapIO.writePNG(destination,flipped);
         Set<Integer> colors=new HashSet<>();
-        for(int yy=24;yy<170;yy+=4)for(int xx=8;xx<WIDTH-8;xx+=4)
+        for(int yy=24;yy<170;yy+=4)for(int xx=8;xx<renderWidth-8;xx+=4)
             colors.add(flipped.getPixel(xx,yy));
         pixels.dispose();flipped.dispose();
         // An exterior vista may legitimately contain only water/terrain, with no
@@ -1021,11 +1044,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     /** Benchmark imagery has its OWN paired-pixel assertion below. Normal
      * smoke/gallery captures retain their distinct city-geometry color gate. */
     private void saveOceanBenchmarkFrame(String filename){
-        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);
-        Pixmap flip=new Pixmap(WIDTH,HEIGHT,Pixmap.Format.RGBA8888);
+        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,renderWidth,HEIGHT);
+        Pixmap flip=new Pixmap(renderWidth,HEIGHT,Pixmap.Format.RGBA8888);
         try{
             for(int py=0;py<HEIGHT;py++)
-                for(int px=0;px<WIDTH;px++)
+                for(int px=0;px<renderWidth;px++)
                     flip.drawPixel(px,HEIGHT-1-py,pixels.getPixel(px,py));
             FileHandle destination=Gdx.files.absolute(
                 new java.io.File("build/test-visuals/"+filename).getAbsolutePath());
@@ -1038,12 +1061,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     /** A sparse paired RGB readback proves that OpenGL actually drew water
      * into the visible world. Merely submitting triangles is insufficient. */
     private int[] oceanSamplePixels(){
-        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);
+        Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,renderWidth,HEIGHT);
         try{
             int count=0;
-            int[] sampled=new int[((HEIGHT-72+3)/4)*((WIDTH-16+3)/4)];
+            int[] sampled=new int[((HEIGHT-72+3)/4)*((renderWidth-16+3)/4)];
             for(int py=36;py<HEIGHT-36;py+=4)
-                for(int px=8;px<WIDTH-8;px+=4)
+                for(int px=8;px<renderWidth-8;px+=4)
                     sampled[count++]=pixels.getPixel(px,py);
             return java.util.Arrays.copyOf(sampled,count);
         }finally{pixels.dispose();}
@@ -1076,6 +1099,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }else if(editorMode&&!editorSmoke)editorControls();
         else if(gameplay!=null&&!playSmoke)liveControls();
         else if(gameplay==null&&!smoke&&!gallery&&!editorMode)control();
+        // Handle backend-dependent resize delivery before rendering the frame.
+        if(framebuffer==null||renderWidth!=GpuScreenLayout.width(
+            Gdx.graphics.getWidth(),Gdx.graphics.getHeight()))
+            resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         framebuffer.begin();
         drawWorld();
         if(menuBackdrop&&launcherOverlay!=null)launcherOverlay.run();
@@ -1299,14 +1326,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Pixmap source=null;
         try{
             framebuffer.begin();
-            try{source=Pixmap.createFromFrameBuffer(0,0,WIDTH,HEIGHT);}
+            try{source=Pixmap.createFromFrameBuffer(0,0,renderWidth,HEIGHT);}
             finally{framebuffer.end();}
             long uprightDifference=0,upsideDownDifference=0;
             int sampled=0;
             for(int sy=22;sy<HEIGHT-22;sy+=29){
-                for(int sx=22;sx<WIDTH-22;sx+=31){
+                for(int sx=22;sx<renderWidth-22;sx+=31){
                     int dx=Math.min(screenWidth-1,
-                        (int)((sx+.5)*screenWidth/WIDTH));
+                        (int)((sx+.5)*screenWidth/renderWidth));
                     int dy=Math.min(screenHeight-1,
                         (int)((sy+.5)*screenHeight/HEIGHT));
                     int actual=presented.getPixel(dx,dy);
@@ -1346,14 +1373,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         int rainCount=(int)(rain*170),snowCount=(int)(snow*115);
         for(int i=0;i<rainCount;i++){
             int h=i*198491317+(frames/2)*1103515245;
-            float px=(h&0x7fffffff)%WIDTH;
+            float px=(h&0x7fffffff)%renderWidth;
             float py=((h>>>7)&0x7fffffff)%HEIGHT;
             sprites.setColor(.71f,.80f,.88f,.17f+rain*.42f);
             sprites.draw(weatherPixel,px,py,1f,6f+rain*7f);
         }
         for(int i=0;i<snowCount;i++){
             int h=i*160481183+(frames/5)*734287;
-            float px=(h&0x7fffffff)%WIDTH;
+            float px=(h&0x7fffffff)%renderWidth;
             float py=((h>>>6)&0x7fffffff)%HEIGHT;
             sprites.setColor(.86f,.91f,.96f,.35f+snow*.35f);
             sprites.draw(weatherPixel,px,py,2f,2f);
@@ -1361,7 +1388,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         float flash=(float)Math.max(0,Math.min(.58,frame.flash()*.58));
         if(flash>0){
             sprites.setColor(.90f,.94f,1f,flash);
-            sprites.draw(weatherPixel,0,0,WIDTH,HEIGHT);
+            sprites.draw(weatherPixel,0,0,renderWidth,HEIGHT);
         }
         sprites.setColor(1,1,1,1);
     }

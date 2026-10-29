@@ -164,3 +164,11 @@ The prior two synthesized footstep clicks were replaced with **eight grounded su
 The LAN server now sends a **bounded nearest-24 active machine snapshot** every 500ms to the relevant player, with a one-time initial snapshot on joining. This is a separate optional `MACHINE_AUDIO` packet; the legacy `DEVICE` wire remains byte-for-byte unchanged for old clients. The packet only contains host-verified machines that are alive, paid/actively producing, and not paused by a factory hold. Clients decode it using finite-coordinate, device-index, kind-range, size, and duplicate checks; malformed data clears the mix instead of inventing sound. Empty authoritative snapshots explicitly silence previously heard machinery. This is a read-only audio projection, not another production simulation.
 
 `GpuMachineWire.main` headlessly tests the silence of idle, blocked and distant machinery, encode/decode round-trips, invalid coordinates/IDs and empty snapshots. The same existing GPU CI workflow executes it. The three faction sound identities remain distinct; no shared factory economy was created.
+
+## Stage 9 — World-linked biome and night soundscapes
+
+- Six location-specific, **original procedural** ambient beds now represent city streets, coasts, forests, marsh, hills/mountains and plains. A seventh layer contributes nocturnal wildlife and insect texture.
+- The soundscape chooser uses real `World.detailedCity()` and `ContinentLayout.biome()`, plus the host's published time-of-day. There is no client-created biome/weather cycle or additional world simulation.
+- The GPU ambient mixer crossfades when crossing biome boundaries and time transitions. Only the currently audible region and optional night layer occupy OpenAL streams; inactive sounds stop. They obey the ambience volume slider, not music or combat effects.
+- `GpuBiomeAudioPlanner.main` validates region and nighttime classification without an audio device. The offline PCM audit now includes **154** generated sounds and **19** periodic-loop seam checks, with the new original soundscape waveforms verified.
+- Environmental wildlife audio is a procedural placeholder pending sourced originals. The game does not claim that these first-pass sound profiles faithfully reproduce local fauna or full indoor acoustics.

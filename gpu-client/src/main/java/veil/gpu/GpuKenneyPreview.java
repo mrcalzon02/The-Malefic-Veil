@@ -590,6 +590,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             var industryMix=GpuIndustryAudioPlanner.plan(observed.x(),observed.z(),
                 observed.yaw(),observed.audioMachines(),observed.audioVehicles());
             audioBus.industry(industryMix,Gdx.graphics.getDeltaTime());
+            audioBus.biome(GpuBiomeAudioPlanner.at(gameplay.gpuWorld(),
+                    observed.x(),observed.z(),observed.hour()),
+                Gdx.graphics.getDeltaTime());
             for(var event:deployableAudioEvents.accept(observed.audioFields())){
                 double dist=Math.hypot(event.x()-observed.x(),event.y()-observed.z());
                 boolean line=dist<=32&&gameplay.gpuWorld().lineClear(

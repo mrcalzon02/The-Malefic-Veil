@@ -113,6 +113,7 @@ jobs:
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuAudioQualityGate
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuIndustryAudioPlanner
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.GpuMachineWire
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuBiomeAudioPlanner
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuDeployableAudioGate
           for sound in Single_click.wav Cathonk.wav Metal_wonk.wav Book_snap.wav Shot.mp3 LAS.mp3 Plas.mp3 Lightning-crackle.mp3 FLAME.mp3 RELOAD.mp3 Coins.wav Drawer.wav Shifting_cloth.wav Granade.wav Bash.mp3; do
             jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -Fx "audio/library/$sound"

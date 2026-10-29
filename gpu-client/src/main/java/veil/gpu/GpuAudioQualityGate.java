@@ -59,6 +59,8 @@ public final class GpuAudioQualityGate {
         validate("combat",GpuAudioSynthesis.combatPulse(),true);
         for(var channel:GpuIndustryAudioPlanner.Channel.values())
             validate("industry-"+channel,GpuAudioSynthesis.industry(channel),true);
+        for(var region:GpuBiomeAudioPlanner.Bed.values())
+            validate("biome-"+region,GpuAudioSynthesis.biome(region),true);
         for(int faction=0;faction<3;faction++)
             for(var phase:GpuAudioSynthesis.DeployablePhase.values())
                 validate("field-"+faction+"-"+phase,
@@ -66,8 +68,8 @@ public final class GpuAudioQualityGate {
         validate("thunder",GpuAudioSynthesis.thunder(),false);
         for(var cue:GpuAudioSynthesis.Cue.values())
             validate("ui-"+cue,GpuAudioSynthesis.cue(cue),false);
-        if(tested!=147)throw new AssertionError("Expected 147 WAV audits, got "+tested);
+        if(tested!=154)throw new AssertionError("Expected 154 WAV audits, got "+tested);
         System.out.println("PASS GPU_AUDIO_QUALITY samples="+tested+
-            " pcm=mono16/22050 complete=true loops=12 no-digital-clipping");
+            " pcm=mono16/22050 complete=true loops=19 no-digital-clipping");
     }
 }

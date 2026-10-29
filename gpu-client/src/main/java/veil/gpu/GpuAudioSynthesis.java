@@ -405,6 +405,53 @@ public final class GpuAudioSynthesis {
         return pcm(out);
     }
 
+    /** Seven original periodic ambient soundscapes, including night fauna. */
+    public static byte[] biome(GpuBiomeAudioPlanner.Bed bed) {
+        int size=RATE*4;
+        double[] out=new double[size];
+        Random random=new Random(110517L+bed.ordinal()*4771L);
+        double[] noise=new double[256];
+        for(int j=0;j<noise.length;j++)noise[j]=random.nextDouble()*2-1;
+        for(int i=0;i<size;i++){
+            double t=i/(double)size;
+            double k=t*noise.length;
+            int p=(int)k;
+            double phase=k-p;
+            phase=phase*phase*(3-2*phase);
+            double hiss=noise[p]*(1-phase)+noise[(p+1)%noise.length]*phase;
+            double low=Math.sin(TAU*5*t)*.10+
+                Math.sin(TAU*11*t)*.048;
+            double s=switch(bed){
+                case CITY -> low*.36+Math.sin(TAU*63*t)*.034+hiss*.045;
+                case COAST -> {
+                    double wave=.45+.45*Math.sin(TAU*2*t);
+                    yield hiss*wave*.18+low*.20+Math.sin(TAU*29*t)*.032;
+                }
+                case FOREST -> {
+                    double bird=Math.pow(Math.max(0,Math.sin(TAU*3*t)),9)*
+                        Math.sin(TAU*2420*t);
+                    yield hiss*.07+low*.14+bird*.078;
+                }
+                case MARSH -> {
+                    double insect=Math.sin(TAU*1750*t)*(.48+.48*Math.sin(TAU*12*t));
+                    yield hiss*.11+low*.18+insect*.035;
+                }
+                case HIGHLANDS -> hiss*.095+low*.32+
+                    Math.sin(TAU*19*t)*.058;
+                case PLAINS -> hiss*.12+low*.15+
+                    Math.sin(TAU*47*t)*.032;
+                case NIGHT -> {
+                    double cricket=Math.sin(TAU*2040*t)*
+                        Math.pow(Math.max(0,Math.sin(TAU*8*t)),3);
+                    yield hiss*.041+cricket*.060+
+                        Math.sin(TAU*39*t)*.017;
+                }
+            };
+            out[i]=s*.57;
+        }
+        return pcm(out);
+    }
+
     /** Device-free deterministic integrity check for CI / headless builds. */
     public static void main(String[] args) {
         for(Impact kind:Impact.values()) {
@@ -425,6 +472,9 @@ public final class GpuAudioSynthesis {
             for(DeployablePhase phase:DeployablePhase.values())
                 if(deployable(f,phase).length<=44)
                     throw new IllegalStateException("Missing thrown cue "+f+"/"+phase);
+        for(GpuBiomeAudioPlanner.Bed bed:GpuBiomeAudioPlanner.Bed.values())
+            if(biome(bed).length!=44+RATE*4*2)
+                throw new IllegalStateException("Missing original soundscape "+bed);
         Set<Integer> checksums = new HashSet<>();
         for(int i = 0; i < 32; i++) {
             byte[] wav = weapon(i);

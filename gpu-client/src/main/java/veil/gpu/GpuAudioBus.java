@@ -22,6 +22,8 @@ public final class GpuAudioBus implements AutoCloseable {
     public static final String ORIGINAL_SHA="0e0b0e5bbad299d733938f907aa63fd62de9abad3dc61a00a8ee287fbe10a293";
     private Music music, ambience, combatMusic, campfireLoop;
     private final Music[] industryLoops=new Music[GpuIndustryAudioPlanner.Channel.values().length];
+    private final Music[] biomeLoops=new Music[GpuBiomeAudioPlanner.Bed.values().length];
+    private final float[] biomeGains=new float[biomeLoops.length];
     private final float[] industryGain=new float[industryLoops.length];
     private final Sound[][] fieldSounds=new Sound[3][GpuAudioSynthesis.DeployablePhase.values().length];
     private float combatGain,fireGain,combatHold;
@@ -116,6 +118,14 @@ public final class GpuAudioBus implements AutoCloseable {
                 source.setVolume(0);
                 industryLoops[channel.ordinal()]=source;
             }
+            for(GpuBiomeAudioPlanner.Bed region:GpuBiomeAudioPlanner.Bed.values()){
+                Music source=Gdx.audio.newMusic(new FileHandle(temp(
+                    "biome-"+region.name().toLowerCase(Locale.ROOT),".wav",
+                    GpuAudioSynthesis.biome(region)).toFile()));
+                source.setLooping(true);
+                source.setVolume(0f);
+                biomeLoops[region.ordinal()]=source;
+            }
             for(int faction=0;faction<3;faction++)
                 for(GpuAudioSynthesis.DeployablePhase phase:GpuAudioSynthesis.DeployablePhase.values())
                     fieldSounds[faction][phase.ordinal()]=synthesized(
@@ -187,6 +197,9 @@ public final class GpuAudioBus implements AutoCloseable {
         for(int i=0;i<industryLoops.length;i++)
             if(industryLoops[i]!=null)industryLoops[i].setVolume(
                 ingame?industryGain[i]*machineBusGain(i):0f);
+        for(int i=0;i<biomeLoops.length;i++)
+            if(biomeLoops[i]!=null)biomeLoops[i].setVolume(
+                ingame?biomeGains[i]*settings.ambienceGain()*.38f:0f);
     }
     public void inGame(){
         ingame=true;apply(settings);
@@ -205,6 +218,8 @@ public final class GpuAudioBus implements AutoCloseable {
         for(Music bed:industryLoops)if(bed!=null)bed.stop();
         Arrays.fill(weatherGains,0f);
         Arrays.fill(industryGain,0f);
+        for(Music source:biomeLoops)if(source!=null)source.stop();
+        Arrays.fill(biomeGains,0f);
         previousFlash=0;thunderCooldown=0;
         if(music!=null&&!music.isPlaying())music.play();
     }
@@ -334,6 +349,29 @@ public final class GpuAudioBus implements AutoCloseable {
         }
         apply(settings);
     }
+    /** A single located environment and optional night fauna, not seven
+     * always-playing weather impostors. Fade out inactive streams to free
+     * OpenAL playback voices. */
+    public void biome(GpuBiomeAudioPlanner.Selection selected,float elapsed){
+        if(!available||!ingame||selected==null)return;
+        float dt=Math.max(0f,Math.min(.1f,elapsed));
+        for(GpuBiomeAudioPlanner.Bed bed:GpuBiomeAudioPlanner.Bed.values()){
+            int i=bed.ordinal();
+            float target=bed==GpuBiomeAudioPlanner.Bed.NIGHT?
+                selected.nightMix()*.60f:
+                selected.region()==bed?.65f:0f;
+            float delta=dt*(target>biomeGains[i]?.38f:.56f);
+            biomeGains[i]+=Math.max(-delta,Math.min(delta,target-biomeGains[i]));
+            Music loop=biomeLoops[i];
+            if(loop!=null){
+                float volume=biomeGains[i]*settings.ambienceGain()*.38f;
+                if(volume>.003f){
+                    loop.setVolume(volume);
+                    if(!loop.isPlaying())loop.play();
+                }else if(loop.isPlaying())loop.stop();
+            }
+        }
+    }
     private float machineBusGain(int index){
         return index>=GpuIndustryAudioPlanner.Channel.ENGINE_IDLE.ordinal()?
             settings.effectsGain()*.39f:settings.ambienceGain()*.28f;
@@ -422,6 +460,10 @@ public final class GpuAudioBus implements AutoCloseable {
         for(int i=0;i<industryLoops.length;i++){
             if(industryLoops[i]!=null){industryLoops[i].dispose();industryLoops[i]=null;}
             industryGain[i]=0;
+        }
+        for(int i=0;i<biomeLoops.length;i++){
+            if(biomeLoops[i]!=null){biomeLoops[i].dispose();biomeLoops[i]=null;}
+            biomeGains[i]=0;
         }
         Set<Sound> disposed=Collections.newSetFromMap(new IdentityHashMap<>());
         for(Sound s:cues)if(s!=null&&disposed.add(s))s.dispose();

@@ -90,6 +90,8 @@ jobs:
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'org/beckenburg/editor/EditorProject.class'
           test -s gpu-client/target/MaleficVeil-GPU.jar
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'veil-original-art/pack02/malefic-veil-64.png'
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'veil-original-art/pack02/file-ui.png'
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingRecipeIndexTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.FactionIndustrySeparationTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.FieldWorkbenchRuntimeTest

@@ -569,8 +569,28 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             skin.originalFolderIcon(ui,screen==Screen.LOAD?3:0,371,339,22);
         for(int i=0;i<entries.size();i++){
             String label=entries.get(i).label();
-            if(label.length()>49)label=label.substring(0,48)+"~";
-            skin.choice(ui,label,35,START_Y-i*ROW,390,22,selected==i);
+            String iconGroup=null;
+            int iconIndex=0;
+            if(screen==Screen.LOAD&&i<Math.min(9,saves.size()-loadOffset)){
+                iconGroup="files";iconIndex=1; // saved world
+            }else if(screen==Screen.WORLDS&&i<2){
+                iconGroup=i==0?"folders":"files";
+                iconIndex=i==0?7:1;
+            }else if(screen==Screen.HOME&&i<4){
+                iconGroup="folders";
+                iconIndex=switch(i){case 0->7;case 1,2->5;default->4;};
+            }else if(screen==Screen.HOME&&i==4){
+                iconGroup="actions";iconIndex=6;
+            }else if(screen==Screen.CREATE&&i==0){
+                iconGroup="files";iconIndex=0;
+            }
+            int max=iconGroup==null?49:45;
+            if(label.length()>max)label=label.substring(0,max-1)+"~";
+            if(iconGroup==null)
+                skin.choice(ui,label,35,START_Y-i*ROW,390,22,selected==i);
+            else
+                skin.choiceWithFileIcon(ui,label,35,START_Y-i*ROW,390,22,
+                    selected==i,iconGroup,iconIndex);
         }
         // Rotating display of a real model; not a shop or placeholder button.
         if(screen==Screen.HOME&&modelPortraits!=null){

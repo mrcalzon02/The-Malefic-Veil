@@ -404,7 +404,7 @@ public final class GpuAudioBus implements AutoCloseable {
                 case IGNITION -> GpuAudioSynthesis.VehicleEvent.IGNITION;
                 case ACCELERATE -> GpuAudioSynthesis.VehicleEvent.ACCELERATE;
                 case BRAKE -> GpuAudioSynthesis.VehicleEvent.BRAKE;
-                case COLLISION -> GpuAudioSynthesis.VehicleEvent.COLLISION;
+                case BODY_DAMAGE -> GpuAudioSynthesis.VehicleEvent.BODY_DAMAGE;
                 case SHUTDOWN -> GpuAudioSynthesis.VehicleEvent.SHUTDOWN;
                 case NONE -> throw new IllegalStateException("No vehicle event");
             };

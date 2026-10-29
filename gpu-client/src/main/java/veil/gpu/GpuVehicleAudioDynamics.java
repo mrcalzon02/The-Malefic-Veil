@@ -9,7 +9,7 @@ import java.util.*;
  * instead of allocating a permanent OpenAL source per car.
  */
 public final class GpuVehicleAudioDynamics {
-    public enum Event { NONE, IGNITION, SHUTDOWN, ACCELERATE, BRAKE, COLLISION }
+    public enum Event { NONE, IGNITION, SHUTDOWN, ACCELERATE, BRAKE, BODY_DAMAGE }
     public record Mix(float idleGain,float runningGain,float pitch,float pan,
                       Event event,float eventGain) {}
     private record Prior(double x,double y,double speed,double fuel,int hp,int driver) {}
@@ -75,7 +75,7 @@ public final class GpuVehicleAudioDynamics {
         Prior prior=previous.get(closest.id());
         if(initialized&&prior!=null&&elapsedSeconds-lastCueSeconds>=.075f){
             if(closest.hp()<prior.hp()&&prior.hp()>0){
-                cue=Event.COLLISION;
+                cue=Event.BODY_DAMAGE;
             }else if(prior.driver()<0&&closest.driverId()>=0&&
                     closest.fuel()>0){
                 cue=Event.IGNITION;
@@ -119,7 +119,7 @@ public final class GpuVehicleAudioDynamics {
         check(brake.event()==Event.BRAKE&&brake.pitch()<accelerate.pitch(),
             "Vehicle slowdown must brake and lower pitch");
         var collision=gate.accept(List.of(car(0,1,98,185)),0,0,0,.4f);
-        check(collision.event()==Event.COLLISION,"Host HP loss must confirm impact");
+        check(collision.event()==Event.BODY_DAMAGE,"Host HP loss must confirm vehicle body damage");
         var shutdown=gate.accept(List.of(car(0,-1,98,185)),0,0,0,.4f);
         check(shutdown.event()==Event.SHUTDOWN&&shutdown.idleGain()==0,
             "Driver leaving must silence engine");
@@ -137,6 +137,6 @@ public final class GpuVehicleAudioDynamics {
             "Unoccupied car must remain silent");
         check(gate.accept(List.of(car(1,1,0,200)),0,0,0,.4f).idleGain()==0,
             "Empty fuel tank must remain silent");
-        System.out.println("PASS GPU_VEHICLE_DYNAMICS engine,pitch,reverse,brake,collision,join");
+        System.out.println("PASS GPU_VEHICLE_DYNAMICS engine,pitch,reverse,brake,damage,join");
     }
 }

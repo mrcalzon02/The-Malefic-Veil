@@ -453,9 +453,9 @@ public final class GpuAudioSynthesis {
     }
 
     /** Engine state changes derived from host speed/health/driver snapshots. */
-    public enum VehicleEvent { IGNITION, ACCELERATE, BRAKE, COLLISION, SHUTDOWN }
+    public enum VehicleEvent { IGNITION, ACCELERATE, BRAKE, BODY_DAMAGE, SHUTDOWN }
     public static byte[] vehicleEvent(VehicleEvent event) {
-        int count=(int)(RATE*(event==VehicleEvent.COLLISION?.65:.38));
+        int count=(int)(RATE*(event==VehicleEvent.BODY_DAMAGE?.65:.38));
         double[] out=new double[count];
         Random noise=new Random(733901L+event.ordinal()*199L);
         double phase=0,filtered=0;
@@ -467,7 +467,7 @@ public final class GpuAudioSynthesis {
                 case IGNITION -> 72+160*t;
                 case ACCELERATE -> 165+370*t;
                 case BRAKE -> 540-390*t;
-                case COLLISION -> 150-115*t;
+                case BODY_DAMAGE -> 150-115*t;
                 case SHUTDOWN -> 210-172*t;
             };
             phase+=TAU*hz/RATE;
@@ -476,10 +476,10 @@ public final class GpuAudioSynthesis {
                 case IGNITION -> wave*.37+filtered*.34+n*.10;
                 case ACCELERATE -> wave*.47+filtered*.22+n*.13;
                 case BRAKE -> wave*.31+filtered*.20+n*.27;
-                case COLLISION -> filtered*.62+n*.33+wave*.23;
+                case BODY_DAMAGE -> filtered*.62+n*.33+wave*.23;
                 case SHUTDOWN -> wave*.40+filtered*.33;
             };
-            out[i]=value*Math.pow(1-t,event==VehicleEvent.COLLISION?1.4:1.8)*.54;
+            out[i]=value*Math.pow(1-t,event==VehicleEvent.BODY_DAMAGE?1.4:1.8)*.54;
         }
         return pcm(out);
     }

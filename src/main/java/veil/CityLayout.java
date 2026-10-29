@@ -62,7 +62,7 @@ public final class CityLayout {
     public List<Plot> plots() { return Collections.unmodifiableList(plots); }
     public List<Road> roadTiles() { return Collections.unmodifiableList(roadTiles); }
     public boolean road(int x, int y) { return inSite(x,y) && roads[x][y]; }
-    /** Immutable generated footprints; enforce across the entire proposed player structure. */
+    /** All city parcels, including vacant plots, are immutable; validate entire placement footprint. */
     public boolean worldStructureAt(double x,double y,double radius) {
         int x0=(int)Math.floor(x-radius),x1=(int)Math.floor(x+radius);
         int y0=(int)Math.floor(y-radius),y1=(int)Math.floor(y+radius);
@@ -210,11 +210,11 @@ public final class CityLayout {
         }
         for(int x=0;x<GRID;x++)for(int y=0;y<GRID;y++)
             if(!used[x][y])throw new IllegalStateException("World contains unassigned land");
-        // Roads and developed sites predate the match and are never player construction sites.
-        for(Road road:roadTiles)protectedParcels[road.x()][road.y()]=true;
-        for(Plot lot:plots)if(lot.template().category()!=Category.OPEN || lot.template().variant()!=2)
-            for(int x=lot.x();x<lot.right();x++)for(int y=lot.y();y<lot.bottom();y++)
-                protectedParcels[x][y]=true;
+        // The ENTIRE generated city is immutable world-owned territory.
+        // Empty lots, parks, streets, destroyed buildings, rooftops and plazas
+        // are not player construction space; wilderness exists beyond the city.
+        for(int x=0;x<GRID;x++)for(int y=0;y<GRID;y++)
+            protectedParcels[x][y]=true;
     }
     private void carveRect(int left,int top,int right,int bottom){
         for(int x=Math.max(1,left);x<Math.min(World.SIZE-1,right);x++)

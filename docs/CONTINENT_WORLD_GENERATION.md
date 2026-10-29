@@ -20,12 +20,12 @@ The implementation is layered so the existing fast multiplayer city renderer can
 
 Every generated feature is owned by the **world**, not by an individual player. World-owned geometry is immutable to the player construction system unless an explicit later demolition/reclamation mechanic changes its ownership.
 
-- **Forbidden:** city streets, intercity highways, generated buildings, ruins and developed sites, fixed road props, terrain obstacles, any solid wall, and their actual collider footprints. Block player placement *inside, on top of, or overlapping* those footprints. Never infer permission from a tile merely being walkable.
-- **Allowed:** unoccupied undeveloped ground, with sufficient clearance for the proposed footprint, provided it is navigable and host rules, resource costs, placement limits, spawn protection and route availability are satisfied.
-- **Server authority:** use the same deterministic masks for the host and clients. `World.worldStructureAt(x,y,radius)` checks the active arena's authored land/roads/structures/props. `ArenaSystems.reviewBuild` returns `WORLD_STRUCTURE` before any payment or mutation; the solo client also rejects the same forbidden footprint. Player-owned devices remain a separate mutable layer and are never baked into the world-generation map.
+- **Forbidden:** **every part of every generated city**, including undeveloped/empty lots, parks, plazas, ruined sites, roofs, streets, courtyards and alleys; also intercity highways, world structures, protected spawn areas, natural obstacles and occupied ground. Walkable/open/empty does **not** confer building permission.
+- **Allowed:** **wilderness only**—unoccupied suitable natural land outside all city footprint masks and generated roads, with full building-footprint and clearance checks, plus host authorization, resources, slope limits and route/spawn protection.
+- **Server authority:** use the same deterministic masks for the host and clients. `World.worldStructureAt(x,y,radius)` checks the active arena's authored land/roads/structures/props. `ArenaSystems.reviewBuild` now returns `CITY_PROTECTED` for the current entire city-sector runtime before any payment or mutation. The continental planning validator returns `CITY_PROTECTED` for proposed city-overlapping footprints, even if a lot appears bare. Client presentation must not offer “buildable city” hints. Player-owned devices remain a separate mutable layer and are never baked into the world-generation map.
 - **Planning authority:** `ContinentLayout.worldStructureAt` and `buildableGround` expose the analogous mask at macro parcel resolution. **This is not yet a fully-sized building-footprint test**: streamed chunks must translate the coarse protected mask to fine colliders, include height/floors and slopes, check every occupied cell of each rotated placement, and independently validate large building extents. Do not claim global large-structure placement implemented before those checks exist.
 
-Within the existing arena, `CityLayout` protects all roads and previously developed plot footprints. The `OPEN` / `empty-lot` variant is explicitly bare ground and usable for player-built infrastructure; public squares, parks, paved courts and other pre-existing sites remain protected.
+Within the existing **city-only** arena, `CityLayout` protects **every** parcel, including the `OPEN` / `empty-lot` variant. Therefore the server correctly refuses **all new player structures in the current city**. The continental blueprint already identifies suitable wilderness build parcels, but interactive, streamed, server-authoritative wilderness construction is **not yet implemented**. Until wilderness gameplay is connected, player construction remains unavailable rather than secretly allowing it inside cities. Existing saved city structures are handled as **legacy migration data**: on load, the server validates the checksummed snapshot, archives its exact bytes to a `realm-city-legacy-*.dat` file, **does not respawn the obsolete city structures**, and allows the next save to persist the sanitized world. Failure to archive aborts loading rather than discarding data. The archival snapshot remains available for later manual recovery or wilderness relocation. New saves refuse any active city-owned structure.
 
 ## Multiplayer, storage and performance
 
@@ -63,3 +63,49 @@ Run locally: `javac --release 17 -d out src/main/java/veil/*.java`; `java -cp ou
 `LanServer` now creates a deterministic `ContinentSectors` registry from the same seed as its arena. Clients can send `SECTOR|sx|sy` with integer sector indices in `[0,27]`. The host sends `SECTOR_BEGIN|sx|sy|parcelCount|playerSpawnCount|npcSpawnCount`, one `PARCEL` line per macro parcel (world x/y, biome, elevation, city code, road, immutable mask, buildability), zero or more `CONTINENT_SPAWN` and `CONTINENT_ENCOUNTER` marker lines, then `SECTOR_END|sx|sy`. Invalid indices return `SECTOR_DENIED|BOUNDS`. The request cannot mutate world state or choose arbitrary unbounded response sizes; existing dedicated-host AUTH restrictions still apply. `ContinentSectorNetworkTest` exercises this protocol over a real localhost socket.
 
 **Important:** this is a read-only blueprint streaming protocol, not the final runtime delta stream, client terrain integration, production-safe network transport, or playable continental movement. Repeated requests retransmit descriptors and the client must ignore them until it implements parsing and scene materialization. Protocol generation-version negotiation, backpressure, subscriptions, caching limits, and precise fine-collider ownership are still required.
+
+
+## Shared elevation and retaining-wall contract for every procedural city
+
+The generated sites **A–G** now use `CityPlateTerrain` to establish one deterministic plate elevation per city from the final `ContinentLayout` footprint (after terrain clipping and disconnected-cell pruning). The mapping is the authoritative `World.PARCEL_METERS=6` grid, not the previous render-only three-metre projection. Each individual protected city cell contributes a plate-top mesh at its fixed grade; all exposed edges—including the recesses of L-shaped/irregular footprints—contribute vertical two-metre foundation walls. Natural terrain descends to those walls' feet, then blends back to the regional noise-driven elevations within a 24-metre band. City boundaries are never filled out to a rectangular bounding box.
+
+The existing 132 × 132 City A district remains the detailed playable/source-kit scene, and its Kenney retaining blocks and two open, graded exit ramps take priority over the coarser City A macro-footprint. Generated city surface meshes B–G are **geometric plates/road palettes only**. They are not yet the complete source-kit building/plot instantiation of the future streamed cities, and this pass does not assert that client/server 3D collision or cross-city live streaming has been completed.
+
+`CityPlateTerrainTest` checks every shape and foundation edge for six independent world seeds and checks actual 3D plateau/skirt vertices for B–G on the two seeds used for the GPU screenshot workflow. The screenshot gate also captures elevated and outside approaches to Cities B and C separately from City A. Assertions cover seam grade, plate-foot alignment, generation determinism, and visual renderability; archived images still require human art review.
+
+## Interchangeable Java 17 level editor (authoring layer)
+
+The game's **Level Editor (Dev)** menu option now hosts the **existing** external
+`org.beckenburg.editor` module from *The Beckenburg Project*, published as
+`LevelEditorKit-Java17.jar` in release `beckenburg-v0.1.31`. The pinned
+binary SHA-256 is `5b75ada82ad71d128150b58f0ab74e0f0e18866968b216968c66940209e1252d`.
+`tools/install-editor-kit.sh` fetches the independently published JAR, checks
+its exact bytes, and installs it into Maven's local cache before building the
+shaded GPU game. The Beckenburg editor implementation is **not copied or forked**.
+
+`MaleficEditorProject implements EditorProject<Snapshot>` supplies game asset
+identities, hierarchy, geometry, undo/redo snapshots, atomic save/reload, and
+licensed source mesh validation; `MaleficEditorDock` uses the kit's actual
+`EditorPalettePanel` and `EditorHistory` components, with a compact asset
+filter, transform inspector, transactional Place/Apply/Delete, Undo/Redo,
+Save/Reload and OpenGL viewport selection (Ctrl+click on an authored object).
+The same instanced renderer, camera and seeded city geometry are visible while
+editing. The editor can also launch with `java -jar MaleficVeil.jar --editor
+--seed=20261020`. F11 focuses the editor dock, space/ctrl moves its fly camera,
+and WASD/mouse turns and walks the shared GL viewport.
+
+Authoring data is separate, in
+`worlds/editor/seed-<seed>/city-A.properties`. It is reloaded automatically
+as a **render-only** additional asset layer in ordinary GPU gameplay. This
+document does *not* mutate the deterministic procedural city generator, host
+collision, city protection, settlement construction, player stats, or durable
+host saves. It currently supports City A objects and sourced models only;
+brush-based terrain editing, walls that change collision, full map streaming
+and cooperative authoring are not implemented. Treating editor-only props as
+physical world structures would be a correctness/security defect until their
+collisions are validated on the host.
+
+A real GPU integration test `--editor-smoke` drives the imported history,
+place, transform, undo/redo, atomic save/reload, GPU model upload, and a
+captured framebuffer from the **packaged** game. The release workflow fails
+if that path or the external dependency breaks.

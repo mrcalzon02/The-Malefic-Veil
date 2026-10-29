@@ -39,7 +39,7 @@ public final class ArsenalSystemsTest {
         check(chain.arsenal.fire(1,false,1).fired(),"chain fired");check(chain.world.npcs.stream().allMatch(n->n.hp<80),"lightning hits distinct nearby enemies");
         // Craft atomically at own bench. The fixture places only a test bench; normal placement uses reviewBuild.
         double bx=0,by=0;search:for(int x=3;x<World.SIZE-3;x++)for(int y=3;y<World.SIZE-3;y++)if(h.world.canWalk(x+.5,y+.5)&&!h.world.worldStructureAt(x+.5,y+.5,.55)){bx=x+.5;by=y+.5;break search;}
-        h.player(1).x=bx;h.player(1).y=by;World.Device bench=new World.Device(bx,by,ArenaSystems.WORKBENCH);bench.ownerId=1;h.world.devices.add(bench);
+        h.player(1).x=bx;h.player(1).y=by;World.Device bench=new World.Device(bx,by,ArenaSystems.FIELD_BENCH);bench.ownerId=1;h.world.devices.add(bench);
         s.owned=1;s.selected=0;s.faction=0;s.factionLocked=false;
         check(!h.arsenal.craft(1,9).ok(),"wrong faction denied");check(h.arsenal.faction(1,1).ok(),"choose faction separately from class");
         int scrap=h.player(1).scrap;check(!h.arsenal.craft(1,9).ok()&&h.player(1).scrap==scrap,"resource failure atomic");

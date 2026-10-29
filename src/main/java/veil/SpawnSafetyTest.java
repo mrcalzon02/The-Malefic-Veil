@@ -37,21 +37,25 @@ public final class SpawnSafetyTest {
             check(victim.hp==100&&!victim.dead,"player returned alive");
             arena.damage(victim,80,0);
             check(victim.hp==100,"non-offensive brief protection against spawn kill");
-            // Firing cancels protection *before* future incoming hits.
+            // A naked respawn must NOT receive magically replenished ammunition.
             victim.angle=0;
-            check(arena.fire(1,0),"spawned player can initiate combat");
+            check(!arena.fire(1,0),"death-cleared gun cannot fire without ammunition");
+            check(victim.protectedUntil>arena.time(),
+                "empty weapon click must not consume spawn protection");
+            // Deliberately using an ability is a host-owned active action and ends grace.
+            check(arena.ability(1),"respawned player can deliberately trigger class ability");
             arena.damage(victim,25,0);
-            check(victim.hp==75,"spawn protection ends on attack");
+            check(victim.hp==75,"spawn protection ends after active ability");
         }
         ArenaSystems arena=new ArenaSystems(42);
         arena.world.npcs.clear();
         ArenaSystems.Player builder=arena.join(4);
         builder.cash=1000;builder.scrap=100;
         builder.angle=0;
-        check(arena.reviewBuild(4,ArenaSystems.TURRET).reason().equals("SPAWN_CLEARANCE"),
-            "turret must not be buildable at spawn exit");
-        check(arena.reviewBuild(4,ArenaSystems.BARRICADE).reason().equals("SPAWN_CLEARANCE"),
-            "barricade must not be buildable at spawn exit");
+        check(arena.reviewBuild(4,ArenaSystems.TURRET).reason().equals("CITY_PROTECTED"),
+            "city-owned spawn exits cannot accept turrets");
+        check(arena.reviewBuild(4,ArenaSystems.BARRICADE).reason().equals("CITY_PROTECTED"),
+            "city-owned spawn exits cannot accept barricades");
         System.out.println("PASS SpawnSafetyTest "+assertions+
             " assertions: 20 seeds x 100 enemy positions, risk previews, respawn protection, nonoffensive cooldown");
     }

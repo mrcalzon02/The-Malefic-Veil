@@ -15,13 +15,17 @@ public final class LanServer implements AutoCloseable {
     private final ExecutorService workers=Executors.newCachedThreadPool();
     private final ScheduledExecutorService ticks=Executors.newSingleThreadScheduledExecutor();
     private final ScheduledExecutorService saves=Executors.newSingleThreadScheduledExecutor();
-    private final Semaphore connectionSlots=new Semaphore(32);
+    private final Semaphore connectionSlots;
     private final HostModeration moderation;
     private final Path dataDirectory;
     private final long startup=System.currentTimeMillis();
     private final ConcurrentMap<Integer,Peer> connections=new ConcurrentHashMap<>();
     public final ArenaSystems match;
     public final ContinentSectors continentSectors;
+    public final WorldHarvesting harvesting;
+    public final CityLootEconomy loot;
+    public final FactionAiDirector ai;
+    private final VeilWeather weather;
     private volatile boolean running=true;
     private int nextId;
     private static final class Peer {
@@ -31,33 +35,80 @@ public final class LanServer implements AutoCloseable {
         boolean authenticated;
         int commands;
         long commandWindow=System.nanoTime();
+        double lastResourceX=Double.NaN,lastResourceY=Double.NaN;
         synchronized void send(String message){out.println(message);}
     }
-    public LanServer(int port,long seed)throws IOException {this(port,seed,null);}
-    /** Persistent dedicated mode binds loopback by default; explicit veil.bind exposes it. */
+    public LanServer(int port,long seed)throws IOException {this(port,seed,null,false);}
     public LanServer(int port,long seed,Path saveDir)throws IOException {
+        this(port,seed,saveDir,Boolean.getBoolean("veil.hardcore"));
+    }
+    /** Persisted world rule: hardmode cannot change across restarts without migration. */
+    public LanServer(int port,long seed,Path saveDir,boolean hardcore)throws IOException {
+        this(port,seed,saveDir,hardcore,HostAiSettings.fromProperties());
+    }
+    /** Explicit host AI settings, validated before binding the listening socket. */
+    public LanServer(int port,long seed,Path saveDir,boolean hardcore,
+                     HostAiSettings.Rules aiSettings)throws IOException {
         dataDirectory=saveDir;
+        int playerLimit=32;
+        if(saveDir!=null&&Files.exists(saveDir.resolve("world.properties"))){
+            WorldCreationConfig creation=WorldCreationConfig.load(saveDir);
+            if(creation.seed()!=seed||creation.hardcore()!=hardcore||
+                creation.aiPopulation()!=aiSettings.count())
+                throw new IOException("World rules differ from persisted creation settings");
+            playerLimit=creation.maxPlayers();
+        }
+        connectionSlots=new Semaphore(playerLimit);
+        // Bot accounts/groups/claims are durable identities. Changing roster
+        // numbers or factions at restart requires an explicit migration.
+        HostAiSettings.Rules boundAI=HostAiSettings.bind(saveDir,aiSettings);
+        boolean active=HostRules.bind(saveDir,hardcore);
         moderation=saveDir==null?null:new HostModeration(saveDir);
-        match=new ArenaSystems(seed);
+        match=new ArenaSystems(seed,active);
         ContinentLayout continent=match.world.continent();
         continentSectors=new ContinentSectors(continent,new ContinentPopulation(continent));
-        if(saveDir!=null)DurableRealm.load(match,saveDir);
+        harvesting=new WorldHarvesting(match.world);
+        loot=new CityLootEconomy(match.world);
+        // One atmospheric simulation per connected world, NOT per player or
+        // separate city/wilderness scene. Dedicated hosts do not load GLBs/audio.
+        weather=new VeilWeather(seed,Path.of("."),false);
+        if(saveDir!=null){
+            HostCheckpoint.load(match,saveDir);
+            harvesting.load(saveDir);
+        }
+        ai=new FactionAiDirector(match,harvesting,boundAI);
+        if(saveDir!=null)ai.load(saveDir);
         listener=saveDir==null?new ServerSocket(port):
             new ServerSocket(port,32,InetAddress.getByName(System.getProperty("veil.bind","127.0.0.1")));
         if(saveDir!=null){
             saves.scheduleWithFixedDelay(()->{
-                try{DurableRealm.save(match,dataDirectory);}
+                try{saveAll();}
                 catch(Exception e){System.err.println("AUTOSAVE FAILED: "+e);audit("autosave_failure "+e.getClass().getSimpleName());}
             },60,60,TimeUnit.SECONDS);
         }
         ticks.scheduleAtFixedRate(()->{
             try {
                 match.advance(100);
+                harvesting.advance(100);
+                loot.expire(System.currentTimeMillis());
+                ai.advance(100);
+                synchronized(weather){
+                    weather.tick(.1,match.world.spawns[0][0],
+                        match.world.spawns[0][1],0,1);
+                }
+                if(match.time()%2000==0)broadcast(weatherPacket(),-1);
                 for(Peer p:connections.values()){
                     ArenaSystems.Player self=match.player(p.id);
                     if(self!=null){
                         p.send(selfPacket(self));
-                        p.send(ArsenalWire.state(match.arsenal.view(p.id),match.time()));
+                        // Hunger, hydration and life-streak XP change over time,
+                        // even with no new player command. Keep UI status live.
+                        if(match.time()%2000==0)p.send(progressionPacket(self));
+                        ArsenalSystems.View arsenal=match.arsenal.view(p.id);
+                        if(arsenal!=null)p.send(ArsenalWire.state(arsenal,match.time()));
+                        if(!Double.isFinite(p.lastResourceX)||
+                           Math.hypot(self.x-p.lastResourceX,self.y-p.lastResourceY)>12||
+                           match.time()%5000==0)syncResources(p,self);
                         if(self.dead){
                             List<ArenaSystems.SpawnRisk> risks=match.spawnRisks(p.id);
                             p.send("SPAWNS|"+risks.get(0).score()+"|"+risks.get(1).score()+"|"+risks.get(2).score());
@@ -65,19 +116,41 @@ public final class LanServer implements AutoCloseable {
                         }
                     }
                 }
-                for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
                 broadcast(ArsenalWire.effects(match.arsenal.effects()),-1);
-                if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++)if(match.world.devices.get(i).kind==ArenaSystems.WORKBENCH)broadcast("ARS_BENCH|"+i+"|"+match.world.devices.get(i).tier,-1);
+                for(ArenaSystems.Player p:match.roster())broadcast(peerPacket(p),p.id);
+                if(match.time()%2000==0)
+                    for(var bot:ai.views())broadcast(aiPacket(bot),-1);
                 for(Vehicles.State car:match.vehicles.states())broadcast(carPacket(car),-1);
+                if(match.time()%500==0){
+                    for(Vehicles.State car:match.vehicles.states())
+                        broadcast(cargoTruckPacket(car),-1);
+                    for(CargoHaulage.Site yard:match.cargo.sites())
+                        broadcast(cargoYardPacket(yard),-1);
+                    broadcast(cargoDropIdsPacket(),-1);
+                    for(CargoHaulage.Drop drop:match.cargo.drops())
+                        broadcast(cargoDropPacket(drop),-1);
+                }
+                if(match.time()%500==0)for(ThrownDeployables.View f:match.thrown.views())
+                    broadcast("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
+                        f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0),-1);
+                for(int gone:match.thrown.drainRemoved())
+                    broadcast("FIELD_GONE|"+gone,-1);
+                for(ThrownDeployables.Burst burst:match.thrown.drainBursts())
+                    broadcast("FIELD_BURST|"+burst.x()+"|"+burst.y()+"|"+burst.faction(),-1);
                 if(match.time()%500==0)for(int i=0;i<match.world.devices.size();i++){
                     World.Device d=match.world.devices.get(i);
                     broadcast("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
+                    if(d.kind==ArenaSystems.FIELD_BENCH)
+                        broadcast("ARS_BENCH|"+i+"|"+d.tier,-1);
                 }
                 for(int i=0;i<match.world.npcs.size();i++){
                     World.Npc n=match.world.npcs.get(i);
-                    broadcast("NPC|"+i+"|"+n.x+"|"+n.y+"|"+n.hp,-1);
+                    broadcast(npcPacket(i,n),-1);
                 }
-            }catch(RuntimeException e){System.err.println("Arena tick failed: "+e);}
+            }catch(RuntimeException e){
+                System.err.println("Arena tick failed: "+e);
+                DesktopDiagnostics.note("HOST_TICK_FAILURE "+e);
+            }
         },100,100,TimeUnit.MILLISECONDS);
         workers.execute(()->{
             while(running)try{
@@ -93,6 +166,61 @@ public final class LanServer implements AutoCloseable {
     private void broadcast(String message,int except){
         for(Peer q:connections.values())if(q.id!=except)q.send(message);
     }
+    /** Nearby harvestable geometry is ordinary shared-world entity interest. */
+    private void syncResources(Peer peer,ArenaSystems.Player actor){
+        peer.send("RESOURCE_RESET");
+        for(var node:harvesting.nearby(actor.x,actor.y,55)){
+            peer.send("RESOURCE_NODE|"+node.id()+"|"+harvesting.nodeX(node)+"|"+
+                harvesting.nodeY(node)+"|"+node.type()+"|"+
+                node.remaining()+"|"+node.capacity());
+        }
+        peer.lastResourceX=actor.x;peer.lastResourceY=actor.y;
+    }
+    private String weatherPacket(){
+        synchronized(weather){
+            return "WEATHER|"+weather.current()+"|"+weather.timeOfDay();
+        }
+    }
+    /** Dedicated-host console authority; clients cannot forge weather packets. */
+    public String weatherStatus(){
+        synchronized(weather){
+            return weather.current()+" at daylight="+String.format(Locale.ROOT,"%.4f",weather.timeOfDay());
+        }
+    }
+    public String setWeatherPreset(String name){
+        synchronized(weather){
+            // Validate before mutating auto scheduling: unknown operator input
+            // must not silently disable the active climate simulation.
+            weather.setPreset(name,8);
+            weather.autoWeather(false,240,.55,65);
+        }
+        broadcast(weatherPacket(),-1);
+        audit("weather_preset "+name);
+        return weatherStatus();
+    }
+    public String resumeAutoWeather(){
+        synchronized(weather){weather.autoWeather(true,240,.55,65);}
+        audit("weather_auto");
+        return "Automatic weather enabled; "+weatherStatus();
+    }
+    private static String aiPacket(FactionAiDirector.View bot){
+        return "AI_ACTOR|"+bot.id()+"|"+bot.faction()+"|"+bot.level()+
+            "|"+bot.group()+"|"+bot.activity()+"|"+bot.buildings()+"|"+bot.duty();
+    }
+    public String aiStatus(){
+        StringJoiner j=new StringJoiner("; ",ai.settings().description()+" ", "");
+        for(var bot:ai.views())j.add(bot.id()+":"+bot.faction().name().replace("THE_","")+
+            ":"+bot.duty()+":"+bot.activity()+":lv"+bot.level()+
+            ":base"+bot.buildings()+":bag"+bot.carried()+
+            ":crew"+bot.group()+":at("+Math.round(bot.x())+","+Math.round(bot.y())+")");
+        return j.toString();
+    }
+    /** Host-owned combat phase is part of the same NPC snapshot; no client
+     * may choose the target, windup duration or apply NPC damage. */
+    static String npcPacket(int index,World.Npc npc){
+        return "NPC|"+index+"|"+npc.x+"|"+npc.y+"|"+npc.hp+
+            "|"+npc.attackPhase+"|"+npc.attackTargetId;
+    }
     private static String peerPacket(ArenaSystems.Player p){
         return "PEER|"+p.id+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.hp+"|"+p.visibility+"|"+p.classId;
     }
@@ -100,21 +228,88 @@ public final class LanServer implements AutoCloseable {
         return "CAR|"+car.id()+"|"+car.x()+"|"+car.y()+"|"+car.heading()+"|"+
             car.speed()+"|"+car.fuel()+"|"+car.hp()+"|"+car.driverId();
     }
+    private String cargoTruckPacket(Vehicles.State car){
+        Vehicles.Load load=match.vehicles.cargo(car.id());
+        return "TRUCK_CARGO|"+car.id()+"|"+
+            (load==null||load.resourceType()==null?"NONE":load.resourceType());
+    }
+    private static String cargoYardPacket(CargoHaulage.Site yard){
+        return "CARGO_YARD|"+yard.id()+"|"+yard.x()+"|"+yard.y()+"|"+
+            yard.resource()+"|"+yard.stock();
+    }
+    private String cargoDropIdsPacket(){
+        List<CargoHaulage.Drop> drops=match.cargo.drops();
+        if(drops.isEmpty())return "CARGO_DROP_IDS|-";
+        StringJoiner names=new StringJoiner(",");
+        for(CargoHaulage.Drop drop:drops)names.add(Integer.toString(drop.id()));
+        return "CARGO_DROP_IDS|"+names;
+    }
+    private static String cargoDropPacket(CargoHaulage.Drop drop){
+        return "CARGO_DROP|"+drop.id()+"|"+drop.x()+"|"+drop.y()+"|"+drop.resource();
+    }
+    private String progressionPacket(ArenaSystems.Player p){
+        var v=p.progression.view();
+        return "RPG|"+v.level()+"|"+v.experience()+"|"+v.nextLevelExperience()+
+            "|"+v.aliveMs()+"|"+v.bonus()+
+            "|"+v.skills().get(CharacterProgression.Skill.MARKSMANSHIP)+
+            "|"+v.skills().get(CharacterProgression.Skill.ATHLETICS)+
+            "|"+v.skills().get(CharacterProgression.Skill.ENGINEERING)+
+            "|"+v.skills().get(CharacterProgression.Skill.SCAVENGING)+
+            "|"+v.skills().get(CharacterProgression.Skill.SURVIVAL)+
+            "|"+Math.max(0,p.protectedUntil-match.time())+
+            "|"+p.survival.status().hunger()+"|"+p.survival.status().hydration();
+    }
+    private String campStockPacket(int player){
+        StringJoiner items=new StringJoiner(",");
+        match.nearbyCampStock(player).forEach((item,n)->items.add(item.name()+"="+n));
+        return "CAMP_STOCK|"+(items.length()==0?"-":items.toString());
+    }
+    private static String inventoryPacket(ArenaSystems.Player p){
+        StringJoiner content=new StringJoiner(",");
+        for(var item:p.survival.inventory().entrySet())
+            content.add(item.getKey().name()+"="+item.getValue());
+        return "INVENTORY|"+(content.length()==0?"-":content.toString());
+    }
+    private String factionPacket(String account){
+        CharacterRoster.Faction faction=match.factions.faction(account);
+        FactionGroups.Crew crew=match.factions.crewFor(account);
+        FactionGroups.Role role=crew==null?null:crew.members().get(account);
+        return "FACTION_STATE|"+(faction==null?"NONE":faction.name())+
+            "|"+(crew==null?"NONE":crew.id())+"|"+(role==null?"NONE":role.name());
+    }
+    private void factionStateTo(ArenaSystems.Player actor,Peer peer){
+        peer.send(factionPacket(actor.accountKey));
+    }
     private static String selfPacket(ArenaSystems.Player p){
         return "SELF|"+p.hp+"|"+p.sanity+"|"+p.cash+"|"+p.scrap+"|"+p.medkits+
             "|"+p.pistolReserve+"|"+p.shellReserve+"|"+p.pistolClip+"|"+p.shellClip+
             "|"+(p.dead?1:0)+"|"+p.frags+"|"+p.x+"|"+p.y+"|"+p.angle+"|"+p.visibility;
     }
     private void sendWorld(Peer peer){
-        for(int i=0;i<match.arsenal.loot.size();i++)if(match.arsenal.loot.get(i).taken)peer.send("ARS_PICKED|"+i);
         for(ArenaSystems.Player other:match.roster())if(other.id!=peer.id)peer.send(peerPacket(other));
+        for(var bot:ai.views())peer.send(aiPacket(bot));
+        for(int i=0;i<match.arsenal.loot.size();i++)
+            if(match.arsenal.loot.get(i).taken)peer.send("ARS_PICKED|"+i);
         for(int i=0;i<match.world.pickups.size();i++)
             if(match.world.pickups.get(i).taken)peer.send("PICKUP|"+i);
-        for(Vehicles.State car:match.vehicles.states())peer.send(carPacket(car));
+        for(int i=0;i<match.world.npcs.size();i++){
+            World.Npc n=match.world.npcs.get(i);
+            peer.send("NPC_RANK|"+i+"|"+CharacterProgression.monsterLevel(
+                match.world.seed,n)+"|"+n.kind);
+        }
+        for(Vehicles.State car:match.vehicles.states()){
+            peer.send(carPacket(car));peer.send(cargoTruckPacket(car));
+        }
+        for(CargoHaulage.Site yard:match.cargo.sites())peer.send(cargoYardPacket(yard));
+        peer.send(cargoDropIdsPacket());
+        for(CargoHaulage.Drop drop:match.cargo.drops())peer.send(cargoDropPacket(drop));
         for(int i=0;i<match.world.devices.size();i++){
             World.Device d=match.world.devices.get(i);
             peer.send("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp);
         }
+        for(ThrownDeployables.View f:match.thrown.views())
+            peer.send("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
+                f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0));
     }
     private void serve(Socket socket){
         Peer peer=new Peer();peer.id=id();peer.socket=socket;
@@ -124,9 +319,20 @@ public final class LanServer implements AutoCloseable {
             socket.setSoTimeout(30000);
             peer.out=out;
             ArenaSystems.Player actor=match.join(peer.id);
+            match.beginLoading(peer.id);
             peer.send("WELCOME|"+peer.id+"|"+match.world.seed+"|3");
+            peer.send("SERVER_MODE|"+(match.hardcore?"HARDCORE":"NORMAL"));
+            peer.send(weatherPacket());
             connections.put(peer.id,peer);
-            sendWorld(peer);peer.send(selfPacket(actor));
+            sendWorld(peer);peer.send(selfPacket(actor));syncResources(peer,actor);
+            for(var c:loot.containers())
+                peer.send("SCAVENGE_NODE|"+c.id()+"|"+c.source()+"|"+c.x()+"|"+c.y()+"|"+loot.looted(c.id()));
+            for(var g:loot.ground(System.currentTimeMillis()))
+                peer.send("GROUND_ITEM|"+g.id()+"|"+g.x()+"|"+g.y()+"|"+g.item()+"|"+g.quantity()+"|"+g.expiresAtMs());
+            peer.send(progressionPacket(actor));peer.send(inventoryPacket(actor));
+            peer.send(campStockPacket(actor.id));
+            peer.send(ArsenalWire.state(match.arsenal.view(actor.id),match.time()));
+            factionStateTo(actor,peer);
             broadcast(peerPacket(actor),peer.id);
             String line;
             while((line=in.readLine())!=null){
@@ -142,19 +348,19 @@ public final class LanServer implements AutoCloseable {
                     if(moderation!=null&&!peer.authenticated&&!"AUTH".equals(s[0])){
                         peer.send("AUTH_DENIED|REQUIRED");return;
                     }
+                    // A persistent player may not evade hard faction alliances by
+                    // omitting selection and fighting as an "unaligned" account.
+                    if(moderation!=null&&peer.authenticated&&
+                       match.factions.faction(match.player(peer.id).accountKey)==null&&
+                       Set.of("FIRE","ABILITY","PICKUP","MEDKIT","RELOAD","BUILD",
+                           "RIDE","DRIVE","CARGO_LOAD","CARGO_RECOVER","CARGO_UNLOAD",
+                           "STOCK_PUT","STOCK_TAKE","FACTION_PRODUCE","REFUEL_STEAM","CHARGE_GENERATOR","AUTOMATION_ROUTE","AUTOMATION_QUEUE","CRAFT_HAND","CRAFT_FIRE","CRAFT_BENCH",
+                           "HARVEST","SCAVENGE","CONSUME","DROP_ITEM","GET_DROP","TRADE_ITEM",
+                           "ARS_FIRE","ARS_SELECT","ARS_RELOAD","ARS_PICKUP","ARS_CRAFT",
+                           "ARS_UPGRADE").contains(s[0])){
+                        peer.send("FACTION_RESULT|REQUIRED");continue;
+                    }
                     switch(s[0]){
-                        case "ARS_FIRE" -> {
-                            if(s.length!=3)continue;
-                            ArsenalSystems.Shot shot=match.arsenal.fire(peer.id,Integer.parseInt(s[2])!=0,Long.parseLong(s[1]));
-                            peer.send("ARS_SHOT|"+shot.fired()+"|"+shot.reason()+"|"+shot.damage()+"|"+shot.ammo());changed=true;
-                        }
-                        case "ARS_SELECT" -> {if(s.length==2){var r=match.arsenal.select(peer.id,Integer.parseInt(s[1]));peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}}
-                        case "ARS_RELOAD" -> {var r=match.arsenal.reload(peer.id);peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}
-                        case "ARS_RELEASE" -> match.arsenal.release(peer.id);
-                        case "ARS_PICKUP" -> {if(s.length==2){int i=Integer.parseInt(s[1]);var r=match.arsenal.pickup(peer.id,i);if(r.ok()){broadcast("ARS_PICKED|"+i,-1);changed=true;}}}
-                        case "ARS_CRAFT" -> {if(s.length==2){var r=match.arsenal.craft(peer.id,Integer.parseInt(s[1]));peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}}
-                        case "ARS_UPGRADE" -> {var r=match.arsenal.upgrade(peer.id);peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}
-                        case "ARS_FACTION" -> {if(s.length==2){var r=match.arsenal.faction(peer.id,Integer.parseInt(s[1]));peer.send("ARS_RESULT|"+r.reason());changed=r.ok();}}
                         case "AUTH" -> {
                             if(s.length!=2)continue;
                             String account;
@@ -167,12 +373,195 @@ public final class LanServer implements AutoCloseable {
                             if(match.assignAccount(peer.id,account)){
                                 peer.authenticated=true;
                                 peer.send("AUTH_OK|"+account);
+                                factionStateTo(match.player(peer.id),peer);
                                 audit("login id="+peer.id+" account="+account);
                             }else if(moderation==null){
                                 // Local multi-client smoke tests can share a machine's stored key.
                                 // The second session stays an unowned guest; never duplicate an account.
                                 peer.send("AUTH_GUEST|DUPLICATE");
                             }else{peer.send("AUTH_DENIED|DUPLICATE");return;}
+                        }
+                        case "FACTION_JOIN" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            CharacterRoster.Faction selected;
+                            try{selected=CharacterRoster.Faction.valueOf(s[1]);}
+                            catch(IllegalArgumentException invalid){
+                                peer.send("FACTION_RESULT|INVALID");continue;
+                            }
+                            boolean ok=match.enrollFaction(peer.id,selected);
+                            peer.send("FACTION_RESULT|"+(ok?"OK":"LOCKED"));
+                            factionStateTo(match.player(peer.id),peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_CREATE" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            FactionGroups.Crew made=match.factions.create(requester.accountKey,s[1]);
+                            peer.send("CREW_RESULT|CREATE|"+(made==null?"REJECTED":made.id()));
+                            factionStateTo(requester,peer);
+                            if(made!=null&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_INVITE" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            int recipientId=Integer.parseInt(s[1]);
+                            ArenaSystems.Player issuer=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(recipientId);
+                            boolean ok=recipient!=null&&match.factions.invite(
+                                issuer.accountKey,recipient.accountKey,System.currentTimeMillis());
+                            peer.send("CREW_RESULT|INVITE|"+(ok?"OK":"REJECTED"));
+                            Peer invited=connections.get(recipientId);
+                            if(ok&&invited!=null)
+                                invited.send("CREW_INVITE|"+match.factions.crewId(issuer.accountKey));
+                        }
+                        case "CREW_ACCEPT" -> {
+                            if(s.length!=1||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            boolean ok=match.factions.accept(requester.accountKey,System.currentTimeMillis());
+                            peer.send("CREW_RESULT|ACCEPT|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(requester,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_LEAVE" -> {
+                            if(s.length!=1||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            boolean ok=match.factions.remove(requester.accountKey,requester.accountKey);
+                            peer.send("CREW_RESULT|LEAVE|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(requester,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_PROMOTE" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(Integer.parseInt(s[1]));
+                            boolean ok=recipient!=null&&match.factions.promote(
+                                requester.accountKey,recipient.accountKey);
+                            peer.send("CREW_RESULT|PROMOTE|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(requester,peer);
+                            Peer promoted=recipient==null?null:connections.get(recipient.id);
+                            if(ok&&promoted!=null)factionStateTo(recipient,promoted);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_KICK" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(Integer.parseInt(s[1]));
+                            boolean ok=recipient!=null&&match.factions.remove(
+                                requester.accountKey,recipient.accountKey);
+                            peer.send("CREW_RESULT|KICK|"+(ok?"OK":"REJECTED"));
+                            Peer removed=recipient==null?null:connections.get(recipient.id);
+                            if(ok&&removed!=null)factionStateTo(recipient,removed);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_TRANSFER" -> {
+                            if(s.length!=2||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            ArenaSystems.Player recipient=match.player(Integer.parseInt(s[1]));
+                            boolean ok=recipient!=null&&match.factions.transfer(
+                                requester.accountKey,recipient.accountKey);
+                            peer.send("CREW_RESULT|TRANSFER|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(requester,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "CREW_DISBAND" -> {
+                            if(s.length!=1||!peer.authenticated)continue;
+                            ArenaSystems.Player requester=match.player(peer.id);
+                            boolean ok=match.factions.disband(requester.accountKey);
+                            peer.send("CREW_RESULT|DISBAND|"+(ok?"OK":"REJECTED"));
+                            factionStateTo(requester,peer);
+                            if(ok&&dataDirectory!=null)saveAll();
+                        }
+                        case "SCENE_READY" -> {
+                            if(s.length!=1)continue;
+                            boolean admitted=match.sceneReady(peer.id);
+                            peer.send("SCENE_READY_RESULT|"+(admitted?"OK":"IGNORED"));
+                        }
+                        case "HARVEST" -> {
+                            if(s.length!=2)continue;
+                            ArenaSystems.Player p=match.player(peer.id);
+                            int nodeId=Integer.parseInt(s[1]);
+                            var outcome=harvesting.harvest(p,nodeId);
+                            peer.send("HARVEST_RESULT|"+nodeId+"|"+outcome.reason());
+                            if(outcome.accepted()){
+                                peer.send(inventoryPacket(p));
+                                p.progression.reward(CharacterProgression.Skill.SCAVENGING,
+                                    8,match.time(),3000);
+                                peer.send(progressionPacket(p));
+                                var node=outcome.node();
+                                for(Peer observer:connections.values()){
+                                    ArenaSystems.Player other=match.player(observer.id);
+                                    if(other!=null&&Math.hypot(other.x-harvesting.nodeX(node),
+                                        other.y-harvesting.nodeY(node))<65)
+                                        observer.send("RESOURCE_NODE|"+node.id()+"|"+
+                                            harvesting.nodeX(node)+"|"+harvesting.nodeY(node)+"|"+
+                                            node.type()+"|"+node.remaining()+"|"+node.capacity());
+                                }
+                            }
+                        }
+                        case "SCAVENGE" -> {
+                            if(s.length!=2)continue;
+                            var p=match.player(peer.id);
+                            int id=Integer.parseInt(s[1]);
+                            boolean ok=p!=null&&!p.dead&&loot.scavenge(id,p.x,p.y,p.survival);
+                            peer.send("SCAVENGE_RESULT|"+id+"|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                peer.send(inventoryPacket(p));
+                                broadcast("SCAVENGE_TAKEN|"+id,-1);
+                            }
+                        }
+                        case "CONSUME" -> {
+                            if(s.length!=2||s[1].length()>32)continue;
+                            SurvivalCrafting.Item item=SurvivalCrafting.Item.valueOf(s[1]);
+                            boolean ok=match.consumeSurvival(peer.id,item);
+                            peer.send("CONSUME_RESULT|"+item+"|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                ArenaSystems.Player consumer=match.player(peer.id);
+                                peer.send(inventoryPacket(consumer));
+                                peer.send(progressionPacket(consumer));
+                            }
+                            changed=ok;
+                        }
+                        case "DROP_ITEM" -> {
+                            if(s.length!=3)continue;
+                            var p=match.player(peer.id);
+                            var item=SurvivalCrafting.Item.valueOf(s[1]);
+                            boolean ok=p!=null&&!p.dead&&loot.drop(p.survival,item,
+                                Integer.parseInt(s[2]),p.x,p.y,System.currentTimeMillis());
+                            peer.send("DROP_RESULT|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                peer.send(inventoryPacket(p));
+                                for(var g:loot.ground(System.currentTimeMillis()))
+                                    broadcast("GROUND_ITEM|"+g.id()+"|"+g.x()+"|"+g.y()+"|"+
+                                        g.item()+"|"+g.quantity()+"|"+g.expiresAtMs(),-1);
+                            }
+                        }
+                        case "GET_DROP" -> {
+                            if(s.length!=2)continue;
+                            var p=match.player(peer.id);
+                            long id=Long.parseLong(s[1]);
+                            boolean ok=p!=null&&!p.dead&&loot.pickup(id,p.survival,
+                                p.x,p.y,System.currentTimeMillis());
+                            peer.send("GET_DROP_RESULT|"+id+"|"+(ok?"OK":"DENIED"));
+                            if(ok){peer.send(inventoryPacket(p));broadcast("GROUND_TAKEN|"+id,-1);}
+                        }
+                        case "TRADE_ITEM" -> {
+                            if(s.length!=4)continue;
+                            var giver=match.player(peer.id);
+                            int to=Integer.parseInt(s[1]);
+                            var receiver=match.player(to);
+                            var item=SurvivalCrafting.Item.valueOf(s[2]);
+                            boolean ok=giver!=null&&receiver!=null&&!giver.dead&&!receiver.dead&&
+                                connections.containsKey(to)&&loot.trade(giver.survival,
+                                receiver.survival,item,Integer.parseInt(s[3]),
+                                giver.x,giver.y,giver.angle,receiver.x,receiver.y);
+                            peer.send("TRADE_RESULT|"+to+"|"+(ok?"OK":"DENIED"));
+                            if(ok){
+                                peer.send(inventoryPacket(giver));
+                                Peer target=connections.get(to);
+                                if(target!=null){
+                                    target.send(inventoryPacket(receiver));
+                                    target.send("TRADE_RECEIVED|"+peer.id+"|"+item+"|"+s[3]);
+                                }
+                            }
                         }
                         case "STATE" -> {
                             if(s.length!=5)continue;
@@ -183,10 +572,52 @@ public final class LanServer implements AutoCloseable {
                             if(s.length!=2)continue;
                             match.choose(peer.id,Integer.parseInt(s[1]));changed=true;
                         }
+                        case "ARS_FIRE" -> {
+                            if(s.length!=3)continue;
+                            ArsenalSystems.Shot shot=match.arsenal.fire(peer.id,
+                                Integer.parseInt(s[2])!=0,Long.parseLong(s[1]));
+                            peer.send("ARS_SHOT|"+shot.fired()+"|"+shot.reason()+"|"+
+                                shot.damage()+"|"+shot.ammo());
+                            changed=shot.fired();
+                        }
+                        case "ARS_SELECT" -> {
+                            if(s.length!=2)continue;
+                            var result=match.arsenal.select(peer.id,Integer.parseInt(s[1]));
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        case "ARS_RELOAD" -> {
+                            if(s.length!=1)continue;
+                            var result=match.arsenal.reload(peer.id);
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        case "ARS_RELEASE" -> match.arsenal.release(peer.id);
+                        case "ARS_PICKUP" -> {
+                            if(s.length!=2)continue;
+                            int lootId=Integer.parseInt(s[1]);
+                            var result=match.arsenal.pickup(peer.id,lootId);
+                            peer.send("ARS_RESULT|"+result.reason());
+                            if(result.ok()){broadcast("ARS_PICKED|"+lootId,-1);changed=true;}
+                        }
+                        case "ARS_CRAFT" -> {
+                            if(s.length!=2)continue;
+                            var result=match.arsenal.craft(peer.id,Integer.parseInt(s[1]));
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        case "ARS_UPGRADE" -> {
+                            if(s.length!=1)continue;
+                            var result=match.arsenal.upgrade(peer.id);
+                            peer.send("ARS_RESULT|"+result.reason());changed=result.ok();
+                        }
+                        // Legacy ARS_FACTION never changes the server's permanent faction.
+                        case "ARS_FACTION" -> {
+                            if(s.length!=2)continue;
+                            var result=match.arsenal.faction(peer.id,Integer.parseInt(s[1]));
+                            peer.send("ARS_RESULT|"+result.reason());
+                        }
                         case "FIRE" -> {
                             if(s.length!=3)continue;
                             long sequence=Long.parseLong(s[1]);
-                            ArenaSystems.ShotReport shot=match.arsenal.compatibilityFire(peer.id,Integer.parseInt(s[2]),sequence);
+                            ArenaSystems.ShotReport shot=match.fireReport(peer.id,Integer.parseInt(s[2]),sequence);
                             peer.send("SHOT|"+shot.sequence()+"|"+shot.fired()+"|"+shot.status()+"|"+
                                 shot.targetId()+"|"+shot.damage()+"|"+shot.ammo());
                             changed=shot.fired();
@@ -194,15 +625,53 @@ public final class LanServer implements AutoCloseable {
                         case "PICKUP" -> {
                             if(s.length!=2)continue;
                             int index=Integer.parseInt(s[1]);
-                            changed=match.pickup(peer.id,index);
-                            if(changed)broadcast("PICKUP|"+index,-1);
+                            changed=match.interactPickup(peer.id,index);
+                            if(changed){
+                                broadcast("PICKUP|"+index,-1);
+                                ArenaSystems.Player collector=match.player(peer.id);
+                                if(collector!=null)peer.send(inventoryPacket(collector));
+                            }
                         }
                         case "MEDKIT" -> changed=match.useMedkit(peer.id);
                         case "RELOAD" -> {
                             if(s.length!=2)continue;
-                            changed=match.arsenal.reload(peer.id).ok();
+                            changed=match.reload(peer.id,Integer.parseInt(s[1]));
                         }
                         case "ABILITY" -> changed=match.ability(peer.id);
+                        case "CRAFT_HAND", "CRAFT_FIRE", "CRAFT_BENCH" -> {
+                            if(s.length!=2||s[1].length()>48)continue;
+                            boolean crafted=s[0].equals("CRAFT_FIRE")?
+                                match.craftStation(peer.id,s[1]):
+                                s[0].equals("CRAFT_BENCH")?
+                                match.craftWorkbench(peer.id,s[1]):match.craftHand(peer.id,s[1]);
+                            peer.send("CRAFT_RESULT|"+s[1]+"|"+(crafted?"OK":"DENIED"));
+                            changed=crafted;
+                            if(crafted){
+                                ArenaSystems.Player maker=match.player(peer.id);
+                                peer.send(inventoryPacket(maker));
+                                peer.send(progressionPacket(maker));
+                            }
+                        }
+                        case "FIELD_CRAFT" -> {
+                            if(s.length!=2)continue;
+                            int role=Integer.parseInt(s[1]);
+                            ThrownDeployables.Result result=match.thrown.craft(peer.id,role);
+                            changed=result.ok();
+                            peer.send("CRAFT_RESULT|field-"+role+"|"+(changed?"OK":result.reason()));
+                            if(changed){
+                                ArenaSystems.Player maker=match.player(peer.id);
+                                peer.send(inventoryPacket(maker));
+                                peer.send(progressionPacket(maker));
+                            }
+                        }
+                        case "FIELD_THROW" -> {
+                            if(s.length!=2)continue;
+                            int role=Integer.parseInt(s[1]);
+                            ThrownDeployables.Result result=match.thrown.throwKit(peer.id,role);
+                            changed=result.ok();
+                            peer.send("FIELD_THROW_RESULT|"+role+"|"+(changed?"OK":result.reason()));
+                            if(changed)peer.send(inventoryPacket(match.player(peer.id)));
+                        }
                         case "BUILD" -> {
                             if(s.length!=2)continue;
                             int kind=Integer.parseInt(s[1]);
@@ -215,6 +684,121 @@ public final class LanServer implements AutoCloseable {
                                 int idx=outcome.deviceIndex();
                                 World.Device d=match.world.devices.get(idx);
                                 broadcast("DEVICE|"+idx+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp,-1);
+                            }
+                        }
+                        case "CARGO_LOAD" -> {
+                            if(s.length!=3)continue;
+                            int car=Integer.parseInt(s[1]),yard=Integer.parseInt(s[2]);
+                            changed=match.loadTruck(peer.id,car,yard);
+                            peer.send("CARGO_RESULT|LOAD|"+(changed?"OK":"REJECTED"));
+                            if(changed){
+                                broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
+                                broadcast(cargoYardPacket(match.cargo.sites().get(yard)),-1);
+                            }
+                        }
+                        case "AUTOMATION_QUEUE" -> {
+                            if(s.length!=2||s[1].length()>80)continue;
+                            changed=match.programNextAutomation(peer.id,s[1]);
+                            peer.send("FACTORY_RESULT|"+(changed?
+                                (s[1].equals("NONE")?"QUEUE_CANCELLED":
+                                 AutomationOrders.repeating(s[1])?"REPEAT_ENABLED":
+                                 "NEXT_JOB_QUEUED"):
+                                "QUEUE_DENIED"));
+                        }
+                        case "AUTOMATION_ROUTE" -> {
+                            if((s.length!=2&&s.length!=3)||
+                               (s.length==3&&
+                                !s[2].equals("EAST_TO_WEST")&&
+                                !s[2].equals("WEST_TO_EAST")))continue;
+                            boolean reverse=s.length==3&&s[2].equals("EAST_TO_WEST");
+                            changed=match.programConveyor(peer.id,s[1],reverse);
+                            peer.send("FACTORY_RESULT|"+(changed?
+                                "CONVEYOR_PROGRAMMED":"ROUTE_DENIED"));
+                        }
+                        case "CHARGE_GENERATOR" -> {
+                            if(s.length!=1)continue;
+                            changed=match.chargeGenerator(peer.id);
+                            peer.send("FACTORY_RESULT|"+(changed?"GENERATOR_CHARGED":"CHARGE_DENIED"));
+                            if(changed)peer.send(campStockPacket(peer.id));
+                        }
+                        case "REFUEL_STEAM" -> {
+                            if(s.length!=1)continue;
+                            changed=match.fireSteamBoiler(peer.id);
+                            peer.send("FACTORY_RESULT|"+(changed?
+                                "BOILER_FUELED":"FUEL_DENIED"));
+                            if(changed)peer.send(campStockPacket(peer.id));
+                        }
+                        case "FACTION_PRODUCE" -> {
+                            if(s.length!=1&&s.length!=2)continue;
+                            if(s.length==2&&s[1].length()>80)continue;
+                            changed=match.startFactionBatch(peer.id,
+                                s.length==2?s[1]:null);
+                            peer.send("FACTORY_RESULT|"+(changed?"STARTED":"DENIED"));
+                            if(changed){
+                                peer.send(campStockPacket(peer.id));
+                                peer.send(progressionPacket(match.player(peer.id)));
+                            }
+                        }
+                        case "FACTORY_QUERY" -> {
+                            if(s.length!=1)continue;
+                            peer.send("FACTORY_RESULT|"+
+                                match.factionBatchStatus(peer.id));
+                        }
+                        case "FACTORY_INSPECT" -> {
+                            if(s.length!=1)continue;
+                            peer.send("FACTORY_INSPECTION|"+
+                                match.inspectFactory(peer.id).wire());
+                        }
+                        case "CONVEYOR_INSPECT" -> {
+                            if(s.length!=1)continue;
+                            peer.send("CONVEYOR_INSPECTION|"+
+                                match.inspectConveyor(peer.id).wire());
+                        }
+                        case "PRODUCTION_OVERVIEW" -> {
+                            if(s.length!=2)continue;
+                            int page=Integer.parseInt(s[1]);
+                            if(page<0||page>10_000)continue;
+                            peer.send("PRODUCTION_OVERVIEW|"+
+                                match.productionOverview(peer.id,page).wire());
+                        }
+                        case "STOCK_QUERY" -> {
+                            if(s.length!=1)continue;
+                            peer.send(campStockPacket(peer.id));
+                        }
+                        case "STOCK_PUT", "STOCK_TAKE" -> {
+                            if(s.length!=3)continue;
+                            SurvivalCrafting.Item item;
+                            try{item=SurvivalCrafting.Item.valueOf(s[1]);}
+                            catch(IllegalArgumentException invalid){
+                                peer.send("STOCK_RESULT|INVALID_ITEM");continue;
+                            }
+                            int quantity=Integer.parseInt(s[2]);
+                            changed=match.transferCampStock(peer.id,
+                                s[0].equals("STOCK_TAKE"),item,quantity);
+                            peer.send("STOCK_RESULT|"+(changed?"OK":"DENIED"));
+                            peer.send(campStockPacket(peer.id));
+                            if(changed)peer.send(inventoryPacket(match.player(peer.id)));
+                        }
+                        case "CARGO_UNLOAD" -> {
+                            if(s.length!=2)continue;
+                            int car=Integer.parseInt(s[1]);
+                            changed=match.unloadTruck(peer.id,car);
+                            peer.send("CARGO_RESULT|UNLOAD|"+(changed?"OK":"REJECTED"));
+                            if(changed){
+                                broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
+                                peer.send(inventoryPacket(match.player(peer.id)));
+                                peer.send(progressionPacket(match.player(peer.id)));
+                                peer.send(campStockPacket(peer.id));
+                            }
+                        }
+                        case "CARGO_RECOVER" -> {
+                            if(s.length!=3)continue;
+                            int car=Integer.parseInt(s[1]),drop=Integer.parseInt(s[2]);
+                            changed=match.recoverTruckLoad(peer.id,car,drop);
+                            peer.send("CARGO_RESULT|RECOVER|"+(changed?"OK":"REJECTED"));
+                            if(changed){
+                                broadcast(cargoTruckPacket(match.vehicles.state(car)),-1);
+                                broadcast("CARGO_DROP_TAKEN|"+drop,-1);
                             }
                         }
                         case "RIDE" -> {
@@ -273,11 +857,10 @@ public final class LanServer implements AutoCloseable {
                         ArenaSystems.Player updated=match.player(peer.id);
                         if(updated!=null){
                             peer.send(selfPacket(updated));
-                            peer.send(ArsenalWire.state(match.arsenal.view(peer.id),match.time()));
                             broadcast(peerPacket(updated),peer.id);
                         }
                     }
-                }catch(NumberFormatException ignored){/* malformed client command rejected */}
+                }catch(IllegalArgumentException ignored){/* malformed client command rejected */}
             }
         }catch(IOException ignored){
         }finally{
@@ -293,7 +876,8 @@ public final class LanServer implements AutoCloseable {
     }
     public int port(){return listener.getLocalPort();}
     public String status(){
-        return "uptime="+((System.currentTimeMillis()-startup)/1000)+"s"+
+        return "mode="+(match.hardcore?"HARDCORE":"NORMAL")+
+            " uptime="+((System.currentTimeMillis()-startup)/1000)+"s"+
             " peers="+connections.size()+" structures="+match.world.devices.size()+
             " cars="+match.vehicles.states().size()+" npcs="+match.world.npcs.size()+
             " persistent="+(dataDirectory!=null);
@@ -331,9 +915,14 @@ public final class LanServer implements AutoCloseable {
         if(result)audit("unban account="+account);
         return result;
     }
-    public void saveNow()throws IOException{
+    private synchronized void saveAll()throws IOException{
         if(dataDirectory==null)throw new IOException("In-memory LAN match has no save directory");
-        DurableRealm.save(match,dataDirectory);audit("manual_save");
+        HostCheckpoint.save(match,dataDirectory);
+        harvesting.save(dataDirectory);
+        ai.save(dataDirectory);
+    }
+    public void saveNow()throws IOException{
+        saveAll();audit("manual_save");
     }
     @Override public synchronized void close()throws IOException{
         if(!running)return;
@@ -341,20 +930,39 @@ public final class LanServer implements AutoCloseable {
         listener.close();
         for(Peer p:connections.values())try{p.socket.close();}catch(IOException ignored){}
         ticks.shutdownNow();saves.shutdownNow();workers.shutdownNow();
+        synchronized(weather){weather.close();}
         if(dataDirectory!=null)saveNow();
     }
     public static void main(String[] args)throws Exception{
-        int port=args.length>0?Integer.parseInt(args[0]):7777;
-        long seed=args.length>1?Long.parseLong(args[1]):20261020L;
-        Path root=args.length>2?Path.of(args[2]):Path.of("server-data");
-        LanServer host=new LanServer(port,seed,root);
+        DesktopDiagnostics.install("dedicated-host");
+        DesktopDiagnostics.note("HOST_CONFIGURING");
+        boolean hardcore=Boolean.getBoolean("veil.hardcore");
+        List<String> positional=new ArrayList<>(),aiOptions=new ArrayList<>();
+        for(String arg:args){
+            if("--hardcore".equals(arg))hardcore=true;
+            else if(arg.startsWith("--ai-"))aiOptions.add(arg);
+            else if(arg.startsWith("--"))throw new IllegalArgumentException("Unknown host option "+arg);
+            else positional.add(arg);
+        }
+        int port=positional.size()>0?Integer.parseInt(positional.get(0)):7777;
+        long seed=positional.size()>1?Long.parseLong(positional.get(1)):20261020L;
+        Path root=positional.size()>2?Path.of(positional.get(2)):Path.of("server-data");
+        if(positional.size()>3)throw new IllegalArgumentException("Expected port seed save-path [--hardcore]");
+        HostAiSettings.Rules hostAI=aiOptions.isEmpty()?
+            HostAiSettings.fromProperties():HostAiSettings.fromOptions(aiOptions);
+        LanServer host=new LanServer(port,seed,root,hardcore,hostAI);
+        DesktopDiagnostics.note("HOST_LISTENING port="+host.port());
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             try{host.close();}catch(IOException e){System.err.println("Shutdown save failed: "+e);}
         },"Veil-server-shutdown"));
         System.out.println("Malefic Veil dedicated host "+host.port()+" seed "+seed+
-            " bind="+host.listener.getInetAddress().getHostAddress()+" storage="+root);
-        System.out.println("Commands: status, players, save, kick ID, ban ACCOUNT, unban ACCOUNT,"+
-            " allow ACCOUNT, deny ACCOUNT, allowlist on/off, shutdown");
+            " mode="+(hardcore?"HARDCORE":"NORMAL")+
+            " bind="+host.listener.getInetAddress().getHostAddress()+" storage="+root+
+            " "+host.ai.settings().description());
+        System.out.println("Host AI: --ai-count=6 --ai-mode=SINGLE_FACTION --ai-team=3 --ai-level=5");
+        System.out.println("Or --ai-count=5 --ai-mode=BALANCED; group size is always 3.");
+        System.out.println("Commands: status, players, ai, weather [PRESET|auto], save, kick ID,"+
+            " ban ACCOUNT, unban ACCOUNT, allow ACCOUNT, deny ACCOUNT, allowlist on/off, shutdown");
         BufferedReader console=new BufferedReader(new InputStreamReader(System.in));
         String line;
         while((line=console.readLine())!=null){
@@ -364,6 +972,13 @@ public final class LanServer implements AutoCloseable {
                 String result=switch(input[0].toLowerCase(Locale.ROOT)){
                     case "status" -> host.status();
                     case "players" -> String.join("\\n",host.connectedPlayers());
+                    case "ai" -> host.aiStatus();
+                    case "weather" -> {
+                        if(input.length==1)yield host.weatherStatus();
+                        if(input.length!=2)yield "Use weather [CLEAR|RAIN|SNOW|...|auto]";
+                        if(input[1].equalsIgnoreCase("auto"))yield host.resumeAutoWeather();
+                        yield host.setWeatherPreset(input[1].toUpperCase(Locale.ROOT));
+                    }
                     case "save" -> {host.saveNow();yield "Saved and verified";}
                     case "kick" -> input.length==2&&host.kick(Integer.parseInt(input[1]))?"Kicked":"Unknown player";
                     case "ban" -> input.length==2&&host.ban(input[1])?"Banned":"Invalid/duplicate account";

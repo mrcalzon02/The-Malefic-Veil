@@ -1,0 +1,17 @@
+Beckenburg original scenery — CC0 1.0 Universal
+
+The rights holder dedicates these original models, their embedded procedural
+textures, editable Blender assets, preview renders, original synthesized fixture
+audio and activation example data to the public domain
+under CC0 1.0 Universal, to the extent permitted by law.
+
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+SPDX identifier: CC0-1.0
+
+Commercial use, modification and redistribution are permitted. Attribution is
+not required. No warranty is provided. This dedication applies only to the
+files enumerated in this library's manifest. Purchased/source-pack game assets
+are not included in these original libraries.
+
+Imported individually from mrcalzon02/The-Beckenburg-Project main assets/libraries/enclosures/models. Tree models only. Source SHA: 48bd169162c94739f6257983242b74e008918a02, 7ccc3e1a62e1b54124bbc9263650628aa40015b4

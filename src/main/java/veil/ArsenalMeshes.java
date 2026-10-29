@@ -39,7 +39,7 @@ public final class ArsenalMeshes {
                 if(action==1||action==4){p[2]-=.016*pulse;p[1]+=.006*pulse;}
                 if(action==3)rotate(p,new float[]{0,0,0},2,-.13*pulse);
             }
-            out.add(new GlbMesh.Triangle(v[0][0],v[0][1],v[0][2],v[1][0],v[1][1],v[1][2],v[2][0],v[2][1],v[2][2],t.rgb()));
+            out.add(new GlbMesh.Triangle(v[0][0],v[0][1],v[0][2],v[1][0],v[1][1],v[1][2],v[2][0],v[2][1],v[2][2],FactionWeaponMaterials.recolor(w,part.role,part.group,t.rgb())));
         }return GlbMesh.authored(out);
     }
     static void rotate(float[] p,float[] pivot,int axis,double angle){int a=(axis+1)%3,b=(axis+2)%3;double x=p[a]-pivot[a],y=p[b]-pivot[b],c=Math.cos(angle),s=Math.sin(angle);p[a]=(float)(pivot[a]+x*c-y*s);p[b]=(float)(pivot[b]+x*s+y*c);}

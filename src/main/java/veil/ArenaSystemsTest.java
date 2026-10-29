@@ -16,8 +16,8 @@ public final class ArenaSystemsTest {
         // Test harness can set spawn-state directly; public move() is separately boundary-tested.
         p.x=x;p.y=y;p.moveAt=a.time();a.refreshVisibility(p);
     }
-    /** Find a legal vacant lot instead of assuming pavement is a build surface. */
-    private static void aimAtBuildable(ArenaSystems game,int id,int kind) {
+    /** Position player beside a visually empty but protected CITY plot. */
+    private static void aimAtVacant(ArenaSystems game,int id) {
         ArenaSystems.Player p=game.player(id);
         for(CityLayout.Plot lot:game.world.city.plots()) {
             if(lot.template().category()!=CityLayout.Category.OPEN||lot.template().variant()!=2)continue;
@@ -26,9 +26,18 @@ public final class ArenaSystemsTest {
             double px=tx-1.1;
             if(!game.world.canWalk(px,ty)||!game.world.canWalk(tx,ty))continue;
             p.x=px;p.y=ty;p.angle=0;p.moveAt=game.time();
-            if(game.reviewBuild(id,kind).allowed()){game.refreshVisibility(p);return;}
+            game.refreshVisibility(p);return;
         }
-        throw new AssertionError("No accessible undeveloped construction site on seed "+game.world.seed);
+        throw new AssertionError("No accessible empty city lot on seed "+game.world.seed);
+    }
+    private static World.Device historical(ArenaSystems game,int id,int kind){
+        // Existing-structure fixture only; the player build command remains prohibited.
+        aimAtVacant(game,id);
+        ArenaSystems.Player p=game.player(id);
+        World.Device device=new World.Device(p.x+1.1,p.y,kind);
+        device.ownerId=id;device.ownerKey=p.accountKey;
+        game.world.devices.add(device);
+        return device;
     }
     public static void main(String[] args){
         ArenaSystems host=new ArenaSystems(42);
@@ -75,28 +84,30 @@ public final class ArenaSystemsTest {
         check(!host.pickup(2,0),"pickup cannot be duplicated");
         shooter.cash=500;shooter.scrap=30;
         moveTo(host,1,14.5,1.5);shooter.angle=0;
-        check(host.reviewBuild(1,ArenaSystems.TURRET).reason().equals("WORLD_STRUCTURE"),
-            "generated street footprint rejects construction");
-        aimAtBuildable(host,1,ArenaSystems.TURRET);
-        check(host.build(1,ArenaSystems.TURRET),"turret assembly");
-        check(host.world.devices.size()==1&&shooter.cash==400&&shooter.scrap==27,"turret costs");
-        check(!host.build(1,ArenaSystems.TURRET),"deny overlapping structure");
-        aimAtBuildable(host,1,ArenaSystems.HEALTH_STATION);
-        check(host.build(1,ArenaSystems.HEALTH_STATION),"health station assembly");
-        check(host.world.devices.size()==2,"two real structures");
-        World.Device healer=host.world.devices.get(1);
+        check(host.reviewBuild(1,ArenaSystems.TURRET).reason().equals("CITY_PROTECTED"),
+            "city street is immutable");
+        aimAtVacant(host,1);
+        for(int kind=0;kind<=3;kind++){
+            check(host.reviewBuild(1,kind).reason().equals("CITY_PROTECTED"),
+                "all four structure classes forbidden in vacant city lot");
+            check(!host.build(1,kind),"no kind can bypass city protection");
+        }
+        check(host.world.devices.isEmpty()&&shooter.cash==500&&shooter.scrap==30,
+            "city building cannot create devices or charge money");
+        // Preserve existing healing/ability behavior tests with historic fixture
+        // data, NOT new constructible city devices.
+        historical(host,1,ArenaSystems.TURRET);
+        World.Device healer=historical(host,1,ArenaSystems.HEALTH_STATION);
         moveTo(host,1,healer.x,healer.y);
         shooter.hp=40;shooter.sanity=50;
         advance(host,500);
-        check(shooter.hp>=43&&shooter.sanity>=52,"medical station restores health and sanity");
-        aimAtBuildable(host,1,ArenaSystems.REVIVE_STATION);
-        check(host.build(1,ArenaSystems.REVIVE_STATION),"revive station assembly");
-        aimAtBuildable(host,1,ArenaSystems.BARRICADE);
-        check(host.build(1,ArenaSystems.BARRICADE),"barricade structure assembly");
-        check(host.world.devices.size()==4,"four distinct devices committed to world");
-        check(host.world.devices.get(3).kind==ArenaSystems.BARRICADE,"barricade kind");
+        check(shooter.hp>=43&&shooter.sanity>=52,"legacy medical station still heals");
+        historical(host,1,ArenaSystems.REVIVE_STATION);
+        historical(host,1,ArenaSystems.BARRICADE);
+        check(host.world.devices.size()==4,"legacy environment fixture count");
+        check(host.world.devices.get(3).kind==ArenaSystems.BARRICADE,"legacy barricade kind");
         shooter.cash=0;shooter.scrap=0;
-        check(!host.build(1,ArenaSystems.TURRET),"insufficient resources cannot build");
+        check(!host.build(1,ArenaSystems.TURRET),"city build denied regardless of resources");
         host.damage(target,200,60);
         check(target.dead&&target.hp==0,"fatal damage");
         check(!host.respawn(2,2),"respawn lockout");
@@ -109,9 +120,10 @@ public final class ArenaSystemsTest {
         ArenaSystems turretHost=new ArenaSystems(123);isolateNpcs(turretHost);
         ArenaSystems.Player builder=turretHost.join(3);
         builder.cash=1000;builder.scrap=20;builder.angle=0;
-        aimAtBuildable(turretHost,3,ArenaSystems.TURRET);
-        check(turretHost.build(3,ArenaSystems.TURRET),"test turret built");
-        World.Device turret=turretHost.world.devices.get(0);
+        aimAtVacant(turretHost,3);
+        check(!turretHost.build(3,ArenaSystems.TURRET),
+            "test turret cannot be player-built inside city");
+        World.Device turret=historical(turretHost,3,ArenaSystems.TURRET);
         ArenaSystems.Player intruder=turretHost.join(4);
         moveTo(turretHost,4,turret.x,turret.y+1.1);
         int old=intruder.hp;
@@ -125,6 +137,6 @@ public final class ArenaSystemsTest {
         g.setColor(Color.WHITE);g.fillRect(0,0,1,1);g.dispose();
         int blended=bg.getRGB(0,0)&255;
         check(blended>=62&&blended<=65,"25% visible draws as alpha-composited sprite");
-        System.out.println("PASS ArenaSystemsTest: "+checks+" assertions across visibility, PvP, regen, healing, pickups, ammunition, turrets, structures, respawn");
+        System.out.println("PASS ArenaSystemsTest: "+checks+" assertions across PvP, immutable city, historic device effects, respawn");
     }
 }

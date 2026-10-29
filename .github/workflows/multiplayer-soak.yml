@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'src/main/java/veil/**'
+      - 'src/main/java/dev/mrcalzon/water/**'
       - '.github/workflows/multiplayer-soak.yml'
 
 permissions:
@@ -24,7 +25,7 @@ jobs:
       - name: Compile host and all test clients
         run: |
           mkdir -p build/classes
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
       - name: Repeated independent host/game startup and combat
         run: |
           set -eu

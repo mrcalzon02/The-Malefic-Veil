@@ -13,9 +13,9 @@ public final class RaidCombatTest {
             double y=(plot.y()+plot.bottom())*CityLayout.CELL/2.0+.5;
             if(!game.world.canWalk(x-1.1,y)||!game.world.canWalk(x,y))continue;
             owner.x=x-1.1;owner.y=y;owner.angle=0;owner.moveAt=game.time();
-            if(game.reviewBuild(ownerId,ArenaSystems.BARRICADE).allowed())return;
+            return;
         }
-        throw new AssertionError("No vacant test footprint");
+        throw new AssertionError("No empty city lot for rejection test");
     }
     public static void main(String[] unused){
         ArenaSystems game=new ArenaSystems(53);
@@ -25,8 +25,15 @@ public final class RaidCombatTest {
         check(game.assignAccount(1,account),"owner identity");
         owner.cash=1000;owner.scrap=100;
         aimAtVacant(game,1);
-        check(game.build(1,ArenaSystems.BARRICADE),"server built raidable barricade");
-        World.Device device=game.world.devices.get(0);
+        check(game.reviewBuild(1,ArenaSystems.BARRICADE).reason().equals("CITY_PROTECTED"),
+            "raid test cannot bypass immutable city construction");
+        check(!game.build(1,ArenaSystems.BARRICADE)&&game.world.devices.isEmpty(),
+            "player city construction prohibited");
+        // Existing-world legacy fixture exercises real PvP shot and offline
+        // raid state without opening any player-facing city building route.
+        World.Device device=new World.Device(owner.x+1.1,owner.y,ArenaSystems.BARRICADE);
+        device.ownerId=1;device.ownerKey=account;
+        game.world.devices.add(device);
         shooter.x=owner.x;shooter.y=owner.y;shooter.angle=0;shooter.moveAt=game.time();
         // A real bullet travels to the server-owned structure (not a fabricated damage callback).
         ArenaSystems.ShotReport online=game.fireReport(2,0,1);
@@ -52,6 +59,6 @@ public final class RaidCombatTest {
         ArenaSystems.ShotReport reopened=game.fireReport(2,0,3);
         check(reopened.fired()&&reopened.status().equals("DEVICE")&&reopened.damage()==25,
             "owner rejoin removes shield in actual shot path");
-        System.out.println("PASS RaidCombatTest: actual PvP base damage, offline grace, shielded receipt, rejoin");
+        System.out.println("PASS RaidCombatTest: no city builds, legacy PvP structure damage, offline shield and reconnect");
     }
 }

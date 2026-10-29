@@ -70,6 +70,19 @@ public final class CityLayoutTest {
             check(types.size()==4,"2x2 layouts lack all four playable categories");
             for(int x=0;x<World.SIZE;x++)for(int y=0;y<World.SIZE;y++)
                 check(map.tile(x,y)==same.tile(x,y),"non-deterministic walls");
+            // The entire 132x132 city, including visually vacant/ruined/open
+            // parcels, is world-owned. Walkable never means constructible.
+            for(int x=1;x<World.SIZE-1;x++)for(int y=1;y<World.SIZE-1;y++)
+                check(map.worldStructureAt(x+.5,y+.5,.20),
+                    "city parcel incorrectly buildable at "+x+","+y+" seed "+seed);
+            for(CityLayout.Plot lot:map.plots())
+                if(lot.template().category()==CityLayout.Category.OPEN&&
+                   lot.template().variant()==2){
+                    double cx=(lot.x()+lot.right())*CityLayout.CELL/2.0;
+                    double cy=(lot.y()+lot.bottom())*CityLayout.CELL/2.0;
+                    check(map.worldStructureAt(cx,cy,1.5),
+                        "empty lot cannot be player construction land");
+                }
             check(allFloorsConnected(map),"disconnected walkable area");
             roadsConnected(map);
             for(int i=0;i<World.SIZE;i++){

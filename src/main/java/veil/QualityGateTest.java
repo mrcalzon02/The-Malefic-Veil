@@ -14,8 +14,8 @@ public final class QualityGateTest {
         while(System.nanoTime()<deadline){if(f.getAsBoolean())return;Thread.sleep(15);}
         throw new AssertionError("Timeout waiting for host packet");
     }
-    /** Position a host player at a legal empty lot, not on a generated roadway. */
-    private static void aimAtVacant(ArenaSystems game,int id,int kind) {
+    /** Select an open CITY lot specifically to prove it is not buildable. */
+    private static void aimAtVacant(ArenaSystems game,int id) {
         ArenaSystems.Player p=game.player(id);
         for(CityLayout.Plot lot:game.world.city.plots()){
             if(lot.template().category()!=CityLayout.Category.OPEN||lot.template().variant()!=2)continue;
@@ -23,9 +23,9 @@ public final class QualityGateTest {
             double y=(lot.y()+lot.bottom())*CityLayout.CELL/2.0+.5;
             if(!game.world.canWalk(x-1.1,y)||!game.world.canWalk(x,y))continue;
             p.x=x-1.1;p.y=y;p.angle=0;p.moveAt=game.time();
-            if(game.reviewBuild(id,kind).allowed())return;
+            return;
         }
-        throw new AssertionError("No legal construction site on seed "+game.world.seed);
+        throw new AssertionError("No empty city lot to test");
     }
     public static void main(String[] args)throws Exception{
         ArenaSystems world=new ArenaSystems(42);
@@ -46,33 +46,31 @@ public final class QualityGateTest {
         check(!world.build(1,ArenaSystems.BARRICADE),"cannot bypass build review");
         check(shooter.cash==money&&shooter.scrap==supplies,"rejected build is free");
         shooter.x=14.5;shooter.y=1.5;shooter.angle=0;
-        check(world.reviewBuild(1,ArenaSystems.BARRICADE).reason().equals("WORLD_STRUCTURE"),
-            "existing world streets cannot be overwritten");
-        aimAtVacant(world,1,ArenaSystems.BARRICADE);
-        check(world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"valid build in vacant lot");
-        check(world.build(1,ArenaSystems.BARRICADE),"can actually commit valid barricade");
-        check(world.world.devices.size()==1,"one device");
-        check(!world.reviewBuild(1,ArenaSystems.BARRICADE).allowed(),"overlapping device rejected");
-        check(shooter.cash==money-45&&shooter.scrap==supplies-1,"atomic cost charged exactly once");
+        check(world.reviewBuild(1,ArenaSystems.BARRICADE).reason().equals("CITY_PROTECTED"),
+            "streets are fixed world structures");
+        aimAtVacant(world,1);
+        check(world.reviewBuild(1,ArenaSystems.BARRICADE).reason().equals("CITY_PROTECTED"),
+            "even empty city plots remain world-owned");
+        check(!world.build(1,ArenaSystems.BARRICADE),"no player building in cities");
+        check(world.world.devices.isEmpty(),"city rejects structure mutation");
+        check(shooter.cash==money&&shooter.scrap==supplies,"denied city build never debits");
         for(long seed=1;seed<=20;seed++){
             ArenaSystems arena=new ArenaSystems(seed);
             arena.world.npcs.clear();
             ArenaSystems.Player builder=arena.join(42);
             builder.cash=10000;builder.scrap=1000;
-            aimAtVacant(arena,42,ArenaSystems.BARRICADE);
-            check(arena.build(42,ArenaSystems.BARRICADE),"legal vacant lot builds on seed "+seed);
-            int old=builder.cash;
-            check(!arena.build(42,ArenaSystems.BARRICADE)&&builder.cash==old,
-                "duplicate footprint neither builds nor consumes resources on seed "+seed);
+            aimAtVacant(arena,42);
+            check(!arena.build(42,ArenaSystems.BARRICADE),"city-lot builds denied seed "+seed);
+            check(arena.world.devices.isEmpty()&&builder.cash==10000&&builder.scrap==1000,
+                "denied city construction cannot mutate world/inventory seed "+seed);
         }
-        // Simultaneous host requests must not charge both clients for one footprint.
+        // Even simultaneous host requests at the same empty lot must both fail.
         ArenaSystems contested=new ArenaSystems(42);
-        contested.world.npcs.clear();
         ArenaSystems.Player alpha=contested.join(51),beta=contested.join(52);
         for(ArenaSystems.Player player:List.of(alpha,beta)){
             player.cash=300;player.scrap=10;
         }
-        aimAtVacant(contested,51,ArenaSystems.TURRET);
+        aimAtVacant(contested,51);
         beta.x=alpha.x;beta.y=alpha.y;beta.angle=alpha.angle;
         java.util.concurrent.CountDownLatch start=new java.util.concurrent.CountDownLatch(1);
         java.util.concurrent.ExecutorService pool=java.util.concurrent.Executors.newFixedThreadPool(2);
@@ -81,24 +79,25 @@ public final class QualityGateTest {
             var second=pool.submit(()->{start.await();return contested.buildOutcome(52,ArenaSystems.TURRET);});
             start.countDown();
             ArenaSystems.BuildOutcome one=first.get(),two=second.get();
-            check(one.built()!=two.built(),"exactly one simultaneous build accepted");
-            check(contested.world.devices.size()==1,"one footprint, one actual device");
-            check(alpha.cash+beta.cash==540,"one Warden-discount 60-credit debit");
-            check(alpha.scrap+beta.scrap==17,"only one 3-supply debit");
-            check((one.built()?two:one).review().reason().equals("DEVICE_CLEARANCE"),
-                "loser receives a real concurrency rejection reason");
+            check(!one.built()&&!two.built(),"city protects against simultaneous requests");
+            check(one.review().reason().equals("CITY_PROTECTED")&&
+                two.review().reason().equals("CITY_PROTECTED"),"both get city feedback");
+            check(contested.world.devices.isEmpty(),"no phantom construction");
+            check(alpha.cash==300&&beta.cash==300&&alpha.scrap==10&&beta.scrap==10,
+                "concurrent rejection never charges either client");
         } finally {pool.shutdownNow();}
         try(LanServer server=new LanServer(0,999L);
             NetLink a=new NetLink("127.0.0.1",server.port());
             NetLink b=new NetLink("127.0.0.1",server.port())){
             server.match.world.npcs.clear();
+            for(int step=0;step<11;step++)server.match.advance(1000);
             ArenaSystems.Player target=server.match.player(b.id);
             target.x=4.5;target.y=1.5;
             server.match.player(a.id).angle=0;
             long seq=a.fire(0);
             until(()->!a.shots.isEmpty());
             NetLink.ShotEvent result=a.shots.poll();
-            check(result.sequence()==seq&&result.fired()&&result.damage()==24,"real socket arsenal shot receipt");
+            check(result.sequence()==seq&&result.fired()&&result.damage()==25,"real socket shot receipt");
             check(result.targetId()==b.id,"host returns true victim ID");
             ArenaSystems.Player actor=server.match.player(a.id);
             actor.angle=Math.PI;
@@ -107,12 +106,33 @@ public final class QualityGateTest {
             NetLink.BuildEvent denied=a.buildResults.poll();
             check(!denied.reason().equals("OK"),"real socket rejection reason");
         }
+        ArsenalDeathInventoryTest.main(new String[0]);
         VehicleTest.main(new String[0]);
         HostPersistenceTest.main(new String[0]);
         DedicatedHostTest.main(new String[0]);
         RaidCombatTest.main(new String[0]);
         ContinentPopulationTest.main(new String[0]);
+        ContinentVehicleSitesTest.main(new String[0]);
+        SettlementAuthorityTest.main(new String[0]);
+        AntiAirBalanceTest.main(new String[0]);
+        CityMiasmaTest.main(new String[0]);
+        CraftingEraRegistryTest.main(new String[0]);
+        CrudeStructureIndexTest.main(new String[0]);
+        EquipmentUpgradesTest.main(new String[0]);
+        SettlementSupplyBalanceTest.main(new String[0]);
+        FactionTradeNetworksTest.main(new String[0]);
+        CraftingIconPacksTest.main(new String[0]);
+        InteractionFocusTest.main(new String[0]);
+        WorldHarvestingTest.main(new String[0]);
+        FactionAiDirectorTest.main(new String[0]);
+        FieldFireAiTest.main(new String[0]);
+        FactionAiTacticsTest.main(new String[0]);
+        FactionAiCooperationTest.main(new String[0]);
+        HostAiNetworkTest.main(new String[0]);
+        HostAiRealmRestartTest.main(new String[0]);
+        AirPowerMeshesTest.main(new String[0]);
+        AircraftShowroomTest.main(new String[0]);
         System.out.println("PASS QualityGateTest "+assertions+
-            " checks: host-confirmed hits, anti-replay, truthful denied construction, 20 map seeds");
+            " checks: host-confirmed hits, anti-replay, immutable cities, 20 map seeds");
     }
 }

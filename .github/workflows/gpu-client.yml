@@ -1,0 +1,271 @@
+name: GPU Kenney PSX client
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gpu-client/**'
+      - 'src/main/java/veil/**'
+      - 'src/main/java/dev/mrcalzon/water/**'
+      - 'assets/game/kenney/**'
+      - 'assets/game/arsenal/**'
+      - 'assets/game/aircraft/**'
+      - 'tools/render_item_portraits.py'
+      - '.github/workflows/gpu-client.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-portraits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender for actual GLB rendering
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender python3-numpy
+          blender --background --factory-startup --python-expr 'import numpy; print("Blender NumPy", numpy.__version__)'
+      - name: Bake 41 source-model item portraits
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender --background --factory-startup --python tools/render_item_portraits.py |
+            tee model-portraits.log
+          grep -q 'PASS REAL_3D_ITEM_PORTRAITS total=41' model-portraits.log
+          test "$(find build/generated/item-portraits/portraits -name '*.png' | wc -l)" -eq 41
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-model-item-portraits
+          path: build/generated/item-portraits
+          if-no-files-found: warn
+
+  gpu-desktop:
+    needs: source-portraits
+    if: ${{ always() }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java: ['17']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: source-model-item-portraits
+          path: build/generated/item-portraits
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+          cache-dependency-path: gpu-client/pom.xml
+      - name: Acquire verified GGBot CC0 car atlas source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/game/ggbot
+          curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
+          echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
+      - name: Verify deterministic sky cycle and asset-sourced streetlight bounds
+        shell: bash
+        run: |
+          mkdir -p build/classes
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
+          java -cp build/classes veil.WorldDayNightTest
+          java -cp build/classes veil.UrbanLightingTest
+      - name: Resolve pinned standalone Beckenburg editor dependency
+        shell: bash
+        run: bash tools/install-editor-kit.sh
+      - name: Build self-contained GPU desktop JAR
+        shell: bash
+        run: |
+          mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'org/beckenburg/editor/EditorProject.class'
+          test -s gpu-client/target/MaleficVeil-GPU.jar
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'veil/gpu/GpuKenneyPreview.class'
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingRecipeIndexTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.FactionIndustrySeparationTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.FieldWorkbenchRuntimeTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingEconomyCsvTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingCatalogExportTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingCatalogExport
+          test -s build/test-visuals/crafting-completion-catalog.csv
+          java -Djava.awt.headless=true -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingIconPacksTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuClientSettingsTest
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'crafting/icons_index.csv'
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'crafting/packs/shared_core_sprites_only.zip'
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuAudioBus
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'kenney/retro-urban-kit-2.0.zip'
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'ggbot/psx-style-cars.zip'
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep 'psx-ui/psx-horror-ui-free-assets.zip'
+      - name: Verify exact licensed source, 53 fog sprites and Swing editor skin
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/test-visuals
+          java -cp gpu-client/target/MaleficVeil-GPU.jar \
+            veil.gpu.PsxHorrorUiSource | tee build/test-visuals/psx-source-audit.log
+          java -Djava.awt.headless=true -cp gpu-client/target/MaleficVeil-GPU.jar \
+            veil.gpu.PsxHorrorSwingSkin | tee -a build/test-visuals/psx-source-audit.log
+          grep -q 'PASS PSX_HORROR_UI_SOURCE' build/test-visuals/psx-source-audit.log
+          grep -q 'PASS PSX_HORROR_SWING_EDITOR_SKIN' build/test-visuals/psx-source-audit.log
+      - name: Prepare Mesa OpenGL and virtual display
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils
+      - name: Run real OpenGL instanced-draw screenshot test
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          mkdir -p build/test-visuals
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 90s java -Djava.awt.headless=false -jar gpu-client/target/MaleficVeil-GPU.jar --smoke |
+            tee build/test-visuals/gpu-psx-ui-menu.log
+          grep -q 'PASS PSX_HORROR_UI_MENU_RENDER' build/test-visuals/gpu-psx-ui-menu.log
+          grep -q 'PSX_HORROR_UI_READY' build/test-visuals/gpu-psx-ui-menu.log
+          grep -q 'OCEAN_WATER_SDK_READY' build/test-visuals/gpu-psx-ui-menu.log
+          test -s build/test-visuals/gpu-kenney-city.png
+          test -s build/test-visuals/gpu-kenney-night.png
+          test -s build/test-visuals/gpu-psx-menu.png
+          test -s build/test-visuals/gpu-continental-edge.png
+          test -s build/test-visuals/gpu-kenney-vehicles.png
+          test -s build/test-visuals/gpu-ggbot-city-cars.png
+          test -s build/test-visuals/gpu-kenney-foliage.png
+          file build/test-visuals/gpu-kenney-city.png
+      - name: Coastline ocean OpenGL draw and VBO upload diagnostics
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 120s java -Djava.awt.headless=false \
+              -Dveil.gpu.oceanBenchmark=true \
+              -jar gpu-client/target/MaleficVeil-GPU.jar \
+              --gallery --seed=887766 --city=C |
+            tee build/test-visuals/gpu-ocean-performance.log
+          grep -Eq 'OCEAN_WATER_SDK_READY chunks=[1-9][0-9]*' \
+            build/test-visuals/gpu-ocean-performance.log
+          grep -Eq 'OCEAN_GPU_PERF .*chunks=[1-9][0-9]* .*triangles=[1-9][0-9]* .*uploadedFrameBytes=0' \
+            build/test-visuals/gpu-ocean-performance.log
+          grep -q 'PASS GPU_OCEAN_BENCHMARK samples=' \
+            build/test-visuals/gpu-ocean-performance.log
+          test -s build/test-visuals/gpu-ocean-coastal-no-water.png
+          test -s build/test-visuals/gpu-ocean-coastal-benchmark.png
+          grep -Eq 'PASS GPU_OCEAN_BENCHMARK .*changedPixels=[1-9][0-9]*' \
+            build/test-visuals/gpu-ocean-performance.log
+          echo 'PASS GPU_OCEAN_STATIC_VBO nonzero real ocean triangles and no frame uploads'
+          {
+            echo '### Native ocean GPU diagnostics (real coastal City C, seed 887766)'
+            echo 'CPU submission is not GPU execution time; FPS is diagnostic.'
+            echo '```text'
+            grep 'OCEAN_GPU_PERF' build/test-visuals/gpu-ocean-performance.log | tail -n 4
+            grep 'PASS GPU_OCEAN_BENCHMARK' build/test-visuals/gpu-ocean-performance.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Unified in-engine main menu and real world/session flow
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 140s java -jar gpu-client/target/MaleficVeil-GPU.jar \
+              --frontend-smoke | tee build/test-visuals/unified-menu.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/unified-menu.log
+          grep -q 'VEIL_ORIGINAL_UI_ART_READY' build/test-visuals/unified-menu.log
+          grep -q 'PASS GPU_FRAME_PRESENTATION_ORIENTATION' build/test-visuals/unified-menu.log
+          test -s build/test-visuals/gpu-unified-front-end.png
+          for label in home video audio controls create-world join; do
+            test -s "build/test-visuals/gpu-frontend-$label.png"
+          done
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 180s java -Dveil.weather.mute=true \
+              -jar gpu-client/target/MaleficVeil-GPU.jar --frontend-flow-smoke |
+              tee build/test-visuals/unified-live-session.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_FULL_FLOW' build/test-visuals/unified-live-session.log
+          grep -q 'PASS GPU_FRAME_PRESENTATION_ORIENTATION' build/test-visuals/unified-live-session.log
+          test -s build/test-visuals/gpu-frontend-live-world.png
+          test -s build/test-visuals/gpu-frontend-live-pause.png
+          test -s build/test-visuals/gpu-frontend-live-crafting.png
+          test -s build/test-visuals/gpu-frontend-live-recipe-book.png
+          test -s build/test-visuals/gpu-frontend-live-industrial-book.png
+          test -s build/test-visuals/gpu-frontend-live-penitent-book.png
+          test -s build/test-visuals/gpu-frontend-live-begotten-book.png
+          test -s build/test-visuals/gpu-frontend-live-item-index.png
+          test -s build/test-visuals/gpu-frontend-live-crew.png
+          test -s build/test-visuals/gpu-frontend-live-crew-input.png
+      - name: Reuse published editor module in actual GPU viewport
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 150s java -jar gpu-client/target/MaleficVeil-GPU.jar \
+            --editor-smoke --seed=20261020 | tee build/test-visuals/editor-kit.log
+          grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' build/test-visuals/editor-kit.log
+          grep -q 'PASS PSX_HORROR_UI_EDITOR_RENDER' build/test-visuals/editor-kit.log
+          test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
+          test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
+      - name: Three seeded GPU worlds, ten city and exterior camera poses each
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          for seed in 20261020 42 887766; do
+            xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+              timeout 150s java -Djava.awt.headless=false \
+              -jar gpu-client/target/MaleficVeil-GPU.jar --gallery --seed="$seed" \
+              | tee "build/test-visuals/gallery-seed-$seed.log"
+            test "$(grep -c 'GALLERY_CAPTURE seed=' "build/test-visuals/gallery-seed-$seed.log")" -eq 10
+            test "$(find build/test-visuals -maxdepth 1 -name "gallery-seed-$seed-city-A-*.png" | wc -l)" -eq 10
+          done
+          printf 'Real OpenGL world gallery: 3 seeds x 10 camera poses = 30 PNGs\n'
+          file build/test-visuals/gallery-seed-*.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: malefic-gpu-${{ matrix.os }}-jdk${{ matrix.java }}
+          path: |
+            gpu-client/target/MaleficVeil-GPU.jar
+            build/test-visuals/gpu-kenney-city.png
+            build/test-visuals/gpu-kenney-night.png
+            build/test-visuals/gpu-psx-menu.png
+            build/test-visuals/gpu-continental-edge.png
+            build/test-visuals/gpu-kenney-vehicles.png
+            build/test-visuals/gpu-ggbot-city-cars.png
+            build/test-visuals/gpu-kenney-foliage.png
+            build/test-visuals/gallery-seed-*.png
+            build/test-visuals/gallery-seed-*.log
+            build/test-visuals/gpu-ocean-performance.log
+            build/test-visuals/gpu-ocean-coastal-no-water.png
+            build/test-visuals/gpu-ocean-coastal-benchmark.png
+            build/test-visuals/gpu-standalone-editor-live-viewport.png
+            build/test-visuals/editor-kit.log
+            build/test-visuals/psx-source-audit.log
+            build/test-visuals/gpu-psx-ui-menu.log
+            build/test-visuals/unified-menu.log
+            build/test-visuals/unified-live-session.log
+            build/test-visuals/gpu-unified-front-end.png
+            build/test-visuals/gpu-frontend-live-world.png
+            build/test-visuals/gpu-frontend-*.png
+            build/test-visuals/crafting-completion-catalog.csv
+            build/test-visuals/editor-kit-smoke/seed-*/city-A.properties
+          if-no-files-found: warn

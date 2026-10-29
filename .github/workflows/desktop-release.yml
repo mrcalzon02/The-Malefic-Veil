@@ -1,0 +1,445 @@
+name: Desktop release package
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: malefic-desktop-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Acquire verified GGBot CC0 car atlas source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/game/ggbot
+          curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
+          echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
+      - name: Prepare Maven for GPU build
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: gpu-client/pom.xml
+      - name: Compile Java 17
+        run: |
+          mkdir -p build/classes build/package
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
+      - name: Release tests
+        run: |
+          set -e
+          python3 tools/validate_economy_csv.py
+          for test in ArsenalDeathInventoryTest SurvivalConsumptionTest WorldSelfTest CityLayoutTest ArenaSystemsTest PickupInteractionRangeTest InteractionFocusTest SurvivalCraftingTest SurvivalNeedsIntegrationTest SurvivalPersistenceTest CraftingEraRegistryTest IndustrialWorkstationTest CargoHaulageTest CampCargoUnloadTest CampStockpileIntegrationTest HostCheckpointTest FactionWorksiteConstructionTest FactionFirstProductionTest SecondEraFactionProductionTest PhysicalFacilityDependencyTest SteamEraProductionTest ElectricEraProductionTest ConveyorLogisticsTest AutomaticSorterIntegrationTest AutomationEraFactionTest AutomationQueueTest CityLootEconomyTest SettlementSustenanceTest LoadedConvoyRiskTest ReleaseCatalogTest DesktopUpdaterTest DesktopDiagnosticsTest GGBotCarPackTest WorldCreationConfigTest WorldCreationEndToEndTest LanSmokeTest RenderSmokeTest; do
+            java -Djava.awt.headless=true -cp build/classes "veil.$test"
+          done
+      - name: Resolve pinned standalone editor module
+        shell: bash
+        run: bash tools/install-editor-kit.sh
+      - name: Bake angled inventory renders from real checked-in GLBs
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender python3-numpy
+          blender --background --factory-startup --python-expr 'import numpy; print("Blender NumPy", numpy.__version__)'
+          mkdir -p build
+          blender --background --factory-startup --python tools/render_item_portraits.py |
+            tee build/model-portraits.log
+          grep -q 'PASS REAL_3D_ITEM_PORTRAITS total=41' build/model-portraits.log
+      - name: Build the actual playable GPU game with its complete Java engine
+        run: |
+          set -euo pipefail
+          mvn -B -ntp -f gpu-client/pom.xml -DskipTests package
+          jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'org/beckenburg/editor/EditorHistory.class'
+          cp gpu-client/target/MaleficVeil-GPU.jar build/package/MaleficVeil.jar
+          jar tf build/package/MaleficVeil.jar | grep -qx 'veil/gpu/GpuKenneyPreview.class'
+          jar tf build/package/MaleficVeil.jar | grep -qx 'veil/MaleficVeil.class'
+          jar tf build/package/MaleficVeil.jar |
+            grep -qx 'psx-ui/psx-horror-ui-free-assets.zip'
+          jar tf build/package/MaleficVeil.jar |
+            grep -qx 'audio/cold-unresolved-drone.mp3.part07'
+          java -cp build/package/MaleficVeil.jar veil.CraftingRecipeIndexTest
+          java -cp build/package/MaleficVeil.jar veil.FactionIndustrySeparationTest
+          java -cp build/package/MaleficVeil.jar veil.FieldWorkbenchRuntimeTest
+          java -cp build/package/MaleficVeil.jar veil.CraftingEconomyCsvTest
+          java -cp build/package/MaleficVeil.jar veil.CraftingCatalogExportTest
+          java -cp build/package/MaleficVeil.jar veil.CraftingCatalogExport
+          test -s build/test-visuals/crafting-completion-catalog.csv
+          java -Djava.awt.headless=true -cp build/package/MaleficVeil.jar veil.CraftingIconPacksTest
+          jar tf build/package/MaleficVeil.jar |
+            grep -qx 'crafting/packs/begotten_biology_sprites_only.zip'
+          java -cp build/package/MaleficVeil.jar veil.gpu.GpuAudioBus
+          java -cp build/package/MaleficVeil.jar veil.gpu.GpuClientSettingsTest
+          java -cp build/package/MaleficVeil.jar veil.gpu.PsxHorrorUiSource
+          java -Djava.awt.headless=true -cp build/package/MaleficVeil.jar \
+            veil.gpu.PsxHorrorSwingSkin
+          unzip -p build/package/MaleficVeil.jar META-INF/MANIFEST.MF |
+            grep -q 'Main-Class: veil.gpu.GpuDesktop'
+      - name: Verify the shipped entry menu and same-window world creation
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0
+          mkdir -p build/test-visuals
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 140s java -jar build/package/MaleficVeil.jar --frontend-smoke |
+              tee build/test-visuals/release-frontend.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/release-frontend.log
+          grep -q 'VEIL_ORIGINAL_UI_ART_READY' build/test-visuals/release-frontend.log
+          grep -q 'PASS GPU_FRAME_PRESENTATION_ORIENTATION' build/test-visuals/release-frontend.log
+          test -s build/test-visuals/gpu-unified-front-end.png
+          for label in home video audio controls create-world join; do
+            test -s "build/test-visuals/gpu-frontend-$label.png"
+          done
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 180s java -Dveil.weather.mute=true \
+              -jar build/package/MaleficVeil.jar --frontend-flow-smoke |
+              tee build/test-visuals/release-frontend-session.log
+          grep -q 'PASS GPU_UNIFIED_FRONTEND_FULL_FLOW' \
+            build/test-visuals/release-frontend-session.log
+          grep -q 'PASS GPU_FRAME_PRESENTATION_ORIENTATION' \
+            build/test-visuals/release-frontend-session.log
+          test -s build/test-visuals/gpu-frontend-live-world.png
+          test -s build/test-visuals/gpu-frontend-live-pause.png
+          test -s build/test-visuals/gpu-frontend-live-crafting.png
+          test -s build/test-visuals/gpu-frontend-live-recipe-book.png
+          test -s build/test-visuals/gpu-frontend-live-industrial-book.png
+          test -s build/test-visuals/gpu-frontend-live-item-index.png
+          test -s build/test-visuals/gpu-frontend-live-crew.png
+          test -s build/test-visuals/gpu-frontend-live-crew-input.png
+      - name: Run real shipped game/render/input in Mesa OpenGL
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0
+          mkdir -p build/test-visuals
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 130s java -Dveil.weather.mute=true \
+            -jar build/package/MaleficVeil.jar --play-smoke |
+            tee build/test-visuals/release-live-gpu.log
+          grep -q 'PASS GPU_LIVE_PLAY_REAL_GAME' build/test-visuals/release-live-gpu.log
+          grep -q 'PASS PSX_HORROR_UI_GAMEPLAY_RENDER' build/test-visuals/release-live-gpu.log
+          test -s build/test-visuals/gpu-live-play-shipped-client.png
+      - name: Verify published editor module drives the actual game viewport
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 150s java -jar build/package/MaleficVeil.jar \
+              --editor-smoke --seed=20261020 |
+              tee build/test-visuals/release-editor-kit.log
+          grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' \
+            build/test-visuals/release-editor-kit.log
+          grep -q 'PASS PSX_HORROR_UI_EDITOR_RENDER' \
+            build/test-visuals/release-editor-kit.log
+          test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
+          test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
+      - name: Package game and independent updater bootstrap
+        run: |
+          set -euo pipefail
+          mkdir -p build/bootstrap/veil
+          cp build/classes/veil/DesktopUpdater*.class build/bootstrap/veil/
+          cp build/classes/veil/ReleaseCatalog*.class build/bootstrap/veil/
+          jar cf build/package/updater.jar -C build/bootstrap .
+          mkdir -p build/package/assets
+          cp -R assets/game build/package/assets/
+          cp -R lib build/package/
+          cp play-release.bat play-release.sh build/package/
+          chmod +x build/package/play-release.sh
+          printf '%s\n' "$GITHUB_SHA" > build/package/version.txt
+          cd build/package
+          zip -qr "MaleficVeil-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt
+          zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt play-release.bat play-release.sh
+          unzip -tq "MaleficVeil-${GITHUB_SHA:0:12}.zip"
+          unzip -tq "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip"
+          sha256sum "MaleficVeil-${GITHUB_SHA:0:12}.zip" | awk '{print $1}' > checksum.txt
+          printf 'version=%s\narchive=MaleficVeil-%s.zip\nsha256=%s\n' "$GITHUB_SHA" "${GITHUB_SHA:0:12}" "$(cat checksum.txt)" > update.properties
+      - name: Publish immutable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="dev-${GITHUB_SHA:0:12}"
+          gh release create "$TAG" \
+            "build/package/MaleficVeil-${GITHUB_SHA:0:12}.zip" \
+            "build/package/MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" \
+            build/package/update.properties \
+            build/package/updater.jar \
+            build/package/play-release.bat \
+            build/package/play-release.sh \
+            --target "$GITHUB_SHA" \
+            --title "The Malefic Veil ${GITHUB_SHA:0:12}" \
+            --notes "Pre-1.0 development build $GITHUB_SHA. Updater includes published prereleases; save compatibility is not guaranteed." \
+            --prerelease
+      - name: Verify published release and downloadable assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="dev-${GITHUB_SHA:0:12}"
+          gh release view "$TAG" --json tagName,isDraft,isPrerelease --jq '.tagName == "'$TAG'" and .isDraft == false and .isPrerelease == true' | grep -qx true
+          mkdir -p build/release-readback
+          gh release download "$TAG" -D build/release-readback
+          for file in "MaleficVeil-${GITHUB_SHA:0:12}.zip" \
+                      "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" \
+                      updater.jar update.properties play-release.bat play-release.sh; do
+            cmp "build/package/$file" "build/release-readback/$file"
+          done
+          unzip -tq "build/release-readback/MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip"
+          echo "Published prerelease and all downloaded assets verified"
+      - name: Install newest published development update from live GitHub
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/update-smoke/worlds/keep-this-world
+          printf 'previous save must remain untouched\n' > build/update-smoke/worlds/keep-this-world/save.dat
+          printf '%040d\n' 0 > build/update-smoke/version.txt
+          java -Djava.awt.headless=true -cp build/package/updater.jar \
+            veil.DesktopUpdater "$PWD/build/update-smoke" --install
+          grep -q INSTALL_VERIFIED build/update-smoke/logs/updater.log
+          test -s build/update-smoke/MaleficVeil.jar
+          unzip -p build/update-smoke/MaleficVeil.jar META-INF/MANIFEST.MF |
+            grep -q 'Main-Class: veil.gpu.GpuDesktop'
+          test -s build/update-smoke/updater.jar
+          test -s build/update-smoke/lib/shared-psx-weather-java17-v1.jar
+          test -d build/update-smoke/assets/game
+          test "$(cat build/update-smoke/worlds/keep-this-world/save.dat)" = "previous save must remain untouched"
+          java -Djava.awt.headless=true -cp build/update-smoke/MaleficVeil.jar veil.WorldSelfTest
+          echo "Live GitHub prerelease discovery, download, install, and rollback-safe save preservation PASS"
+      - name: Upgrade an actual previously published desktop installation
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="dev-${GITHUB_SHA:0:12}"
+          PREVIOUS="$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" --jq             '.[] | select(.draft == false and .prerelease == true) | .tag_name' |
+            grep -v "^$CURRENT$" | head -n 1 || true)"
+          if [ -z "$PREVIOUS" ]; then
+            echo "No previous prerelease exists yet; fresh-install smoke is the bootstrap gate"
+            exit 0
+          fi
+          mkdir -p build/previous-release build/previous-install
+          gh release download "$PREVIOUS" --pattern 'MaleficVeil-desktop-*.zip' \
+            --dir build/previous-release
+          unzip -q build/previous-release/MaleficVeil-desktop-*.zip -d build/previous-install
+          test -s build/previous-install/updater.jar
+          BEFORE="$(cat build/previous-install/version.txt)"
+          mkdir -p build/previous-install/worlds/older-save
+          echo 'retain-save-file' > build/previous-install/worlds/older-save/state.txt
+          cp build/previous-install/updater.jar build/previous-updater.jar
+          java -Djava.awt.headless=true -cp build/previous-updater.jar \
+            veil.DesktopUpdater "$PWD/build/previous-install" --install
+          grep -q INSTALL_VERIFIED build/previous-install/logs/updater.log
+          AFTER="$(cat build/previous-install/version.txt)"
+          test "$AFTER" != "$BEFORE"
+          test -s build/previous-install/MaleficVeil.jar
+          unzip -p build/previous-install/MaleficVeil.jar META-INF/MANIFEST.MF |
+            grep -q 'Main-Class: veil.gpu.GpuDesktop'
+          test -s build/previous-install/updater.jar
+          test -s build/previous-install/lib/shared-psx-weather-java17-v1.jar
+          test "$(cat build/previous-install/worlds/older-save/state.txt)" = retain-save-file
+          echo "Existing release $PREVIOUS updated to $AFTER via installed updater: PASS"
+      - name: Preserve packaged installer even if Release API denies publication
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: malefic-desktop-${{ github.sha }}
+          path: |
+            build/package/MaleficVeil-desktop-*.zip
+            build/package/MaleficVeil-*.zip
+            build/package/update.properties
+            build/package/updater.jar
+            build/test-visuals/gpu-live-play-shipped-client.png
+            build/test-visuals/gpu-unified-front-end.png
+            build/test-visuals/gpu-frontend-live-world.png
+            build/test-visuals/gpu-frontend-*.png
+            build/test-visuals/crafting-completion-catalog.csv
+            build/test-visuals/release-frontend*.log
+            build/test-visuals/release-live-gpu.log
+            build/test-visuals/release-editor-kit.log
+            build/test-visuals/gpu-standalone-editor-live-viewport.png
+            build/test-visuals/editor-kit-smoke/seed-*/city-A.properties
+          if-no-files-found: warn
+
+  windows-review-installer:
+    name: Windows packaged updater launch and diagnostics
+    needs: release
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Download published Windows desktop ZIP and check for updates
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = 'dev-' + $env:GITHUB_SHA.Substring(0, 12)
+          New-Item -ItemType Directory -Force -Path windows-download, windows-install | Out-Null
+          gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern 'MaleficVeil-desktop-*.zip' --dir windows-download
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot download published Windows build' }
+          $zip = (Get-ChildItem windows-download/*.zip | Select-Object -First 1).FullName
+          Expand-Archive -LiteralPath $zip -DestinationPath windows-install -Force
+          & .\windows-install\play-release.bat --check
+          if ($LASTEXITCODE -ne 0) { throw 'Windows updater launcher failed' }
+          if (-not (Test-Path windows-install/logs/updater.log)) {
+            throw 'Windows updater did not persist diagnostics'
+          }
+          Get-Content windows-install/logs/updater.log -Tail 6
+          Write-Host 'Windows portable build and updater check PASS'
+
+  windows-native-setup:
+    name: Native Windows EXE installer (bundled Java, shortcuts and uninstaller)
+    needs: release
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Ensure WiX native installer toolchain
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          jpackage --version
+          if ($LASTEXITCODE -ne 0) { throw 'jpackage missing' }
+          if (-not (Get-Command candle.exe -ErrorAction SilentlyContinue)) {
+            $candidate = Get-ChildItem 'C:\Program Files (x86)' -Directory -Filter 'WiX Toolset*' -ErrorAction SilentlyContinue | Select-Object -Last 1
+            if (-not $candidate) {
+              choco install wixtoolset --yes --no-progress
+              if ($LASTEXITCODE -ne 0) { throw 'WiX install failed' }
+              $candidate = Get-ChildItem 'C:\Program Files (x86)' -Directory -Filter 'WiX Toolset*' | Select-Object -Last 1
+            }
+            if (-not $candidate) { throw 'WiX not available' }
+            $bin = Join-Path $candidate.FullName 'bin'
+            $env:PATH = "$bin;$env:PATH"
+            $bin | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+          }
+          if (-not (Get-Command light.exe -ErrorAction SilentlyContinue)) { throw 'WiX light.exe missing' }
+      - name: Download game payload and create dedicated native bootstrap
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = 'dev-' + $env:GITHUB_SHA.Substring(0,12)
+          New-Item -ItemType Directory -Force -Path native-source, native-download, native-bootstrap | Out-Null
+          gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern 'MaleficVeil-desktop-*.zip' --dir native-download
+          if ($LASTEXITCODE -ne 0) { throw 'Game package download failed' }
+          $zip = (Get-ChildItem native-download/*.zip | Select-Object -First 1).FullName
+          Expand-Archive -LiteralPath $zip -DestinationPath native-source -Force
+          & javac --release 17 -encoding UTF-8 -d native-bootstrap src/main/java/veil/InstalledLauncher.java
+          if ($LASTEXITCODE -ne 0) { throw 'Bootstrap compile failed' }
+          & jar --create --file native-source/Launcher.jar --main-class veil.InstalledLauncher -C native-bootstrap .
+          if ($LASTEXITCODE -ne 0) { throw 'Bootstrap jar failed' }
+          foreach ($file in @('MaleficVeil.jar','updater.jar','Launcher.jar','version.txt','assets/game','lib/shared-psx-weather-java17-v1.jar')) {
+            if (-not (Test-Path "native-source/$file")) { throw "Installer payload missing: $file" }
+          }
+      - name: Verify native game executable, bundled JRE and updater
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # jpackage's default jlink options strip Java command executables.
+          # Our isolated updater needs javaw.exe, so supply an explicit full runtime.
+          & jlink --add-modules java.desktop,java.net.http,java.logging,java.prefs,java.naming,jdk.crypto.ec,jdk.unsupported,java.management --output native-runtime --no-header-files --no-man-pages
+          if ($LASTEXITCODE -ne 0) { throw 'Bundled Java runtime build failed' }
+          if (-not (Test-Path native-runtime/bin/javaw.exe)) { throw 'Bundled runtime lacks Java launcher' }
+          & jpackage --type app-image --name 'The Malefic Veil' --input native-source --dest native-app --main-jar Launcher.jar --main-class veil.InstalledLauncher --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --runtime-image native-runtime
+          if ($LASTEXITCODE -ne 0) { throw 'Native launcher build failed' }
+          $image = Join-Path $PWD 'native-app/The Malefic Veil'
+          $exe = Join-Path $image 'The Malefic Veil.exe'
+          if (-not (Test-Path $exe)) { throw 'Game EXE missing' }
+          if (-not (Test-Path (Join-Path $image 'runtime/bin/javaw.exe'))) { throw 'Embedded Java missing' }
+          # Windows GUI launchers can return control to PowerShell before JVM
+          # startup finishes. Wait for the actual process to exit.
+          $run = Start-Process -FilePath $exe -ArgumentList '--check' -WorkingDirectory $image -Wait -PassThru
+          if ($run.ExitCode -ne 0) { throw "Native game update check failed: $($run.ExitCode)" }
+          $log = Join-Path $image 'app/logs/launcher.log'
+          if (-not (Test-Path $log)) { throw 'Native launcher logs missing' }
+          if ((Get-Content $log -Raw) -notmatch 'UPDATER_EXIT code=0') { throw 'Updater did not complete through native launcher' }
+          $updateLog = Join-Path $image 'app/logs/updater.log'
+          if (-not (Test-Path $updateLog)) { throw 'Update diagnostic log missing' }
+          $diagnostics = Get-Content $updateLog -Raw
+          if ($diagnostics -match 'UPDATE_ERROR' -or $diagnostics -notmatch 'CURRENT_OR_NEWER|UPDATE_AVAILABLE') {
+            throw "Native update check did not complete successfully: $diagnostics"
+          }
+          Write-Host 'Native EXE, embedded runtime, startup diagnostics and updater PASS'
+      - name: Build native Windows setup EXE
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & jpackage --type exe --name 'The Malefic Veil' --app-image (Join-Path $PWD 'native-app/The Malefic Veil') --dest native-setup --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --win-per-user-install --win-dir-chooser --win-menu --win-menu-group 'The Malefic Veil' --win-shortcut --win-upgrade-uuid 'C0B86E30-48EA-4B42-ABBD-6C1557028993'
+          if ($LASTEXITCODE -ne 0) { throw 'Installer jpackage failed' }
+          $created = @(Get-ChildItem native-setup -Filter '*.exe')
+          if ($created.Count -ne 1) { throw 'Expected exactly one installer executable' }
+          $name = 'MaleficVeil-Setup-' + $env:GITHUB_SHA.Substring(0,12) + '.exe'
+          Rename-Item -LiteralPath $created[0].FullName -NewName $name
+          $file = Join-Path $PWD "native-setup/$name"
+          $data = [System.IO.File]::OpenRead($file)
+          try {
+            $head = New-Object byte[] 2
+            [void]$data.Read($head,0,2)
+            if ($data.Length -lt 1000000 -or $head[0] -ne 77 -or $head[1] -ne 90) { throw 'Invalid Windows setup PE executable' }
+          } finally { $data.Dispose() }
+          Write-Host "REAL WINDOWS INSTALLER CREATED: $name"
+      - name: Publish installer and verify release download by SHA-256
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = 'dev-' + $env:GITHUB_SHA.Substring(0,12)
+          $name = 'MaleficVeil-Setup-' + $env:GITHUB_SHA.Substring(0,12) + '.exe'
+          $original = (Resolve-Path "native-setup/$name").Path
+          gh release upload $tag $original --repo $env:GITHUB_REPOSITORY
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub rejected native installer' }
+          New-Item -ItemType Directory -Force -Path native-readback | Out-Null
+          gh release download $tag --repo $env:GITHUB_REPOSITORY --pattern $name --dir native-readback
+          if ($LASTEXITCODE -ne 0) { throw 'Installer not downloadable from release' }
+          $retrieved = (Resolve-Path "native-readback/$name").Path
+          if ((Get-FileHash $original -Algorithm SHA256).Hash -ne (Get-FileHash $retrieved -Algorithm SHA256).Hash) { throw 'Published installer bytes differ' }
+          Write-Host "NATIVE WINDOWS INSTALLER RELEASE VERIFIED: $name"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: malefic-native-setup-${{ github.sha }}
+          path: native-setup/MaleficVeil-Setup-*.exe
+          if-no-files-found: warn

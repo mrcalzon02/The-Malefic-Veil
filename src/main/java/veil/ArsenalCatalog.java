@@ -10,7 +10,7 @@ public final class ArsenalCatalog {
         public boolean mapSpawn(){return index<8;}
         public int[] cost(){return cost.clone();}
     }
-    public static final String[] FACTIONS={"Foundry","Lumen","Veil"};
+    public static final String[] FACTIONS={"The Unraveled","The Penitent","The Begotten"};
     public static final String[] MATERIALS={"Scrap","Electronics","Chemicals","Alloy","Machined frame","Power cell","Arc coil","Warhead","Anomaly core"};
     public static final int[][] COMPONENT_COSTS={{6,0,0,2,0,0,0,0,0},{0,4,2,0,0,0,0,0,0},{0,6,0,2,0,0,0,0,0},{3,0,5,0,0,0,0,0,0},{0,0,5,0,0,2,1,0,0}};
     public static final Weapon[] WEAPONS={
@@ -47,5 +47,13 @@ public final class ArsenalCatalog {
         new Weapon(30,"w31-eventide","Eventide","rings",3,3000,3,2,26,new Mode(Kind.GRAVITY,60,1,850,13,2,0,0),new Mode(Kind.VORTEX,20,1,1800,7,3,0,600),new int[]{11,4,0,4,1,0,1,0,1}),
         new Weapon(31,"w32-veilbreaker","Veilbreaker","rings",1,3000,3,2,30,new Mode(Kind.SINGULARITY,240,1,2600,8,5,0,1500),new Mode(Kind.BEAM,180,1,2400,0,0,0,1800),new int[]{11,4,0,4,1,0,1,0,1}),
     };
+    public static int factionIndex(CharacterRoster.Faction group){
+        if(group==null)return -1;
+        return switch(group){
+            case THE_UNRAVELED -> 0;
+            case THE_PENITENT -> 1;
+            case THE_BEGOTTEN -> 2;
+        };
+    }
     public static Weapon get(int n){if(n<0||n>=32)throw new IllegalArgumentException("Unknown weapon");return WEAPONS[n];}
 }

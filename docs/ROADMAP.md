@@ -1,5 +1,7 @@
 # The Malefic Veil — release-gated development plan
 
+**Cross-system priority ledger (26 October 2026):** [Level-one-to-level-50 gameplay audit](PROGRESSION_END_TO_END_AUDIT_20261026.md). Its functional player-journey gates supplement, but do not replace, the individual R1–R4 engineering gates below. Do not treat release catalog export, source registries, or screenshots as end-to-end gameplay completion.
+
 Each phase has **entry criteria**, concrete deliverables, automated acceptance evidence and explicit **exit gates**. The license/provenance/renderer/animation implementation gates are tracked in **[ASSET_PIPELINE_AUDIT.md](ASSET_PIPELINE_AUDIT.md)**. Release-blocking player experience requirements are specified in **[PLAYER_QOL_MUST_HAVES.md](PLAYER_QOL_MUST_HAVES.md)**; P0 issues are non-waivable for public multiplayer. A green unit test is never proof of real user playability. Work stays on `main`; GitHub Actions are authorized for build/testing on this project, not for unsupervised release of purchased archives.
 
 ## Phase P0 — Foundation / repository / licensing [BASELINE VERIFIED]
@@ -34,9 +36,19 @@ Each phase has **entry criteria**, concrete deliverables, automated acceptance e
 
 ### Continental world-generation expansion [BLUEPRINT IMPLEMENTED; GAME STREAMING PENDING]
 
-The hand-drawn island/cities A–G layout now has a deterministic 224×224 parcel-scale `ContinentLayout` with coast/water, seven biome types, irregular city masks (square City C), intercity network, connected city arteries and categorized local plots. World-owned roads/sites have a separate protected construction mask, with undeveloped vacant lots left buildable. The `N` preview exposes macro topology beside the existing `M` city map. **The live combat world is still the existing 132×132 city sector**; continental chunk streaming, road meshes, fine elevation, adjacent city traversal and terrain-specific 3D assets are unimplemented gates. See [CONTINENT_WORLD_GENERATION.md](CONTINENT_WORLD_GENERATION.md).
+The hand-drawn island/cities A–G layout now has a deterministic 224×224 parcel-scale `ContinentLayout` with coast/water, seven biome types, irregular city masks (square City C), intercity network, connected city arteries and categorized local plots. World-owned roads/sites have a separate protected construction mask, with undeveloped vacant lots left buildable. The `N` preview exposes macro topology beside the existing `M` city map. **The playable City A district is now embedded in the same world coordinates as the continent**, with outdoor world-movement and harvest nodes sharing player positions; the other cities still lack finished physical site geometry, road meshes, elevation, NPC instantiation and streamed 3D urban art. See [CONTINENT_WORLD_GENERATION.md](CONTINENT_WORLD_GENERATION.md).
 
 Next gates: verified Java 17/21 topology and host-build regressions, macro-to-fine sector conversion, terrain transition artistry, uninterrupted intercity traversal and large building-footprint enforcement.
+
+### Continuous world correction and Beckenburg harvesting port [CODE COMMITTED; RUNTIME QA OPEN]
+
+The erroneous `WILD_ENTER/WILD_EXIT/WILD_MOVE` session model was removed entirely. City A is aligned to the actual macro continent in world-metres; ordinary `ArenaSystems.move` handles all walking through the edge crossings and validates swept movement across tile/terrain obstacles. Host combat, pickups, vehicles, crafting and resource nodes all use ONE `ArenaSystems.Player.x/y/angle` and there is no special dimension flag. `WorldHarvesting` authoritatively ray-validates `HARVEST|nodeId`, awards material to the same character's inventory, syncs `RESOURCE_NODE` to nearby players and durably saves depletion. The client preserves the Beckenburg center-aim hand/E prompt and draws CC0 Beckenburg tree GLBs plus authored resource proxy meshes.
+
+`WorldHarvestingTest` and `InteractionFocusTest` are registered in `QualityGateTest`, **but current branch compilation and actual Windows/Linux traversal/visual tests require verification**. Gate next: continuous graphical roads/terrain blending, real physical City B–G lots/interiors, forestry node collision/animations, combat/vehicle convoys across old City A boundary and multiplayer load/carry/deplete soak. Full [contract and exact limits](ONE_CONTINUOUS_WORLD_AND_HARVESTING.md).
+
+### Runtime static airframe inspection [SCREENSHOTS VERIFIED — NO FLIGHT YET]
+
+Actual `GameplayMeshes` GLBs now render in a **F8** preview inside the real desktop Swing game using a pitched in-engine `PropRenderer` camera. Left/Right cycles the exact nine faction/weight aircraft; A/D rotates; F8 exits, with no host-side spawning, flying privileges or ability bypass. The existing virtual-desktop `DesktopInputTest` captures and verifies nine distinct real screenshots after Robot keyboard input; [the 9-up actual game screenshot](../assets/game/aircraft/aircraft_in_game_9_actual.png) and [native-pixel version](../assets/game/aircraft/aircraft_in_game_9_native.png) are committed. The headless `AircraftShowroomTest` checks distinct readable real GLB raster output, and Java 17/21 host/game tests have passed on Windows and Ubuntu. **No flying simulation is implemented** by this viewer; next: flight physics, separate moving rig parts, animation, damage/collision, air-defense counters and miasma enforcement.
 
 ## Phase P3 — Character, arsenal and animations [PLANNED]
 
@@ -53,6 +65,41 @@ Next gates: verified Java 17/21 topology and host-build regressions, macro-to-fi
 **Unfinished blockers:** internet authentication/TLS, connection flood defense, authoritative full-continent movement and chunk streaming, per-character inventory/economic persistence, true multiplayer teams/base claims, collision/height-aware multibuilding validation, client raid timer indicators, staged disaster recovery testing, long-duration real dedicated server soak, balancing and operator signoff.
 
 **Release gate R4:** Deterministic + adversarial multiplayer tests including duplicate pickup/build commands, disconnect mid-revive, 4–16 clients, 150ms latency/packet loss, 2h soak, resource and security bounds. Localhost protocol tests **do not** satisfy this gate. Target `v0.4.0-alpha`.
+
+### Vehicles and endgame aviation [V1 discovery blueprint integrated; release gates open]
+
+The ground/air contract is documented in **[Faction vehicles and air power](FACTION_VEHICLES_AND_AIR_POWER.md)**. The current city-sector vehicles still support host-authoritative driving, collision damage, fuel, single truck-cargo loads and persistence. New `ContinentVehicleSites` and `ContinentPopulation.vehicleSpawns()` define off-road, seed-stable city parking and highway-shoulder discovery points with stable IDs, source-car variants, initial damage/fuel and capacity/marking metadata. **They are not spawned or driven in the unstreamed continent.**
+
+V2 requires actually converted GGBot CC0 runtime cars, multiple chassis, server materialization/tombstones and physical collision/access checks. V3 adds component repairs, multi-slot cargo and chassis manufacturing; V4 adds faction access and ally-safe vehicle combat. Aircraft are gated behind late-game industry, nine original airframes (three distinct classes per faction), actual host flight and mixed-arms counterplay; no aircraft are implemented yet.
+
+### Nine authored faction airframe models [STATIC GLB ART INTEGRATED, NOT FLYABLE]
+
+The nine [faction vehicle/air power](FACTION_VEHICLES_AND_AIR_POWER.md) concept slots now have actual distinct PSX-style low-poly GLB meshes with baked triangle geometry, original faction materials and embedded 128x128 noise texture; [assets/game/aircraft](../assets/game/aircraft/) contains all nine, editing palettes, mesh preview contact sheet and SHA-256 manifest. The asset generator is committed under `tools/build_malefic_aircraft.py`. `AirPowerMeshes` loads/checks the nine GLBs by actual bytes and triangle counts, and `GameplayMeshes` makes them selectable to the existing renderer. The headless `AirPowerMeshesTest` is registered in `QualityGateTest`; Python round-trip geometry/GLB validity confirmed during authoring. **Current in-game flyability, real aircraft instances, animation, flight physics, AI and miasma flight collision remain not implemented.** Next: interactive in-engine model showcase, rigged moving parts, real projectile hardpoints/colliders, server aircraft physics, miasma sweeps and air-to-ground counters.
+
+### Character-owned settlements and dual-role faction anti-air [POLICY CODE ADDED; LIVE WORLD GATED]
+
+The [facility authority contract](FACTION_FACILITIES_BASE_CONSTRUCTION.md) now gives **a specific persistent founder character** settlement control, rather than automatic faction/crew/global ownership. The new host-side `SettlementAuthority` is a policy-only module: founder-managed blueprint-specific builder ACLs, fixed versioned charters, one founding charter per character, dynamic level-1–50 budgets, separate defense/production/extension caps, idempotent structure IDs and cold-start snapshots. `SettlementAuthorityTest` exercises grant/deny, foreign faction, high-level helper cap bypass, revocation after ownership transfer, duplicate placements and hardcore level reset.
+
+**Not yet shipped:** character-slot identity and offline directory backed by real saved characters; wilderness Claim Heart materialization and claim geometry; transactional inventory/material debit + placement ledger in the streamed world; zone persistence storage and replication; suspend excess defenses after hardcore rank rollback. The new policy API must not be exposed to client packets or mistaken for placed settlement structures.
+
+The [vehicle and aviation contract](FACTION_VEHICLES_AND_AIR_POWER.md) adds exactly **two specialist AA towers per faction** (six distinct custom art contracts): precise, rapid, low-caliber light anti-air versus slow, armor-piercing heavy-breaker artillery. The intentional **medium-aircraft survival window** is represented by `AntiAirBalance`'s isolated illustrative matchup curve and `AntiAirBalanceTest`. These are balance-specification data and tests, **not** runtime turret entities, projectiles, visual assets or real multiplayer combat. Power/ammunition, line of sight, persistent damage and faction-friendly-fire constraints gate a playable AA release.
+
+### City miasma, level-50 settlements and three incompatible industrial supply architectures [SOURCE DATA AND SPEC]
+
+The [city miasma, crude structure, full economy and trade spec](CITY_MIASMA_SETTLEMENT_ECONOMY_AND_TRADE.md) adds:
+- `CityMiasma`: deterministic city-wide aircraft exclusion columns at all altitudes, swept-crossing validation and test data; **not yet an integrated flight server or rendered purple billows**.
+- `CrudeStructureIndex` and `CraftingEraRegistry` **v2**: full proxy-art index, primitive farming/survival structures and ordered processing recipes; **not instantiated farms or model replacements**.
+- `EquipmentUpgrades`: single-stage level-2→50 upgrade plans for structures, vehicles and defenses with cost/time/era and upkeep escalation; **not world-entity upgrades or stored recipes**.
+- `FactionTradeNetworks`: different five-stage+ Unraveled freight metallurgy, Penitent multi-performer timed rites and Begotten living maturation products, all requiring independent base contributions for final endgame lots; **not transactional or authenticated trade**.
+- `SettlementSupplyBalance`: exhaustive 28-facility / ten-tower modeled inequality proving even optimistic local power and ammo plants cannot self-supply maximum defenses; **not an active power-grid simulation**.
+
+Next gates: consistent fine world/air coordinates, real miasma particle/cloud art and air-launched projectile blocking, verified character ownership and wilderness construction, actual planted crop states and industrial machines, founder-level upgrade transactions, physical convoy/lot receipts across streamed sectors, and full production/defense two-client tests.
+
+### Icon atlas integration: five committed economy sheets [ASSET FOUNDATION VERIFIED LOCALLY]
+
+All **five** October 2026 placeholder icon sheets have been sliced into **150 unique 128×128 RGBA PNGs**, archived in five tracked `assets/game/crafting/packs/*_sprites_only.zip` files, with matching `*_source.webp` visual sheet references. Committed `icons_index.csv` maps each item ID to its ZIP entry and SHA-256; `icons_manifest.json` adds pack integrity and grouped labels. `CraftingIconPacks` loads images by stable item ID, verifies SHA-256 and dimensions, and provides them directly for inventory/recipe/trade UIs; `tools/extract_crafting_icon_packs.py` expands verified individual PNGs for renderers that need loose files. Local **JDK 17-targeted** headless test passed for all 150; end-to-end integrated UI renders and game release packaging are **not yet verified**. The WebP sheets are reference previews; the full-resolution originals and labeled full-card slices are in the separately retained authoring package.
+
+Next UI slice: bind inventory, recipe selection, faction workstations and multi-base trade listings to `CraftingIconPacks.icon(id)`, with a readable separately drawn label. Next simulation slice: make new generic Unraveled/Penitent/Begotten materials physically obtainable through their real faction-specific guarded production chains, not by assuming that an indexed image grants an item.
 
 ## Phase P5 — Horror, traversal and production gameplay [PLANNED]
 

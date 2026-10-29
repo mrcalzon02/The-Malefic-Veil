@@ -1,0 +1,10 @@
+{
+  "publisher": "Immaculate Lift Studio",
+  "url": "https://immaculate-lift-studio.itch.io/psx-style-water-surface",
+  "retrieved": "2026-10-25",
+  "archive_sha256": "b474d439b0f0d406eedc5f5de6f77725be98e8f3fce85dcdd93533e9817e1f7b",
+  "license_basis": "Publisher explicitly marks shader MIT; downloaded archive contains no LICENSE file.",
+  "texture_excluded": "Demo sea texture is separately attributed; not imported, copied or redistributed.",
+  "adaptation": "Two independently scrolling quantized texture layers and noise-phase sinusoidal vertex displacement. Depth absorption, shoreline foam, Fresnel and refraction are original additions, not present in downloaded shader.",
+  "original_shader_sha256": "e31a58b0639a09f11664b42d0924bfcabfa8a3ba3db7923a2c7d53d103e61e88"
+}

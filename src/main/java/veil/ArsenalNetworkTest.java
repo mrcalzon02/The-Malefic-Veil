@@ -22,7 +22,7 @@ public final class ArsenalNetworkTest {
                 if(!h.world.canWalk(x-1.1,y))continue;p.x=x-1.1;p.y=y;p.angle=0;p.moveAt=h.time();if(h.reviewBuild(a.id,4).allowed()){placed=true;break;}
             }if(!placed)throw new AssertionError("No valid bench site");a.build(4);until(()->h.world.devices.stream().anyMatch(d->d.kind==4),"bench built through socket");
             var state=ArsenalSystemsTest.state(h);state.materials[1]=100;state.materials[2]=100;state.materials[3]=100;
-            a.arsenalFaction(1);until(()->a.arsenal().faction()==1,"faction acknowledged");a.arsenalCraft(32);until(()->a.arsenal().materials()[4]>0,"frame component crafted");a.arsenalCraft(33);until(()->a.arsenal().materials()[5]>0,"power cell crafted");a.arsenalCraft(9);
+            a.selectFaction(CharacterRoster.Faction.THE_PENITENT);until(()->a.arsenal().faction()==1,"faction acknowledged");a.arsenalCraft(32);until(()->a.arsenal().materials()[4]>0,"frame component crafted");a.arsenalCraft(33);until(()->a.arsenal().materials()[5]>0,"power cell crafted");a.arsenalCraft(9);
             until(()->(a.arsenal().owned()&(1L<<9))!=0&&a.arsenal().factionLocked(),"specialist weapon fabricated and faction locked");a.arsenalSelect(9);until(()->a.arsenal().selected()==9,"crafted weapon equipped");
             a.arsenalSelect(31);Thread.sleep(150);if(a.arsenal().selected()!=9)throw new AssertionError("Unowned weapon selected");
             System.out.println("PASS ArsenalNetworkTest: real two-client loot, ownership, damage, effects, bench, materials, faction and crafting");

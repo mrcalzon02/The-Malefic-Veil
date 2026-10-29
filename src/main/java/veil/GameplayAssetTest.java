@@ -28,7 +28,24 @@ public final class GameplayAssetTest {
     }
     public static void main(String[] ignored)throws Exception{
         GameplayMeshes lib=new GameplayMeshes();
-        check(lib.meshes().size()==19,"four heroes + enemy + two legacy weapons + seven pickups + five devices");
+        // Preserve every legacy gameplay model while accepting actual
+        // resource nodes and nine new static airframes in the same atlas.
+        java.util.Set<String> required=new java.util.HashSet<>();
+        Collections.addAll(required,GameplayMeshes.HERO);
+        Collections.addAll(required,GameplayMeshes.WEAPON);
+        Collections.addAll(required,GameplayMeshes.PICKUP);
+        Collections.addAll(required,GameplayMeshes.DEVICE);
+        required.add("enemy-walker");
+        required.addAll(java.util.List.of(
+            "resource-tree-broadleaf","resource-tree-conifer","resource-stone",
+            "resource-ore","resource-fiber","resource-edibles",
+            "resource-herbs","resource-water"));
+        for(var aircraft:AirPowerMeshes.specs())required.add(aircraft.id());
+        check(required.size()==86,"Registered gameplay mesh count changed unexpectedly");
+        check(lib.meshes().keySet().containsAll(required),
+            "No prior gameplay mesh may disappear during aircraft integration");
+        check(lib.meshes().size()>=required.size(),
+            "Static airframes and harvested-resource meshes must be registered");
         int triangles=0;
         for(var entry:lib.meshes().entrySet()){
             GlbMesh mesh=entry.getValue();int count=mesh.triangleCount();
@@ -49,15 +66,15 @@ public final class GameplayAssetTest {
         }
         check(changed>40,"mesh geometry never rasterized");
         check(lessVisible>20,"25%-opaque character did not alpha blend into the scene");
-        BufferedImage sheet=new BufferedImage(960,1200,BufferedImage.TYPE_INT_RGB);
+        BufferedImage sheet=new BufferedImage(960,1400,BufferedImage.TYPE_INT_RGB);
         Graphics2D g=sheet.createGraphics();
-        String[] gallery=new String[18];
+        String[] gallery=new String[21];
         System.arraycopy(GameplayMeshes.HERO,0,gallery,0,4);
         gallery[4]="enemy-walker";
         System.arraycopy(GameplayMeshes.WEAPON,0,gallery,5,2);
         System.arraycopy(GameplayMeshes.PICKUP,0,gallery,7,7);
-        System.arraycopy(GameplayMeshes.DEVICE,0,gallery,14,4);
-        for(int row=0;row<6;row++)for(int col=0;col<3;col++){
+        System.arraycopy(GameplayMeshes.DEVICE,0,gallery,14,7);
+        for(int row=0;row<7;row++)for(int col=0;col<3;col++){
             int index=row*3+col;
             String id=gallery[index];
             BufferedImage panel=new BufferedImage(320,200,BufferedImage.TYPE_INT_RGB);

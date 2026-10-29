@@ -24,11 +24,18 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
+      - name: Acquire verified GGBot CC0 car atlas source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/game/ggbot
+          curl -fL --retry 3 'https://opengameart.org/sites/default/files/psx_style_cars_by_ggbot_august2023.zip' -o assets/game/ggbot/psx-style-cars.zip
+          echo 'db67b0b0fbaa02454a5d000dc9ec1cc53f360e8f41ab44f3fb1c7e8f71e699e4  assets/game/ggbot/psx-style-cars.zip' | sha256sum -c -
       - name: Compile all Java 17 sources
         shell: bash
         run: |
           mkdir -p build/classes
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
       - name: City generation and geometry
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest
@@ -38,27 +45,146 @@ jobs:
       - name: Continental coastline, biome, road and plot topology
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ContinentLayoutTest
+      - name: Shared water SDK and real seeded ocean boundary
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.VeilOceanTest
+      - name: Water SDK regression WaterModuleTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterModuleTest
+      - name: Water SDK regression WaterEffectsTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterEffectsTest
+      - name: Water SDK regression WaterEditorModelTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterEditorModelTest
+      - name: Water SDK regression WaterShapesSnapTest
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WaterShapesSnapTest
+      - name: Host-owned LAN weather and late-join synchronization
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WeatherLanTest
       - name: Authoritative combat, regeneration, pickups, medicine, turrets, structures
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArenaSystemsTest
+      - name: Verify visible E interaction collects ammo on the real host
+        run: java -Djava.awt.headless=true -cp build/classes veil.PickupInteractionRangeTest
       - name: Import all 124 CC0 GLBs and render seeded district models
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.UrbanAssetTest
+      - name: Verify all original GGBot UVs, PNGs, vehicle placements and renderer
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.GGBotCarPackTest
+      - name: Dense Kenney city performance and source instancing benchmarks
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.UrbanPerformanceTest
       - name: Rig-independent PSX character, weapon, item and power-up render verification
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.GameplayAssetTest
-      - name: Original arsenal blockout GLB import verification
+      - name: Kenney modular city assembly and screenshot gate
         shell: bash
-        run: java -Djava.awt.headless=true -cp build/classes veil.ArsenalBlockoutTest
-      - name: Functional arsenal, fabrication, runtime animation and two-client replication
+        run: java -Djava.awt.headless=true -cp build/classes veil.KenneyCityAssemblyTest
+      - name: Lost NPC origin, lifetime and cooldown population tests
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.LostSpawnSitesTest
+      - name: Lost Drifter shiv windup, sidestep, LOS, protection and host wire
         shell: bash
         run: |
-          java -Djava.awt.headless=true -cp build/classes veil.ArsenalSystemsTest
-          java -Djava.awt.headless=true -cp build/classes veil.ArsenalAssetTest
-          java -Djava.awt.headless=true -cp build/classes veil.ArsenalNetworkTest
+          java -Djava.awt.headless=true -cp build/classes veil.LostArsenalTest
+          java -Djava.awt.headless=true -cp build/classes veil.LostBoneShivTest
+      - name: Two-resource truck cargo pickup damage and LAN recovery
+        shell: bash
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.CargoHaulageTest
+          java -Djava.awt.headless=true -cp build/classes veil.CampCargoUnloadTest
+          java -Djava.awt.headless=true -cp build/classes veil.CampStockpileIntegrationTest
+          java -Djava.awt.headless=true -cp build/classes veil.HostCheckpointTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactionWorksiteConstructionTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactionFirstProductionTest
+          java -Djava.awt.headless=true -cp build/classes veil.SecondEraFactionProductionTest
+          java -Djava.awt.headless=true -cp build/classes veil.PhysicalFacilityDependencyTest
+          java -Djava.awt.headless=true -cp build/classes veil.ConstructionFundingTest
+          java -Djava.awt.headless=true -cp build/classes veil.SteamEraProductionTest
+          java -Djava.awt.headless=true -cp build/classes veil.ElectricEraProductionTest
+          java -Djava.awt.headless=true -cp build/classes veil.ConveyorLogisticsTest
+          java -Djava.awt.headless=true -cp build/classes veil.ConveyorDirectionTest
+          java -Djava.awt.headless=true -cp build/classes veil.AutomaticFactoryFeedTest
+          java -Djava.awt.headless=true -cp build/classes veil.AutomationRepeatTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactorySelectionTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactoryOutputRoutingTest
+          java -Djava.awt.headless=true -cp build/classes veil.AutomaticSorterIntegrationTest
+          java -Djava.awt.headless=true -cp build/classes veil.AutomationEraFactionTest
+          java -Djava.awt.headless=true -cp build/classes veil.AutomationQueueTest
+          java -Djava.awt.headless=true -cp build/classes veil.AutomationPowerCompetitionTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactoryGridFairnessTest
+          java -Djava.awt.headless=true -cp build/classes veil.ConveyorInspectionTest
+          java -Djava.awt.headless=true -cp build/classes veil.ProductionOverviewTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactoryInspectionTest
+      - name: Atomic cargo v2 realm save and restart compatibility
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.CargoRealmPersistenceTest
+      - name: Backwards compatible V1 realm read and atomic V2 upgrade
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.V1RealmCompatibilityTest
+      - name: Wilderness resource regeneration and city immunity
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.WildernessResourcesTest
+      - name: Bounded hunger thirst, two bulk resources and crafting no-duplication
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.SurvivalCraftingTest
+      - name: Full early survival camp kit affordability and no-duplication
+        shell: bash
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.EarlyCampCraftingTest
+          java -Djava.awt.headless=true -cp build/classes veil.FieldWorkbenchRuntimeTest
+          java -Djava.awt.headless=true -cp build/classes veil.SurvivalNeedsIntegrationTest
+          java -Djava.awt.headless=true -cp build/classes veil.SurvivalPersistenceTest
+      - name: Seven-era industrial tech DAG and faction endgame recipe validation
+        shell: bash
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingEraRegistryTest
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingRecipeIndexTest
+          java -Djava.awt.headless=true -cp build/classes veil.FactionIndustrySeparationTest
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingEconomyCsvTest
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingCatalogExportTest
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingCatalogExport
+          test -s build/test-visuals/crafting-completion-catalog.csv
+          java -Djava.awt.headless=true -cp build/classes veil.CraftingIconPacksTest
+      - name: Industrial work-order cost, 24-7 restart, idempotency and incursion budget
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.IndustrialWorkstationTest
+      - name: Host-validated eating, drinking, crafted rations and real socket feedback
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.SurvivalConsumptionTest
+      - name: Full arsenal inventory loss on death, disarmed respawn and save/reconnect
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.ArsenalDeathInventoryTest
+      - name: RPG death/reset, 5-8 second grace, slow skills and protected hand crafting
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.CharacterProgressionTest
+      - name: Real dedicated hardcore socket, forced faction choice and permadeath restart
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.HardcoreHostingLanTest
+      - name: Absolute faction alliance and permanent hardcore-death RPG reset
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.FactionGroupHardcoreTest
+      - name: Kenney foliage and derelict vehicle collision verification
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.UrbanDressingTest
+      - name: Continental biome terrain mesh and vista screening
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.ContinentVistaTest
+      - name: Shared Kenney geometry and packed instance buffer invariants
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.UrbanInstanceBatchesTest
+      - name: The Lost and cast source registry invariants
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.PsxCastingAndLostTest
       - name: QoL gate for confirmed hits and obstacle-aware construction
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.QualityGateTest
+      - name: Preserve and quarantine old city structures without data loss
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.LegacyCitySaveMigrationTest
       - name: Spawn safety scoring and nonoffensive respawn protection
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.SpawnSafetyTest
@@ -68,20 +194,28 @@ jobs:
       - name: Real Swing renderer in headless mode
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.RenderSmokeTest
+      - name: Profile complete Swing PSX game frames, not just prop meshes
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.FullFramePerformanceTest
+      - name: World creation and restart persistence end-to-end
+        shell: bash
+        run: |
+          java -Djava.awt.headless=true -cp build/classes veil.WorldCreationConfigTest
+          java -Djava.awt.headless=true -cp build/classes veil.WorldCreationEndToEndTest
       - name: Assemble runnable jar
         shell: bash
         run: |
           echo 'Main-Class: veil.MaleficVeil' > build/manifest.mf
           jar cfm build/MaleficVeil.jar build/manifest.mf -C build/classes .
           jar uf build/MaleficVeil.jar -C assets/game kenney
-          jar uf build/MaleficVeil.jar -C assets/game arsenal
+          jar uf build/MaleficVeil.jar -C assets/game ggbot
           jar tf build/MaleficVeil.jar | grep 'kenney/retro-urban-kit-2.0.zip'
       - name: Validate self-contained runnable JAR model resources
         shell: bash
         run: |
           cd build
           java -Djava.awt.headless=true -cp MaleficVeil.jar veil.UrbanAssetTest
-          java -Djava.awt.headless=true -cp MaleficVeil.jar veil.ArsenalAssetTest
+          java -Djava.awt.headless=true -cp MaleficVeil.jar veil.GGBotCarPackTest
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -90,4 +224,8 @@ jobs:
             build/MaleficVeil.jar
             build/test-visuals/arena-screenshot.png
             build/test-visuals/gameplay-models.png
+            build/test-visuals/crafting-completion-catalog.csv
+            build/test-visuals/kenney-assembled-city.png
+            build/test-visuals/urban-performance.csv
+            build/test-visuals/full-frame-performance.csv
           if-no-files-found: warn

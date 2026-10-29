@@ -9,10 +9,12 @@ import java.util.*;
  */
 public final class Vehicles {
     public record State(int id,double x,double y,double heading,double speed,double fuel,int hp,int driverId) {}
+    public record Load(int carId,String resourceType,String model, int hp) {}
     private static final class Car {
         final int id;
         double x,y,heading,speed,fuel=100,throttle,steer;
         int hp=200,driverId=-1;
+        String cargo;
         Car(int id,double x,double y,double heading){this.id=id;this.x=x;this.y=y;this.heading=heading;}
         State state(){return new State(id,x,y,heading,speed,fuel,hp,driverId);}
     }
@@ -45,10 +47,61 @@ public final class Vehicles {
     public synchronized State state(int index){
         return index>=0&&index<cars.size()?cars.get(index).state():null;
     }
+    /** Two source-backed truck-cargo appearances, one load per vehicle. */
+    public synchronized Load cargo(int carId){
+        if(carId<0||carId>=cars.size())return null;
+        Car car=cars.get(carId);
+        return new Load(car.id,car.cargo,
+            car.cargo==null?(car.id%2==0?"truck-green":"truck-grey"):
+            (car.id%2==0?"truck-green-cargo":"truck-grey-cargo"),car.hp);
+    }
+    /** Server only: cannot attach cargo while moving, occupied, destroyed, or full. */
+    public synchronized boolean loadCargo(int carId,String type){
+        if(carId<0||carId>=cars.size()||type==null||
+            (!type.equals("METAL_STOCK")&&!type.equals("MACHINE_PARTS")))return false;
+        Car car=cars.get(carId);
+        if(car.hp<=80||car.cargo!=null||car.driverId>=0||Math.abs(car.speed)>.10)return false;
+        car.cargo=type;return true;
+    }
+    /** Server only: returning a cargo string consumes the truck load exactly once. */
+    public synchronized String takeCargo(int carId){
+        if(carId<0||carId>=cars.size())return null;
+        Car car=cars.get(carId);
+        if(Math.abs(car.speed)>.1||car.driverId>=0)return null;
+        String item=car.cargo;car.cargo=null;return item;
+    }
+    /** Emergency cargo ejection on damage, including while the driver is in the cab. */
+    synchronized String ejectCargo(int carId){
+        if(carId<0||carId>=cars.size())return null;
+        Car car=cars.get(carId);
+        String result=car.cargo;car.cargo=null;return result;
+    }
+    /** Trusted persistence replay only, after positions and health have been validated. */
+    synchronized boolean restoreCargo(int carId,String type){
+        if(carId<0||carId>=cars.size())return false;
+        Car car=cars.get(carId);
+        if(type==null){car.cargo=null;return true;}
+        if(!type.equals("METAL_STOCK")&&!type.equals("MACHINE_PARTS")||
+            car.hp<=CARGO_MIN_HP||car.driverId>=0||car.cargo!=null)return false;
+        car.cargo=type;return true;
+    }
+    private static final int CARGO_MIN_HP=80;
+    /** Host-controlled health damage; never allows a client-authored HP value. */
+    public synchronized boolean damageCar(int carId,int amount){
+        if(carId<0||carId>=cars.size()||amount<1||amount>200)return false;
+        Car car=cars.get(carId);
+        if(car.hp<=0)return false;
+        car.hp=Math.max(0,car.hp-amount);
+        if(car.hp==0){car.throttle=0;car.speed=0;car.driverId=-1;}
+        return true;
+    }
     private boolean clear(double x,double y,Car self){
         if(!Double.isFinite(x)||!Double.isFinite(y))return false;
         double r=.48;
-        if(!world.canWalk(x-r,y-r)||!world.canWalk(x+r,y-r)||
+        // A small post can intersect the truck's centre while all four
+        // corner probes remain clear. Persistence validates the centre too;
+        // reject such positions at the authoritative collider itself.
+        if(!world.canWalk(x,y)||!world.canWalk(x-r,y-r)||!world.canWalk(x+r,y-r)||
            !world.canWalk(x-r,y+r)||!world.canWalk(x+r,y+r))return false;
         for(Car other:cars)if(other!=self&&other.hp>0&&Math.hypot(x-other.x,y-other.y)<1.5)return false;
         for(World.Device d:world.devices)if(d.hp>0&&Math.hypot(x-d.x,y-d.y)<1.05)return false;
@@ -104,7 +157,11 @@ public final class Vehicles {
             double accel=car.throttle>=0?5.2:6.5;
             car.speed+=car.throttle*accel*dt;
             if(car.throttle==0)car.speed*=Math.exp(-2.0*dt);
-            car.speed=Math.max(-3,Math.min(8,car.speed));
+            // A loaded cargo truck is a slow, high-value convoy, not an
+            // ordinary getaway car. Unladen vehicles retain their old limits.
+            double forwardLimit=car.cargo==null?8.0:3.2;
+            double reverseLimit=car.cargo==null?-3.0:-1.5;
+            car.speed=Math.max(reverseLimit,Math.min(forwardLimit,car.speed));
             if(car.fuel<=0)car.speed*=Math.exp(-1.7*dt);
             if(Math.abs(car.speed)<.03)car.speed=0;
             double steer=car.steer*Math.min(1,Math.abs(car.speed)/2.0)*dt*1.05*
@@ -129,7 +186,7 @@ public final class Vehicles {
             return false;
         Car car=cars.get(id);
         car.x=x;car.y=y;car.heading=heading;car.fuel=fuel;car.hp=hp;
-        car.speed=0;car.driverId=-1;car.throttle=0;car.steer=0;
+        car.speed=0;car.driverId=-1;car.throttle=0;car.steer=0;car.cargo=null;
         return true;
     }
 }

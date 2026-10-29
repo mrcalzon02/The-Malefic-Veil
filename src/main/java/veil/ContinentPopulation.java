@@ -16,12 +16,16 @@ public final class ContinentPopulation {
     private final ContinentLayout world;
     private final List<PlayerSpawn> players=new ArrayList<>();
     private final List<NpcSpawn> npcs=new ArrayList<>();
+    private final ContinentVehicleSites vehicleSites;
     public ContinentPopulation(ContinentLayout world){
         this.world=Objects.requireNonNull(world);
         createPlayerSites();createNpcs();
+        vehicleSites=new ContinentVehicleSites(world,players,npcs);
     }
     public List<PlayerSpawn> playerSpawns(){return List.copyOf(players);}
     public List<NpcSpawn> npcSpawns(){return List.copyOf(npcs);}
+    /** Immutable discoverable vehicle sites; not runtime-instantiated cars. */
+    public List<ContinentVehicleSites.Site> vehicleSpawns(){return vehicleSites.sites();}
     private long roll(int x,int y,int salt){
         return World.mix(world.seed()^((long)x*0x9e3779b97f4a7c15L)^
             ((long)y*0x632be59bd9b4e019L)^(salt*7919L));
@@ -107,6 +111,7 @@ public final class ContinentPopulation {
             return new BuildCheck(false,"OUT_OF_BOUNDS");
         for(int px=x-clearance;px<x+w+clearance;px++)
             for(int py=y-clearance;py<y+h+clearance;py++){
+                if(world.cityProtected(px,py))return new BuildCheck(false,"CITY_PROTECTED");
                 if(!world.land(px,py))return new BuildCheck(false,"WATER");
                 if(world.worldStructureAt(px,py))return new BuildCheck(false,"WORLD_STRUCTURE");
                 if(!world.buildableGround(px,py))return new BuildCheck(false,"TERRAIN");

@@ -88,6 +88,7 @@ jobs:
             grep -qx 'crafting/packs/begotten_biology_sprites_only.zip'
           java -cp build/package/MaleficVeil.jar veil.gpu.GpuAudioBus
           java -cp build/package/MaleficVeil.jar veil.gpu.GpuClientSettingsTest
+          java -cp build/package/MaleficVeil.jar veil.gpu.GpuScreenLayoutTest
           java -cp build/package/MaleficVeil.jar veil.gpu.PsxHorrorUiSource
           java -Djava.awt.headless=true -cp build/package/MaleficVeil.jar \
             veil.gpu.PsxHorrorSwingSkin
@@ -106,6 +107,9 @@ jobs:
             timeout 140s java -jar build/package/MaleficVeil.jar --frontend-smoke |
               tee build/test-visuals/release-frontend.log
           grep -q 'PASS GPU_UNIFIED_FRONTEND_MENU' build/test-visuals/release-frontend.log
+          grep -q 'PASS GPU_ULTRAWIDE_MENU_LAYOUT' build/test-visuals/release-frontend.log
+          grep -q 'PASS GPU_LEFT_LOADING_MENU' build/test-visuals/release-frontend.log
+          test -s build/test-visuals/gpu-frontend-loading-left.png
           grep -q 'VEIL_ORIGINAL_UI_ART_READY' build/test-visuals/release-frontend.log
           grep -q 'PASS GPU_FRAME_PRESENTATION_ORIENTATION' build/test-visuals/release-frontend.log
           test -s build/test-visuals/gpu-unified-front-end.png

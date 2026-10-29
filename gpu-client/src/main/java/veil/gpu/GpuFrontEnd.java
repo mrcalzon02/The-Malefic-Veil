@@ -742,10 +742,24 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             switch(frames){
                 case 10 -> {
                     backdrop.assertScreenOrientation();
+                    if(backdrop.frameWidth()!=GpuScreenLayout.width(
+                        Gdx.graphics.getWidth(),Gdx.graphics.getHeight()))
+                        throw new IllegalStateException("Incorrect widescreen launcher viewport");
                     capture("gpu-frontend-home");
+                }
+                case 14 -> Gdx.graphics.setWindowedMode(1000,420);
+                case 19 -> {
+                    int expected=GpuScreenLayout.width(1000,420);
+                    if(backdrop.frameWidth()!=expected)
+                        throw new IllegalStateException("Widescreen resize lost: "+
+                            backdrop.frameWidth()+" expected="+expected);
+                    backdrop.assertScreenOrientation();
+                    System.out.println("PASS GPU_ULTRAWIDE_MENU_LAYOUT frame="+
+                        expected+"x400 panel=left");
                 }
                 case 20 -> gotoScreen(Screen.VIDEO);
                 case 24 -> capture("gpu-frontend-video");
+                case 26 -> Gdx.graphics.setWindowedMode(1280,720);
                 case 28 -> gotoScreen(Screen.AUDIO);
                 case 32 -> capture("gpu-frontend-audio");
                 case 36 -> gotoScreen(Screen.CONTROLS);
@@ -761,7 +775,15 @@ public final class GpuFrontEnd extends ApplicationAdapter {
                     portText="7777";
                     System.out.println("PASS GPU_FRONTEND_INVALID_JOIN_REJECTED");
                 }
-                case 58 -> gotoScreen(Screen.HOME);
+                case 58 -> gotoScreen(Screen.CONNECTING);
+                case 62 -> {
+                    if(screen!=Screen.CONNECTING)
+                        throw new IllegalStateException("Expected left anchored loading menu");
+                    capture("gpu-frontend-loading-left");
+                    System.out.println("PASS GPU_LEFT_LOADING_MENU frame="+
+                        backdrop.frameWidth()+"x400");
+                }
+                case 63 -> gotoScreen(Screen.HOME);
                 case 65 -> {
                     if(skin.sourcedDraws()<150)
                         throw new IllegalStateException("Original source menu skin absent");

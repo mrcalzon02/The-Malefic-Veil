@@ -1,0 +1,133 @@
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\javac.exe', '--release', '17', '-encoding', 'UTF-8', '-d', 'build/classes', '@C:\\Users\\Admin\\Documents\\ChatGPT\\Phasmaphobia alike\\multiplayer\\The-Malefic-Veil\\build\\network-checks\\sources.txt']
+Note: src\main\java\veil\VeilWeather.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.ArsenalDeathInventoryTest']
+PASS ArsenalDeathInventoryTest: normal/hardcore wipe, disarmed respawn, persistence, no ghost firing, legitimate recovery
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SurvivalConsumptionTest']
+PASS SurvivalConsumptionTest: cooked rations, safe water, atomic need updates and host socket denial
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.WorldSelfTest']
+PASS seed 0: 14762 open tiles, spawns connected
+PASS seed 1: 15095 open tiles, spawns connected
+PASS seed 5: 14368 open tiles, spawns connected
+PASS seed 42: 14551 open tiles, spawns connected
+PASS seed 20261020: 14769 open tiles, spawns connected
+PASS seed -1: 14673 open tiles, spawns connected
+PASS seed 9223372036854775807: 14673 open tiles, spawns connected
+ALL WORLD INVARIANTS PASS
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.CityLayoutTest']
+PASS plot seed 0: 167 road tiles, 150 plots, 48 standard lots
+PASS plot seed 1: 163 road tiles, 169 plots, 46 standard lots
+PASS plot seed -1: 150 road tiles, 151 plots, 52 standard lots
+PASS plot seed 42: 145 road tiles, 150 plots, 56 standard lots
+PASS plot seed 567: 159 road tiles, 160 plots, 45 standard lots
+PASS plot seed 20261020: 161 road tiles, 161 plots, 47 standard lots
+PASS plot seed -9223372036854775808: 167 road tiles, 150 plots, 48 standard lots
+PASS plot seed 9223372036854775807: 150 road tiles, 151 plots, 52 standard lots
+PASS CITY LAYOUT: 104 variants; seeded tiling, graph, and connectivity
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.ArenaSystemsTest']
+PASS ArenaSystemsTest: 49 assertions across PvP, immutable city, historic device effects, respawn
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.PickupInteractionRangeTest']
+PASS PICKUP_INTERACTION_HOST 1.5m aim + LOS + single-grant
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.InteractionFocusTest']
+PASS InteractionFocusTest: geometry, front aim, occlusion, compact E prompt
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SurvivalCraftingTest']
+PASS ArsenalIntegrationTest: 32 originals, 8 loot, 24 host-gated crafts, 3 palettes and 32 moving meshes
+PASS SurvivalCraftingTest: source gathering, bulk-gated base crafting and survival
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SurvivalNeedsIntegrationTest']
+PASS SurvivalNeedsIntegrationTest: independent need cadence, real damage, authorized recovery, protection and inventory-safe death
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SurvivalPersistenceTest']
+PASS SurvivalPersistenceTest: V2 inventories and needs, no restart duplication, physical death loss, V1 compatibility
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.CraftingEraRegistryTest']
+PASS CraftingEraRegistryTest: 69 facilities 62 processes 7 eras, separate all-faction logistics and guarded three-branch endgame
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.IndustrialWorkstationTest']
+PASS IndustrialWorkstationTest: host-side reservations, damage/power stop, crash replay, single output and gated flesh-incursion industrial costs
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.CargoHaulageTest']
+PASS CargoHaulageTest seed=42 yards=24 loaded=METAL_STOCK recovered=1
+PASS CargoHaulageTest seed=887766 yards=24 loaded=METAL_STOCK recovered=1
+PASS CargoHaulageTest seed=20261020 yards=24 loaded=METAL_STOCK recovered=1
+PASS CargoHaulageTest: authoritative two-resource loaded truck LAN pickup
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.CampCargoUnloadTest']
+PASS CampCargoUnloadTest: real camp, bounded material delivery, no remote/unowned/replayed cargo, crafted output, persisted account and truck
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.CampStockpileIntegrationTest']
+PASS CampStockpileIntegrationTest: built permanent crate, real resource debit/withdrawal, truck unload, owner permissions and V4 persistence
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.HostCheckpointTest']
+Primary host ledger rejected; restored previous complete pair
+PASS HostCheckpointTest: two ledgers committed together, stage ignored, previous pair recovery, no duplicated material or silent reset
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.FactionWorksiteConstructionTest']
+PASS faction first construction THE_UNRAVELED: unraveled-scrap-outpost
+PASS faction first construction THE_PENITENT: penitent-votive-altar
+PASS faction first construction THE_BEGOTTEN: begotten-brood-nest
+PASS FactionWorksiteConstructionTest: material-receipted faction-only factories, 3 unique meshes and durable identities
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.FactionFirstProductionTest']
+PASS THE_UNRAVELED unraveled-recover-scrap -> SCRAP_METAL (300 s, independent progress and durable inventory)
+PASS THE_PENITENT penitent-weave-ritual -> RITUAL_CLOTH (360 s, independent progress and durable inventory)
+PASS THE_BEGOTTEN begotten-mix-slurry -> NUTRIENT_SLURRY (420 s, independent progress and durable inventory)
+PASS FactionFirstProductionTest: three authentic independent E1 factory processes
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SecondEraFactionProductionTest']
+PASS distinct second era: THE_UNRAVELED unraveled-make-bearings
+PASS distinct second era: THE_PENITENT penitent-engrave-reliquary
+PASS distinct second era: THE_BEGOTTEN begotten-culture-spores
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.PhysicalFacilityDependencyTest']
+PASS PhysicalFacilityDependencyTest: 14 support sites, split owned construction payments, denied partial/foreign costs, persisted paid forge and checkpoint
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SteamEraProductionTest']
+PASS independent steam industry: THE_UNRAVELED -> PRESSURE_TANK; physical fuel, shaft outage, V7 recovery
+PASS independent steam industry: THE_PENITENT -> BRONZE_CENSER; physical fuel, shaft outage, V7 recovery
+PASS independent steam industry: THE_BEGOTTEN -> CHITIN_SHARDS; physical fuel, shaft outage, V7 recovery
+PASS SteamEraProductionTest: 3 original E3 factions powered by audited shared utility
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.ElectricEraProductionTest']
+PASS THE_UNRAVELED E4 unraveled-calibrate-sensors powered and recoverable
+PASS THE_PENITENT E4 penitent-score-hymn powered and recoverable
+PASS THE_BEGOTTEN E4 begotten-grow-membrane powered and recoverable
+PASS ElectricEraProductionTest: E4 genuinely powered distinct factions
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.ConveyorLogisticsTest']
+PASS ConveyorLogisticsTest: powered west-to-east stock routing, unauthorized programming blocked, V9 replay safe
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.AutomaticSorterIntegrationTest']
+PASS AutomaticSorterIntegrationTest: powered sorter 2x throughput, damage downgrade, persistent stock and no replay
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.AutomationEraFactionTest']
+PASS THE_UNRAVELED unraveled-defense-scanner -> RELAY_BOX
+PASS THE_PENITENT penitent-sanctify-shell -> CONSECRATED_SHELL
+PASS THE_BEGOTTEN begotten-pulse-organ -> ORGAN_CORE
+PASS AutomationEraFactionTest: three costed distinct advanced manufacturing spines
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.AutomationQueueTest']
+PASS AutomationQueueTest: two paid batches, one pending, three V10 checkpoints, no duplicated inputs
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.CityLootEconomyTest']
+PASS CityLootEconomyTest
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SettlementSustenanceTest']
+PASS SettlementSustenanceTest
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.LoadedConvoyRiskTest']
+PASS LoadedConvoyRiskTest
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.ReleaseCatalogTest']
+PASS ReleaseCatalogTest
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.DesktopUpdaterTest']
+2026-10-28T23:55:31.156944400Z RECOVERED interrupted update transaction (BACKUP)
+2026-10-28T23:55:31.167011200Z RECOVERED interrupted update transaction (INSTALL)
+PASS DesktopUpdaterTest
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.DesktopDiagnosticsTest']
+2026-10-28T23:55:31.819544800Z pid=1960 TEST_START_STAGE
+2026-10-28T23:55:31.838814700Z pid=1960 TEST_SECOND_STAGE
+PASS DesktopDiagnosticsTest
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.GGBotCarPackTest']
+PASS GGBotCarPackTest appearances=39 totalFaces=16736 seededCarInstances=34 KenneyTrucks=40 coloredPixels=12935 distinctColors=1804
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.WorldCreationConfigTest']
+PASS WorldCreationConfigTest
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.WorldCreationEndToEndTest']
+PASS WorldCreationEndToEndTest create-save-restart-join
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.LanSmokeTest']
+PASS LanSmokeTest: host PvP, pickups, city-wide build denial, legacy structure replication/effects
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.RenderSmokeTest']
+PASS RenderSmokeTest: 218 visible colors, 40594 PNG bytes
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'hbnet.HbnetTest', 'local']
+PASS local-only hbnet cases=39; TLS socket acceptance explicitly NOT RUN
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'hbnet.PrivacyUiTest']
+PASS PrivacyUiTest: randomized labels, endpoint, port, key, fingerprint, masked paste backing, accessibility and OFF-to-ON existing-widget checks
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'hbnet.HbnetTest']
+Exception in thread "main" java.io.IOException: Connection unavailable (NET-04)
+	at hbnet.Hbnet.failure(Hbnet.java:27)
+	at hbnet.Hbnet$Client.connect(Hbnet.java:239)
+	at hbnet.HbnetTest.main(HbnetTest.java:50)
+COMMAND ['C:\\Program Files\\Java\\jdk-17\\bin\\java.exe', '-Djava.awt.headless=true', '-ea', '-cp', 'build/classes', 'veil.SecureLanIntegrationTest']
+Exception in thread "main" java.io.IOException: Connection unavailable (NET-04)
+	at hbnet.Hbnet.failure(Hbnet.java:27)
+	at hbnet.Hbnet$Client.connect(Hbnet.java:239)
+	at veil.NetLink.<init>(NetLink.java:143)
+	at veil.SecureLanIntegrationTest.main(SecureLanIntegrationTest.java:19)

@@ -121,27 +121,29 @@ public final class NetLink implements AutoCloseable {
     public volatile ArenaSystems.FactoryInspection factoryInspection;
     public volatile ArenaSystems.ConveyorInspection conveyorInspection;
     public volatile ArenaSystems.ProductionOverview productionOverview;
+    private record Greeting(BufferedReader reader,PrintWriter writer,int id,long seed){}
+    private static Greeting greet(Socket socket,String host,int port,boolean legacy)throws IOException{
+        try{
+            socket.setSoTimeout(4000);
+            BufferedReader reader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter writer=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
+            String hello=hbnet.Lines.read(reader,16384);String[] parts=hello==null?new String[0]:hello.split("\\|");
+            if(parts.length!=4||!parts[0].equals("WELCOME")||!parts[3].equals("3"))throw hbnet.Hbnet.failure();
+            int id=Integer.parseInt(parts[1]);long seed=Long.parseLong(parts[2]);
+            if(id<1)throw hbnet.Hbnet.failure();
+            if(legacy)writer.println("AUTH|"+PlayerIdentity.forServer(host,port));
+            if(writer.checkError())throw hbnet.Hbnet.failure();socket.setSoTimeout(0);return new Greeting(reader,writer,id,seed);
+        }catch(IOException|RuntimeException failed){try{socket.close();}catch(IOException ignored){}throw hbnet.Hbnet.failure();}
+    }
     private void overflow(){connected=false;try{if(socket!=null)socket.close();}catch(IOException ignored){}}
     public NetLink(String host,int port)throws IOException {
         this(host,port,null);
     }
     public NetLink(String host,int port,hbnet.Hbnet.Client transport)throws IOException {
         socket=transport==null?new Socket():transport.connect(host,port);
-        if(transport==null)socket.connect(new InetSocketAddress(hbnet.Hbnet.lanAddress(host),port),4000);
-        // A TCP peer can accept and then never send WELCOME. Bound the
-        // handshake too, or cancel/back leaves a stuck background client.
-        socket.setSoTimeout(4000);
-        BufferedReader reader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        writer=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
-        String hello=hbnet.Lines.read(reader,16384);
-        socket.setSoTimeout(0);
-        String[] parts=hello==null?new String[0]:hello.split("\\|");
-        if(parts.length!=4||!parts[0].equals("WELCOME")||!parts[3].equals("3"))
-            throw new IOException("Unsupported or invalid LAN protocol");
-        try{id=Integer.parseInt(parts[1]);seed=Long.parseLong(parts[2]);}
-        catch(NumberFormatException e){throw new IOException("Malformed host greeting",e);}
-        if(transport==null)writer.println("AUTH|"+PlayerIdentity.forServer(host,port));
-        if(writer.checkError())throw new IOException("Authentication greeting not sent");
+        if(transport==null)try{socket.connect(new InetSocketAddress(hbnet.Hbnet.lanAddress(host),port),4000);}catch(IOException|RuntimeException failed){try{socket.close();}catch(IOException ignored){}throw hbnet.Hbnet.failure();}
+        Greeting greeting=greet(socket,host,port,transport==null);
+        BufferedReader reader=greeting.reader();writer=greeting.writer();id=greeting.id();seed=greeting.seed();
         Thread t=new Thread(()->{
             String line;
             try{

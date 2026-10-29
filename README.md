@@ -91,3 +91,6 @@ Project-authorized GitHub Actions compile and test on Windows/Linux; other repos
 ## Original 32-weapon arsenal — integration
 
 Restored from [arsenal-prototypes](https://github.com/mrcalzon02/The-Malefic-Veil/tree/arsenal-prototypes): eight shared loot guns (Vesper through Furnace Organ), 24 tiered faction-fabricated weapons (Hailstorm through Veilbreaker), complete authored working meshes/GLBs, timed primary and alternate host combat, component/bench progression, and runtime faction material palettes. Manufacturers use the game's permanent Unraveled/Penitent/Begotten enrollment rather than the old Foundry/Lumen/Veil fabrication picker. [Full weapon wiki](wiki/Weapons.md). Model reshaping and final sound remain future work.
+
+
+Local-first multiplayer implementation (2026-10-28): [working slices and unfinished gates](docs/network/LOCAL_FIRST_MULTIPLAYER.md), [dedicated commands](docs/network/DEDICATED_SERVER.md), and [actual test receipts](docs/network/TEST_RECEIPTS.md). Strict TLS game acceptance is currently blocked by certificate-pin rejection in the local test environment; this change is not an Internet-ready multiplayer release.

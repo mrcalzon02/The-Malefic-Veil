@@ -36,3 +36,22 @@ Physical Windows↔Windows/Linux Ethernet/Wi-Fi; NAT-forwarded separate-network 
 - `delivery.log` SHA-256 `b76a84da0ab49146794902d897a01def372ae6676a9b27edc279650fb6e82f72`
 - `processes.json` SHA-256 `ceb74bd78ec69bc84d4ed661582ba534327109f0849dac422cb6f20a87698801`
 - `gpu-build-final.log` SHA-256 `218d331b0027ebd69c56b54263fd87e02ae5669fdb70f4948107ee339d8cd72c`
+
+## Verification after concurrent-main reconciliation
+
+Base after preserving newer main: `18abee13b4aa67ee6bc4ba0e4aa1a99fd95638b4`. Recompiled and reran the affected suites: **39 test invocations passed, 2 failed**, with unchanged strict certificate-pin failures. Exact commands/durations are in [reconciled-final.json](receipts/reconciled-final.json). No force push was used.
+
+The reconciled native GPU Maven build also passed: [log](receipts/gpu-reconciled.log).
+
+
+## Exact-byte evidence check
+
+- `delivery.json` SHA-256 `b53a71df7e6f56433bc899fe8f9c42a38d0b23ed1c05c561afbdf92b9c1f144d`
+- `delivery.log` SHA-256 `b76a84da0ab49146794902d897a01def372ae6676a9b27edc279650fb6e82f72`
+- `gpu-build-final.log` SHA-256 `218d331b0027ebd69c56b54263fd87e02ae5669fdb70f4948107ee339d8cd72c`
+- `gpu-reconciled.log` SHA-256 `b445ea03fec7e042248f365e89930e93fb9f32656cbffcd65ebbbef3bb65273c`
+- `processes.json` SHA-256 `ceb74bd78ec69bc84d4ed661582ba534327109f0849dac422cb6f20a87698801`
+- `reconciled-final.json` SHA-256 `3248bb7bcf5ac111b1b5e45a04557b6f06c8cbb907b6e732e049da6c02c984b7`
+- `reconciled-final.log` SHA-256 `9a179dc44f2c04e53a5be7d0681f7a08ccf8b27ae6e50aeeaea863453f7ccd4c`
+
+Source parity uses UTF-8/LF Git-blob canonicalization so Windows checkout line endings cannot create false source drift; all three copies were compared and the checksummed verifier passed.

@@ -1,0 +1,514 @@
+{
+  "base": "18abee13b4aa67ee6bc4ba0e4aa1a99fd95638b4",
+  "platform": "nt",
+  "results": [
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\javac.exe",
+        "--release",
+        "17",
+        "-encoding",
+        "UTF-8",
+        "-d",
+        "build/classes",
+        "@C:\\Users\\Admin\\Documents\\ChatGPT\\Phasmaphobia alike\\multiplayer\\The-Malefic-Veil\\build\\network-checks\\sources.txt"
+      ],
+      "exit": 0,
+      "seconds": 3.5
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.ArsenalDeathInventoryTest"
+      ],
+      "exit": 0,
+      "seconds": 0.344
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SurvivalConsumptionTest"
+      ],
+      "exit": 0,
+      "seconds": 0.515
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.WorldSelfTest"
+      ],
+      "exit": 0,
+      "seconds": 0.594
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.CityLayoutTest"
+      ],
+      "exit": 0,
+      "seconds": 0.172
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.ArenaSystemsTest"
+      ],
+      "exit": 0,
+      "seconds": 0.313
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.PickupInteractionRangeTest"
+      ],
+      "exit": 0,
+      "seconds": 0.218
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.InteractionFocusTest"
+      ],
+      "exit": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SurvivalCraftingTest"
+      ],
+      "exit": 0,
+      "seconds": 0.422
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SurvivalNeedsIntegrationTest"
+      ],
+      "exit": 0,
+      "seconds": 0.312
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SurvivalPersistenceTest"
+      ],
+      "exit": 0,
+      "seconds": 0.328
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.CraftingEraRegistryTest"
+      ],
+      "exit": 0,
+      "seconds": 0.094
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.IndustrialWorkstationTest"
+      ],
+      "exit": 0,
+      "seconds": 0.109
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.CargoHaulageTest"
+      ],
+      "exit": 0,
+      "seconds": 0.516
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.CampCargoUnloadTest"
+      ],
+      "exit": 0,
+      "seconds": 0.437
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.CampStockpileIntegrationTest"
+      ],
+      "exit": 0,
+      "seconds": 0.438
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.HostCheckpointTest"
+      ],
+      "exit": 0,
+      "seconds": 0.797
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.FactionWorksiteConstructionTest"
+      ],
+      "exit": 0,
+      "seconds": 0.719
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.FactionFirstProductionTest"
+      ],
+      "exit": 0,
+      "seconds": 1.14
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SecondEraFactionProductionTest"
+      ],
+      "exit": 0,
+      "seconds": 1.406
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.PhysicalFacilityDependencyTest"
+      ],
+      "exit": 0,
+      "seconds": 0.813
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SteamEraProductionTest"
+      ],
+      "exit": 0,
+      "seconds": 1.266
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.ElectricEraProductionTest"
+      ],
+      "exit": 0,
+      "seconds": 1.406
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.ConveyorLogisticsTest"
+      ],
+      "exit": 0,
+      "seconds": 0.656
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.AutomaticSorterIntegrationTest"
+      ],
+      "exit": 0,
+      "seconds": 0.688
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.AutomationEraFactionTest"
+      ],
+      "exit": 0,
+      "seconds": 1.39
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.AutomationQueueTest"
+      ],
+      "exit": 0,
+      "seconds": 0.922
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.CityLootEconomyTest"
+      ],
+      "exit": 0,
+      "seconds": 0.25
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SettlementSustenanceTest"
+      ],
+      "exit": 0,
+      "seconds": 0.25
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.LoadedConvoyRiskTest"
+      ],
+      "exit": 0,
+      "seconds": 0.188
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.ReleaseCatalogTest"
+      ],
+      "exit": 0,
+      "seconds": 0.734
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.DesktopUpdaterTest"
+      ],
+      "exit": 0,
+      "seconds": 0.812
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.DesktopDiagnosticsTest"
+      ],
+      "exit": 0,
+      "seconds": 0.172
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.GGBotCarPackTest"
+      ],
+      "exit": 0,
+      "seconds": 1.078
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.WorldCreationConfigTest"
+      ],
+      "exit": 0,
+      "seconds": 0.141
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.WorldCreationEndToEndTest"
+      ],
+      "exit": 0,
+      "seconds": 0.703
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.LanSmokeTest"
+      ],
+      "exit": 0,
+      "seconds": 5.156
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.RenderSmokeTest"
+      ],
+      "exit": 0,
+      "seconds": 2.266
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "hbnet.HbnetTest",
+        "local"
+      ],
+      "exit": 0,
+      "seconds": 2.484
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "hbnet.PrivacyUiTest"
+      ],
+      "exit": 0,
+      "seconds": 1.594
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "hbnet.HbnetTest"
+      ],
+      "exit": 1,
+      "seconds": 2.5
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Java\\jdk-17\\bin\\java.exe",
+        "-Djava.awt.headless=true",
+        "-ea",
+        "-cp",
+        "build/classes",
+        "veil.SecureLanIntegrationTest"
+      ],
+      "exit": 1,
+      "seconds": 1.0
+    }
+  ],
+  "log_sha256": "9a179dc44f2c04e53a5be7d0681f7a08ccf8b27ae6e50aeeaea863453f7ccd4c"
+}

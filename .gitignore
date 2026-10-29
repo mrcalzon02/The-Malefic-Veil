@@ -19,3 +19,6 @@ room.secret
 server.p12
 room.verifier*
 invitation.secret
+
+/gpu-client/target/
+/logs/

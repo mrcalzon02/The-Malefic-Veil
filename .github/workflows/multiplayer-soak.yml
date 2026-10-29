@@ -25,7 +25,12 @@ jobs:
       - name: Compile host and all test clients
         run: |
           mkdir -p build/classes
-          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/hbnet/*.java src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
+          javac --release 17 -encoding UTF-8 -d build/classes src/main/java/hbnet/*.java src/test/java/hbnet/*.java src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
+      - name: Strict private transport and presentation acceptance
+        run: |
+          timeout 60s java -Djava.awt.headless=true -cp build/classes hbnet.HbnetTest
+          timeout 30s java -Djava.awt.headless=true -cp build/classes hbnet.PrivacyUiTest
+          timeout 60s java -Djava.awt.headless=true -cp build/classes veil.SecureLanIntegrationTest
       - name: Repeated independent host/game startup and combat
         run: |
           set -eu

@@ -40,6 +40,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
     private int selection;
     private final Map<String,Texture> textures=new LinkedHashMap<>();
     private final Map<String,NinePatch> patches=new HashMap<>();
+    private final TextureRegion[][] fileRegions=new TextureRegion[4][];
     private BitmapFont packFont;
 
     public PsxHorrorMenu(boolean startImmediately){
@@ -155,6 +156,12 @@ public final class PsxHorrorMenu implements AutoCloseable {
             throw new IllegalStateException("Original file icon atlas dimensions changed");
         fileAtlas.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
         textures.put("veil_file_icons",fileAtlas);
+        for(int row=0;row<4;row++){
+            int count=row<2?12:row==2?10:8;
+            fileRegions[row]=new TextureRegion[count];
+            for(int i=0;i<count;i++)
+                fileRegions[row][i]=new TextureRegion(fileAtlas,i*24,row*24,24,24);
+        }
         patches.put("veil_button_normal",new NinePatch(
             new TextureRegion(originalButtons,0,0,80,24),8,8,7,7));
         patches.put("veil_button_hover",new NinePatch(
@@ -244,8 +251,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
         };
         int count=row<2?12:row==2?10:8;
         if(index<0||index>=count)throw new IllegalArgumentException("File icon index "+index);
-        batch.draw(new TextureRegion(textures.get("veil_file_icons"),
-            index*24,row*24,24,24),x,y,size,size);
+        batch.draw(fileRegions[row][index],x,y,size,size);
         sourcedDraws++;
     }
     /** Draw the new art inside a real interactive menu row, not a fake button. */

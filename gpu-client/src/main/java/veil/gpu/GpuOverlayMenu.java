@@ -621,7 +621,7 @@ public final class GpuOverlayMenu {
         }
         if(screen==Screen.FACTORY_STATUS){
             var report=gameplay.gpuFactoryInspection();
-            skin.panel(sprites,39,95,365,43);
+            skin.panel(sprites,39,95,365,147);
             if(report==null){
                 skin.font().draw(sprites,"AWAITING HOST INSPECTION",47,220);
             }else{
@@ -671,7 +671,7 @@ public final class GpuOverlayMenu {
         }
         if(screen==Screen.CONVEYOR_STATUS){
             var report=gameplay.gpuConveyorInspection();
-            skin.panel(sprites,39,95,365,43);
+            skin.panel(sprites,39,95,365,147);
             if(report==null){
                 skin.font().draw(sprites,"AWAITING HOST CONVEYOR INSPECTION",47,220);
             }else{
@@ -691,7 +691,7 @@ public final class GpuOverlayMenu {
             }
         }
         if(screen==Screen.CREW_INPUT){
-            skin.panel(sprites,39,43,365,34);
+            skin.panel(sprites,39,147,365,34);
             skin.font().draw(sprites,crewAction+" > "+crewText+"_",48,169);
         }
         skin.band(sprites,31,39,379,24);

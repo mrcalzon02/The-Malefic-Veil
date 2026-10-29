@@ -655,9 +655,15 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         // Sound is a projection of authoritative host observations, not an
         // alternative simulation or a list of every visible factory prop.
         java.util.List<GpuMachineAudio> audioMachines=new java.util.ArrayList<>();
-        if(localHost!=null)for(World.Device d:world.devices)
-            if(d.hp>0&&d.productionActive&&d.factoryHold.isEmpty())
-                audioMachines.add(new GpuMachineAudio(d.kind,d.x,d.y,true));
+        if(localHost!=null){
+            for(World.Device d:world.devices)
+                if(d.hp>0&&d.productionActive&&d.factoryHold.isEmpty())
+                    audioMachines.add(new GpuMachineAudio(d.kind,d.x,d.y,true));
+        }else if(net!=null){
+            for(GpuMachineWire.Operating machine:net.operatingMachines())
+                audioMachines.add(new GpuMachineAudio(machine.kind(),
+                    machine.x(),machine.y(),true));
+        }
         java.util.List<GpuVehicleAudio> audioVehicles=new java.util.ArrayList<>();
         if(net!=null){
             for(NetLink.Car car:net.cars.values())

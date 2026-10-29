@@ -142,6 +142,15 @@ public final class LanServer implements AutoCloseable {
                 if(match.time()%500==0)for(ThrownDeployables.View f:match.thrown.views())
                     broadcast("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
                         f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0),-1);
+                // One bounded operating-state audio snapshot per peer, not
+                // more DEVICE packets or an independently running machine.
+                if(match.time()%500==0)
+                    for(Peer peer:connections.values()){
+                        ArenaSystems.Player listener=match.player(peer.id);
+                        if(listener!=null)
+                            peer.send(GpuMachineWire.encode(GpuMachineWire.nearby(
+                                match.world.devices,listener.x,listener.y)));
+                    }
                 for(int gone:match.thrown.drainRemoved())
                     broadcast("FIELD_GONE|"+gone,-1);
                 for(ThrownDeployables.Burst burst:match.thrown.drainBursts())
@@ -317,6 +326,10 @@ public final class LanServer implements AutoCloseable {
             World.Device d=match.world.devices.get(i);
             peer.send("DEVICE|"+i+"|"+d.kind+"|"+d.x+"|"+d.y+"|"+d.hp);
         }
+        ArenaSystems.Player listener=match.player(peer.id);
+        if(listener!=null)
+            peer.send(GpuMachineWire.encode(GpuMachineWire.nearby(
+                match.world.devices,listener.x,listener.y)));
         for(ThrownDeployables.View f:match.thrown.views())
             peer.send("FIELD|"+f.id()+"|"+f.blueprint()+"|"+f.x()+"|"+f.y()+"|"+
                 f.z()+"|"+f.hp()+"|"+f.remainingMs()+"|"+(f.flying()?1:0));

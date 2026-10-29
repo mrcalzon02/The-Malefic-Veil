@@ -56,6 +56,9 @@ public final class NetLink implements AutoCloseable {
     public final int id;
     public final ConcurrentHashMap<Integer,Remote> others=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,Car> cars=new ConcurrentHashMap<>();
+    private volatile java.util.List<GpuMachineWire.Operating> operatingMachines=java.util.List.of();
+    public java.util.List<GpuMachineWire.Operating> operatingMachines(){return operatingMachines;}
+
     public final ConcurrentHashMap<Integer,NpcRank> npcRanks=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<Integer,AiActor> aiActors=new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String,Integer> survivalInventory=new ConcurrentHashMap<>();
@@ -245,6 +248,14 @@ public final class NetLink implements AutoCloseable {
                             }
                             case "FIELD_THROW_RESULT" -> {
                                 if(s.length==3)fieldResults.add(s[1]+"|"+s[2]);
+                            }
+                            case "MACHINE_AUDIO" -> {
+                                try{operatingMachines=GpuMachineWire.decode(line);}
+                                catch(IllegalArgumentException invalid){
+                                    // Fail silent instead of inventing active machinery
+                                    // from malformed or stale host packets.
+                                    operatingMachines=java.util.List.of();
+                                }
                             }
                             case "DEVICE" -> {
                                 if(s.length==6)structures.add(new DeviceEvent(Integer.parseInt(s[1]),

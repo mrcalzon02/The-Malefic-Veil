@@ -522,11 +522,12 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))activate(1);
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))activate(0);
         if(Gdx.input.justTouched()){
-            float px=Gdx.input.getX()*W/(float)Gdx.graphics.getWidth();
-            float py=H-Gdx.input.getY()*H/(float)Gdx.graphics.getHeight();
+            float px=GpuScreenLayout.pointerX(Gdx.input.getX(),
+                Gdx.graphics.getWidth(),backdrop.frameWidth());
+            float py=GpuScreenLayout.pointerY(Gdx.input.getY(),
+                Gdx.graphics.getHeight());
             for(int i=0;i<entries.size();i++){
-                int baseline=START_Y-i*ROW;
-                if(px>=37&&px<426&&py>=baseline&&py<baseline+22){
+                if(GpuScreenLayout.leftMenuHit(px,py,i,START_Y,ROW)){
                     if(selected!=i)replaceFieldOnType=true;
                     selected=i;activate(0);break;
                 }
@@ -534,7 +535,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         }
     }
     private void draw(){
-        ui.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,W,H));
+        ui.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,backdrop.frameWidth(),H));
         ui.begin();
         skin.frame(ui,16,21,424,360);
         skin.band(ui,27,332,400,35);
@@ -616,6 +617,12 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             skin.font().draw(ui,"HEYHEYTHERE  /  CC BY 4.0",454,80);
         }
         ui.end();
+    }
+    @Override public void resize(int width,int height){
+        // Subrenderers are manually created and do not receive libGDX resize
+        // events automatically; propagate to both launcher and live world.
+        if(backdrop!=null)backdrop.resize(width,height);
+        if(gameRenderer!=null)gameRenderer.resize(width,height);
     }
     private void capture(String basename){
         // glReadPixels starts at the bottom row; PNG images start at the top.

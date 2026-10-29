@@ -26,7 +26,7 @@ public final class PsxHorrorMenu implements AutoCloseable {
     // Original licensed bytes are verified before first GPU texture upload.
     private static final int CANVAS_W=640,CANVAS_H=400;
     private static final int REFERENCE_W=320,REFERENCE_H=200;
-    private static final int OFFSET_X=(CANVAS_W-REFERENCE_W)/2;
+    private static final int OFFSET_X=0; // Legacy graphics/credits menu pinned left
     private static final int OFFSET_Y=(CANVAS_H-REFERENCE_H)/2;
     private int sourcedDraws;
     public int sourcedDraws(){return sourcedDraws;}
@@ -308,8 +308,11 @@ public final class PsxHorrorMenu implements AutoCloseable {
         if(Gdx.input.justTouched()){
             // UI renders at the center of the 640x400 framebuffer, not at
             // the old 320x200 origin. Match pointer hitboxes to actual art.
-            float px=Gdx.input.getX()*CANVAS_W/Gdx.graphics.getWidth()-OFFSET_X;
-            float py=CANVAS_H-Gdx.input.getY()*CANVAS_H/Gdx.graphics.getHeight()-OFFSET_Y;
+            float px=GpuScreenLayout.pointerX(Gdx.input.getX(),
+                Gdx.graphics.getWidth(),GpuScreenLayout.width(
+                    Gdx.graphics.getWidth(),Gdx.graphics.getHeight()))-OFFSET_X;
+            float py=GpuScreenLayout.pointerY(Gdx.input.getY(),
+                Gdx.graphics.getHeight())-OFFSET_Y;
             if(px>=54&&px<=269){
                 for(int n=0;n<size();n++){
                     float top=128-n*23;

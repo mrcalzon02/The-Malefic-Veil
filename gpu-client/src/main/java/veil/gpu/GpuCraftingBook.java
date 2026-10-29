@@ -230,8 +230,11 @@ public final class GpuCraftingBook implements AutoCloseable {
         if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){setChoice(choice-1);touched=true;}
         if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){setChoice(choice+1);touched=true;}
         if(Gdx.input.justTouched()){
-            float x=Gdx.input.getX()*640f/Gdx.graphics.getWidth();
-            float y=400f-Gdx.input.getY()*400f/Gdx.graphics.getHeight();
+            float x=GpuScreenLayout.pointerX(Gdx.input.getX(),
+                Gdx.graphics.getWidth(),GpuScreenLayout.width(
+                    Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
+            float y=GpuScreenLayout.pointerY(Gdx.input.getY(),
+                Gdx.graphics.getHeight());
             if(x>=26&&x<=270){
                 for(int i=0;i<PER_PAGE;i++){
                     float bottom=285-i*31;

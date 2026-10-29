@@ -537,9 +537,12 @@ public final class GpuOverlayMenu {
             if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))trigger(1);
         }
         if(Gdx.input.justTouched()){
-            float px=Gdx.input.getX()*WIDTH/Gdx.graphics.getWidth();
-            float py=HEIGHT-Gdx.input.getY()*HEIGHT/Gdx.graphics.getHeight();
-            if(px>=144&&px<=504)
+            float px=GpuScreenLayout.pointerX(Gdx.input.getX(),
+                Gdx.graphics.getWidth(),GpuScreenLayout.width(
+                    Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
+            float py=GpuScreenLayout.pointerY(Gdx.input.getY(),
+                Gdx.graphics.getHeight());
+            if(px>=39&&px<=403)
                 for(int i=0;i<items.size();i++){
                     float bottom=297-i*24;
                     if(py>=bottom&&py<bottom+22){selected=i;trigger(0);break;}
@@ -556,40 +559,40 @@ public final class GpuOverlayMenu {
             book.draw(sprites,gameplay.gpuFrame());
             return;
         }
-        skin.frame(sprites,120,30,408,345);
-        skin.band(sprites,137,334,375,30);
-        skin.font().draw(sprites,"THE MALEFIC VEIL / "+screen,149,354);
+        skin.frame(sprites,16,30,408,345);
+        skin.band(sprites,33,334,375,30);
+        skin.font().draw(sprites,"THE MALEFIC VEIL / "+screen,45,354);
         if(screen==Screen.CREW||screen==Screen.CREW_INPUT){
             String status=gameplay.gpuCrewStatus();
             if(status.length()>43)status=status.substring(0,42)+"~";
-            skin.font().draw(sprites,status,147,331);
+            skin.font().draw(sprites,status,43,331);
         }else if(screen==Screen.CRAFT){
-            skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",147,331);
+            skin.font().draw(sprites,"HOST VALIDATES INGREDIENTS / LOCATION",43,331);
          }else if(screen==Screen.INDUSTRY){
-            skin.font().draw(sprites,"SEPARATE FACTION SYSTEMS / LIVE HOST ACTIONS",147,331);
+            skin.font().draw(sprites,"SEPARATE FACTION SYSTEMS / LIVE HOST ACTIONS",43,331);
         }else if(screen==Screen.FACTORY_STATUS){
             skin.font().draw(sprites,
-                "AUTHORITATIVE NEAREST OWNED WORKSITE",147,331);
+                "AUTHORITATIVE NEAREST OWNED WORKSITE",43,331);
         }else if(screen==Screen.PRODUCTION_OVERVIEW){
             var report=gameplay.gpuProductionOverview(pageOffset);
             String line=report==null?"AWAITING HOST PRODUCTION REPORT":
                 "OWNED INDUSTRY: "+report.total()+" SITES  PAGE "+(pageOffset+1);
-            skin.font().draw(sprites,line,147,331);
+            skin.font().draw(sprites,line,43,331);
         }else if(screen==Screen.CONVEYOR){
             skin.font().draw(sprites,
-                "OWNED CRATES / DIRECTIONAL ROUTE / PAID POWER",147,331);
+                "OWNED CRATES / DIRECTIONAL ROUTE / PAID POWER",43,331);
         }else if(screen==Screen.CONVEYOR_STATUS){
             skin.font().draw(sprites,
-                "HOST-VERIFIED NEAREST OWNED CONVEYOR",147,331);
+                "HOST-VERIFIED NEAREST OWNED CONVEYOR",43,331);
         }else if(screen==Screen.SITES||screen==Screen.WORK_ORDERS){
             skin.font().draw(sprites,
-                "HOST CHECKS REAL COSTS / LOCATION / DEPENDENCIES",147,331);
+                "HOST CHECKS REAL COSTS / LOCATION / DEPENDENCIES",43,331);
         }else if(screen==Screen.STORAGE){
-            skin.font().draw(sprites,"OWN CRATE / HOST VALIDATES BULK TRANSFERS",147,331);
+            skin.font().draw(sprites,"OWN CRATE / HOST VALIDATES BULK TRANSFERS",43,331);
         }
         for(int i=0;i<items.size();i++){
             float row=297-i*24;
-            skin.choice(sprites,items.get(i).label(),143,row,364,22,selected==i);
+            skin.choice(sprites,items.get(i).label(),39,row,364,22,selected==i);
             if(screen==Screen.STORAGE){
                 // Match host transfer rows exactly; artwork never changes the transaction.
                 List<String> materialIds=new ArrayList<>();
@@ -603,7 +606,7 @@ public final class GpuOverlayMenu {
                 // Remaining row icons must follow the paginated item index.
                 int source=pageOffset+i-1;
                 if(i>=1&&i<=7&&source<materialIds.size())
-                    book.drawIcon(sprites,materialIds.get(source),146,row+1,19);
+                    book.drawIcon(sprites,materialIds.get(source),42,row+1,19);
             }
             if(screen==Screen.CRAFT){
                 List<MaleficVeil.GpuCraftRecipe> recipes=crafts();
@@ -612,15 +615,15 @@ public final class GpuOverlayMenu {
                     String id=recipes.get(source).id();
                     var index=veil.CraftingRecipeIndex.recipe(id.startsWith("field:")?
                         "throw:"+id.substring(6):"hand:"+id);
-                    if(index!=null)book.drawIcon(sprites,index.output(),146,row+1,19);
+                    if(index!=null)book.drawIcon(sprites,index.output(),42,row+1,19);
                 }
             }
         }
         if(screen==Screen.FACTORY_STATUS){
             var report=gameplay.gpuFactoryInspection();
-            skin.panel(sprites,143,95,365,147);
+            skin.panel(sprites,39,95,365,43);
             if(report==null){
-                skin.font().draw(sprites,"AWAITING HOST INSPECTION",151,220);
+                skin.font().draw(sprites,"AWAITING HOST INSPECTION",47,220);
             }else{
                 String[] lines={
                     "SITE: "+report.facility().replace('-',' ').toUpperCase(Locale.ROOT),
@@ -633,19 +636,19 @@ public final class GpuOverlayMenu {
                 for(int i=0;i<lines.length;i++){
                     String line=lines[i];
                     if(line.length()>45)line=line.substring(0,44)+"~";
-                    skin.font().draw(sprites,line,151,222-i*22);
+                    skin.font().draw(sprites,line,47,222-i*22);
                 }
             }
         }
         if(screen==Screen.PRODUCTION_OVERVIEW){
             var report=gameplay.gpuProductionOverview(pageOffset);
-            skin.panel(sprites,143,38,365,177);
+            skin.panel(sprites,39,38,365,177);
             if(report==null){
-                skin.font().draw(sprites,"AWAITING AUTHORIZED HOST SNAPSHOT",151,196);
+                skin.font().draw(sprites,"AWAITING AUTHORIZED HOST SNAPSHOT",47,196);
             }else if(report.entries().isEmpty()){
                 skin.font().draw(sprites,
                     report.total()==0?"NO OWNED PRODUCTION FACILITIES":"NO SITES ON THIS PAGE",
-                    151,196);
+                    47,196);
             }else{
                 for(int i=0;i<report.entries().size();i++){
                     var entry=report.entries().get(i);
@@ -661,16 +664,16 @@ public final class GpuOverlayMenu {
                     for(int j=0;j<lines.length;j++){
                         String line=lines[j];
                         if(line.length()>44)line=line.substring(0,43)+"~";
-                        skin.font().draw(sprites,line,151,205-i*42-j*10);
+                        skin.font().draw(sprites,line,47,205-i*42-j*10);
                     }
                 }
             }
         }
         if(screen==Screen.CONVEYOR_STATUS){
             var report=gameplay.gpuConveyorInspection();
-            skin.panel(sprites,143,95,365,147);
+            skin.panel(sprites,39,95,365,43);
             if(report==null){
-                skin.font().draw(sprites,"AWAITING HOST CONVEYOR INSPECTION",151,220);
+                skin.font().draw(sprites,"AWAITING HOST CONVEYOR INSPECTION",47,220);
             }else{
                 String[] lines={
                     "ROUTE: "+report.mode().replace('_',' '),
@@ -683,15 +686,15 @@ public final class GpuOverlayMenu {
                 for(int i=0;i<lines.length;i++){
                     String line=lines[i];
                     if(line.length()>45)line=line.substring(0,44)+"~";
-                    skin.font().draw(sprites,line,151,222-i*22);
+                    skin.font().draw(sprites,line,47,222-i*22);
                 }
             }
         }
         if(screen==Screen.CREW_INPUT){
-            skin.panel(sprites,143,147,365,34);
-            skin.font().draw(sprites,crewAction+" > "+crewText+"_",152,169);
+            skin.panel(sprites,39,43,365,34);
+            skin.font().draw(sprites,crewAction+" > "+crewText+"_",48,169);
         }
-        skin.band(sprites,135,39,379,24);
-        skin.font().draw(sprites,notice.isBlank()?"ESC BACK  ARROWS / ENTER  MOUSE":notice,147,55);
+        skin.band(sprites,31,39,379,24);
+        skin.font().draw(sprites,notice.isBlank()?"ESC BACK  ARROWS / ENTER  MOUSE":notice,43,55);
     }
 }

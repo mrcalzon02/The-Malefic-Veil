@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "scope": "Authored construction test renders",
-  "image_count": 1718,
-  "total_bytes": 963956272,
+  "image_count": 1720,
+  "total_bytes": 967287109,
   "status_counts": {
-    "OVERVIEW_OR_HISTORICAL_STUDY": 226,
+    "OVERVIEW_OR_HISTORICAL_STUDY": 228,
     "ROUGH_STAGE_PASS": 522,
     "REJECTED": 298,
     "UNREVIEWED": 672
@@ -25327,6 +25327,32 @@
       "status": "OVERVIEW_OR_HISTORICAL_STUDY",
       "view": "review",
       "asset_id": "begotten-surface-pilots"
+    },
+    {
+      "source": "previews/city-scale-studies/elevated-scale.png",
+      "file": "images/city-scale-studies/elevated-scale.png",
+      "group": "city-scale-studies",
+      "faction": "shared",
+      "sha256": "a1602759538c513100402270efa280d75ea21af9586279d725e07f87ee75c5db",
+      "bytes": 1699575,
+      "width": 1440,
+      "height": 1000,
+      "status": "OVERVIEW_OR_HISTORICAL_STUDY",
+      "view": "elevated-scale",
+      "asset_id": "city-scale-studies"
+    },
+    {
+      "source": "previews/city-scale-studies/street-scale.png",
+      "file": "images/city-scale-studies/street-scale.png",
+      "group": "city-scale-studies",
+      "faction": "shared",
+      "sha256": "78050eb8c1bd5d374bb411e582b35f47371befbb875b4d18f27715de15a1b27a",
+      "bytes": 1631262,
+      "width": 1440,
+      "height": 1000,
+      "status": "OVERVIEW_OR_HISTORICAL_STUDY",
+      "view": "street-scale",
+      "asset_id": "city-scale-studies"
     }
   ],
   "history": [

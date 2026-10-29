@@ -71,7 +71,16 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.List<ArsenalSystems.Effect> combatEffects,
         ArsenalSystems.View arsenalState,boolean arsenalMenu,int arsenalChoice,
         String weatherPreset,double rain,double snow,double flash,
-        double sprintEnergy,String interactPrompt) {}
+        double sprintEnergy,String interactPrompt,
+        java.util.List<GpuMachineAudio> audioMachines,
+        java.util.List<GpuVehicleAudio> audioVehicles,
+        java.util.List<GpuFieldAudio> audioFields) {}
+    /** Local host operating state; LAN clients do not infer remote production. */
+    public record GpuMachineAudio(int kind,double x,double y,boolean operating) {}
+    public record GpuVehicleAudio(int id,double x,double y,double speed,
+                                  double fuel,int hp,int driverId) {}
+    public record GpuFieldAudio(int id,int blueprint,double x,double y,
+                                boolean flying,long remainingMs,int hp) {}
     public record GpuCraftRecipe(String id,String station,String description,
                                  boolean affordable) {}
     private volatile GpuFrame gpuFrame;
@@ -643,6 +652,32 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         int selected=equipped==null?0:equipped.selected();
         int[] rounds=equipped==null?new int[32]:equipped.clip();
         int[] reserves=equipped==null?new int[32]:equipped.reserve();
+        // Sound is a projection of authoritative host observations, not an
+        // alternative simulation or a list of every visible factory prop.
+        java.util.List<GpuMachineAudio> audioMachines=new java.util.ArrayList<>();
+        if(localHost!=null)for(World.Device d:world.devices)
+            if(d.hp>0&&d.productionActive&&d.factoryHold.isEmpty())
+                audioMachines.add(new GpuMachineAudio(d.kind,d.x,d.y,true));
+        java.util.List<GpuVehicleAudio> audioVehicles=new java.util.ArrayList<>();
+        if(net!=null){
+            for(NetLink.Car car:net.cars.values())
+                audioVehicles.add(new GpuVehicleAudio(car.id(),car.x(),car.y(),
+                    car.speed(),car.fuel(),car.hp(),car.driverId()));
+        }else{
+            for(Vehicles.State car:localVehicles.states())
+                audioVehicles.add(new GpuVehicleAudio(car.id(),car.x(),car.y(),
+                    car.speed(),car.fuel(),car.hp(),car.driverId()));
+        }
+        java.util.List<GpuFieldAudio> audioFields=new java.util.ArrayList<>();
+        if(net!=null){
+            for(NetLink.FieldEvent f:net.activeFields.values())
+                audioFields.add(new GpuFieldAudio(f.id(),f.blueprint(),f.x(),f.y(),
+                    f.flying(),f.remaining(),f.hp()));
+        }else if(localHost!=null){
+            for(ThrownDeployables.View f:localHost.thrown.views())
+                audioFields.add(new GpuFieldAudio(f.id(),f.blueprint(),f.x(),f.y(),
+                    f.flying(),f.remainingMs(),f.hp()));
+        }
         gpuFrame=new GpuFrame(px,py,angle,cameraPitch,weather.timeOfDay()*24,
             health,sanity,cash,scrap,medkits,rounds[0],reserves[0],
             rounds[6],reserves[6],selected,frags,dead,net==null||net.connected(),
@@ -653,7 +688,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             net==null?localHost.arsenal.effects():java.util.List.copyOf(net.arsenalEffects()),
             equipped,arsenalMenuVisible,arsenalMenuChoice,
             weather.current(),weather.rain(),weather.snow(),weather.flash(),
-            sprintEnergy,gpuInteractionPrompt());
+            sprintEnergy,gpuInteractionPrompt(),
+            java.util.List.copyOf(audioMachines),
+            java.util.List.copyOf(audioVehicles),
+            java.util.List.copyOf(audioFields));
     }
 
     private String gpuInteractionPrompt(){

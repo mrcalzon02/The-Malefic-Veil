@@ -21,6 +21,9 @@ public final class GpuAudioBus implements AutoCloseable {
     public static final long ORIGINAL_BYTES=3558384;
     public static final String ORIGINAL_SHA="0e0b0e5bbad299d733938f907aa63fd62de9abad3dc61a00a8ee287fbe10a293";
     private Music music, ambience, combatMusic, campfireLoop;
+    private final Music[] industryLoops=new Music[GpuIndustryAudioPlanner.Channel.values().length];
+    private final float[] industryGain=new float[industryLoops.length];
+    private final Sound[][] fieldSounds=new Sound[3][GpuAudioSynthesis.DeployablePhase.values().length];
     private float combatGain,fireGain,combatHold;
     private final Music[] weatherBeds=new Music[GpuAudioSynthesis.WeatherBed.values().length];
     private final float[] weatherGains=new float[GpuAudioSynthesis.WeatherBed.values().length];
@@ -105,6 +108,19 @@ public final class GpuAudioBus implements AutoCloseable {
             for(GpuAudioSynthesis.Impact type:GpuAudioSynthesis.Impact.values())
                 impacts[type.ordinal()]=synthesized("impact-"+type.name().toLowerCase(Locale.ROOT),
                     GpuAudioSynthesis.impact(type));
+            for(GpuIndustryAudioPlanner.Channel channel:GpuIndustryAudioPlanner.Channel.values()){
+                Music source=Gdx.audio.newMusic(new FileHandle(temp(
+                    "industry-"+channel.name().toLowerCase(Locale.ROOT),".wav",
+                    GpuAudioSynthesis.industry(channel)).toFile()));
+                source.setLooping(true);
+                source.setVolume(0);
+                industryLoops[channel.ordinal()]=source;
+            }
+            for(int faction=0;faction<3;faction++)
+                for(GpuAudioSynthesis.DeployablePhase phase:GpuAudioSynthesis.DeployablePhase.values())
+                    fieldSounds[faction][phase.ordinal()]=synthesized(
+                        "field-"+faction+"-"+phase.name().toLowerCase(Locale.ROOT),
+                        GpuAudioSynthesis.deployable(faction,phase));
             for(GpuFootstepSurface.Material material:GpuFootstepSurface.Material.values())
                 for(int variant=0;variant<2;variant++)
                     surfaceSteps[material.ordinal()][variant]=synthesized(
@@ -168,14 +184,16 @@ public final class GpuAudioBus implements AutoCloseable {
         for(int i=0;i<weatherBeds.length;i++)
             if(weatherBeds[i]!=null)weatherBeds[i].setVolume(
                 ingame?weatherGains[i]*settings.ambienceGain():0f);
+        for(int i=0;i<industryLoops.length;i++)
+            if(industryLoops[i]!=null)industryLoops[i].setVolume(
+                ingame?industryGain[i]*machineBusGain(i):0f);
     }
     public void inGame(){
         ingame=true;apply(settings);
         if(music!=null&&!music.isPlaying())music.play();
         if(ambience!=null&&!ambience.isPlaying())ambience.play();
-        if(combatMusic!=null&&!combatMusic.isPlaying())combatMusic.play();
-        if(campfireLoop!=null&&!campfireLoop.isPlaying())campfireLoop.play();
-        for(Music bed:weatherBeds)if(bed!=null&&!bed.isPlaying())bed.play();
+        // Zero-volume sources must not occupy OpenAL voices at scene load.
+        // They start only when the host presents an audible nearby source.
     }
     public void menu(){
         ingame=false;apply(settings);
@@ -184,7 +202,9 @@ public final class GpuAudioBus implements AutoCloseable {
         if(campfireLoop!=null)campfireLoop.stop();
         combatHold=combatGain=fireGain=0;
         for(Music bed:weatherBeds)if(bed!=null)bed.stop();
+        for(Music bed:industryLoops)if(bed!=null)bed.stop();
         Arrays.fill(weatherGains,0f);
+        Arrays.fill(industryGain,0f);
         previousFlash=0;thunderCooldown=0;
         if(music!=null&&!music.isPlaying())music.play();
     }
@@ -237,8 +257,14 @@ public final class GpuAudioBus implements AutoCloseable {
         for(int i=0;i<weatherBeds.length;i++){
             float want=(float)targets[i],have=weatherGains[i];
             weatherGains[i]=have+Math.max(-maxStep,Math.min(maxStep,want-have));
-            if(weatherBeds[i]!=null)weatherBeds[i].setVolume(
-                Math.min(1f,weatherGains[i]*settings.ambienceGain()));
+            Music weatherLayer=weatherBeds[i];
+            if(weatherLayer!=null){
+                float gain=Math.min(1f,weatherGains[i]*settings.ambienceGain());
+                if(gain>.003f){
+                    weatherLayer.setVolume(gain);
+                    if(!weatherLayer.isPlaying())weatherLayer.play();
+                }else if(weatherLayer.isPlaying())weatherLayer.stop();
+            }
         }
         thunderCooldown=Math.max(0f,thunderCooldown-dt);
         float now=(float)Math.max(0,Math.min(1,Double.isFinite(flash)?flash:0));
@@ -295,8 +321,62 @@ public final class GpuAudioBus implements AutoCloseable {
             (float)(1.0/(1.0+Math.pow(nearestFireDistance/5.0,2))):0f;
         float fireStep=dt*.45f;
         fireGain+=Math.max(-fireStep,Math.min(fireStep,fireTarget-fireGain));
-        // Crossfade both channels rather than restarting their wave files.
+        // Start/stop streams only on actual demand, preserving SFX voices.
+        if(combatMusic!=null) {
+            if(combatGain>.01f){
+                if(!combatMusic.isPlaying())combatMusic.play();
+            }else if(combatMusic.isPlaying())combatMusic.stop();
+        }
+        if(campfireLoop!=null){
+            if(fireGain>.01f){
+                if(!campfireLoop.isPlaying())campfireLoop.play();
+            }else if(campfireLoop.isPlaying())campfireLoop.stop();
+        }
         apply(settings);
+    }
+    private float machineBusGain(int index){
+        return index>=GpuIndustryAudioPlanner.Channel.ENGINE_IDLE.ordinal()?
+            settings.effectsGain()*.39f:settings.ambienceGain()*.28f;
+    }
+    /** Apply one bounded, spatial mix per operating faction and vehicle lane. */
+    public void industry(java.util.EnumMap<GpuIndustryAudioPlanner.Channel,
+            GpuIndustryAudioPlanner.Mix> plan,float elapsed){
+        if(!available||!ingame||plan==null)return;
+        float dt=Math.max(0,Math.min(.10f,elapsed));
+        for(GpuIndustryAudioPlanner.Channel lane:GpuIndustryAudioPlanner.Channel.values()){
+            int id=lane.ordinal();
+            var desired=plan.get(lane);
+            float target=desired==null?0:desired.gain();
+            float max=dt*(target>industryGain[id]?.65f:.42f);
+            industryGain[id]+=Math.max(-max,Math.min(max,target-industryGain[id]));
+            Music loop=industryLoops[id];
+            if(loop!=null){
+                float volume=industryGain[id]*machineBusGain(id);
+                if(volume>.003f){
+                    loop.setPan(desired==null?0:desired.pan(),volume);
+                    if(!loop.isPlaying())loop.play();
+                }else if(loop.isPlaying())loop.stop();
+            }
+        }
+    }
+    public void deployable(GpuDeployableAudioGate.Event event,
+            double playerX,double playerY,double yaw,boolean clearLine){
+        if(!available||event.faction()<0||event.faction()>2)return;
+        double dx=event.x()-playerX,dy=event.y()-playerY;
+        double distance=Math.hypot(dx,dy);
+        if(distance>32)return;
+        float attenuation=(float)(1/(1+Math.pow(distance/7,2)));
+        float occlusion=clearLine?1f:.43f;
+        float pan=(float)Math.max(-1,Math.min(1,
+            Math.sin(Math.atan2(dy,dx)-yaw)*Math.min(1,distance/3)));
+        var phase=switch(event.phase()){
+            case LAUNCH -> GpuAudioSynthesis.DeployablePhase.LAUNCH;
+            case LAND -> GpuAudioSynthesis.DeployablePhase.LAND;
+            case EXPIRE -> GpuAudioSynthesis.DeployablePhase.REMOVE;
+        };
+        Sound effect=fieldSounds[event.faction()][phase.ordinal()];
+        float volume=settings.effectsGain()*attenuation*occlusion*.52f;
+        if(effect!=null&&volume>.005f)effect.play(Math.min(1,volume),1,pan);
     }
     public void step(GpuFootstepSurface.Material surface){
         if(surface==null)return;
@@ -339,9 +419,15 @@ public final class GpuAudioBus implements AutoCloseable {
             if(weatherBeds[i]!=null){weatherBeds[i].dispose();weatherBeds[i]=null;}
             weatherGains[i]=0;
         }
+        for(int i=0;i<industryLoops.length;i++){
+            if(industryLoops[i]!=null){industryLoops[i].dispose();industryLoops[i]=null;}
+            industryGain[i]=0;
+        }
         Set<Sound> disposed=Collections.newSetFromMap(new IdentityHashMap<>());
         for(Sound s:cues)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:impacts)if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound[] bank:fieldSounds)
+            for(Sound s:bank)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound[] group:surfaceSteps)
             for(Sound s:group)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:weapon)if(s!=null&&disposed.add(s))s.dispose();
@@ -355,6 +441,7 @@ public final class GpuAudioBus implements AutoCloseable {
             if(s!=null&&disposed.add(s))s.dispose();
         Arrays.fill(cues,null);Arrays.fill(impacts,null);Arrays.fill(weapon,null);
         for(Sound[] group:surfaceSteps)Arrays.fill(group,null);
+        for(Sound[] bank:fieldSounds)Arrays.fill(bank,null);
         Arrays.fill(alternate,null);
         Arrays.fill(handling,null);Arrays.fill(sourceFamily,null);
         thunder=sourceReload=sourceCoins=sourceDrawer=sourceCloth=sourceHurt=sourceField=null;

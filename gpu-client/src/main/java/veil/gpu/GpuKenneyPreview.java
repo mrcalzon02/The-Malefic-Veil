@@ -177,6 +177,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private double audioLastStepX=Double.NaN,audioLastStepZ=Double.NaN,audioStepDistance;
     private final GpuAudioEventGate audioEvents=new GpuAudioEventGate();
     private final GpuWorldAudioGate worldAudioEvents=new GpuWorldAudioGate();
+    private final GpuDeployableAudioGate deployableAudioEvents=new GpuDeployableAudioGate();
     private final GpuCombatAudioGate combatAudioEvents=new GpuCombatAudioGate();
     private boolean gpuPrimaryFireHeld,gpuAlternateFireHeld;
     private GpuOverlayMenu gameplayMenu;
@@ -584,6 +585,18 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
             audioBus.situation(danger,observed.health()<=25,
                 fireDistance,Gdx.graphics.getDeltaTime());
+            // Only live, host-confirmed facilities, fuelled driven cars and
+            // thrown equipment can have an industrial or deployment sound.
+            var industryMix=GpuIndustryAudioPlanner.plan(observed.x(),observed.z(),
+                observed.yaw(),observed.audioMachines(),observed.audioVehicles());
+            audioBus.industry(industryMix,Gdx.graphics.getDeltaTime());
+            for(var event:deployableAudioEvents.accept(observed.audioFields())){
+                double dist=Math.hypot(event.x()-observed.x(),event.y()-observed.z());
+                boolean line=dist<=32&&gameplay.gpuWorld().lineClear(
+                    observed.x(),observed.z(),event.x(),event.y());
+                audioBus.deployable(event,observed.x(),observed.z(),
+                    observed.yaw(),line);
+            }
             audioBus.weather(observed.weatherPreset(),observed.rain(),
                 observed.snow(),observed.flash(),Gdx.graphics.getDeltaTime());
         }

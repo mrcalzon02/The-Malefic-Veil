@@ -147,3 +147,14 @@ The prior two synthesized footstep clicks were replaced with **eight grounded su
 - Corrected a real discontinuity in the low-frequency noise lane of `weatherBed`: its coarse noise grid previously jumped to zero when a 4-second loop wrapped. Now both the fine-noise and slow-noise lanes use circular interpolation.
 - The generator intentionally limits output to 23,000 / 32,767 peak amplitude, leaving digital headroom.
 - CI remains a **technical wave integrity** pass, not an equal-loudness/mastering or perceptual-quality signoff. Sourced Drive recordings remain unmodified; they require individual listening and dynamic-range inspection.
+
+## Stage 7 — Real operating factory, vehicle and thrown-field audio
+
+- The GPU immutable frame now includes compact snapshots of actual **local host** machines with active paid production and no factory hold, observed cars (local or LAN, with speed/fuel/driver state), and transient thrown entities (local or LAN, including flying/landed state).
+- Unraveled, Penitent and Begotten machinery retain **three independent acoustic signatures** (industrial gears, ritual tones, living organic pulses). Common factory utilities get their own non-factional sound. A passive warehouse, a worksite that is waiting on supplies/witnesses/power, and a decorative machine produce no automatic operating noise.
+- Do **not** falsely infer operating status for LAN factory structures: the existing LAN device wire does not transmit the production/hold state. Remote factory machinery therefore remains unplayed until the host replicates that authoritative detail.
+- Fueled, occupied vehicles have an idling layer; moving vehicles have an additional engine layer. Abandoned or disabled vehicles are silent. Spatial attenuation/panning uses the host-reported car positions rather than a client-invented engine position.
+- Transient thrown-field audio has three separate faction timbres on launch and landing. Initial snapshots are treated as history, never an invitation to replay old deployments; missing fields from a network snapshot do not automatically generate a fake damage explosion.
+- The new sound beds are generated in memory with seamless four-second loops. Streams are started only while audible, preserving finite OpenAL voices for weapon and impact effects. They use ambient/effects sliders independently of music, and are disposed with the audio bus.
+- New device-free assertions validate faction classification, silent idle buildings, actual occupied and fueled cars, field launch/landing deduplication, plus **147** synthesized WAV formats and twelve periodic-loop seams.
+- This stage does **not** claim full vehicle physics sound design, active industrial state across LAN, accurate reverb, environmental occlusion for all loops, or end-of-life field destruction/expiry audio; these remain QA and implementation items.

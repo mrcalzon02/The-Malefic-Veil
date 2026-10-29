@@ -330,6 +330,81 @@ public final class GpuAudioSynthesis {
         return pcm(samples);
     }
 
+    /** Distinct periodic soundbeds, one per operating civilization / utility. */
+    public static byte[] industry(GpuIndustryAudioPlanner.Channel channel) {
+        int size=RATE*4;
+        double[] out=new double[size];
+        for(int i=0;i<size;i++){
+            double t=i/(double)size;
+            double value=switch(channel) {
+                case UNRAVELED -> {
+                    double cog=Math.pow(Math.max(0,Math.sin(TAU*44*t)),6);
+                    yield Math.sin(TAU*236*t)*.10+Math.sin(TAU*69*t)*.12+
+                        Math.sin(TAU*33*t)*.06+cog*.08-.03;
+                }
+                case PENITENT -> {
+                    double chant=Math.sin(TAU*440*t)*.11+
+                        Math.sin(TAU*330*t)*.10+Math.sin(TAU*220*t)*.05;
+                    double bell=Math.pow(Math.max(0,Math.sin(TAU*3*t)),12);
+                    yield chant*(.55+.27*Math.cos(TAU*2*t))+bell*.05-.025;
+                }
+                case BEGOTTEN -> {
+                    double heartbeat=Math.pow(Math.max(0,Math.sin(TAU*7*t)),8);
+                    yield Math.sin(TAU*57*t)*.09+Math.sin(TAU*41*t)*.11+
+                        heartbeat*.14+Math.sin(TAU*89*t)*.065;
+                }
+                case UTILITY -> {
+                    double pump=Math.pow(Math.max(0,Math.sin(TAU*25*t)),6);
+                    yield Math.sin(TAU*85*t)*.10+Math.sin(TAU*170*t)*.055+
+                        pump*.10-.02;
+                }
+                case ENGINE_IDLE -> {
+                    double cylinders=Math.pow(Math.max(0,Math.sin(TAU*58*t)),4);
+                    yield Math.sin(TAU*116*t)*.13+Math.sin(TAU*174*t)*.06+
+                        cylinders*.12-.035;
+                }
+                case ENGINE_MOVING -> {
+                    double cylinders=Math.pow(Math.max(0,Math.sin(TAU*91*t)),5);
+                    yield Math.sin(TAU*182*t)*.13+Math.sin(TAU*273*t)*.06+
+                        cylinders*.12-.027;
+                }
+            };
+            out[i]=value*.66;
+        }
+        return pcm(out);
+    }
+
+    public enum DeployablePhase { LAUNCH, LAND, REMOVE }
+    /** Nine faction/phase signatures. Removal is harmless, never damage. */
+    public static byte[] deployable(int faction,DeployablePhase phase) {
+        if(faction<0||faction>2||phase==null)
+            throw new IllegalArgumentException("Unknown thrown faction/phase");
+        double seconds=phase==DeployablePhase.REMOVE?.60:.31;
+        int size=(int)(RATE*seconds);
+        double[] out=new double[size];
+        Random random=new Random(31881L+faction*109L+phase.ordinal()*461L);
+        double oscillator=0,filtered=0;
+        for(int i=0;i<size;i++){
+            double t=i/(double)size;
+            double freq=switch(faction){
+                case 0 -> 390-260*t;
+                case 1 -> 530-110*t;
+                default -> 115+130*t;
+            };
+            freq*=phase==DeployablePhase.LAND?.72:phase==DeployablePhase.REMOVE?.48:1.3;
+            oscillator+=TAU*freq/RATE;
+            double noise=random.nextDouble()*2-1;
+            filtered=filtered*.88+noise*.12;
+            double value=switch(faction){
+                case 0 -> Math.sin(oscillator)*.37+noise*.20+filtered*.23;
+                case 1 -> Math.sin(oscillator)*.44+Math.sin(oscillator*.5)*.19+filtered*.15;
+                default -> filtered*.55+Math.sin(oscillator*.23)*.33+noise*.12;
+            };
+            out[i]=value*Math.pow(1-t,phase==DeployablePhase.REMOVE?1.2:2.0)*.64;
+        }
+        return pcm(out);
+    }
+
     /** Device-free deterministic integrity check for CI / headless builds. */
     public static void main(String[] args) {
         for(Impact kind:Impact.values()) {
@@ -343,6 +418,13 @@ public final class GpuAudioSynthesis {
             for(int variant=0;variant<2;variant++)
                 if(!stepHashes.add(Arrays.hashCode(footstep(material,variant))))
                     throw new IllegalStateException("Duplicate footstep "+material+"/"+variant);
+        for(GpuIndustryAudioPlanner.Channel channel:GpuIndustryAudioPlanner.Channel.values())
+            if(industry(channel).length!=44+RATE*4*2)
+                throw new IllegalStateException("Missing operating-machine loop "+channel);
+        for(int f=0;f<3;f++)
+            for(DeployablePhase phase:DeployablePhase.values())
+                if(deployable(f,phase).length<=44)
+                    throw new IllegalStateException("Missing thrown cue "+f+"/"+phase);
         Set<Integer> checksums = new HashSet<>();
         for(int i = 0; i < 32; i++) {
             byte[] wav = weapon(i);

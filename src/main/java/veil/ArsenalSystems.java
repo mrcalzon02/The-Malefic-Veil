@@ -194,6 +194,19 @@ public final class ArsenalSystems {
             if(s.charging!=w||s.chargeAlt!=alt){s.charging=w;s.chargeAlt=alt;s.chargeAt=now;s.action=2;s.actionAt=now;}
             if(now-s.chargeAt<m.charge())return new Shot(false,"CHARGING",0,remaining);
         }
+        // Test projectile capacity BEFORE consuming ammunition and publishing
+        // a firing action. Rejected shots cannot generate an audible muzzle
+        // report or mutate a weapon's host state.
+        boolean launchesProjectile=switch(m.kind()){
+            case HIT,PELLET,BEAM,RAIL,FLAK,SCRAP,CRYO,CHAIN,PULSE -> false;
+            default -> true;
+        };
+        if(launchesProjectile){
+            int amount=(m.kind()==Kind.MISSILE||m.kind()==Kind.MORTAR||
+                m.kind()==Kind.ROCKET)?m.pellets():1;
+            if(projectiles.size()+amount>192)
+                return new Shot(false,"PROJECTILE_LIMIT",0,remaining);
+        }
         s.charging=-1;s.chargeAt=-1;s.spinUntil=now+300;s.clip[w]-=price;s.readyAt=now+m.cooldown();s.action=alt?4:1;s.actionAt=now;s.damage=0;
         if(w==0)host.player(id).pistolClip=s.clip[w];
         s.heat=Math.min(1.2,s.heat+(get(w).mechanism().equals("rotor")?.065:m.kind()==Kind.BEAM?.10:.025));
@@ -211,7 +224,6 @@ public final class ArsenalSystems {
             case PULSE -> area(id,p.x,p.y,m.radius(),m.damage(),Kind.PULSE);
             default -> {
                 int n=m.kind()==Kind.MISSILE||m.kind()==Kind.MORTAR||m.kind()==Kind.ROCKET?m.pellets():1;
-                if(projectiles.size()+n>192){s.clip[w]+=price;return new Shot(false,"PROJECTILE_LIMIT",0,s.clip[w]);}
                 for(int j=0;j<n;j++){
                     Projectile q=new Projectile();q.owner=id;q.weapon=w;q.damage=m.damage();q.radius=m.radius();q.kind=m.kind();q.alt=alt;q.bounces=m.bounces();
                     double a=p.angle+(n==1?0:(j-(n-1)/2.0)*.08);q.x=p.x;q.y=p.y;q.vx=Math.cos(a)*m.speed();q.vy=Math.sin(a)*m.speed();

@@ -85,19 +85,22 @@ public final class GpuAudioSynthesis {
         return 7;                  // gravitational / singularity weapons
     }
 
-    public static byte[] weapon(int index) {
+    public static byte[] weapon(int index) {return weapon(index,false);}
+    /** Alternate firing has its own signature, not a replay of primary SFX. */
+    public static byte[] weapon(int index, boolean alternate) {
         int family = family(index);
-        double duration = .14 + .026 * (index % 6) + (index == 31 ? .23 : 0);
+        double duration = .14 + .026 * (index % 6) + (index == 31 ? .23 : 0)
+            + (alternate ? .10 + (index%3)*.02 : 0);
         int count = (int)(RATE * duration);
         double[] samples = new double[count];
-        Random random = new Random(15121L + index * 997L);
+        Random random = new Random(15121L + index * 997L + (alternate?9876543L:0));
         double phase = 0;
         double lowNoise = 0;
         for(int i = 0; i < count; i++) {
             double t = i / (double)count;
             double r = random.nextDouble() * 2 - 1;
             lowNoise = lowNoise * .77 + r * .23;
-            double base = 90 + index * 23 + (index % 3) * 38;
+            double base = (90 + index * 23 + (index % 3) * 38) * (alternate ? 1.63 : 1.0);
             double f = switch(family) {
                 case 0 -> base * (1.35 - .75*t);
                 case 1 -> base * (2.7 - 1.45*t);
@@ -126,7 +129,7 @@ public final class GpuAudioSynthesis {
                 signal *= .69 + .31 * Math.sin(TAU * (8 + index%5) * t);
             if(index == 4 || index == 5 || index == 6)
                 signal += r * (t < .11 ? .21 : .02);
-            samples[i] = attack * release * signal * .68;
+            samples[i] = attack * release * signal * (alternate ? .57 : .68);
         }
         return pcm(samples);
     }
@@ -149,6 +152,79 @@ public final class GpuAudioSynthesis {
         return pcm(samples);
     }
 
+    /** A keyed mechanical, capacitor or organic handling signature. */
+    public static byte[] handling(int index) {
+        int family=family(index);
+        int count=(int)(RATE * (.22 + (index%5)*.045));
+        double[] out=new double[count];
+        Random random=new Random(85531L + index*761L);
+        double phase=0;
+        double base=210+index*19;
+        for(int i=0;i<count;i++){
+            double t=i/(double)count;
+            phase+=TAU*(base+(family==1?600:family==7?-120:0)*t)/RATE;
+            double clicks=Math.exp(-Math.pow((t-.18)/.045,2))+
+                .83*Math.exp(-Math.pow((t-.73)/.055,2));
+            double r=random.nextDouble()*2-1;
+            out[i]=(r*.33+Math.sin(phase)*.27)*
+                Math.min(1,clicks)*.75;
+        }
+        return pcm(out);
+    }
+
+    public enum WeatherBed { RAIN, WIND, SNOW }
+
+    /**
+     * Loop-periodic procedural beds. Separate mixer volumes follow the shared
+     * host's rain/snow/preset values; no second weather randomizer is created.
+     * Noise is circularly interpolated, so the sample at the loop boundary
+     * has no abrupt transition. These are provisional, wholly original beds.
+     */
+    public static byte[] weatherBed(WeatherBed kind) {
+        int count = RATE * 4;
+        int points = 2048;
+        double[] noise = new double[points];
+        Random random = new Random(2217L + kind.ordinal() * 157L);
+        for(int i = 0; i < points; i++)noise[i] = random.nextDouble()*2-1;
+        double[] samples = new double[count];
+        for(int i = 0; i < count; i++) {
+            double t = i / (double)count;
+            double k = t * points;
+            int start=(int)k;
+            double blend=k-start;
+            // Smoothstep interpolation suppresses zippering from white noise.
+            blend=blend*blend*(3-2*blend);
+            double hiss=noise[start]*(1-blend)+noise[(start+1)%points]*blend;
+            double low=noise[(start/32)%points]*(1-blend)+
+                noise[((start/32)+1)%points]*blend;
+            double periodicWind=Math.sin(TAU*5*t)*.09 + Math.sin(TAU*11*t)*.05;
+            samples[i]=switch(kind) {
+                case RAIN -> hiss*.25 + low*.05;
+                case WIND -> hiss*.10 + low*.18 + periodicWind;
+                case SNOW -> hiss*.06 + low*.07 + Math.sin(TAU*3*t)*.04;
+            };
+        }
+        return pcm(samples);
+    }
+
+    public static byte[] thunder() {
+        int count=(int)(RATE*1.9);
+        double[] samples=new double[count];
+        Random random=new Random(72615L);
+        double phase=0,rumble=0;
+        for(int i=0;i<count;i++){
+            double t=i/(double)count;
+            double white=random.nextDouble()*2-1;
+            rumble=rumble*.94 + white*.06;
+            phase+=TAU*(72-22*t)/RATE;
+            double clap=Math.exp(-t*21)*white*.44;
+            double tail=(rumble*.7+Math.sin(phase)*.23)*
+                Math.pow(1-t,1.5);
+            samples[i]=clap+tail;
+        }
+        return pcm(samples);
+    }
+
     /** Device-free deterministic integrity check for CI / headless builds. */
     public static void main(String[] args) {
         Set<Integer> checksums = new HashSet<>();
@@ -158,10 +234,22 @@ public final class GpuAudioSynthesis {
                 throw new IllegalStateException("Invalid weapon WAV " + i);
             if(!checksums.add(Arrays.hashCode(wav)))
                 throw new IllegalStateException("Duplicate weapon tone " + i);
+            byte[] alt=weapon(i,true);
+            if(!checksums.add(Arrays.hashCode(alt)))
+                throw new IllegalStateException("Duplicate alternate fire tone "+i);
+            byte[] mech=handling(i);
+            if(!checksums.add(Arrays.hashCode(mech)))
+                throw new IllegalStateException("Duplicate handling tone "+i);
         }
         for(Cue cue : Cue.values()) {
             if(cue(cue).length <= 44) throw new IllegalStateException("Empty feedback " + cue);
         }
+        for(WeatherBed bed:WeatherBed.values()) {
+            if(weatherBed(bed).length!=44+RATE*4*2)
+                throw new IllegalStateException("Invalid looped weather layer "+bed);
+        }
+        if(thunder().length <= RATE*2)
+            throw new IllegalStateException("Missing procedural thunder transient");
         if(cityAmbience().length <= RATE * 8) throw new IllegalStateException("Missing city ambience");
         System.out.println("PASS GPU_AUDIO_BANK 32 distinctive weapon WAVs " + Cue.values().length
             + " feedback cues city ambience");

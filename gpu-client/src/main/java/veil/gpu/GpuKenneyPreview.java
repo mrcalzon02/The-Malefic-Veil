@@ -175,6 +175,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private GpuClientSettings clientSettings=GpuClientSettings.load();
     private GpuAudioBus audioBus;
     private double audioLastStepX=Double.NaN,audioLastStepZ=Double.NaN,audioStepDistance;
+    private final GpuAudioEventGate audioEvents=new GpuAudioEventGate();
     private GpuOverlayMenu gameplayMenu;
     private Runnable onReturnMain;
     public void audioBus(GpuAudioBus bus){this.audioBus=bus;}
@@ -541,6 +542,25 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         else if(gameplayMenu.active()&&Gdx.input.isKeyJustPressed(Input.Keys.O))
             gameplayMenu.openCrew();
         boolean active=gameplayMenu.input();
+        MaleficVeil.GpuFrame observed=gameplay.gpuFrame();
+        if(observed!=null&&audioBus!=null){
+            // A mouse press is a request, not a confirmed shot. Read the
+            // immutable authoritative state for real firing/reload events.
+            var state=observed.arsenalState();
+            if(state!=null){
+                var event=audioEvents.accept(state.selected(),state.action(),state.actionAt());
+                switch(event.kind()){
+                    case PRIMARY -> audioBus.shoot(event.weapon());
+                    case ALTERNATE -> audioBus.alternate(event.weapon());
+                    case CHARGE -> audioBus.charge(event.weapon());
+                    case RELOAD -> audioBus.reload(event.weapon());
+                    case EQUIP -> audioBus.equip(event.weapon());
+                    case NONE -> {}
+                }
+            }
+            audioBus.weather(observed.weatherPreset(),observed.rain(),
+                observed.snow(),observed.flash(),Gdx.graphics.getDeltaTime());
+        }
         for(int[] binding:LIVE_BINDINGS){
             boolean pressed=active&&Gdx.input.isKeyPressed(binding[0]);
             boolean wasDown=liveHeld.contains(binding[1]);
@@ -564,11 +584,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             MaleficVeil.GpuFrame before=gameplay.gpuFrame();
-            gameplay.gpuFire(); // Only the authoritative host determines damage/ammunition.
-            if(audioBus!=null&&before!=null){
+            gameplay.gpuFire(); // Async host request; its action snapshot triggers firing sound.
+            if(audioBus!=null&&before!=null&&before.arsenalState()!=null){
                 var state=before.arsenalState();
-                if(state!=null&&state.clip()[before.weapon()]<=0)audioBus.empty();
-                else audioBus.shoot(before.weapon());
+                // Explicit dry-fire feedback is permitted for known empty clips;
+                // cooldown/charge/reload rejections do NOT fake a gunshot.
+                if(state.clip()[before.weapon()]<=0&&state.reloadRemaining()<=0)
+                    audioBus.empty();
             }
         }
         MaleficVeil.GpuFrame frame=gameplay.gpuFrame();

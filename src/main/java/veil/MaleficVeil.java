@@ -700,6 +700,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             throw new IllegalStateException("Gameplay must initialize on Swing EDT");
         MaleficVeil game=new MaleficVeil(null,seed,0,null);
         game.gpuPresentation=true;
+        game.weather.disableAudio();
         game.publishGpuFrame();
         return game;
     }
@@ -752,6 +753,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             MaleficVeil game=new MaleficVeil(null,worldSeed,
                 requested.role().existingAbilityId(),link);
             game.gpuPresentation=true;
+        game.weather.disableAudio();
             game.gpuHostedServer=host;
             game.publishGpuFrame();
             DesktopDiagnostics.note("GPU_FRONTEND_WORLD_READY seed="+worldSeed+
@@ -946,6 +948,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 try{
                     game=new MaleficVeil(null,seed,character,link);
                     game.gpuPresentation=true;
+        game.weather.disableAudio();
                     game.gpuHostedServer=hostedServer;
                     game.publishGpuFrame();
                     Class<?> desktop=Class.forName("veil.gpu.GpuDesktop");

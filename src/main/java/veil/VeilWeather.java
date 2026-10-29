@@ -287,6 +287,8 @@ public final class VeilWeather implements AutoCloseable {
             return ((Number)state.getClass().getMethod("daylight").invoke(state)).doubleValue();
         }catch(ReflectiveOperationException e){throw new IllegalStateException(e);}
     }
+    /** GPU client owns its audio mixer; keep Java Sound for Swing-only play. */
+    public void disableAudio(){closeAudio();}
     private void closeAudio(){
         if(audioPlayer!=null){
             try{audioPlayer.getClass().getMethod("close").invoke(audioPlayer);}

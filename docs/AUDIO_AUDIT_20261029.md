@@ -85,3 +85,20 @@ Inspected exact imported original recordings with ffprobe and ffmpeg's `volumede
 - GitHub commit and remote `main` readback verified.
 - GPU and desktop release GitHub Actions were **in progress** at time of last inspection, not yet passing.
 - Actual speaker/headphone listening, decoder behavior on both Windows/Linux, and device-level volume measurements are outstanding.
+
+
+## Stage 2 — Authoritative audio and responsive weather (2026-10-29)
+
+**Implemented in this second GPU iteration, subject to CI verification:**
+- Audio now follows the *authoritative* `ArsenalSystems.View.actionAt()` edge rather than treating a local mouse-down request as a confirmed hit or gunshot.
+- Distinct `PRIMARY` vs `ALTERNATE` for each of 32 weapons, separate handling/reload profiles, charge signal and equip feedback. Successful reload events come from the authoritative action snapshot; rejected reloads do not play the reload sound.
+- Stale/repeated action timestamps never retrigger a report. A first snapshot is baseline-only and does not replay combat from before scene connection.
+- Projectile-capacity rejection now happens **before** weapon action/ammunition mutation, fixing a host-side false-confirmation issue.
+- Three provisional procedural weather beds (rain, wind, snow) are blended from host-synchronized weather values. Thunder transient follows the existing lightning flash with a cooldown, not an independent random weather simulation.
+- GPU audio owns its weather mix; the legacy Java Sound weather player is disabled for GPU presentation only, while the traditional Swing player retains its module audio.
+- Separate music, ambience, UI and effects gains remain intact; no server/headless audio dependency is added.
+
+**Not yet complete:** high-quality sourced environment loops (NOX Sound licensing still unverified), per-biome beds, indoor occlusion, material-specific footsteps, enemy/civilian sounds, environmental and machine emitters, intentional dynamic music state machine, combat impacts, deployables, and device-level listening/mix QA. Alternate fire signatures are separately synthesized but are not yet individually sound-designed/recorded for production.
+
+**Verification contract:** `GpuAudioEventGate.main` asserts no replay, first-snapshot silence, primary/alternate/reload/charge/equip transitions and invalid weapon rejection; `GpuAudioSynthesis.main` asserts all 32 primary, alternate and handling waveforms are valid/distinct and weather beds exist. Existing GPU Linux/Windows workflows run both. A CI pass validates generation and packaging, **not** whether each sound is artistically suitable or audible on every device.
+

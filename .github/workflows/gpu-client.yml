@@ -106,6 +106,7 @@ jobs:
           jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -qx 'crafting/packs/shared_core_sprites_only.zip'
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuAudioBus
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuAudioSynthesis
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.gpu.GpuAudioEventGate
           for sound in Single_click.wav Cathonk.wav Metal_wonk.wav Book_snap.wav Shot.mp3 LAS.mp3 Plas.mp3 Lightning-crackle.mp3 FLAME.mp3 RELOAD.mp3; do
             jar tf gpu-client/target/MaleficVeil-GPU.jar | grep -Fx "audio/library/$sound"
           done

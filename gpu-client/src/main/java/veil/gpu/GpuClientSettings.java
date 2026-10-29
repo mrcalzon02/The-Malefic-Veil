@@ -9,8 +9,12 @@ public final class GpuClientSettings {
     public int master=90,music=58,effects=85,ambience=80,ui=80,voice=85;
     public int distance=145,lights=8,fieldOfView=74,sensitivity=100;
     public boolean invertY=false,vsync=true,fullscreen=false;
-    public int windowSize=0; // 0=960x600 1=1280x800 2=1600x900
-    public static final int[][] WINDOWS={{960,600},{1280,800},{1600,900}};
+    // Old indices 0/1/2 retain their meanings; new indices support widescreen.
+    public int windowSize=3; // default 1280x720
+    public static final int[][] WINDOWS={
+        {960,600},{1280,800},{1600,900},{1280,720},{1920,1080},
+        {2560,1440},{2560,1080},{3440,1440},{1366,768}
+    };
     public static Path path(){
         String override=System.getProperty("veil.settings.path");
         if(override!=null&&!override.isBlank())return Path.of(override).toAbsolutePath();

@@ -17,7 +17,7 @@ public final class GpuDesktop {
         cfg.setTitle("THE MALEFIC VEIL");
         // Branded application/taskbar icon from the original PSX artwork.
         cfg.setWindowIcon("veil-original-art/pack02/malefic-veil-64.png");
-        cfg.setWindowedMode(960,600);
+        cfg.setWindowedMode(1280,720);
         cfg.setResizable(true);
         // Production uses its 60 Hz cap; the explicit CI ocean benchmark
         // must be uncapped or the paired baseline/ocean timings both report

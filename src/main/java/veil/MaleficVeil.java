@@ -26,7 +26,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     private final ArsenalMeshes arsenalMeshes=new ArsenalMeshes();
     private long arsenalSequence;
     private int fieldChoice;
-    private record FieldBurstVisual(double x,double y,int faction,long untilTick){}
+    private long nextFieldAudioEvent;
+    private record FieldBurstVisual(long id,double x,double y,int faction,long untilTick){}
     private final java.util.List<FieldBurstVisual> fieldBurstVisuals=new java.util.ArrayList<>();
     private boolean arsenalMenuVisible,primaryHeld,secondaryHeld;
     private int arsenalMenuChoice;
@@ -74,7 +75,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         double sprintEnergy,String interactPrompt,
         java.util.List<GpuMachineAudio> audioMachines,
         java.util.List<GpuVehicleAudio> audioVehicles,
-        java.util.List<GpuFieldAudio> audioFields) {}
+        java.util.List<GpuFieldAudio> audioFields,
+        java.util.List<GpuFieldBurstAudio> audioBursts) {}
+    /** One-shot authoritative harmless burst, never client-inferred damage. */
+    public record GpuFieldBurstAudio(long id,double x,double y,int faction) {}
     /** Local host operating state; LAN clients do not infer remote production. */
     public record GpuMachineAudio(int kind,double x,double y,boolean operating) {}
     public record GpuVehicleAudio(int id,double x,double y,double speed,
@@ -684,6 +688,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
                 audioFields.add(new GpuFieldAudio(f.id(),f.blueprint(),f.x(),f.y(),
                     f.flying(),f.remainingMs(),f.hp()));
         }
+        java.util.List<GpuFieldBurstAudio> audioBursts=new java.util.ArrayList<>();
+        for(FieldBurstVisual f:fieldBurstVisuals)
+            if(f.untilTick()>ticks)
+                audioBursts.add(new GpuFieldBurstAudio(f.id(),f.x(),f.y(),f.faction()));
         gpuFrame=new GpuFrame(px,py,angle,cameraPitch,weather.timeOfDay()*24,
             health,sanity,cash,scrap,medkits,rounds[0],reserves[0],
             rounds[6],reserves[6],selected,frags,dead,net==null||net.connected(),
@@ -697,7 +705,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             sprintEnergy,gpuInteractionPrompt(),
             java.util.List.copyOf(audioMachines),
             java.util.List.copyOf(audioVehicles),
-            java.util.List.copyOf(audioFields));
+            java.util.List.copyOf(audioFields),
+            java.util.List.copyOf(audioBursts));
     }
 
     private String gpuInteractionPrompt(){
@@ -1178,7 +1187,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             while((fieldResult=net.fieldResults.poll())!=null)toast("THROWN FIELD "+fieldResult);
             NetLink.FieldBurst fieldBurst;
             while((fieldBurst=net.fieldBursts.poll())!=null)
-                fieldBurstVisuals.add(new FieldBurstVisual(fieldBurst.x(),fieldBurst.y(),
+                fieldBurstVisuals.add(new FieldBurstVisual(++nextFieldAudioEvent,fieldBurst.x(),fieldBurst.y(),
                     fieldBurst.faction(),ticks+25));
             Integer pickupIndex;
             while((pickupIndex=net.pickedUp.poll())!=null){
@@ -1215,7 +1224,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             p.x=px;p.y=py;p.angle=angle;
             localHost.advance(33);
             for(ThrownDeployables.Burst burst:localHost.thrown.drainBursts())
-                fieldBurstVisuals.add(new FieldBurstVisual(burst.x(),burst.y(),burst.faction(),ticks+25));
+                fieldBurstVisuals.add(new FieldBurstVisual(++nextFieldAudioEvent,burst.x(),burst.y(),
+                    burst.faction(),ticks+25));
             localHost.thrown.drainRemoved();
         }
         if(!dead&&ticks%2==0&&(primaryHeld||secondaryHeld))shoot(secondaryHeld);

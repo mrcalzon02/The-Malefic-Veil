@@ -13,9 +13,15 @@ public final class GpuDeployableAudioGate {
     private record State(int faction,boolean flying,long remaining) {}
     private Map<Integer,State> last=Map.of();
     private boolean ready;
+    private long latestBurstId;
 
     public List<Event> accept(List<MaleficVeil.GpuFieldAudio> published){
+        return accept(published,List.of());
+    }
+    public List<Event> accept(List<MaleficVeil.GpuFieldAudio> published,
+            List<MaleficVeil.GpuFieldBurstAudio> bursts){
         Objects.requireNonNull(published);
+        Objects.requireNonNull(bursts);
         Map<Integer,State> next=new HashMap<>();
         List<Event> out=new ArrayList<>();
         for(var field:published){
@@ -30,13 +36,21 @@ public final class GpuDeployableAudioGate {
             else if(old!=null&&old.flying()&&!field.flying())
                 out.add(new Event(faction,Phase.LAND,field.x(),field.y()));
         }
-        // Removal with a previously observed expiring clock: no blast, no
-        // damage claim, no sound for uncertain network disappearance.
+        // Only real host-emitted harmless bursts can play a removal cue.
+        // A vanished network field alone is NOT an explosion.
+        long newest=latestBurstId;
+        for(var burst:bursts){
+            newest=Math.max(newest,burst.id());
+            if(ready&&burst.id()>latestBurstId&&burst.faction()>=0&&
+                    burst.faction()<3&&out.size()<6)
+                out.add(new Event(burst.faction(),Phase.EXPIRE,burst.x(),burst.y()));
+        }
+        latestBurstId=newest;
         last=Map.copyOf(next);
         ready=true;
         return List.copyOf(out);
     }
-    public void reset(){last=Map.of();ready=false;}
+    public void reset(){last=Map.of();latestBurstId=0;ready=false;}
     private static MaleficVeil.GpuFieldAudio f(int id,int faction,boolean flight){
         return new MaleficVeil.GpuFieldAudio(id,faction*7,2,0,flight,
             flight?3_600_000L:3_599_000L,120);
@@ -55,8 +69,11 @@ public final class GpuDeployableAudioGate {
             Phase.LAND,Phase.LAND,Phase.LAUNCH);
         expect(gate.accept(List.of(f(1,0,false),f(2,1,false),f(3,2,true))));
         expect(gate.accept(List.of())); // no fake explosion on stream loss
+        var burst=new MaleficVeil.GpuFieldBurstAudio(1,2,0,2);
+        expect(gate.accept(List.of(),List.of(burst)),Phase.EXPIRE);
+        expect(gate.accept(List.of(),List.of(burst)));
         gate.reset();
         expect(gate.accept(List.of(f(4,2,false)))); // joining history silence
-        System.out.println("PASS GPU_DEPLOYABLE_AUDIO faction launch/landing, no phantom expiry");
+        System.out.println("PASS GPU_DEPLOYABLE_AUDIO faction launch/land, actual harmless burst, dedup");
     }
 }

@@ -112,6 +112,17 @@ public final class IncursionResilienceGridTest {
         signal.hp=100;
         check(own.storage.delivered(SurvivalCrafting.Item.FIELD_STONE,1),
             "Cannot repair the authentic one-stone shortage");
+        // Funding preflight runs before terrain and device-clearance checks.
+        // Re-evaluate the entire build predicate now that materials are paid.
+        boolean legal=false;
+        for(double dx=-2.8;dx<=2.8&&!legal;dx+=1.4)
+            for(double dy=-2.8;dy<=2.8;dy+=1.4){
+                p.x=x+dx-1.1;p.y=y+dy;p.angle=0;
+                if(host.reviewBuild(1,GRID).allowed()){
+                    legal=true;break;
+                }
+            }
+        check(legal,"Paid grid still lacks a genuinely legal physical footprint");
         int prior=host.world.devices.size();
         var outcome=host.buildOutcome(1,GRID);
         check(outcome.built()&&outcome.deviceIndex()==prior&&

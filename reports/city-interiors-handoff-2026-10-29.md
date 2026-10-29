@@ -1,21 +1,21 @@
-# City interior kit and scale review — October 29, 2026
-
-The active user task is to build modular interior frames matching the Kenney city visuals, replacing source visual buildings with actual interiors and door/window slots. The user described a tile as roughly a nine-foot cube, then explicitly requested pulling and reconciling first and taking the newer, more developed implementations. Latest steering: show a couple of building-versus-vehicle shots to judge size before expanding the kit. Do not confuse this review point with cancellation or an indefinite stop.
-
-## Reconciliation completed
-
-Branch arsenal-prototypes merged origin/main c62e6d5 into local merge d5b4e9e. The newer host, permanent faction enrollment, save version 11, UI, network and city assembly implementations were retained after individual comparisons and explicit user direction. Old compile-only test references were updated to FIELD_BENCH and selectFaction. All Java sources compiled. ArsenalIntegrationTest, CityLayoutTest (eight seeds), ArsenalDeathInventoryTest and V1RealmCompatibilityTest passed. KenneyCityAssemblyTest fails its adult-height facade count assertion on the current main city code. The relevant CityLayout, UrbanTileAssembler, UrbanScene, World and GlbMesh files match origin/main exactly, so this is an inherited baseline failure, not a passing city visual gate. Do not hide it or lower the test threshold.
-
-The four previously modified tracked files (.gitignore, README.md, assets/SOURCES.md, docs/PLOT_GENERATION.md) were checkpointed/stashed and restored successfully after the merge. The stash is retained as backup. Untracked authoring files were preserved. Checkpoints are under build/reconcile-2026-10-28/.
-
-## Actual size evidence
-
-The newer city implementation uses 3m storeys and 6m facade spans; its collision tiles remain 1m and its CityLayout macrocell is 6m. A single gameplay collision tile is NOT a 9-foot building module. Preserve this distinction when authoring replacement frames. Native wall-type-b is 1m wide x 0.07m deep x 0.5m tall; runtime scale 6 makes it 6m x 0.42m x 3m. A second storey is placed 3m above the first. The user's approximate nine-foot statement was acknowledged, but exact 2.7432m spacing must not silently replace the current runtime grid.
-
-tools/render_city_scale_comparison.py created two measured source-backed example assemblies (one and two storeys) with native Kenney doors/windows/roof, two original Kenney trucks at runtime scale 1.9, 1.8m blue human guides and one-metre gold ruler ticks. Both buildings have a 6 x 6m footprint. Native roof scale 6 adds 3m, so total heights are 6m and 9m. Trucks measure approximately 3.1225m long x 1.577m wide x 1.9113m high. These are Blender source-asset scale studies, not runtime city screenshots, new approved buildings or completed interior models.
-
-Actual images viewed: previews/city-scale-comparison/street-scale.png and elevated-scale.png. They show the scale clearly but expose the source wall's open bands and decorative door clearance limitations. Raw renders are preserved; scene and packed source are under build/candidates/city-scale-comparison/city-scale-comparison.blend. Measured source bounds, source hashes, transforms, camera view hashes and review are in reports/city-scale-comparison.json. The public gallery includes this explicit preview root and a caption explaining the status/dimensions; no private project references are included.
-
-## Continue after size review
-
-Build a proper modular interior kit against the updated city placement code: real 3m storey frames and subdivisions, source-compatible 6m facade replacements, real door/window voids, two-sided walls, floor/ceiling pieces, partitions, corners, stair openings and stairs, typed ports, and varied example assemblies. Determine exact doorway/window positions from measured source geometry rather than filenames. Do not substitute source decorative door/window planes for usable openings. Keep building grid, collision tiles, city macroplots and faction 5m/10m construction plots distinct. Completed authored assemblies must obey their applicable containment contract; do not silently resize. Read AGENTS.md and the authored-3d-production skill before authoring.
+# City interior kit and scale review â€” October 29, 2026
+
+The active user task is to build modular interior frames matching the Kenney city visuals, replacing source visual buildings with actual interiors and door/window slots. The user described a tile as roughly a nine-foot cube, then explicitly requested pulling and reconciling first and taking the newer, more developed implementations. Latest steering: show a couple of building-versus-vehicle shots to judge size before expanding the kit. Do not confuse this review point with cancellation or an indefinite stop.
+
+## Reconciliation completed
+
+Branch arsenal-prototypes merged origin/main c62e6d5 into local merge d5b4e9e. The newer host, permanent faction enrollment, save version 11, UI, network and city assembly implementations were retained after individual comparisons and explicit user direction. Old compile-only test references were updated to FIELD_BENCH and selectFaction. All Java sources compiled. ArsenalIntegrationTest, CityLayoutTest (eight seeds), ArsenalDeathInventoryTest and V1RealmCompatibilityTest passed. KenneyCityAssemblyTest fails its adult-height facade count assertion on the current main city code. The relevant CityLayout, UrbanTileAssembler, UrbanScene, World and GlbMesh files match origin/main exactly, so this is an inherited baseline failure, not a passing city visual gate. Do not hide it or lower the test threshold.
+
+The four previously modified tracked files (.gitignore, README.md, assets/SOURCES.md, docs/PLOT_GENERATION.md) were checkpointed/stashed and restored successfully after the merge. The stash is retained as backup. Untracked authoring files were preserved. Checkpoints are under build/reconcile-2026-10-28/.
+
+## Actual size evidence
+
+The newer city implementation uses 3m storeys and 6m facade spans; its collision tiles remain 1m and its CityLayout macrocell is 6m. A single gameplay collision tile is NOT a 9-foot building module. Preserve this distinction when authoring replacement frames. Native wall-type-b is 1m wide x 0.07m deep x 0.5m tall; runtime scale 6 makes it 6m x 0.42m x 3m. A second storey is placed 3m above the first. The user's approximate nine-foot statement was acknowledged, but exact 2.7432m spacing must not silently replace the current runtime grid.
+
+tools/render_city_scale_comparison.py created two measured source-backed example assemblies (one and two storeys) with native Kenney doors/windows/roof, two original Kenney trucks at runtime scale 1.9, 1.8m blue human guides and one-metre gold ruler ticks. Both buildings have a 6 x 6m footprint. Native roof scale 6 adds 3m, so total heights are 6m and 9m. Trucks measure approximately 3.1225m long x 1.577m wide x 1.9113m high. These are Blender source-asset scale studies, not runtime city screenshots, new approved buildings or completed interior models.
+
+Actual images viewed: previews/city-scale-comparison/street-scale.png and elevated-scale.png. They show the scale clearly but expose the source wall's open bands and decorative door clearance limitations. Raw renders are preserved; scene and packed source are under build/candidates/city-scale-comparison/city-scale-comparison.blend. Measured source bounds, source hashes, transforms, camera view hashes and review are in reports/city-scale-comparison.json. The public gallery includes this explicit preview root and a caption explaining the status/dimensions; no private project references are included.
+
+## Continue after size review
+
+Build a proper modular interior kit against the updated city placement code: real 3m storey frames and subdivisions, source-compatible 6m facade replacements, real door/window voids, two-sided walls, floor/ceiling pieces, partitions, corners, stair openings and stairs, typed ports, and varied example assemblies. Determine exact doorway/window positions from measured source geometry rather than filenames. Do not substitute source decorative door/window planes for usable openings. Keep building grid, collision tiles, city macroplots and faction 5m/10m construction plots distinct. Completed authored assemblies must obey their applicable containment contract; do not silently resize. Read AGENTS.md and the authored-3d-production skill before authoring.

@@ -6,7 +6,7 @@ import bpy
 from mathutils import Vector
 from structure_art import reset,box,ellipsoid,beam
 from bpy_extras.object_utils import world_to_camera_view
-OUT=ROOT/'build/candidates/city-scale-comparison';PRE=ROOT/'previews/city-scale-comparison';OUT.mkdir(parents=True,exist_ok=True);PRE.mkdir(parents=True,exist_ok=True)
+OUT=ROOT/'build/candidates/city-scale-comparison';PRE=ROOT/'previews/city-scale-studies';OUT.mkdir(parents=True,exist_ok=True);PRE.mkdir(parents=True,exist_ok=True)
 reset();z=zipfile.ZipFile(ROOT/'assets/game/kenney/retro-urban-kit-2.0.zip')
 models=['wall-type-b','wall-a-roof','door-type-a','window-wide-type-a','truck-green','truck-grey']
 for name in z.namelist():

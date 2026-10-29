@@ -354,7 +354,7 @@
   ],
   "views": {
     "street-scale": {
-      "path": "previews/city-scale-comparison/street-scale.png",
+      "path": "previews/city-scale-studies/street-scale.png",
       "sha256": "78050eb8c1bd5d374bb411e582b35f47371befbb875b4d18f27715de15a1b27a",
       "labels": [
         {
@@ -374,7 +374,7 @@
       ]
     },
     "elevated-scale": {
-      "path": "previews/city-scale-comparison/elevated-scale.png",
+      "path": "previews/city-scale-studies/elevated-scale.png",
       "sha256": "a1602759538c513100402270efa280d75ea21af9586279d725e07f87ee75c5db",
       "labels": [
         {

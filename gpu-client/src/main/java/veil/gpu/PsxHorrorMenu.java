@@ -147,13 +147,21 @@ public final class PsxHorrorMenu implements AutoCloseable {
         textures.put("veil_buttons",originalButtons);
         textures.put("veil_menu_icons",originalMenuIcons);
         textures.put("veil_folders",originalFolders);
+        // User-approved original file/folder/action/status art. A GPU texture
+        // atlas keeps the UI fast on old desktop hardware.
+        Texture fileAtlas=new Texture(Gdx.files.classpath(
+            "veil-original-art/pack02/file-ui.png"));
+        if(fileAtlas.getWidth()!=288||fileAtlas.getHeight()!=96)
+            throw new IllegalStateException("Original file icon atlas dimensions changed");
+        fileAtlas.setFilter(Texture.TextureFilter.Nearest,Texture.TextureFilter.Nearest);
+        textures.put("veil_file_icons",fileAtlas);
         patches.put("veil_button_normal",new NinePatch(
             new TextureRegion(originalButtons,0,0,80,24),8,8,7,7));
         patches.put("veil_button_hover",new NinePatch(
             new TextureRegion(originalButtons,80,0,80,24),8,8,7,7));
         patches.put("veil_button_pressed",new NinePatch(
             new TextureRegion(originalButtons,160,0,80,24),8,8,7,7));
-        System.out.println("VEIL_ORIGINAL_UI_ART_READY buttons=3 menuIcons=8 folders=8");
+        System.out.println("VEIL_ORIGINAL_UI_ART_READY buttons=3 menuIcons=8 folders=8 fileIcons=42");
         System.out.println("PSX_HORROR_UI_READY source=heyheythere sha256="+
             PsxHorrorUiSource.SHA256+" sprites="+textures.size()+
             " font=original fog-theme=yes");
@@ -223,6 +231,31 @@ public final class PsxHorrorMenu implements AutoCloseable {
         batch.draw(new TextureRegion(textures.get("veil_folders"),
             index*32,0,32,32),x,y,size,size);
         sourcedDraws++;
+    }
+    /** Original icon sheet: folders 12, files 12, actions 10, badges 8. */
+    public void fileIcon(SpriteBatch batch,String group,int index,
+                         float x,float y,float size){
+        int row=switch(group){
+            case "folders" -> 0;
+            case "files" -> 1;
+            case "actions" -> 2;
+            case "badges" -> 3;
+            default -> throw new IllegalArgumentException("Unknown file icon group "+group);
+        };
+        int count=row<2?12:row==2?10:8;
+        if(index<0||index>=count)throw new IllegalArgumentException("File icon index "+index);
+        batch.draw(new TextureRegion(textures.get("veil_file_icons"),
+            index*24,row*24,24,24),x,y,size,size);
+        sourcedDraws++;
+    }
+    /** Draw the new art inside a real interactive menu row, not a fake button. */
+    public void choiceWithFileIcon(SpriteBatch batch,String text,float x,float y,
+                                   float width,float height,boolean selected,
+                                   String group,int index){
+        source(patches.get(selected?"veil_button_hover":"veil_button_normal"),
+            batch,x,y,width,height);
+        fileIcon(batch,group,index,x+5,y+2,height-4);
+        packFont.draw(batch,text,x+29,y+height-5);
     }
     public Screen screen(){return screen;}
     public void showMain(){screen=Screen.MAIN;selection=0;}

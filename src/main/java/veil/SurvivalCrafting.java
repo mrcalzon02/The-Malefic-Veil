@@ -50,7 +50,10 @@ public final class SurvivalCrafting {
         PRECISION_FEEDLINE, ASSEMBLY_CONTROLLER, RELAY_BOX, CONSECRATED_SHELL,
         ORGAN_CORE, NUTRIENT_STOCK, CHORUS_RESONANCE, BOUND_LITURGY,
         DREAD_IMPRINT, DEFENSE_CACHE, BALLISTIC_SUPPLY, FIELD_MRE,
-        GROWN_CHITIN, BINDING_RESIN, CONTROLLED_RATIONS
+        GROWN_CHITIN, BINDING_RESIN, CONTROLLED_RATIONS,
+        // Append-only: Incursion industrial outputs must exist as physical
+        // stockpile items before a paid 25-load batch can complete.
+        RESILIENCE_CORE, DREAD_WARD, BREACH_SEED
     }
     public enum Station { HAND, FIRE, WORKBENCH }
     public record Recipe(String id,Station station,Map<Item,Integer> requires,

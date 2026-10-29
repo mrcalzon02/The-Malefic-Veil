@@ -87,6 +87,7 @@ public final class GpuOverlayMenu {
     public void openCrew(){show(Screen.CREW);}
     /** Existing game simulation stays live for clients; only local input pauses. */
     private void show(Screen target){
+        if(audio!=null&&screen!=target)audio.panel();
         screen=target;selected=0;
         Gdx.input.setCursorCatched(false);
         build();
@@ -124,6 +125,14 @@ public final class GpuOverlayMenu {
     }
     private void toast(String feedback){
         notice=feedback.length()>48?feedback.substring(0,47)+"~":feedback;
+        if(audio!=null){
+            String signal=feedback.toUpperCase(Locale.ROOT);
+            if(signal.contains("FAIL")||signal.contains("NEED ")||
+               signal.contains("CANNOT")||signal.contains("FIRST PAGE")||
+               signal.contains("END OF")||signal.contains("AWAITING")||
+               signal.contains("INVALID"))audio.reject();
+            else audio.confirm();
+        }
     }
     private void quickPanel(int key){
         gameplay.gpuKey(key,true);gameplay.gpuKey(key,false);
@@ -538,10 +547,12 @@ public final class GpuOverlayMenu {
             show(screen==Screen.VIDEO?Screen.GAME:Screen.VIDEO);
         if(screen==Screen.GAME)return true;
         if(screen==Screen.STORAGE)build();
+        int wasSelected=selected;
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
             selected=Math.floorMod(selected-1,Math.max(1,items.size()));
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
             selected=Math.floorMod(selected+1,Math.max(1,items.size()));
+        if(wasSelected!=selected&&audio!=null)audio.navigate();
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))trigger(0);
         if(screen!=Screen.CREW_INPUT){
             if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))trigger(-1);

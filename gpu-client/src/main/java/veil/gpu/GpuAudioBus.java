@@ -6,29 +6,31 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
-import java.nio.*;
 import java.nio.file.*;
 import java.security.*;
 import java.util.*;
 
 /**
- * Native libGDX sound bus. User-owned source music is not re-encoded:
- * eight Git-backed binary resource pieces reconstruct exactly the approved
- * 3,558,384-byte original MP3, verified by SHA-256 before playback.
+ * Native libGDX audio mixer. Original source music retains exact SHA-256
+ * verification. Sourced Drive samples take precedence over synthesized safety
+ * cues; 32 separately rendered weapon profiles never collapse to one gunshot.
+ * Audio failure is isolated from authoritative multiplayer gameplay.
  */
 public final class GpuAudioBus implements AutoCloseable {
     private static final int PARTS=8;
     public static final long ORIGINAL_BYTES=3558384;
     public static final String ORIGINAL_SHA="0e0b0e5bbad299d733938f907aa63fd62de9abad3dc61a00a8ee287fbe10a293";
-    private Music music;
-    private Sound menuTick,gunshot;
-    private Path trackPath,uiPath,shotPath;
+    private Music music, ambience;
+    private final Sound[] cues=new Sound[GpuAudioSynthesis.Cue.values().length];
+    private final Sound[] weapon=new Sound[32];
+    private final Sound[] sourceFamily=new Sound[8];
+    private Sound menuClick,menuConfirm,menuReject,panelOpen;
+    private final List<Path> temporary=new ArrayList<>();
     private GpuClientSettings settings;
-    private boolean ingame;
-    private boolean available;
-    public GpuAudioBus(GpuClientSettings settings){
-        this.settings=Objects.requireNonNull(settings);
-    }
+    private boolean ingame,available;
+    private int footstep;
+    public GpuAudioBus(GpuClientSettings settings){this.settings=Objects.requireNonNull(settings);}
+
     public static byte[] verifiedMusic()throws IOException{
         ByteArrayOutputStream output=new ByteArrayOutputStream((int)ORIGINAL_BYTES);
         for(int i=0;i<PARTS;i++){
@@ -49,76 +51,116 @@ public final class GpuAudioBus implements AutoCloseable {
         }catch(NoSuchAlgorithmException impossible){throw new AssertionError(impossible);}
         return bytes;
     }
-    /** Small neutral UI click and gun report: real audible SFX routed by category. */
-    private static byte[] synth(boolean shot){
-        int rate=22050,samples=shot?rate/6:rate/20;
-        ByteBuffer bytes=ByteBuffer.allocate(44+samples*2).order(ByteOrder.LITTLE_ENDIAN);
-        bytes.put(new byte[]{'R','I','F','F'});bytes.putInt(36+samples*2);
-        bytes.put(new byte[]{'W','A','V','E','f','m','t',' '});bytes.putInt(16);
-        bytes.putShort((short)1);bytes.putShort((short)1);
-        bytes.putInt(rate);bytes.putInt(rate*2);bytes.putShort((short)2);bytes.putShort((short)16);
-        bytes.put(new byte[]{'d','a','t','a'});bytes.putInt(samples*2);
-        Random noise=new Random(shot?83:7);
-        for(int i=0;i<samples;i++){
-            double phase=i/(double)rate,envelope=Math.pow(1-i/(double)samples,shot?2:3);
-            double signal=shot?(noise.nextDouble()*2-1)*envelope:
-                Math.sin(Math.PI*2*(970-540*phase)*phase)*envelope;
-            bytes.putShort((short)(signal*(shot?10000:4400)));
+
+    private Path temp(String stem,String ext,byte[] data)throws IOException {
+        Path file=Files.createTempFile("malefic-"+stem+"-",ext);
+        temporary.add(file);
+        Files.write(file,data);
+        return file;
+    }
+    private Sound synthesized(String name,byte[] wav)throws IOException {
+        return Gdx.audio.newSound(new FileHandle(temp(name,".wav",wav).toFile()));
+    }
+    private Sound sourced(String filename) {
+        String resource="audio/library/"+filename;
+        if(GpuAudioBus.class.getResource("/"+resource)==null)return null;
+        try{return Gdx.audio.newSound(Gdx.files.classpath(resource));}
+        catch(RuntimeException unavailable){
+            System.err.println("AUDIO_SOURCE_DECODER_UNAVAILABLE "+resource+" "+unavailable);
+            return null;
         }
-        return bytes.array();
+    }
+    private Sound sourcedOrFallback(String filename, GpuAudioSynthesis.Cue cue)throws IOException {
+        Sound original=sourced(filename);
+        return original==null?synthesized("ui-"+cue.name().toLowerCase(Locale.ROOT),
+            GpuAudioSynthesis.cue(cue)):original;
     }
     public void open(){
         if(available)return;
         try{
             byte[] original=verifiedMusic();
-            trackPath=Files.createTempFile("malefic-menu-music-", ".mp3");
-            Files.write(trackPath,original);
-            music=Gdx.audio.newMusic(new FileHandle(trackPath.toFile()));
+            music=Gdx.audio.newMusic(new FileHandle(temp("original-music",".mp3",original).toFile()));
             music.setLooping(true);
-            uiPath=Files.createTempFile("malefic-ui-click-", ".wav");
-            shotPath=Files.createTempFile("malefic-gun-sfx-", ".wav");
-            Files.write(uiPath,synth(false));Files.write(shotPath,synth(true));
-            menuTick=Gdx.audio.newSound(new FileHandle(uiPath.toFile()));
-            gunshot=Gdx.audio.newSound(new FileHandle(shotPath.toFile()));
+            ambience=Gdx.audio.newMusic(new FileHandle(temp("city-ambience",".wav",
+                GpuAudioSynthesis.cityAmbience()).toFile()));
+            ambience.setLooping(true);
+            for(GpuAudioSynthesis.Cue cue:GpuAudioSynthesis.Cue.values())
+                cues[cue.ordinal()]=synthesized(cue.name().toLowerCase(Locale.ROOT),
+                    GpuAudioSynthesis.cue(cue));
+            menuClick=sourcedOrFallback("Single_click.wav",GpuAudioSynthesis.Cue.CLICK);
+            menuConfirm=sourcedOrFallback("Cathonk.wav",GpuAudioSynthesis.Cue.CONFIRM);
+            menuReject=sourcedOrFallback("Metal_wonk.wav",GpuAudioSynthesis.Cue.REJECT);
+            panelOpen=sourcedOrFallback("Book_snap.wav",GpuAudioSynthesis.Cue.NAVIGATE);
+            for(int i=0;i<weapon.length;i++)
+                weapon[i]=synthesized("weapon-"+(i+1),GpuAudioSynthesis.weapon(i));
+            sourceFamily[0]=sourced("Shot.mp3");
+            sourceFamily[1]=sourced("LAS.mp3");
+            sourceFamily[2]=sourced("Lightning-crackle.mp3");
+            sourceFamily[3]=sourced("FLAME.mp3");
+            sourceFamily[6]=sourced("Plas.mp3");
             available=true;
             apply(settings);
             music.play();
-            System.out.println("AUDIO_MENU_READY originalDriveMusicSha="+ORIGINAL_SHA+
-                " bytes="+original.length+" categories=music,ui,effects,ambience");
+            System.out.println("AUDIO_BANK_READY originalDriveMusicSha="+ORIGINAL_SHA+
+                " bytes="+original.length+" weapons=32 ui=positive,negative,navigate,click"+
+                " categories=music,ambience,effects,ui,voice");
         }catch(Exception failed){
-            // Headless Mesa/CI may have no ALSA device. A missing physical
-            // sound card never blocks game launch. Verified music test is separate.
+            // Missing ALSA/OpenAL in CI must never prevent a real game launch.
             System.err.println("AUDIO_DEVICE_UNAVAILABLE "+failed);
             close();
         }
     }
     public void apply(GpuClientSettings fresh){
         settings=Objects.requireNonNull(fresh);
-        if(music!=null)
-            music.setVolume(ingame?settings.ambienceGain()*.17f:settings.musicGain());
+        // Music never borrows the ambience slider. Both honor master gain.
+        if(music!=null)music.setVolume(settings.musicGain()*(ingame?.18f:1f));
+        if(ambience!=null)ambience.setVolume(ingame?settings.ambienceGain()*.5f:0f);
     }
     public void inGame(){
         ingame=true;apply(settings);
         if(music!=null&&!music.isPlaying())music.play();
+        if(ambience!=null&&!ambience.isPlaying())ambience.play();
     }
-    public void menu(){ingame=false;apply(settings);}
-    public void click(){
-        if(available&&menuTick!=null&&settings.uiGain()>0)
-            menuTick.play(settings.uiGain());
+    public void menu(){
+        ingame=false;apply(settings);
+        if(ambience!=null)ambience.stop();
+        if(music!=null&&!music.isPlaying())music.play();
     }
-    public void shoot(){
-        if(available&&gunshot!=null&&settings.effectsGain()>0)
-            gunshot.play(settings.effectsGain());
+    private void play(Sound sound,float gain){
+        if(available&&sound!=null&&gain>0) sound.play(Math.min(1,gain));
+    }
+    public void click(){play(menuClick,settings.uiGain());}
+    public void navigate(){play(cues[GpuAudioSynthesis.Cue.NAVIGATE.ordinal()],settings.uiGain()*.45f);}
+    public void confirm(){play(menuConfirm,settings.uiGain()*.8f);}
+    public void reject(){play(menuReject,settings.uiGain()*.8f);}
+    public void panel(){play(panelOpen,settings.uiGain()*.5f);}
+    public void empty(){play(cues[GpuAudioSynthesis.Cue.EMPTY.ordinal()],settings.effectsGain()*.7f);}
+    public void reload(){play(cues[GpuAudioSynthesis.Cue.RELOAD.ordinal()],settings.effectsGain()*.65f);}
+    public void step(){
+        play(cues[(footstep++%2==0?GpuAudioSynthesis.Cue.FOOTSTEP_A:
+            GpuAudioSynthesis.Cue.FOOTSTEP_B).ordinal()],settings.effectsGain()*.23f);
+    }
+    /** Legacy entry point only; world code must supply its actual arsenal index. */
+    public void shoot(){shoot(0);}
+    public void shoot(int arsenalIndex){
+        int family=GpuAudioSynthesis.family(arsenalIndex);
+        play(weapon[arsenalIndex],settings.effectsGain()*.92f);
+        play(sourceFamily[family],settings.effectsGain()*.22f);
     }
     @Override public void close(){
         if(music!=null){music.dispose();music=null;}
-        if(menuTick!=null){menuTick.dispose();menuTick=null;}
-        if(gunshot!=null){gunshot.dispose();gunshot=null;}
+        if(ambience!=null){ambience.dispose();ambience=null;}
+        Set<Sound> disposed=Collections.newSetFromMap(new IdentityHashMap<>());
+        for(Sound s:cues)if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound s:weapon)if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound s:sourceFamily)if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound s:new Sound[]{menuClick,menuConfirm,menuReject,panelOpen})
+            if(s!=null&&disposed.add(s))s.dispose();
+        Arrays.fill(cues,null);Arrays.fill(weapon,null);Arrays.fill(sourceFamily,null);
+        menuClick=menuConfirm=menuReject=panelOpen=null;
         available=false;
-        for(Path path:new Path[]{trackPath,uiPath,shotPath}){
-            if(path!=null)try{Files.deleteIfExists(path);}catch(IOException ignored){}
-        }
-        trackPath=uiPath=shotPath=null;
+        for(Path path:temporary)try{Files.deleteIfExists(path);}catch(IOException ignored){}
+        temporary.clear();
     }
     public static void main(String[] args)throws IOException{
         byte[] music=verifiedMusic();
@@ -127,4 +169,5 @@ public final class GpuAudioBus implements AutoCloseable {
         System.out.println("PASS GPU_DRIVE_MUSIC_INTEGRITY sha256="+ORIGINAL_SHA+
             " bytes="+music.length+" parts="+PARTS);
     }
+
 }

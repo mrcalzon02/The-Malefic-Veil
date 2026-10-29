@@ -174,6 +174,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     }
     private GpuClientSettings clientSettings=GpuClientSettings.load();
     private GpuAudioBus audioBus;
+    private double audioLastStepX=Double.NaN,audioLastStepZ=Double.NaN,audioStepDistance;
     private GpuOverlayMenu gameplayMenu;
     private Runnable onReturnMain;
     public void audioBus(GpuAudioBus bus){this.audioBus=bus;}
@@ -562,11 +563,28 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 (clientSettings.invertY?-1:1));
         }
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            gameplay.gpuFire();
-            if(audioBus!=null)audioBus.shoot();
+            MaleficVeil.GpuFrame before=gameplay.gpuFrame();
+            gameplay.gpuFire(); // Only the authoritative host determines damage/ammunition.
+            if(audioBus!=null&&before!=null){
+                var state=before.arsenalState();
+                if(state!=null&&state.clip()[before.weapon()]<=0)audioBus.empty();
+                else audioBus.shoot(before.weapon());
+            }
         }
         MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
         if(frame!=null){
+            if(!Double.isNaN(audioLastStepX)){
+                double movement=Math.hypot(frame.x()-audioLastStepX,frame.z()-audioLastStepZ);
+                if(movement>3)audioStepDistance=0; // teleport/network correction
+                else if(movement>0){
+                    audioStepDistance+=movement;
+                    if(audioStepDistance>=1.6){
+                        if(audioBus!=null)audioBus.step();
+                        audioStepDistance%=1.6;
+                    }
+                }
+            }
+            audioLastStepX=frame.x();audioLastStepZ=frame.z();
             x=frame.x();y=frame.z();heading=frame.yaw();
             cameraPitch=frame.pitch();cameraHeight=1.65;
             worldTimeMs=(long)(WorldDayNight.DAY_MS*frame.hour()/24.0);

@@ -170,6 +170,7 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         rebuild(false);
     }
     private void gotoScreen(Screen next){
+        if(audio!=null&&screen!=next)audio.panel();
         screen=next;selected=0;rebuild();
         message=switch(next){
             case HOME -> "Select a mode. All setup stays in this window.";
@@ -184,7 +185,18 @@ public final class GpuFrontEnd extends ApplicationAdapter {
             case CONNECTING -> "Connecting... ESC or Cancel returns to classes.";
         };
     }
-    private void note(String value){message=hbnet.Privacy.enabled?(value.contains("NET-")?"Operation unavailable (NET-04)":"Private session update (Stream Safe)"):value;System.out.println("GPU_MENU_UPDATE");}
+    private void note(String value){
+        message=hbnet.Privacy.enabled?(value.contains("NET-")?
+            "Operation unavailable (NET-04)":"Private session update (Stream Safe)"):value;
+        if(audio!=null){
+            String signal=value.toUpperCase(Locale.ROOT);
+            if(signal.startsWith("CANNOT")||signal.startsWith("NO EXISTING")||
+               signal.contains("INVALID")||signal.contains("UNAVAILABLE"))audio.reject();
+            else if(signal.startsWith("CREATED")||signal.startsWith("CLIENT OPTIONS SAVED"))
+                audio.confirm();
+        }
+        System.out.println("GPU_MENU_UPDATE");
+    }
     private void item(String label,Runnable action){
         entries.add(new Entry(label,action,null,null,null));
     }
@@ -517,7 +529,10 @@ public final class GpuFrontEnd extends ApplicationAdapter {
         if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)||
             Gdx.input.isKeyJustPressed(Input.Keys.TAB))
             selected=Math.floorMod(selected+1,Math.max(1,entries.size()));
-        if(selected!=formerlySelected)replaceFieldOnType=true;
+        if(selected!=formerlySelected){
+            replaceFieldOnType=true;
+            if(audio!=null)audio.navigate();
+        }
         if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))activate(-1);
         if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))activate(1);
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))activate(0);

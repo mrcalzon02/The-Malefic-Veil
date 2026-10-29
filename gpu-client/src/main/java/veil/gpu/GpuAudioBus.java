@@ -27,6 +27,8 @@ public final class GpuAudioBus implements AutoCloseable {
     private float thunderCooldown,previousFlash;
     private final Sound[] cues=new Sound[GpuAudioSynthesis.Cue.values().length];
     private final Sound[] impacts=new Sound[GpuAudioSynthesis.Impact.values().length];
+    private final Sound[][] surfaceSteps=
+        new Sound[GpuFootstepSurface.Material.values().length][2];
     private final Sound[] weapon=new Sound[32];
     private final Sound[] alternate=new Sound[32];
     private final Sound[] handling=new Sound[32];
@@ -103,6 +105,11 @@ public final class GpuAudioBus implements AutoCloseable {
             for(GpuAudioSynthesis.Impact type:GpuAudioSynthesis.Impact.values())
                 impacts[type.ordinal()]=synthesized("impact-"+type.name().toLowerCase(Locale.ROOT),
                     GpuAudioSynthesis.impact(type));
+            for(GpuFootstepSurface.Material material:GpuFootstepSurface.Material.values())
+                for(int variant=0;variant<2;variant++)
+                    surfaceSteps[material.ordinal()][variant]=synthesized(
+                        "step-"+material.name().toLowerCase(Locale.ROOT)+"-"+variant,
+                        GpuAudioSynthesis.footstep(material,variant));
             for(GpuAudioSynthesis.WeatherBed bed:GpuAudioSynthesis.WeatherBed.values()){
                 Music layer=Gdx.audio.newMusic(new FileHandle(temp(
                     "weather-"+bed.name().toLowerCase(Locale.ROOT),".wav",
@@ -291,10 +298,12 @@ public final class GpuAudioBus implements AutoCloseable {
         // Crossfade both channels rather than restarting their wave files.
         apply(settings);
     }
-    public void step(){
-        play(cues[(footstep++%2==0?GpuAudioSynthesis.Cue.FOOTSTEP_A:
-            GpuAudioSynthesis.Cue.FOOTSTEP_B).ordinal()],settings.effectsGain()*.23f);
+    public void step(GpuFootstepSurface.Material surface){
+        if(surface==null)return;
+        Sound sound=surfaceSteps[surface.ordinal()][footstep++%2];
+        play(sound,settings.effectsGain()*.32f);
     }
+    public void step(){step(GpuFootstepSurface.Material.ASPHALT);}
     /** Play only events derived from observable gameplay changes, never client guesses. */
     public void worldCue(GpuWorldAudioGate.Cue event){
         switch(event){
@@ -333,6 +342,8 @@ public final class GpuAudioBus implements AutoCloseable {
         Set<Sound> disposed=Collections.newSetFromMap(new IdentityHashMap<>());
         for(Sound s:cues)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:impacts)if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound[] group:surfaceSteps)
+            for(Sound s:group)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:weapon)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:alternate)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:handling)if(s!=null&&disposed.add(s))s.dispose();
@@ -343,6 +354,7 @@ public final class GpuAudioBus implements AutoCloseable {
         for(Sound s:new Sound[]{menuClick,menuConfirm,menuReject,panelOpen})
             if(s!=null&&disposed.add(s))s.dispose();
         Arrays.fill(cues,null);Arrays.fill(impacts,null);Arrays.fill(weapon,null);
+        for(Sound[] group:surfaceSteps)Arrays.fill(group,null);
         Arrays.fill(alternate,null);
         Arrays.fill(handling,null);Arrays.fill(sourceFamily,null);
         thunder=sourceReload=sourceCoins=sourceDrawer=sourceCloth=sourceHurt=sourceField=null;

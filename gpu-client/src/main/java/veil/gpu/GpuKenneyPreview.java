@@ -639,7 +639,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 else if(movement>0){
                     audioStepDistance+=movement;
                     if(audioStepDistance>=1.6){
-                        if(audioBus!=null)audioBus.step();
+                        if(audioBus!=null)audioBus.step(GpuFootstepSurface.classify(
+                            gameplay.gpuWorld(),frame.x(),frame.z(),
+                            frame.snow(),frame.rain()));
                         audioStepDistance%=1.6;
                     }
                 }

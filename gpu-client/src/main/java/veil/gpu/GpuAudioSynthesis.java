@@ -293,6 +293,37 @@ public final class GpuAudioSynthesis {
         return pcm(values);
     }
 
+    /** Surface-specific, deterministically varied footfalls. */
+    public static byte[] footstep(GpuFootstepSurface.Material material,int variation) {
+        if(material==null||variation<0||variation>1)
+            throw new IllegalArgumentException("Unknown footstep material/variation");
+        int count=(int)(RATE*(material==GpuFootstepSurface.Material.MUD?.24:.19));
+        double[] samples=new double[count];
+        Random rand=new Random(99311L+material.ordinal()*733L+variation*1117L);
+        double low=0,phase=0;
+        for(int i=0;i<count;i++){
+            double t=i/(double)count;
+            double n=rand.nextDouble()*2-1;
+            low=low*.83+n*.17;
+            double frequency=95+material.ordinal()*28+variation*13;
+            phase+=TAU*(frequency-35*t)/RATE;
+            double tone=Math.sin(phase);
+            double sample=switch(material){
+                case ASPHALT -> tone*.31+low*.42+n*.22;
+                case STONE -> tone*.32+low*.32+n*.32;
+                case GRASS -> low*.65+n*.12+tone*.10;
+                case LEAVES -> n*.42+low*.30+tone*.07;
+                case GRAVEL -> n*.52+low*.38+tone*.10;
+                case SAND -> low*.69+n*.13+tone*.06;
+                case MUD -> low*.58+Math.sin(phase*.33)*.25+n*.12;
+                case SNOW -> n*.40+low*.36+tone*.11;
+            };
+            double doubleTap=.78+.22*Math.cos(TAU*3*t);
+            samples[i]=sample*Math.pow(1-t,2.4)*doubleTap*.53;
+        }
+        return pcm(samples);
+    }
+
     /** Device-free deterministic integrity check for CI / headless builds. */
     public static void main(String[] args) {
         for(Impact kind:Impact.values()) {
@@ -301,6 +332,11 @@ public final class GpuAudioSynthesis {
         }
         if(campfire().length!=44+RATE*4*2||combatPulse().length!=44+RATE*8*2)
             throw new IllegalStateException("Broken periodic environment/combat loop");
+        Set<Integer> stepHashes=new HashSet<>();
+        for(GpuFootstepSurface.Material material:GpuFootstepSurface.Material.values())
+            for(int variant=0;variant<2;variant++)
+                if(!stepHashes.add(Arrays.hashCode(footstep(material,variant))))
+                    throw new IllegalStateException("Duplicate footstep "+material+"/"+variant);
         Set<Integer> checksums = new HashSet<>();
         for(int i = 0; i < 32; i++) {
             byte[] wav = weapon(i);

@@ -129,3 +129,14 @@ Do not describe this as fully listening-tested until the GPU CI and real device 
 - Original WAVs are created at runtime, honoring separate music/ambience/effects gains. All music and sound objects are disposed with the GPU audio bus and no headless server depends on them.
 
 **Remaining:** physical mastering/listening QA, other facility-specific active operating-state emitters, terrain-footstep materials, rain shelter/occlusion reverb, vehicle movement sounds, field deployable start/decay states, authored long-form adaptive score and public CC0 asset intake where original recordings cannot cover a verified gap.
+
+## Stage 5 — Terrain-aware footsteps (October 29, 2026)
+
+The prior two synthesized footstep clicks were replaced with **eight grounded surface identities**, with two deterministic samples per material. The GPU now samples the same `World` road grid and `ContinentLayout` biome used for game movement; weather snow and heavy rain modify the chosen material without any additional invented terrain simulation.
+
+- Detailed-city road cells: asphalt. Other traversable city cells: stone/concrete.
+- Wilderness: grass, forest leaf litter, gravel in hills/mountains, sand on beaches, marsh mud; heavy rain makes open plains muddy; snow changes the exposed walking sound to snow crunch.
+- Actual travel distance still gates footsteps and large coordinate corrections remain silent. A step is never triggered solely by camera motion.
+- `GpuFootstepSurface.main` validates city, road, biome, wet and snow classifications; `GpuAudioSynthesis.main` verifies all sixteen individual WAV waveforms are distinct. No additional external asset license is needed.
+
+**Outstanding sound work:** actual material probing underneath placed prefabs, interior reverb/occlusion, biome-specific wild animal ambience, operating factory/vehicle loops, cinematic music and release-grade loudness QA.

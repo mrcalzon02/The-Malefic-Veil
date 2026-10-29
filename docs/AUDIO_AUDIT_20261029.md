@@ -117,3 +117,15 @@ Inspected exact imported original recordings with ffprobe and ffmpeg's `volumede
 The GPU client previously sent only a one-shot primary mouse press. Held firing was not forwarded to the real `MaleficVeil` simulation, and right-mouse alternate fire had no GPU entry point. The new `gpuHoldFire(primary,alternate)` path forwards **state transitions** to the existing Swing-EDT host gameplay input, keeping continuous fire, charge, spin-up and release under the same `ArsenalSystems` authoritative cooldown/ammunition handling as traditional play. Right-click sends `gpuFire(true)`; all sound still comes from confirmed `ArsenalSystems.View.actionAt`, never raw mouse input. Menu opening sends release to avoid firing behind overlays. GPU live smoke now exercises held primary and alternate host requests.
 
 Do not describe this as fully listening-tested until the GPU CI and real device pass. Host-side ballistic/hit rules are unchanged.
+
+## Stage 4 — Authoritative combat impacts, environmental fire and tension scoring
+
+- `GpuFrame.combatEffects` is an immutable presentation snapshot from the already-existing `ArsenalSystems.effects()` / `NetLink.arsenalEffects()` sources. This changes **no host firing, damage, ammunition or network protocol**.
+- `GpuCombatAudioGate` scans positive, monotonically numbered host combat effect IDs, ignoring transient negative-ID field/projectile render objects. It establishes a first-frame baseline, ignores already-observed effects and caps bursts at eight one-shots per presentation frame. CI covers all branches.
+- Actual `HIT`, `IMPACT`, `BOUNCE`, `ARC`, `BLAST` produce different original procedural sound profiles. `MUZZLE` and tracer FX cannot masquerade as an impact; no source-derived effect is triggered by just pressing fire.
+- Effect playback uses camera-relative stereo panning, distance attenuation to 36 metres and conservative attenuation when a ray through existing world collision says the source is blocked. It does not yet simulate physical diffraction/reverb.
+- Original eight-second synthesized, nonmelodic combat tension layer crossfades behind the retained, checksum-verified menu/exploration source music. Threat conditions are authoritative locally visible enemy models, confirmed combat activity or critical health. No borrowed soundtrack was introduced.
+- An ambient campfire layer becomes audible when a real `device-field-fire` model exists nearby in the immutable host frame. It is silent when no such device is present; **not** a generic loop emitted from every idle machine.
+- Original WAVs are created at runtime, honoring separate music/ambience/effects gains. All music and sound objects are disposed with the GPU audio bus and no headless server depends on them.
+
+**Remaining:** physical mastering/listening QA, other facility-specific active operating-state emitters, terrain-footstep materials, rain shelter/occlusion reverb, vehicle movement sounds, field deployable start/decay states, authored long-form adaptive score and public CC0 asset intake where original recordings cannot cover a verified gap.

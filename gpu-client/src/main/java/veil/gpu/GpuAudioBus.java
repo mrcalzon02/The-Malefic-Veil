@@ -20,11 +20,13 @@ public final class GpuAudioBus implements AutoCloseable {
     private static final int PARTS=8;
     public static final long ORIGINAL_BYTES=3558384;
     public static final String ORIGINAL_SHA="0e0b0e5bbad299d733938f907aa63fd62de9abad3dc61a00a8ee287fbe10a293";
-    private Music music, ambience;
+    private Music music, ambience, combatMusic, campfireLoop;
+    private float combatGain,fireGain,combatHold;
     private final Music[] weatherBeds=new Music[GpuAudioSynthesis.WeatherBed.values().length];
     private final float[] weatherGains=new float[GpuAudioSynthesis.WeatherBed.values().length];
     private float thunderCooldown,previousFlash;
     private final Sound[] cues=new Sound[GpuAudioSynthesis.Cue.values().length];
+    private final Sound[] impacts=new Sound[GpuAudioSynthesis.Impact.values().length];
     private final Sound[] weapon=new Sound[32];
     private final Sound[] alternate=new Sound[32];
     private final Sound[] handling=new Sound[32];
@@ -90,6 +92,17 @@ public final class GpuAudioBus implements AutoCloseable {
             ambience=Gdx.audio.newMusic(new FileHandle(temp("city-ambience",".wav",
                 GpuAudioSynthesis.cityAmbience()).toFile()));
             ambience.setLooping(true);
+            combatMusic=Gdx.audio.newMusic(new FileHandle(temp(
+                "hostile-combat-pulse",".wav",GpuAudioSynthesis.combatPulse()).toFile()));
+            combatMusic.setLooping(true);
+            combatMusic.setVolume(0f);
+            campfireLoop=Gdx.audio.newMusic(new FileHandle(temp(
+                "field-fire-loop",".wav",GpuAudioSynthesis.campfire()).toFile()));
+            campfireLoop.setLooping(true);
+            campfireLoop.setVolume(0f);
+            for(GpuAudioSynthesis.Impact type:GpuAudioSynthesis.Impact.values())
+                impacts[type.ordinal()]=synthesized("impact-"+type.name().toLowerCase(Locale.ROOT),
+                    GpuAudioSynthesis.impact(type));
             for(GpuAudioSynthesis.WeatherBed bed:GpuAudioSynthesis.WeatherBed.values()){
                 Music layer=Gdx.audio.newMusic(new FileHandle(temp(
                     "weather-"+bed.name().toLowerCase(Locale.ROOT),".wav",
@@ -128,7 +141,7 @@ public final class GpuAudioBus implements AutoCloseable {
             System.out.println("AUDIO_BANK_READY originalDriveMusicSha="+ORIGINAL_SHA+
                 " bytes="+original.length+" weapons=32 primary+alternate+handling"+
                 " ui=positive,negative,navigate,click weather=host-reactive"+
-                " categories=music,ambience,effects,ui,voice");
+                " categories=music,ambience,effects,ui,voice,combat,environment");
         }catch(Exception failed){
             // Missing ALSA/OpenAL in CI must never prevent a real game launch.
             System.err.println("AUDIO_DEVICE_UNAVAILABLE "+failed);
@@ -138,7 +151,12 @@ public final class GpuAudioBus implements AutoCloseable {
     public void apply(GpuClientSettings fresh){
         settings=Objects.requireNonNull(fresh);
         // Music never borrows the ambience slider. Both honor master gain.
-        if(music!=null)music.setVolume(settings.musicGain()*(ingame?.18f:1f));
+        if(music!=null)music.setVolume(settings.musicGain()*(ingame?
+            (.18f-.10f*combatGain):1f));
+        if(combatMusic!=null)combatMusic.setVolume(ingame?
+            settings.musicGain()*.46f*combatGain:0f);
+        if(campfireLoop!=null)campfireLoop.setVolume(ingame?
+            settings.ambienceGain()*.33f*fireGain:0f);
         if(ambience!=null)ambience.setVolume(ingame?settings.ambienceGain()*.5f:0f);
         for(int i=0;i<weatherBeds.length;i++)
             if(weatherBeds[i]!=null)weatherBeds[i].setVolume(
@@ -148,11 +166,16 @@ public final class GpuAudioBus implements AutoCloseable {
         ingame=true;apply(settings);
         if(music!=null&&!music.isPlaying())music.play();
         if(ambience!=null&&!ambience.isPlaying())ambience.play();
+        if(combatMusic!=null&&!combatMusic.isPlaying())combatMusic.play();
+        if(campfireLoop!=null&&!campfireLoop.isPlaying())campfireLoop.play();
         for(Music bed:weatherBeds)if(bed!=null&&!bed.isPlaying())bed.play();
     }
     public void menu(){
         ingame=false;apply(settings);
         if(ambience!=null)ambience.stop();
+        if(combatMusic!=null)combatMusic.stop();
+        if(campfireLoop!=null)campfireLoop.stop();
+        combatHold=combatGain=fireGain=0;
         for(Music bed:weatherBeds)if(bed!=null)bed.stop();
         Arrays.fill(weatherGains,0f);
         previousFlash=0;thunderCooldown=0;
@@ -185,6 +208,7 @@ public final class GpuAudioBus implements AutoCloseable {
     public void alternate(int index){
         int family=GpuAudioSynthesis.family(index);
         play(alternate[index],settings.effectsGain()*.93f);
+        combatHold=Math.max(combatHold,4f);
         play(sourceFamily[family],settings.effectsGain()*.16f);
     }
     /**
@@ -218,6 +242,55 @@ public final class GpuAudioBus implements AutoCloseable {
         }
         previousFlash=now;
     }
+    /**
+     * A sound follows a unique host-published effect ID. Direction is relative
+     * to camera heading, distance attenuates, and blocked lines are damped.
+     * No client-side combat or projectile collisions are invented.
+     */
+    public void impact(GpuCombatAudioGate.Event event,double playerX,
+            double playerY,double heading,boolean clearSight){
+        if(!available)return;
+        double dx=event.x()-playerX,dy=event.y()-playerY;
+        double distance=Math.hypot(dx,dy);
+        if(distance>36)return;
+        GpuAudioSynthesis.Impact sound=switch(event.kind()){
+            case HIT -> GpuAudioSynthesis.Impact.FLESH;
+            case IMPACT -> GpuAudioSynthesis.Impact.SOLID;
+            case BOUNCE -> GpuAudioSynthesis.Impact.RICOCHET;
+            case ARC -> GpuAudioSynthesis.Impact.ELECTRIC;
+            case BLAST -> GpuAudioSynthesis.Impact.EXPLOSION;
+        };
+        float falloff=(float)(1.0/(1.0+(distance/8.0)*(distance/8.0)));
+        float occlusion=clearSight?1f:.43f;
+        float magnitude=(float)(sound==GpuAudioSynthesis.Impact.EXPLOSION?
+            Math.min(1.15, .5 + event.radius()*.12):.7);
+        float volume=settings.effectsGain()*falloff*occlusion*magnitude;
+        float pan=(float)Math.max(-1,Math.min(1,
+            Math.sin(Math.atan2(dy,dx)-heading)*Math.min(1,distance/3.0)));
+        Sound effect=impacts[sound.ordinal()];
+        if(volume>.005f&&effect!=null)effect.play(Math.min(1f,volume),1f,pan);
+        if(sound==GpuAudioSynthesis.Impact.EXPLOSION)combatHold=Math.max(combatHold,3.5f);
+    }
+    /**
+     * Threat: nearby host-reported NPCs, recent host combat, or critical HP.
+     * Campfire: the nearest *real* active fire prop from world snapshot.
+     * This deliberately does not pretend idle industrial devices are running.
+     */
+    public void situation(boolean nearbyHostile,boolean criticalHealth,
+            double nearestFireDistance,float elapsed) {
+        if(!available||!ingame)return;
+        float dt=Math.max(0f,Math.min(.1f,elapsed));
+        combatHold=Math.max(0,combatHold-dt);
+        float wanted=(nearbyHostile||combatHold>0||criticalHealth)?1f:0f;
+        float fade=dt*(wanted>combatGain?.52f:.23f);
+        combatGain+=Math.max(-fade,Math.min(fade,wanted-combatGain));
+        float fireTarget=Double.isFinite(nearestFireDistance)?
+            (float)(1.0/(1.0+Math.pow(nearestFireDistance/5.0,2))):0f;
+        float fireStep=dt*.45f;
+        fireGain+=Math.max(-fireStep,Math.min(fireStep,fireTarget-fireGain));
+        // Crossfade both channels rather than restarting their wave files.
+        apply(settings);
+    }
     public void step(){
         play(cues[(footstep++%2==0?GpuAudioSynthesis.Cue.FOOTSTEP_A:
             GpuAudioSynthesis.Cue.FOOTSTEP_B).ordinal()],settings.effectsGain()*.23f);
@@ -245,17 +318,21 @@ public final class GpuAudioBus implements AutoCloseable {
     public void shoot(int arsenalIndex){
         int family=GpuAudioSynthesis.family(arsenalIndex);
         play(weapon[arsenalIndex],settings.effectsGain()*.92f);
+        combatHold=Math.max(combatHold,4f);
         play(sourceFamily[family],settings.effectsGain()*.22f);
     }
     @Override public void close(){
         if(music!=null){music.dispose();music=null;}
         if(ambience!=null){ambience.dispose();ambience=null;}
+        if(combatMusic!=null){combatMusic.dispose();combatMusic=null;}
+        if(campfireLoop!=null){campfireLoop.dispose();campfireLoop=null;}
         for(int i=0;i<weatherBeds.length;i++){
             if(weatherBeds[i]!=null){weatherBeds[i].dispose();weatherBeds[i]=null;}
             weatherGains[i]=0;
         }
         Set<Sound> disposed=Collections.newSetFromMap(new IdentityHashMap<>());
         for(Sound s:cues)if(s!=null&&disposed.add(s))s.dispose();
+        for(Sound s:impacts)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:weapon)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:alternate)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:handling)if(s!=null&&disposed.add(s))s.dispose();
@@ -265,7 +342,8 @@ public final class GpuAudioBus implements AutoCloseable {
         for(Sound s:sourceFamily)if(s!=null&&disposed.add(s))s.dispose();
         for(Sound s:new Sound[]{menuClick,menuConfirm,menuReject,panelOpen})
             if(s!=null&&disposed.add(s))s.dispose();
-        Arrays.fill(cues,null);Arrays.fill(weapon,null);Arrays.fill(alternate,null);
+        Arrays.fill(cues,null);Arrays.fill(impacts,null);Arrays.fill(weapon,null);
+        Arrays.fill(alternate,null);
         Arrays.fill(handling,null);Arrays.fill(sourceFamily,null);
         thunder=sourceReload=sourceCoins=sourceDrawer=sourceCloth=sourceHurt=sourceField=null;
         menuClick=menuConfirm=menuReject=panelOpen=null;

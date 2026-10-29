@@ -68,6 +68,7 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         java.util.List<String> skillStats,
         java.util.List<GpuCraftRecipe> crafts,
         java.util.List<UrbanScene.ModelInstance> dynamic,
+        java.util.List<ArsenalSystems.Effect> combatEffects,
         ArsenalSystems.View arsenalState,boolean arsenalMenu,int arsenalChoice,
         String weatherPreset,double rain,double snow,double flash,
         double sprintEnergy,String interactPrompt) {}
@@ -648,7 +649,9 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
             inventoryVisible,skillsVisible,mapVisible,continentVisible,
             noticeTicks>0?notice:"",java.util.Map.copyOf(carried()),
             java.util.List.copyOf(stats),gpuCraftingSnapshot(),
-            java.util.List.copyOf(actors),equipped,arsenalMenuVisible,arsenalMenuChoice,
+            java.util.List.copyOf(actors),
+            net==null?localHost.arsenal.effects():java.util.List.copyOf(net.arsenalEffects()),
+            equipped,arsenalMenuVisible,arsenalMenuChoice,
             weather.current(),weather.rain(),weather.snow(),weather.flash(),
             sprintEnergy,gpuInteractionPrompt());
     }

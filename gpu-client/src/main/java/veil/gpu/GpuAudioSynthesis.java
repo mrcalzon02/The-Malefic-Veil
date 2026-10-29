@@ -225,8 +225,82 @@ public final class GpuAudioSynthesis {
         return pcm(samples);
     }
 
+    /** One-shot collision sounds, not random gunfire substituted for an impact. */
+    public enum Impact { SOLID, FLESH, RICOCHET, ELECTRIC, EXPLOSION }
+    public static byte[] impact(Impact kind) {
+        int count=(int)(RATE*(kind==Impact.EXPLOSION?1.35:
+            kind==Impact.ELECTRIC?.36:.23));
+        double[] result=new double[count];
+        Random random=new Random(61017L+kind.ordinal()*1129L);
+        double phase=0,low=0;
+        for(int i=0;i<count;i++){
+            double t=i/(double)count;
+            double noise=random.nextDouble()*2-1;
+            low=.92*low+.08*noise;
+            double hz=switch(kind){
+                case SOLID -> 130-65*t;
+                case FLESH -> 92-51*t;
+                case RICOCHET -> 1340-520*t;
+                case ELECTRIC -> 780+430*Math.sin(TAU*12*t);
+                case EXPLOSION -> 76-52*t;
+            };
+            phase+=TAU*hz/RATE;
+            double wave=Math.sin(phase);
+            double value=switch(kind){
+                case SOLID -> low*.67+noise*.33+wave*.31;
+                case FLESH -> low*.88+wave*.28;
+                case RICOCHET -> wave*.68+noise*.33;
+                case ELECTRIC -> wave*.56+noise*(Math.sin(TAU*39*t)>.2?.40:.08);
+                case EXPLOSION -> low*.94+noise*.40+wave*.28;
+            };
+            double envelope=(kind==Impact.EXPLOSION?
+                Math.pow(1-t,1.35):Math.pow(1-t,2.1));
+            result[i]=value*envelope*.62;
+        }
+        return pcm(result);
+    }
+
+    /** Loop-periodic fire crackle for an actual nearby placed campfire. */
+    public static byte[] campfire() {
+        final int size=RATE*4;
+        double[] values=new double[size];
+        Random random=new Random(774423L);
+        for(int i=0;i<size;i++){
+            double t=i/(double)size;
+            // All harmonics have integer cycles in the four-second loop.
+            double crackle=Math.max(0,Math.sin(TAU*29*t))*
+                Math.max(0,Math.sin(TAU*73*t))*.09;
+            double bed=.10*Math.sin(TAU*17*t)+.06*Math.sin(TAU*41*t);
+            values[i]=(bed+crackle)*(.7+.3*Math.cos(TAU*2*t));
+        }
+        return pcm(values);
+    }
+
+    /** Original nonmelodic combat tension pulse; no borrowed soundtrack. */
+    public static byte[] combatPulse() {
+        final int size=RATE*8;
+        double[] values=new double[size];
+        for(int i=0;i<size;i++){
+            double t=i/(double)size;
+            // Eight bars of equally spaced, strictly periodic low pulses.
+            double beat=t*32;
+            double envelope=Math.exp(-13*(beat-Math.floor(beat)));
+            double low=Math.sin(TAU*72*i/RATE)*envelope*.21;
+            double drone=Math.sin(TAU*48*i/RATE)*.035+
+                Math.sin(TAU*96*i/RATE)*.022;
+            values[i]=(low+drone)*.92;
+        }
+        return pcm(values);
+    }
+
     /** Device-free deterministic integrity check for CI / headless builds. */
     public static void main(String[] args) {
+        for(Impact kind:Impact.values()) {
+            byte[] cue=impact(kind);
+            if(cue.length<44+RATE/7)throw new IllegalStateException("Empty combat FX "+kind);
+        }
+        if(campfire().length!=44+RATE*4*2||combatPulse().length!=44+RATE*8*2)
+            throw new IllegalStateException("Broken periodic environment/combat loop");
         Set<Integer> checksums = new HashSet<>();
         for(int i = 0; i < 32; i++) {
             byte[] wav = weapon(i);

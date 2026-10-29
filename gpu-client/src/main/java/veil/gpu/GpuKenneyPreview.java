@@ -177,6 +177,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private double audioLastStepX=Double.NaN,audioLastStepZ=Double.NaN,audioStepDistance;
     private final GpuAudioEventGate audioEvents=new GpuAudioEventGate();
     private final GpuWorldAudioGate worldAudioEvents=new GpuWorldAudioGate();
+    private final GpuCombatAudioGate combatAudioEvents=new GpuCombatAudioGate();
     private boolean gpuPrimaryFireHeld,gpuAlternateFireHeld;
     private GpuOverlayMenu gameplayMenu;
     private Runnable onReturnMain;
@@ -563,6 +564,26 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             for(var cue:worldAudioEvents.accept(observed.health(),observed.cash(),
                     observed.dead(),observed.inventory(),observed.inventoryItems(),
                     observed.notice()))audioBus.worldCue(cue);
+            // The host already publishes these effect IDs for rendering.
+            // Never infer impacts from local fire requests or projectile motion.
+            for(var effect:combatAudioEvents.accept(observed.combatEffects())){
+                double range=Math.hypot(effect.x()-observed.x(),effect.y()-observed.z());
+                boolean clear=range<36&&gameplay.gpuWorld().lineClear(
+                    observed.x(),observed.z(),effect.x(),effect.y());
+                audioBus.impact(effect,observed.x(),observed.z(),observed.yaw(),clear);
+            }
+            boolean danger=false;
+            double fireDistance=Double.POSITIVE_INFINITY;
+            for(var instance:observed.dynamic()){
+                double distance=Math.hypot(instance.x()-observed.x(),
+                    instance.y()-observed.z());
+                if(instance.model().equals("enemy-walker")&&distance<16)
+                    danger=true;
+                else if(instance.model().equals("device-field-fire"))
+                    fireDistance=Math.min(fireDistance,distance);
+            }
+            audioBus.situation(danger,observed.health()<=25,
+                fireDistance,Gdx.graphics.getDeltaTime());
             audioBus.weather(observed.weatherPreset(),observed.rain(),
                 observed.snow(),observed.flash(),Gdx.graphics.getDeltaTime());
         }

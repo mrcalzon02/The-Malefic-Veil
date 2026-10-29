@@ -20,7 +20,10 @@ public final class GpuAudioBus implements AutoCloseable {
     private static final int PARTS=8;
     public static final long ORIGINAL_BYTES=3558384;
     public static final String ORIGINAL_SHA="0e0b0e5bbad299d733938f907aa63fd62de9abad3dc61a00a8ee287fbe10a293";
-    private Music music, ambience, combatMusic, campfireLoop;
+    private Music music, combatMusic, campfireLoop;
+    private float enclosure,outdoorGain=1f;
+    private record Reflection(Sound sound,float gain,float pan,float wait) {}
+    private final ArrayDeque<Reflection> reflections=new ArrayDeque<>();
     private final Music[] industryLoops=new Music[GpuIndustryAudioPlanner.Channel.values().length];
     private Sound engineIdleSound,engineMotionSound;
     private long engineIdleVoice=-1,engineMotionVoice=-1;
@@ -77,7 +80,8 @@ public final class GpuAudioBus implements AutoCloseable {
         return file;
     }
     private Sound synthesized(String name,byte[] wav)throws IOException {
-        return Gdx.audio.newSound(new FileHandle(temp(name,".wav",wav).toFile()));
+        return Gdx.audio.newSound(new FileHandle(
+            temp(name,".wav",GpuAudioMastering.trim(name,wav)).toFile()));
     }
     private Sound sourced(String filename) {
         String resource="audio/library/"+filename;
@@ -99,9 +103,8 @@ public final class GpuAudioBus implements AutoCloseable {
             byte[] original=verifiedMusic();
             music=Gdx.audio.newMusic(new FileHandle(temp("original-music",".mp3",original).toFile()));
             music.setLooping(true);
-            ambience=Gdx.audio.newMusic(new FileHandle(temp("city-ambience",".wav",
-                GpuAudioSynthesis.cityAmbience()).toFile()));
-            ambience.setLooping(true);
+            // Region-specific biome beds supersede the old always-on city
+            // ambience. Never consume a duplicate eighth global stream.
             combatMusic=Gdx.audio.newMusic(new FileHandle(temp(
                 "hostile-combat-pulse",".wav",GpuAudioSynthesis.combatPulse()).toFile()));
             combatMusic.setLooping(true);
@@ -205,27 +208,27 @@ public final class GpuAudioBus implements AutoCloseable {
             settings.musicGain()*.46f*combatGain:0f);
         if(campfireLoop!=null)campfireLoop.setVolume(ingame?
             settings.ambienceGain()*.33f*fireGain:0f);
-        if(ambience!=null)ambience.setVolume(ingame?settings.ambienceGain()*.5f:0f);
+        float atmosphere=environmentalGain();
         for(int i=0;i<weatherBeds.length;i++)
             if(weatherBeds[i]!=null)weatherBeds[i].setVolume(
-                ingame?weatherGains[i]*settings.ambienceGain():0f);
+                ingame?weatherGains[i]*atmosphere:0f);
         for(int i=0;i<industryLoops.length;i++)
             if(industryLoops[i]!=null)industryLoops[i].setVolume(
                 ingame?industryGain[i]*machineBusGain(i):0f);
         for(int i=0;i<biomeLoops.length;i++)
             if(biomeLoops[i]!=null)biomeLoops[i].setVolume(
-                ingame?biomeGains[i]*settings.ambienceGain()*.38f:0f);
+                ingame?biomeGains[i]*atmosphere*.38f:0f);
     }
     public void inGame(){
         ingame=true;apply(settings);
         if(music!=null&&!music.isPlaying())music.play();
-        if(ambience!=null&&!ambience.isPlaying())ambience.play();
         // Zero-volume sources must not occupy OpenAL voices at scene load.
         // They start only when the host presents an audible nearby source.
     }
     public void menu(){
         ingame=false;apply(settings);
-        if(ambience!=null)ambience.stop();
+        reflections.clear();
+        enclosure=0;outdoorGain=1f;
         if(combatMusic!=null)combatMusic.stop();
         if(campfireLoop!=null)campfireLoop.stop();
         combatHold=combatGain=fireGain=0;
@@ -242,11 +245,11 @@ public final class GpuAudioBus implements AutoCloseable {
     private void play(Sound sound,float gain){
         if(available&&sound!=null&&gain>0) sound.play(Math.min(1,gain));
     }
-    public void click(){play(menuClick,settings.uiGain()*2.0f);}
-    public void navigate(){play(cues[GpuAudioSynthesis.Cue.NAVIGATE.ordinal()],settings.uiGain()*.45f);}
+    public void click(){play(menuClick,settings.uiGain()*.67f);}
+    public void navigate(){play(cues[GpuAudioSynthesis.Cue.NAVIGATE.ordinal()],settings.uiGain()*.57f);}
     public void confirm(){play(menuConfirm,settings.uiGain()*.9f);}
     public void reject(){play(menuReject,settings.uiGain()*.40f);}
-    public void panel(){play(panelOpen,settings.uiGain()*.16f);}
+    public void panel(){play(panelOpen,settings.uiGain()*.40f);}
     public void empty(){play(cues[GpuAudioSynthesis.Cue.EMPTY.ordinal()],settings.effectsGain()*.7f);}
     /** Called only for an authoritative successful reload start. */
     public void reload(int index){
@@ -274,6 +277,42 @@ public final class GpuAudioBus implements AutoCloseable {
      * snapshot. Music/sfx buses are independent; weather uses ambience gain.
      * Device update is render-thread-only and rate-limited by frame delta.
      */
+    /** Cached, smoothed listener wall proximity; only outdoor beds are
+     * damped, never soundtrack, voice, interface or actual combat effects. */
+    public void acoustics(GpuAcousticSpace.Result space,float elapsed){
+        if(!available||!ingame||space==null)return;
+        float dt=Float.isFinite(elapsed)?Math.max(0f,Math.min(.1f,elapsed)):0f;
+        float step=dt*.75f;
+        enclosure+=Math.max(-step,Math.min(step,space.enclosure()-enclosure));
+        outdoorGain=1f-.55f*enclosure;
+        apply(settings);
+    }
+    private float environmentalGain(){
+        return settings.ambienceGain()*outdoorGain*
+            GpuAcousticSpace.environmentalBudget(weatherGains,biomeGains);
+    }
+    /** Bounded render-thread reflections, NOT an invented indoor room model
+     * or a separate timer/thread. The first echo follows a real audio event. */
+    private void reflect(Sound source,float volume,float pan){
+        float gain=volume*.26f*enclosure;
+        if(!available||!ingame||source==null||gain<=.005f)return;
+        if(reflections.size()>=12)reflections.removeFirst();
+        reflections.addLast(new Reflection(source,Math.min(.24f,gain),
+            Math.max(-1f,Math.min(1f,-pan*.45f)),.062f+.08f*enclosure));
+    }
+    public void audioFrame(float elapsed){
+        if(!available||!ingame){reflections.clear();return;}
+        float dt=Float.isFinite(elapsed)?Math.max(0f,Math.min(.1f,elapsed)):0f;
+        int count=reflections.size();
+        for(int i=0;i<count;i++){
+            Reflection echo=reflections.removeFirst();
+            float remaining=echo.wait()-dt;
+            if(remaining<=0){
+                echo.sound().play(echo.gain(),.94f,echo.pan());
+            }else reflections.addLast(new Reflection(
+                echo.sound(),echo.gain(),echo.pan(),remaining));
+        }
+    }
     public void weather(String preset,double rain,double snow,double flash,float elapsed) {
         if(!available||!ingame)return;
         double r=Math.max(0,Math.min(1,Double.isFinite(rain)?rain:0));
@@ -290,7 +329,7 @@ public final class GpuAudioBus implements AutoCloseable {
             weatherGains[i]=have+Math.max(-maxStep,Math.min(maxStep,want-have));
             Music weatherLayer=weatherBeds[i];
             if(weatherLayer!=null){
-                float gain=Math.min(1f,weatherGains[i]*settings.ambienceGain());
+                float gain=Math.min(1f,weatherGains[i]*environmentalGain());
                 if(gain>.003f){
                     weatherLayer.setVolume(gain);
                     if(!weatherLayer.isPlaying())weatherLayer.play();
@@ -332,7 +371,10 @@ public final class GpuAudioBus implements AutoCloseable {
         float pan=(float)Math.max(-1,Math.min(1,
             Math.sin(Math.atan2(dy,dx)-heading)*Math.min(1,distance/3.0)));
         Sound effect=impacts[sound.ordinal()];
-        if(volume>.005f&&effect!=null)effect.play(Math.min(1f,volume),1f,pan);
+        if(volume>.005f&&effect!=null){
+            effect.play(Math.min(1f,volume),1f,pan);
+            if(clearSight&&distance<19)reflect(effect,Math.min(1f,volume),pan);
+        }
         if(sound==GpuAudioSynthesis.Impact.EXPLOSION)combatHold=Math.max(combatHold,3.5f);
     }
     /**
@@ -380,7 +422,7 @@ public final class GpuAudioBus implements AutoCloseable {
             biomeGains[i]+=Math.max(-delta,Math.min(delta,target-biomeGains[i]));
             Music loop=biomeLoops[i];
             if(loop!=null){
-                float volume=biomeGains[i]*settings.ambienceGain()*.38f;
+                float volume=biomeGains[i]*environmentalGain()*.38f;
                 if(volume>.003f){
                     loop.setVolume(volume);
                     if(!loop.isPlaying())loop.play();
@@ -503,13 +545,15 @@ public final class GpuAudioBus implements AutoCloseable {
     public void shoot(){shoot(0);}
     public void shoot(int arsenalIndex){
         int family=GpuAudioSynthesis.family(arsenalIndex);
-        play(weapon[arsenalIndex],settings.effectsGain()*.92f);
+        float gain=settings.effectsGain()*.92f;
+        play(weapon[arsenalIndex],gain);
+        reflect(weapon[arsenalIndex],gain,0);
         combatHold=Math.max(combatHold,4f);
         play(sourceFamily[family],settings.effectsGain()*.22f);
     }
     @Override public void close(){
         if(music!=null){music.dispose();music=null;}
-        if(ambience!=null){ambience.dispose();ambience=null;}
+        reflections.clear();
         if(combatMusic!=null){combatMusic.dispose();combatMusic=null;}
         if(campfireLoop!=null){campfireLoop.dispose();campfireLoop=null;}
         for(int i=0;i<weatherBeds.length;i++){

@@ -175,6 +175,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private GpuClientSettings clientSettings=GpuClientSettings.load();
     private GpuAudioBus audioBus;
     private double audioLastStepX=Double.NaN,audioLastStepZ=Double.NaN,audioStepDistance;
+    private double lastAcousticX=Double.NaN,lastAcousticZ=Double.NaN;
+    private float acousticCheckIn;
+    private GpuAcousticSpace.Result acousticCache;
     private final GpuAudioEventGate audioEvents=new GpuAudioEventGate();
     private final GpuWorldAudioGate worldAudioEvents=new GpuWorldAudioGate();
     private final GpuDeployableAudioGate deployableAudioEvents=new GpuDeployableAudioGate();
@@ -549,6 +552,20 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         boolean active=gameplayMenu.input();
         MaleficVeil.GpuFrame observed=gameplay.gpuFrame();
         if(observed!=null&&audioBus!=null){
+            // Coarse wall-density acoustics are derived from real collision
+            // geometry at most four times per second, not 16 ray sweeps per
+            // rendered frame. Large movements cause an immediate resample.
+            float audioDelta=Gdx.graphics.getDeltaTime();
+            acousticCheckIn-=Math.min(.1f,Math.max(0f,audioDelta));
+            if(acousticCache==null||acousticCheckIn<=0||
+                Math.hypot(observed.x()-lastAcousticX,
+                           observed.z()-lastAcousticZ)>2.5){
+                acousticCache=GpuAcousticSpace.inspect(gameplay.gpuWorld(),
+                    observed.x(),observed.z());
+                lastAcousticX=observed.x();lastAcousticZ=observed.z();
+                acousticCheckIn=.25f;
+            }
+            audioBus.acoustics(acousticCache,audioDelta);
             // A mouse press is a request, not a confirmed shot. Read the
             // immutable authoritative state for real firing/reload events.
             var state=observed.arsenalState();
@@ -608,7 +625,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     observed.yaw(),line);
             }
             audioBus.weather(observed.weatherPreset(),observed.rain(),
-                observed.snow(),observed.flash(),Gdx.graphics.getDeltaTime());
+                observed.snow(),observed.flash(),audioDelta);
+            // Delayed short reflections run on this same render thread.
+            audioBus.audioFrame(audioDelta);
         }
         for(int[] binding:LIVE_BINDINGS){
             boolean pressed=active&&Gdx.input.isKeyPressed(binding[0]);

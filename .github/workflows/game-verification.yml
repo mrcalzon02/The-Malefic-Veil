@@ -36,6 +36,9 @@ jobs:
         run: |
           mkdir -p build/classes
           javac --release 17 -encoding UTF-8 -d build/classes src/main/java/hbnet/*.java src/main/java/veil/*.java src/main/java/dev/mrcalzon/water/*.java
+      - name: Paid Unraveled Incursion grid and restart acceptance
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.IncursionResilienceGridTest
       - name: City generation and geometry
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest
@@ -103,7 +106,6 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.SecondEraFactionProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.PhysicalFacilityDependencyTest
           java -Djava.awt.headless=true -cp build/classes veil.ConstructionFundingTest
-          java -Djava.awt.headless=true -cp build/classes veil.IncursionResilienceGridTest
           java -Djava.awt.headless=true -cp build/classes veil.SteamEraProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.ElectricEraProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.ConveyorLogisticsTest

@@ -70,6 +70,8 @@ jobs:
           cp gpu-client/target/MaleficVeil-GPU.jar build/package/MaleficVeil.jar
           jar tf build/package/MaleficVeil.jar | grep -qx 'veil/gpu/GpuKenneyPreview.class'
           jar tf build/package/MaleficVeil.jar | grep -qx 'veil/MaleficVeil.class'
+          jar tf build/package/MaleficVeil.jar | grep -qx 'veil-original-art/pack02/malefic-veil-64.png'
+          jar tf build/package/MaleficVeil.jar | grep -qx 'veil-original-art/pack02/file-ui.png'
           jar tf build/package/MaleficVeil.jar |
             grep -qx 'psx-ui/psx-horror-ui-free-assets.zip'
           jar tf build/package/MaleficVeil.jar |
@@ -158,6 +160,10 @@ jobs:
             build/test-visuals/release-editor-kit.log
           test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
           test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
+      - name: Generate real Windows ICO from shaded game's original art
+        run: |
+          python3 tools/make_windows_icon.py build/package/MaleficVeil.jar build/package/TheMaleficVeil.ico
+          test -s build/package/TheMaleficVeil.ico
       - name: Package game and independent updater bootstrap
         run: |
           set -euo pipefail
@@ -172,8 +178,8 @@ jobs:
           chmod +x build/package/play-release.sh
           printf '%s\n' "$GITHUB_SHA" > build/package/version.txt
           cd build/package
-          zip -qr "MaleficVeil-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt
-          zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt play-release.bat play-release.sh
+          zip -qr "MaleficVeil-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt TheMaleficVeil.ico
+          zip -qr "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip" MaleficVeil.jar updater.jar assets lib version.txt TheMaleficVeil.ico play-release.bat play-release.sh
           unzip -tq "MaleficVeil-${GITHUB_SHA:0:12}.zip"
           unzip -tq "MaleficVeil-desktop-${GITHUB_SHA:0:12}.zip"
           sha256sum "MaleficVeil-${GITHUB_SHA:0:12}.zip" | awk '{print $1}' > checksum.txt
@@ -368,7 +374,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Bootstrap compile failed' }
           & jar --create --file native-source/Launcher.jar --main-class veil.InstalledLauncher -C native-bootstrap .
           if ($LASTEXITCODE -ne 0) { throw 'Bootstrap jar failed' }
-          foreach ($file in @('MaleficVeil.jar','updater.jar','Launcher.jar','version.txt','assets/game','lib/shared-psx-weather-java17-v1.jar')) {
+          foreach ($file in @('MaleficVeil.jar','updater.jar','Launcher.jar','version.txt','TheMaleficVeil.ico','assets/game','lib/shared-psx-weather-java17-v1.jar')) {
             if (-not (Test-Path "native-source/$file")) { throw "Installer payload missing: $file" }
           }
       - name: Verify native game executable, bundled JRE and updater
@@ -382,7 +388,7 @@ jobs:
           & jlink --add-modules java.desktop,java.net.http,java.logging,java.prefs,java.naming,jdk.crypto.ec,jdk.unsupported,java.management --output native-runtime --no-header-files --no-man-pages
           if ($LASTEXITCODE -ne 0) { throw 'Bundled Java runtime build failed' }
           if (-not (Test-Path native-runtime/bin/javaw.exe)) { throw 'Bundled runtime lacks Java launcher' }
-          & jpackage --type app-image --name 'The Malefic Veil' --input native-source --dest native-app --main-jar Launcher.jar --main-class veil.InstalledLauncher --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --runtime-image native-runtime
+          & jpackage --type app-image --name 'The Malefic Veil' --input native-source --dest native-app --main-jar Launcher.jar --main-class veil.InstalledLauncher --vendor 'The Malefic Veil' --app-version "0.1.$env:GITHUB_RUN_NUMBER" --icon native-source/TheMaleficVeil.ico --runtime-image native-runtime
           if ($LASTEXITCODE -ne 0) { throw 'Native launcher build failed' }
           $image = Join-Path $PWD 'native-app/The Malefic Veil'
           $exe = Join-Path $image 'The Malefic Veil.exe'

@@ -59,3 +59,29 @@ Wire player feedback to authoritative gameplay outcomes rather than merely to cl
 - Verify source recording loudness peaks, silence, sample rate, clipping, loudness target, normalized playback and seam continuity; do not normalize originals destructively.
 - Verify no hundreds-of-thousands-of-plays per tick, device failure degrades gracefully, and server/headless runs never require an audio device.
 - CI compile and manifest integrity tests; human ears/device checks are separate.
+
+
+## Recorded source-file quality inspection (2026-10-29)
+
+Inspected exact imported original recordings with ffprobe and ffmpeg's `volumedetect`. These measurements describe **whole-file signal averages and decoded sample peaks**, not perceived loudness (LUFS) or listening-test approval. No destructive normalization of original files was performed.
+
+| Source | Sampling / channels | Duration | Mean dBFS | Peak dBFS | Concern |
+| --- | --- | ---: | ---: | ---: | --- |
+| Single_click.wav | 44.1 kHz stereo | 0.360 s | -36.3 | -8.3 | Quiet relative to other UI sounds |
+| Cathonk.wav | 44.1 kHz stereo | 0.360 s | -28.7 | -2.8 | Moderate |
+| Metal_wonk.wav | 44.1 kHz stereo | 0.325 s | -22.9 | -3.1 | Relatively prominent |
+| Book_snap.wav | 44.1 kHz stereo | 0.569 s | -15.3 | -0.9 | Loud UI transient; reduce mix gain |
+| Shot.mp3 | 24 kHz stereo | 1.224 s | -17.7 | 0.0 | At decoded full scale; investigate distortion |
+| LAS.mp3 | 24 kHz stereo | 0.624 s | -17.6 | -4.7 | Low bandwidth, acceptable provisional layer |
+| Plas.mp3 | 48 kHz mono | 0.456 s | -17.7 | -5.3 | Provisional weapon association |
+| Lightning-crackle.mp3 | 8 kHz mono | 1.224 s | -19.5 | -1.5 | Telephone bandwidth; prioritize source replacement |
+| FLAME.mp3 | 44.1 kHz stereo | 1.332 s | -16.9 | -2.2 | Provisional propellant layer |
+| RELOAD.mp3 | 44.1 kHz stereo | 0.261 s | -22.1 | 0.0 | Peak at full scale, not yet event-wired |
+
+**Finding:** the original UI sources differ by about 21 dB in whole-file mean level, from `Single_click.wav` to `Book_snap.wav`. In commit `60c85a3ee17cd9ab2a989f7993502dd1e5fbf16f`, runtime gain was adjusted to boost click playback and substantially reduce the panel/rejection sounds. These are provisional mix corrections, **not perceptual loudness-normalization certification**. Preserve source originals.
+
+## Validation status
+
+- GitHub commit and remote `main` readback verified.
+- GPU and desktop release GitHub Actions were **in progress** at time of last inspection, not yet passing.
+- Actual speaker/headphone listening, decoder behavior on both Windows/Linux, and device-level volume measurements are outstanding.

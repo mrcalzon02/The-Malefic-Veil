@@ -171,7 +171,10 @@ public final class AircraftFlight {
             requestedClimb-verticalSpeed));
         altitude+=verticalSpeed*dt;
         altitude=Math.min(altitude,ground(x,y)+plane.ceilingMetres());
-        if(altitude>ground(x,y)+1.5)return;
+        // Being low over a runway is NOT an impact: a plane is airborne
+        // throughout positive clearance, especially while climbing after
+        // rotation. Resolve touchdown/crash only on descending ground contact.
+        if(verticalSpeed>0||altitude>ground(x,y)+.12)return;
         if(canLand()){
             airborne=false;altitude=ground(x,y);verticalSpeed=0;roll=0;
             speed*=.5;controls=new Controls(0,0,0);

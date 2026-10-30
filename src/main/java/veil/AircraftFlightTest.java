@@ -134,7 +134,8 @@ public final class AircraftFlightTest {
             if(!flight.snapshot().airborne()){landed=true;break;}
         }
         check(landed&&flight.snapshot().hp()==needle.maxHp(),
-            "Safe aligned runway touchdown should not crash");
+            "Safe aligned runway touchdown should not crash: "+flight.snapshot()+
+            " from airfield "+pad);
         // Head-on and angled swept airspace entry must NEVER penetrate cities.
         boolean redirected=false;
         for(var f:miasma.fields()){

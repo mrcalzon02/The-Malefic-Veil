@@ -142,6 +142,35 @@ public final class TransportFleetDeliveryTest {
         check(denied&&restoreRail.snapshot().equals(railSave),
             "Impossible locomotive speed mutated real freight");
 
+        // Destroying track under a real stopped/stranded train must not
+        // delete that paid train when the combined host ledger reloads.
+        var trainBeforeDamage=restoreRail.state(train);
+        int damagedX=(int)Math.floor(trainBeforeDamage.x());
+        int damagedY=(int)Math.floor(trainBeforeDamage.y());
+        check(restoreTrack.damage(damagedX,damagedY,100),
+            "Host could not destroy segment beneath real locomotive");
+        var wreckedTrack=restoreTrack.snapshot();
+        var strandedTrain=restoreRail.snapshot();
+        var loadedWreck=new TransportInfrastructure(layout,cloud,owner,faction,Map.of());
+        loadedWreck.restore(wreckedTrack);
+        var loadedTrain=new RailTransport(loadedWreck,Map.of());
+        loadedTrain.restore(strandedTrain);
+        check(loadedTrain.state(train).equals(trainBeforeDamage)&&
+            !loadedWreck.railExists(damagedX,damagedY),
+            "Railway save lost a paid train after physical track destruction");
+        var absentTrackTrain=new RailTransport.TrainSave(train,owner,faction,
+            TransportInfrastructure.Axis.EAST_WEST,1,
+            site[0]+7.5,site[1]+.5,0,15,320,0,null,true,1);
+        var absentTrackSave=new RailTransport.Snapshot(strandedTrain.worldSeed(),
+            strandedTrain.ownerId(),strandedTrain.faction(),strandedTrain.stock(),
+            List.of(absentTrackTrain),strandedTrain.deliveryReceipts(),
+            strandedTrain.nextId());
+        denied=false;
+        try{loadedTrain.restore(absentTrackSave);}
+        catch(IllegalArgumentException expected){denied=true;}
+        check(denied&&loadedTrain.snapshot().equals(strandedTrain),
+            "Train forged on terrain without track during restart");
+
         var shipyard=new IndustrialWorkstation(TransportProduction.shipyard(faction),
             TransportProduction.industryFaction(faction));
         make(shipyard,TransportProduction.Product.CARRIER_KEEL,faction,

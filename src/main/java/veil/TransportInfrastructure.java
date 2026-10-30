@@ -349,4 +349,11 @@ public final class TransportInfrastructure {
         Segment a=tiles.get(key(x,y));
         return a!=null&&a.kind()==Kind.RAIL&&a.hp()>50;
     }
+    /** Restorable wreck geometry, including ruined rails at zero HP.
+     * A stranded locomotive must not vanish just because track was bombed.
+     */
+    public synchronized boolean hasRailSegment(int x,int y,Axis axis){
+        Segment a=tiles.get(key(x,y));
+        return a!=null&&a.kind()==Kind.RAIL&&a.axis()==axis;
+    }
 }

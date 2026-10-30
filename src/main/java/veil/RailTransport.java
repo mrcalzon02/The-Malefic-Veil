@@ -103,8 +103,8 @@ public final class RailTransport {
                line.quantity()<0||line.quantity()>40*(1+line.wagons())||
                (line.quantity()==0)!=(line.cargo()==null)||
                (line.cargo()!=null&&!line.cargo().matches("[A-Z_]{2,60}"))||
-               !infra.railExists((int)Math.floor(line.x()),
-                   (int)Math.floor(line.y())))
+               !infra.hasRailSegment((int)Math.floor(line.x()),
+                   (int)Math.floor(line.y()),line.axis()))
                 throw new IllegalArgumentException("Corrupt saved locomotive");
             Train restoredTrain=new Train(line.id(),line.owner(),
                 line.faction(),line.axis(),line.direction(),

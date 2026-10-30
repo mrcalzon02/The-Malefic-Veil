@@ -170,7 +170,8 @@ public final class TransportInfrastructureTest {
             "Paid 108m carrier deck not usable by light aircraft");
         yes(!sea.usableDeck(deck.id(),AirPowerCatalog.get("unraveled_harrier")),
             "Short deck cannot operate medium aircraft");
-        yes(sea.damage(deck.id(),350),"Host could not damage deck");
+        yes(sea.damage(deck.id(),200)&&sea.damage(deck.id(),200),
+            "Two bounded host-confirmed strikes must damage the flight deck");
         yes(!sea.usableDeck(deck.id(),needle),
             "Damaged deck still offers free launch");
         yes(sea.repair(owner,deck.id()),"Repair requires paid real materials");

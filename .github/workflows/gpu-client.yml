@@ -103,6 +103,7 @@ jobs:
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.TransportProductionTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.TransportFactoryDeliveryTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.TransportFleetDeliveryTest
+          java -cp gpu-client/target/MaleficVeil-GPU.jar veil.ContinentTransportSectorsTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingCatalogExportTest
           java -cp gpu-client/target/MaleficVeil-GPU.jar veil.CraftingCatalogExport
           test -s build/test-visuals/crafting-completion-catalog.csv

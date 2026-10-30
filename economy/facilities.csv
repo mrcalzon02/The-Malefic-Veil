@@ -68,3 +68,8 @@ facility_id,era,faction,prerequisites,width,depth,build_seconds,utility_demand,s
 "begotten-chitin-vat","STEAM","BEGOTTEN","begotten-spore-basin;steam-boiler","12","16","3600","3","SCAVENGING","1","PROPOSED_SKILL_GATE"
 "begotten-membrane-lab","ELECTRIC","BEGOTTEN","begotten-chitin-vat;water-works","12","14","4800","8","SCAVENGING","1","PROPOSED_SKILL_GATE"
 "begotten-organ-lattice","AUTOMATION","BEGOTTEN","begotten-membrane-lab;nutrient-digestor","16","20","7200","16","SCAVENGING","1","PROPOSED_SKILL_GATE"
+"airfield-runway","INCURSION","ALL","motor-pool;command-hall","32","12","14400","14","SCAVENGING","1","PROPOSED_SKILL_GATE"
+"aircraft-service-hangar","INCURSION","ALL","airfield-runway;fuel-refinery;industrial-workshop","24","24","14400","18","SCAVENGING","1","PROPOSED_SKILL_GATE"
+"unraveled-flight-works","INCURSION","UNRAVELED","aircraft-service-hangar;resilience-grid;unraveled-defense-works","26","28","21600","30","SCAVENGING","1","PROPOSED_SKILL_GATE"
+"penitent-aerial-abattoir","INCURSION","PENITENT","aircraft-service-hangar;dread-works;penitent-ward-sanctum","26","28","24000","30","SCAVENGING","1","PROPOSED_SKILL_GATE"
+"begotten-sky-brood","INCURSION","BEGOTTEN","aircraft-service-hangar;incursion-anchor;begotten-organ-lattice","26","28","25200","30","SCAVENGING","1","PROPOSED_SKILL_GATE"

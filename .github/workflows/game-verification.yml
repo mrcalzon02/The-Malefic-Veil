@@ -73,6 +73,7 @@ jobs:
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArenaSystemsTest
       - name: Verify visible E interaction collects ammo on the real host
+        shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.PickupInteractionRangeTest
       - name: Import all 124 CC0 GLBs and render seeded district models
         shell: bash

@@ -14,6 +14,84 @@ import java.util.*;
 public final class TransportFactoryDelivery {
     private TransportFactoryDelivery(){}
     public enum Result { DELIVERED, DUPLICATE, DENIED, NOT_READY, NO_ROOM }
+    /** Paid locomotive/wagon/fuel receipts go to the real rail depot.
+     * Do not accept player-submitted inventory values or generic factories.
+     */
+    public static Result deliverToRail(int verifiedCaller,
+            IndustrialWorkstation factory,RailTransport rail,
+            TransportProduction.Product product,int count,String receipt){
+        if(factory==null||rail==null||product==null||
+           receipt==null||!receipt.matches("[a-zA-Z0-9_-]{6,80}")||
+           count<1||count>512||
+           verifiedCaller!=rail.infrastructure().ownerId()||
+           !Set.of(TransportProduction.Product.LOCOMOTIVE,
+                   TransportProduction.Product.FREIGHT_WAGON,
+                   TransportProduction.Product.RAIL_FUEL).contains(product))
+            return Result.DENIED;
+        synchronized(factory){
+            synchronized(rail){
+                if(rail.delivered(receipt))return Result.DUPLICATE;
+                var recipe=TransportProduction.recipe(product,
+                    rail.infrastructure().faction());
+                if(factory.faction()!=TransportProduction.industryFaction(
+                        rail.infrastructure().faction())||
+                   !factory.facilityId().equals(recipe.facility()))
+                    return Result.DENIED;
+                String item=recipe.output();
+                if(factory.count(item)<count)return Result.NOT_READY;
+                if(!rail.canAcceptDelivery(item,count,receipt))return Result.NO_ROOM;
+                if(!factory.withdraw(item,count))return Result.NOT_READY;
+                try{
+                    rail.acceptDelivery(item,count,receipt);
+                    return Result.DELIVERED;
+                }catch(RuntimeException failure){
+                    if(!factory.deposit(item,count))
+                        throw new IllegalStateException(
+                            "Critical rail delivery rollback failure",failure);
+                    throw failure;
+                }
+            }
+        }
+    }
+
+    /** Real naval yards deliver finished carrier hulls and marine fuel,
+     * while the faction transport works deliver maintenance supplies.
+     */
+    public static Result deliverToCarrier(int verifiedCaller,
+            IndustrialWorkstation factory,AircraftCarrier fleet,
+            TransportProduction.Product product,int count,String receipt){
+        if(factory==null||fleet==null||product==null||
+           receipt==null||!receipt.matches("[a-zA-Z0-9_-]{6,80}")||
+           count<1||count>512||verifiedCaller!=fleet.ownerId()||
+           !Set.of(TransportProduction.Product.CARRIER,
+                   TransportProduction.Product.MARINE_FUEL,
+                   TransportProduction.Product.TRANSPORT_REPAIR).contains(product))
+            return Result.DENIED;
+        synchronized(factory){
+            synchronized(fleet){
+                if(fleet.delivered(receipt))return Result.DUPLICATE;
+                var recipe=TransportProduction.recipe(product,fleet.faction());
+                if(factory.faction()!=TransportProduction.industryFaction(
+                        fleet.faction())||
+                   !factory.facilityId().equals(recipe.facility()))
+                    return Result.DENIED;
+                String item=recipe.output();
+                if(factory.count(item)<count)return Result.NOT_READY;
+                if(!fleet.canAcceptDelivery(item,count,receipt))return Result.NO_ROOM;
+                if(!factory.withdraw(item,count))return Result.NOT_READY;
+                try{
+                    fleet.acceptDelivery(item,count,receipt);
+                    return Result.DELIVERED;
+                }catch(RuntimeException failure){
+                    if(!factory.deposit(item,count))
+                        throw new IllegalStateException(
+                            "Critical naval delivery rollback failure",failure);
+                    throw failure;
+                }
+            }
+        }
+    }
+
     public static Result deliverToConstruction(int verifiedCaller,
             IndustrialWorkstation factory,TransportInfrastructure construction,
             TransportProduction.Product product,int count,String receipt){

@@ -28,6 +28,79 @@ public final class AircraftCarrier {
     private final Map<Integer,Deck> decks=new LinkedHashMap<>();
     private final Set<Integer> activeFlights=new HashSet<>();
     private int nextId=1;
+    private final Set<String> deliveryReceipts=new LinkedHashSet<>();
+    public record Snapshot(long worldSeed,int ownerId,
+            CharacterRoster.Faction faction,Map<String,Integer> stock,
+            List<Deck> decks,Set<Integer> activeFlights,
+            Set<String> deliveryReceipts,int nextId) {}
+    public int ownerId(){return ownerId;}
+    synchronized boolean delivered(String receipt){return deliveryReceipts.contains(receipt);}
+    synchronized boolean canAcceptDelivery(String item,int amount,String receipt){
+        return item!=null&&amount>0&&amount<=512&&
+            receipt!=null&&receipt.matches("[a-zA-Z0-9_-]{6,80}")&&
+            deliveryReceipts.size()<4096&&!deliveryReceipts.contains(receipt)&&
+            stock.getOrDefault(item,0)<=1_000_000-amount;
+    }
+    synchronized void acceptDelivery(String item,int amount,String receipt){
+        if(!canAcceptDelivery(item,amount,receipt))
+            throw new IllegalStateException("Unverified naval supply delivery");
+        stock.merge(item,amount,Integer::sum);
+        deliveryReceipts.add(receipt);
+    }
+    public synchronized Snapshot snapshot(){
+        return new Snapshot(world.seed(),ownerId,faction,Map.copyOf(stock),
+            List.copyOf(decks.values()),Set.copyOf(activeFlights),
+            Set.copyOf(deliveryReceipts),nextId);
+    }
+    /**
+     * Must be restored alongside aircraft, factory and construction state
+     * from the SAME atomic host checkpoint. Validate before state changes.
+     */
+    public synchronized void restore(Snapshot saved){
+        if(saved==null||saved.worldSeed()!=world.seed()||
+           saved.ownerId()!=ownerId||saved.faction()!=faction||
+           saved.stock()==null||saved.decks()==null||
+           saved.activeFlights()==null||saved.deliveryReceipts()==null||
+           saved.nextId()<1||saved.nextId()>1_000_000||
+           saved.decks().size()>256||saved.deliveryReceipts().size()>4096)
+            throw new IllegalArgumentException("Invalid naval checkpoint");
+        Map<String,Integer> supplies=new HashMap<>();
+        for(var e:saved.stock().entrySet()){
+            if(e.getKey()==null||e.getKey().isBlank()||e.getValue()==null||
+               e.getValue()<1||e.getValue()>1_000_000)
+                throw new IllegalArgumentException("Invalid naval inventory");
+            supplies.put(e.getKey(),e.getValue());
+        }
+        Set<String> receipts=new LinkedHashSet<>();
+        for(String receipt:saved.deliveryReceipts())
+            if(receipt==null||!receipt.matches("[a-zA-Z0-9_-]{6,80}")||
+               !receipts.add(receipt))
+                throw new IllegalArgumentException("Invalid naval delivery receipt");
+        Map<Integer,Deck> restored=new LinkedHashMap<>();
+        for(Deck d:saved.decks()){
+            if(d==null||d.id()<1||d.id()>=saved.nextId()||
+               d.ownerId()!=ownerId||d.faction()!=faction||
+               d.axis()==null||d.lengthParcels()!=LENGTH||
+               !Double.isFinite(d.x())||!Double.isFinite(d.y())||
+               !Double.isFinite(d.fuelUnits())||d.fuelUnits()<0||
+               d.fuelUnits()>300||d.deckHp()<0||d.deckHp()>MAX_HP||
+               !d.atAnchor()||!clearSeaAgainstTerrain(d.x(),d.y(),d.axis())||
+               restored.putIfAbsent(d.id(),d)!=null)
+                throw new IllegalArgumentException("Invalid saved aircraft carrier");
+            for(Deck previous:restored.values())
+                if(previous.id()!=d.id()&&
+                   Math.hypot(previous.x()-d.x(),previous.y()-d.y())<LENGTH)
+                    throw new IllegalArgumentException("Overlapping saved carriers");
+        }
+        if(!restored.keySet().containsAll(saved.activeFlights()))
+            throw new IllegalArgumentException("Orphaned flight deck reservation");
+        decks.clear();decks.putAll(restored);
+        stock.clear();stock.putAll(supplies);
+        activeFlights.clear();activeFlights.addAll(saved.activeFlights());
+        deliveryReceipts.clear();deliveryReceipts.addAll(receipts);
+        nextId=saved.nextId();
+    }
+
     public AircraftCarrier(ContinentLayout world,CityMiasma miasma,
             int ownerId,CharacterRoster.Faction faction,Map<String,Integer> paidStock){
         this.world=Objects.requireNonNull(world);this.miasma=Objects.requireNonNull(miasma);
@@ -68,7 +141,7 @@ public final class AircraftCarrier {
     /** Ocean cells must underlie the ENTIRE hull and remain miasma-free.
      * This is a water berth validation, not a magical carrier spawn on grass.
      */
-    public synchronized boolean clearSea(double cx,double cy,Axis axis,int exceptId){
+    private boolean clearSeaAgainstTerrain(double cx,double cy,Axis axis){
         if(axis==null||!Double.isFinite(cx)||!Double.isFinite(cy))return false;
         int length=LENGTH;
         for(int along=0;along<length;along++){
@@ -84,6 +157,10 @@ public final class AircraftCarrier {
                     return false;
             }
         }
+        return true;
+    }
+    public synchronized boolean clearSea(double cx,double cy,Axis axis,int exceptId){
+        if(!clearSeaAgainstTerrain(cx,cy,axis))return false;
         for(Deck existing:decks.values())if(existing.id()!=exceptId&&
            Math.hypot(existing.x()-cx,existing.y()-cy)<LENGTH)return false;
         return true;

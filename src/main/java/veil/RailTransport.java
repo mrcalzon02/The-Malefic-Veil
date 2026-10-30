@@ -33,6 +33,97 @@ public final class RailTransport {
     private final Map<String,Integer> supplies=new HashMap<>();
     private final Map<Integer,Train> trains=new LinkedHashMap<>();
     private int nextId=1;
+    private final Set<String> deliveryReceipts=new LinkedHashSet<>();
+    public record TrainSave(int id,int owner,CharacterRoster.Faction faction,
+        TransportInfrastructure.Axis axis,int direction,double x,double y,
+        double speed,double fuel,int hp,int quantity,String cargo,
+        boolean brake,int wagons) {}
+    public record Snapshot(long worldSeed,int ownerId,
+        CharacterRoster.Faction faction,Map<String,Integer> stock,
+        List<TrainSave> trains,Set<String> deliveryReceipts,int nextId) {}
+    public TransportInfrastructure infrastructure(){return infra;}
+    synchronized boolean delivered(String receipt){return deliveryReceipts.contains(receipt);}
+    synchronized boolean canAcceptDelivery(String item,int amount,String receipt){
+        return item!=null&&amount>0&&amount<=512&&
+            receipt!=null&&receipt.matches("[a-zA-Z0-9_-]{6,80}")&&
+            deliveryReceipts.size()<4096&&!deliveryReceipts.contains(receipt)&&
+            supplies.getOrDefault(item,0)<=1_000_000-amount;
+    }
+    synchronized void acceptDelivery(String item,int amount,String receipt){
+        if(!canAcceptDelivery(item,amount,receipt))
+            throw new IllegalStateException("Unverified rail cargo delivery");
+        supplies.merge(item,amount,Integer::sum);
+        deliveryReceipts.add(receipt);
+    }
+    public synchronized Snapshot snapshot(){
+        List<TrainSave> saved=new ArrayList<>();
+        for(Train t:trains.values())saved.add(new TrainSave(t.id,t.owner,
+            t.faction,t.axis,t.direction,t.x,t.y,t.speed,t.fuel,t.hp,
+            t.quantity,t.cargo,t.brake,t.wagons));
+        return new Snapshot(infra.world().seed(),infra.ownerId(),
+            infra.faction(),Map.copyOf(supplies),List.copyOf(saved),
+            Set.copyOf(deliveryReceipts),nextId);
+    }
+    /**
+     * Restore is a host-checkpoint operation, not a network command.
+     * Reject a foreign seed, unsupported track, implausible cargo/physics,
+     * invalid receipts or duplicate locomotive before mutating any state.
+     */
+    public synchronized void restore(Snapshot saved){
+        if(saved==null||saved.worldSeed()!=infra.world().seed()||
+           saved.ownerId()!=infra.ownerId()||saved.faction()!=infra.faction()||
+           saved.stock()==null||saved.trains()==null||
+           saved.deliveryReceipts()==null||saved.nextId()<1||
+           saved.nextId()>1_000_000||saved.trains().size()>1024||
+           saved.deliveryReceipts().size()>4096)
+            throw new IllegalArgumentException("Corrupt rail checkpoint");
+        Map<String,Integer> items=new HashMap<>();
+        for(var e:saved.stock().entrySet()){
+            if(e.getKey()==null||e.getKey().isBlank()||e.getValue()==null||
+               e.getValue()<1||e.getValue()>1_000_000)
+                throw new IllegalArgumentException("Corrupt rail inventory");
+            items.put(e.getKey(),e.getValue());
+        }
+        Set<String> receipts=new LinkedHashSet<>();
+        for(String receipt:saved.deliveryReceipts())
+            if(receipt==null||!receipt.matches("[a-zA-Z0-9_-]{6,80}")||
+               !receipts.add(receipt))
+                throw new IllegalArgumentException("Corrupt rail receipt");
+        Map<Integer,Train> restored=new LinkedHashMap<>();
+        for(TrainSave line:saved.trains()){
+            if(line==null||line.id()<1||line.id()>=saved.nextId()||
+               line.owner()!=infra.ownerId()||line.faction()!=infra.faction()||
+               line.axis()==null||Math.abs(line.direction())!=1||
+               !Double.isFinite(line.x())||!Double.isFinite(line.y())||
+               !Double.isFinite(line.speed())||!Double.isFinite(line.fuel())||
+               line.speed()<0||line.speed()>12.01||
+               line.fuel()<0||line.fuel()>100||
+               line.hp()<0||line.hp()>320||
+               line.wagons()<0||line.wagons()>3||
+               line.quantity()<0||line.quantity()>40*(1+line.wagons())||
+               (line.quantity()==0)!=(line.cargo()==null)||
+               (line.cargo()!=null&&!line.cargo().matches("[A-Z_]{2,60}"))||
+               !infra.railExists((int)Math.floor(line.x()),
+                   (int)Math.floor(line.y())))
+                throw new IllegalArgumentException("Corrupt saved locomotive");
+            Train restoredTrain=new Train(line.id(),line.owner(),
+                line.faction(),line.axis(),line.direction(),
+                (int)Math.floor(line.x()),(int)Math.floor(line.y()));
+            restoredTrain.x=line.x();restoredTrain.y=line.y();
+            restoredTrain.speed=line.speed();restoredTrain.fuel=line.fuel();
+            restoredTrain.hp=line.hp();restoredTrain.quantity=line.quantity();
+            restoredTrain.cargo=line.cargo();restoredTrain.brake=line.brake();
+            restoredTrain.wagons=line.wagons();
+            if(restored.putIfAbsent(line.id(),restoredTrain)!=null)
+                throw new IllegalArgumentException("Duplicate saved locomotive");
+        }
+        // Commit together only after all validation has succeeded.
+        supplies.clear();supplies.putAll(items);
+        deliveryReceipts.clear();deliveryReceipts.addAll(receipts);
+        trains.clear();trains.putAll(restored);
+        nextId=saved.nextId();
+    }
+
     public RailTransport(TransportInfrastructure infra,Map<String,Integer> realStock) {
         this.infra=Objects.requireNonNull(infra);
         for(var p:realStock.entrySet()){

@@ -35,6 +35,7 @@ public final class IndustrialWorkstation {
         this.faction=faction;
     }
     public synchronized String facilityId(){return facility.id();}
+    public CraftingEraRegistry.Faction faction(){return faction;}
     public synchronized State state(){return state;}
     public synchronized int wear(){return wear;}
     public synchronized int completed(){return completed;}

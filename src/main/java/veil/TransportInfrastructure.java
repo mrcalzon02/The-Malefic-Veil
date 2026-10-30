@@ -34,6 +34,11 @@ public final class TransportInfrastructure {
     private final Map<String,Integer> stocks=new HashMap<>();
     private final Map<Long,Segment> tiles=new HashMap<>();
     private final Map<Integer,Runway> runways=new LinkedHashMap<>();
+    private final Set<String> deliveryReceipts=new LinkedHashSet<>();
+    public record Snapshot(long worldSeed,int ownerId,
+        CharacterRoster.Faction faction,Map<String,Integer> stock,
+        List<Segment> segments,List<Runway> runways,
+        Set<String> deliveryReceipts,int nextRunwayId,double constructionEnergy) {}
     private int nextRunwayId=1;
     private double energy;
     public TransportInfrastructure(ContinentLayout world,CityMiasma miasma,
@@ -68,6 +73,111 @@ public final class TransportInfrastructure {
     public synchronized Collection<Runway> runways(){return List.copyOf(runways.values());}
     public synchronized Runway runway(int id){return runways.get(id);}
     public synchronized double constructionEnergy(){return energy;}
+    /** Trusted manufacturing port, only called by TransportFactoryDelivery
+     * while the source workstation and this stock are BOTH locked.
+     */
+    synchronized boolean canAcceptDelivery(String item,int amount,String receipt){
+        return item!=null&&amount>0&&amount<=1000&&
+            receipt!=null&&receipt.matches("[a-zA-Z0-9_-]{6,80}")&&
+            !deliveryReceipts.contains(receipt)&&deliveryReceipts.size()<4096&&
+            stocks.getOrDefault(item,0)<=1_000_000-amount;
+    }
+    synchronized void acceptDelivery(String item,int amount,String receipt){
+        if(!canAcceptDelivery(item,amount,receipt))
+            throw new IllegalStateException("Unverified construction stock transfer");
+        stocks.merge(item,amount,Integer::sum);
+        deliveryReceipts.add(receipt);
+    }
+    synchronized boolean delivered(String receipt){return deliveryReceipts.contains(receipt);}
+
+    /** Snapshot is one component of a single atomic host world+inventory
+     * checkpoint: never persist this ledger separately from its factories.
+     */
+    public synchronized Snapshot snapshot(){
+        List<Segment> sorted=new ArrayList<>(tiles.values());
+        sorted.sort(Comparator.comparingInt(Segment::y).thenComparingInt(Segment::x));
+        return new Snapshot(world.seed(),ownerId,faction,Map.copyOf(stocks),
+            List.copyOf(sorted),List.copyOf(runways.values()),
+            Set.copyOf(deliveryReceipts),nextRunwayId,energy);
+    }
+    /** Fail-closed transactional restore. Validate complete geometry, stock,
+     * identity and receipts BEFORE changing any live mutable field.
+     */
+    public synchronized void restore(Snapshot saved){
+        if(saved==null||saved.worldSeed()!=world.seed()||
+           saved.ownerId()!=ownerId||saved.faction()!=faction||
+           saved.stock()==null||saved.segments()==null||
+           saved.runways()==null||saved.deliveryReceipts()==null||
+           saved.nextRunwayId()<1||saved.nextRunwayId()>1_000_000||
+           !Double.isFinite(saved.constructionEnergy())||
+           saved.constructionEnergy()<0||saved.constructionEnergy()>1_000_000||
+           saved.segments().size()>20_000||saved.runways().size()>500||
+           saved.deliveryReceipts().size()>4096)
+            throw new IllegalArgumentException("Invalid infrastructure checkpoint");
+        Map<String,Integer> validatedStock=new HashMap<>();
+        for(var e:saved.stock().entrySet()){
+            if(e.getKey()==null||e.getKey().isBlank()||
+               e.getValue()==null||e.getValue()<1||e.getValue()>1_000_000)
+                throw new IllegalArgumentException("Invalid construction inventory");
+            validatedStock.put(e.getKey(),e.getValue());
+        }
+        Set<String> validatedReceipts=new LinkedHashSet<>();
+        for(String receipt:saved.deliveryReceipts()){
+            if(receipt==null||!receipt.matches("[a-zA-Z0-9_-]{6,80}")||
+               !validatedReceipts.add(receipt))
+                throw new IllegalArgumentException("Corrupt delivery receipt");
+        }
+        Map<Long,Segment> built=new HashMap<>();
+        for(Segment part:saved.segments()){
+            if(part==null||part.kind()==null||part.axis()==null||
+               part.ownerId()!=ownerId||part.faction()!=faction||
+               part.hp()<0||part.hp()>100||
+               !world.buildableGround(part.x(),part.y())||
+               world.road(part.x(),part.y())||
+               miasma.forbidsAircraft(part.x()+.5,part.y()+.5,0)||
+               built.putIfAbsent(key(part.x(),part.y()),part)!=null)
+                throw new IllegalArgumentException("Corrupt physical transport geometry");
+        }
+        Map<Integer,Runway> parsed=new LinkedHashMap<>();
+        Set<Long> planned=new HashSet<>();
+        Set<Long> runwayTiles=new HashSet<>();
+        for(Runway strip:saved.runways()){
+            if(strip==null||strip.id()<1||strip.id()>=saved.nextRunwayId()||
+               strip.axis()==null||strip.ownerId()!=ownerId||
+               strip.faction()!=faction||strip.count()<12||strip.count()>60||
+               strip.constructed()<0||strip.constructed()>strip.count()||
+               parsed.putIfAbsent(strip.id(),strip)!=null)
+                throw new IllegalArgumentException("Corrupt runway ownership/sequence");
+            var light=AirPowerCatalog.all().stream()
+                .filter(p->p.faction()==faction&&p.role()==AirPowerMeshes.Role.LIGHT)
+                .findFirst().orElseThrow();
+            if(!AircraftFlight.validAirfield(world,miasma,strip.airfield(),light))
+                throw new IllegalArgumentException("Protected or malformed runway plan");
+            for(int i=0;i<strip.count();i++){
+                int x=atX(strip,i),y=atY(strip,i);
+                long k=key(x,y);
+                if(!planned.add(k))throw new IllegalArgumentException("Overlapping runway plans");
+                Segment part=built.get(k);
+                if(i<strip.constructed()){
+                    if(part==null||part.kind()!=Kind.RUNWAY||part.axis()!=strip.axis()||
+                       !runwayTiles.add(k))
+                        throw new IllegalArgumentException("Missing constructed runway tile");
+                }else if(part!=null)
+                    throw new IllegalArgumentException("Ghost tile in unbuilt runway");
+            }
+        }
+        for(Segment seg:built.values())
+            if(seg.kind()==Kind.RUNWAY&&!runwayTiles.contains(key(seg.x(),seg.y())))
+                throw new IllegalArgumentException("Unplanned runway tile");
+        // No partial mutation on validation failure.
+        stocks.clear();stocks.putAll(validatedStock);
+        deliveryReceipts.clear();deliveryReceipts.addAll(validatedReceipts);
+        tiles.clear();tiles.putAll(built);
+        runways.clear();runways.putAll(parsed);
+        nextRunwayId=saved.nextRunwayId();
+        energy=saved.constructionEnergy();
+    }
+
     /** Transfer may only be invoked after a real utility-grid debit. */
     public synchronized void depositMeteredEnergy(double units){
         if(!Double.isFinite(units)||units<0||energy+units>1_000_000)

@@ -69,6 +69,18 @@ public final class RailTransport {
      * Reject a foreign seed, unsupported track, implausible cargo/physics,
      * invalid receipts or duplicate locomotive before mutating any state.
      */
+    /** A six-metre locomotive block cannot be shared by two trains, including
+     * a wreck. This simple straight-track authority protects host ticks and
+     * checkpoint restore; junction routing and wagon-length signals remain
+     * separate work.
+     */
+    private static boolean clearLocomotiveBlock(Train self,double x,double y,
+            Collection<Train> fleet){
+        for(Train other:fleet)
+            if(other!=self&&Math.hypot(other.x-x,other.y-y)<1.0-1e-8)
+                return false;
+        return true;
+    }
     public synchronized void restore(Snapshot saved){
         if(saved==null||saved.worldSeed()!=infra.world().seed()||
            saved.ownerId()!=infra.ownerId()||saved.faction()!=infra.faction()||
@@ -114,6 +126,9 @@ public final class RailTransport {
             restoredTrain.hp=line.hp();restoredTrain.quantity=line.quantity();
             restoredTrain.cargo=line.cargo();restoredTrain.brake=line.brake();
             restoredTrain.wagons=line.wagons();
+            if(!clearLocomotiveBlock(restoredTrain,restoredTrain.x,
+                    restoredTrain.y,restored.values()))
+                throw new IllegalArgumentException("Overlapping saved locomotives");
             if(restored.putIfAbsent(line.id(),restoredTrain)!=null)
                 throw new IllegalArgumentException("Duplicate saved locomotive");
         }
@@ -240,6 +255,14 @@ public final class RailTransport {
                ((oldX!=newX||oldY!=newY)&&
                  !infra.connectedRail(oldX,oldY,newX,newY))){
                 if(t.speed>3)t.hp=Math.max(0,t.hp-(int)Math.ceil(t.speed*4));
+                t.speed=0;t.brake=true;
+                continue;
+            }
+            // Trains cannot phase through one another on a shared track.
+            // Reserve the next locomotive block against both moving and
+            // stationary peers before committing motion; a failed reservation
+            // applies a safety brake rather than collision damage.
+            if(!clearLocomotiveBlock(t,nx,ny,trains.values())){
                 t.speed=0;t.brake=true;
                 continue;
             }

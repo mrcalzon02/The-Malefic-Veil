@@ -56,3 +56,9 @@ The deck is 8 metres above the base water datum and supports **light aircraft on
 `TransportInfrastructureTest` validates paid 6m construction, incomplete and short strips, damaged runway shutdown and paid repair, ownership isolation, rail continuity, duplicate engine suppression, freight debit/unload, bounded train movement and fuel, paid ship hull/repair, deck size, deck reservation and physical aircraft launch. Both the host and GPU Java 17 CI invoke it.
 
 **Important boundary:** A passing headless test validates deterministic logic, NOT live build menu use, a rendered track mesh, actual GPU ship, streamed world travel or multiplayer deployment. Those must be implemented before the user should see a claim that the full transport system is released.
+
+## A4: Head-on locomotive block protection (October 2026)
+
+`RailTransport.advance()` now makes a server-owned six-metre locomotive-block clearance check before each move. A train approaching another live or wrecked engine on the same single track brakes instead of passing through its position; this is deterministic under the existing bounded 250 ms simulation ticks. `RailTransport.restore()` also rejects physically overlapping train coordinates before any persistent state changes. `RailTrafficSafetyTest` drives two opposing, paid and fueled locomotives together across eighteen constructed parcels, checks every tick for crossing/overlap, verifies collision-free safety stops and rejects a forged overlapping snapshot; host and GPU-CI Java suites execute this objective behavior test.
+
+**Still not implemented:** wagon-length block occupation, signals, switches and junction dispatch, full scheduling/depot logistics, live hosted world actors, or player-visible 3D trains. This safety check does not authorize multiplayer rail operation or represent a complete train signalling system.

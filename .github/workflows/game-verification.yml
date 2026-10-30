@@ -157,6 +157,7 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.TransportProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.TransportFactoryDeliveryTest
           java -Djava.awt.headless=true -cp build/classes veil.TransportFleetDeliveryTest
+          java -Djava.awt.headless=true -cp build/classes veil.RailTrafficSafetyTest
           java -Djava.awt.headless=true -cp build/classes veil.ContinentTransportSectorsTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingEraRegistryTest
           java -Djava.awt.headless=true -cp build/classes veil.CraftingRecipeIndexTest

@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'gpu-client/**'
+      - 'economy/**' # GPU bundled crafting indexes must match canonical CSV exports
       - 'src/main/java/veil/**'
       - 'src/main/java/dev/mrcalzon/water/**'
       - 'assets/game/kenney/**'

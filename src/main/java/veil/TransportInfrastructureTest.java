@@ -26,9 +26,10 @@ public final class TransportInfrastructureTest {
                 boolean good=true;
                 for(int k=0;k<6;k++){
                     int xx=x+k;
-                    if(!world.buildableGround(xx,y)||world.road(xx,y)|| 
-                        built.segments().stream().anyMatch(s->s.x()==xx&&s.y()==y))
+                    if(!world.buildableGround(xx,y)||world.road(xx,y))
                         good=false;
+                    for(var segment:built.segments())
+                        if(segment.x()==xx&&segment.y()==y)good=false;
                 }
                 if(good)return new int[]{x,y};
             }

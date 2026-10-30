@@ -4,14 +4,15 @@ import veil.MaleficVeil;
 import java.util.*;
 
 /**
- * Mix plan for actual operating facilities and host-reported vehicles.
+ * Mix plan for actual host-confirmed operating facilities.
  * Each faction owns its own acoustic civilization; shared steam and electrical
  * utilities get a distinct fourth signature. This does not create a sound
  * for a merely visible but inactive industrial structure.
  */
 public final class GpuIndustryAudioPlanner {
     public enum Channel { UNRAVELED, PENITENT, BEGOTTEN, UTILITY, ENGINE_IDLE, ENGINE_MOVING }
-    public record Mix(float gain,float pan) {
+    public record Mix(float gain,float pan,double sourceX,double sourceY) {
+        public Mix(float gain,float pan){this(gain,pan,Double.NaN,Double.NaN);}
         public Mix {
             if(!Float.isFinite(gain)||!Float.isFinite(pan)||gain<0||gain>1||
                 pan< -1||pan>1)throw new IllegalArgumentException("Invalid ambient mix");
@@ -58,7 +59,7 @@ public final class GpuIndustryAudioPlanner {
         if(gain<=target.get(channel).gain())return;
         float pan=(float)Math.max(-1,Math.min(1,
             Math.sin(Math.atan2(dy,dx)-yaw)*Math.min(1,distance/3)));
-        target.put(channel,new Mix(gain,pan));
+        target.put(channel,new Mix(gain,pan,sx,sy));
     }
     private static void need(boolean trueValue,String why) {
         if(!trueValue)throw new AssertionError(why);
@@ -77,6 +78,10 @@ public final class GpuIndustryAudioPlanner {
                 Channel.BEGOTTEN,Channel.UTILITY))
             need(loud.get(lane).gain()>0,"Missing distinct faction/utility "+lane);
         need(loud.get(Channel.ENGINE_IDLE).gain()==0,"Engine without vehicle");
+        need(loud.get(Channel.UNRAVELED).sourceX()==2&&
+            loud.get(Channel.PENITENT).sourceX()==3&&
+            loud.get(Channel.BEGOTTEN).sourceX()==4,
+            "Each faction's actual source coordinates must survive planning");
         need(loud.get(Channel.ENGINE_MOVING).gain()==0,
             "Vehicle audio belongs exclusively to speed-controlled mixer");
         need(faction(8)==0&&faction(9)==1&&faction(10)==2&&faction(34)==-1,

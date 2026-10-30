@@ -11,7 +11,9 @@ import java.util.*;
 public final class GpuVehicleAudioDynamics {
     public enum Event { NONE, IGNITION, SHUTDOWN, ACCELERATE, BRAKE, BODY_DAMAGE }
     public record Mix(float idleGain,float runningGain,float pitch,float pan,
-                      Event event,float eventGain,float eventPan) {}
+                      Event event,float eventGain,float eventPan,
+                      double sourceX,double sourceY,
+                      double eventX,double eventY) {}
     private record Prior(double x,double y,double speed,double fuel,int hp,int driver) {}
     private Map<Integer,Prior> previous=Map.of();
     private boolean initialized;
@@ -26,6 +28,7 @@ public final class GpuVehicleAudioDynamics {
         MaleficVeil.GpuVehicleAudio closest=null;
         double best=-1;
         float bodyGain=0,bodyPan=0;
+        double bodyX=Double.NaN,bodyY=Double.NaN;
         for(var car:vehicles){
             if(car==null||car.id()<0||!Double.isFinite(car.x())||
                 !Double.isFinite(car.y())||!Double.isFinite(car.speed())||
@@ -39,6 +42,7 @@ public final class GpuVehicleAudioDynamics {
                 float gain=(float)(1/(1+Math.pow(damageDistance/10,2)));
                 if(gain>bodyGain){
                     bodyGain=gain;
+                    bodyX=car.x();bodyY=car.y();
                     bodyPan=(float)Math.max(-1,Math.min(1,
                         Math.sin(Math.atan2(car.y()-py,car.x()-px)-yaw)*
                         Math.min(1,damageDistance/3)));
@@ -53,6 +57,7 @@ public final class GpuVehicleAudioDynamics {
         Event cue=bodyGain>0?Event.BODY_DAMAGE:Event.NONE;
         float cueGain=bodyGain;
         float cuePan=bodyPan;
+        double cueX=bodyX,cueY=bodyY;
         // Host-driven shutdown is audible only when its previous state was
         // actually witnessed. Missing/stale LAN snapshots are not events.
         if(cue==Event.NONE&&initialized&&closest==null&&dominant>=0){
@@ -61,6 +66,7 @@ public final class GpuVehicleAudioDynamics {
             if(before!=null&&after!=null&&before.driver()>=0&&
                     (after.driver()<0||after.fuel()<=0||after.hp()<=0)){
                 cue=Event.SHUTDOWN;
+                cueX=after.x();cueY=after.y();
                 cueGain=(float)Math.max(0,Math.min(1,
                     1/(1+Math.pow(Math.hypot(after.x()-px,after.y()-py)/10,2))));
             }
@@ -72,7 +78,8 @@ public final class GpuVehicleAudioDynamics {
             if(cue!=Event.NONE&&elapsedSeconds-lastCueSeconds>.075f)
                 lastCueSeconds=elapsedSeconds;
             else cue=Event.NONE;
-            return new Mix(0,0,1,0,cue,cueGain,cuePan);
+            return new Mix(0,0,1,0,cue,cueGain,cuePan,
+                Double.NaN,Double.NaN,cueX,cueY);
         }
 
         double d=Math.hypot(closest.x()-px,closest.y()-py);
@@ -101,13 +108,17 @@ public final class GpuVehicleAudioDynamics {
             }
         }
         if(cue!=Event.NONE&&elapsedSeconds-lastCueSeconds>=.075f){
-            if(cueGain==0){cueGain=falloff;cuePan=pan;}
+            if(cueGain==0){
+                cueGain=falloff;cuePan=pan;
+                cueX=closest.x();cueY=closest.y();
+            }
             lastCueSeconds=elapsedSeconds;
         }else cue=Event.NONE;
         dominant=closest.id();
         previous=Map.copyOf(next);
         initialized=true;
-        return new Mix(idle,moving,pitch,pan,cue,cueGain,cuePan);
+        return new Mix(idle,moving,pitch,pan,cue,cueGain,cuePan,
+            closest.x(),closest.y(),cueX,cueY);
     }
     public void reset(){
         previous=Map.of();initialized=false;dominant=-1;
@@ -140,6 +151,8 @@ public final class GpuVehicleAudioDynamics {
         var ignition=gate.accept(List.of(car(0,1,98,185)),0,0,0,.4f);
         check(ignition.event()==Event.IGNITION,"Real reentry should start motor");
         var reverse=gate.accept(List.of(car(-2,1,98,185)),0,0,0,.4f);
+        check(reverse.sourceX()==2&&reverse.sourceY()==0,
+            "Mix source must track the chosen authoritative car");
         check(reverse.runningGain()>0&&reverse.pitch()<1.15,
             "Reverse should have a distinct lower engine pitch");
         gate.reset();
@@ -154,8 +167,9 @@ public final class GpuVehicleAudioDynamics {
         var parkedGate=new GpuVehicleAudioDynamics();
         parkedGate.accept(List.of(car(0,-1,100,200)),0,0,0,.1f);
         var parkedHit=parkedGate.accept(List.of(car(0,-1,100,182)),0,0,0,.1f);
-        check(parkedHit.event()==Event.BODY_DAMAGE&&parkedHit.idleGain()==0,
-            "A parked vehicle can take confirmed body damage without running");
+        check(parkedHit.event()==Event.BODY_DAMAGE&&parkedHit.idleGain()==0&&
+              parkedHit.eventX()==2,
+            "A parked vehicle must have positional body damage without engine");
         var ruinedGate=new GpuVehicleAudioDynamics();
         ruinedGate.accept(List.of(car(3,1,100,20)),0,0,0,.1f);
         var destroyed=ruinedGate.accept(List.of(car(0,-1,100,0)),0,0,0,.1f);

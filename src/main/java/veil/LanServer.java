@@ -34,12 +34,18 @@ public final class LanServer implements AutoCloseable {
         int id;
         Socket socket;
         PrintWriter out;
-        hbnet.Lines.Outbox outbound;
+        LanOutbox outbound;
+        Thread connectionWorker;
         boolean authenticated;
         int commands;
         long commandWindow=System.nanoTime();
         double lastResourceX=Double.NaN,lastResourceY=Double.NaN;
-        void send(String message){outbound.send(message);}
+        void send(String message){
+            // Only this peer's own socket worker may wait for snapshot capacity.
+            // Host simulation ticks and broadcasts remain nonblocking.
+            if(Thread.currentThread()==connectionWorker)outbound.sendReliable(message);
+            else outbound.send(message);
+        }
     }
     public LanServer(int port,long seed)throws IOException {this(port,seed,null,false);}
     public LanServer(int port,long seed,Path saveDir)throws IOException {
@@ -336,6 +342,7 @@ public final class LanServer implements AutoCloseable {
     }
     private void serve(Socket socket){
         Peer peer=new Peer();peer.id=id();peer.socket=socket;
+        peer.connectionWorker=Thread.currentThread();
         try(socket;
             BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true)){
@@ -343,7 +350,7 @@ public final class LanServer implements AutoCloseable {
             if(secureTransport==null&&!hbnet.Hbnet.trustedLan(socket.getInetAddress()))return;
             String signer=secureTransport==null?null:secureTransport.admit(socket,"malefic-veil");
             peer.out=out;
-            peer.outbound=new hbnet.Lines.Outbox(out,socket);
+            peer.outbound=new LanOutbox(out,socket);
             ArenaSystems.Player actor=match.join(peer.id);
             if(signer!=null){
                 String account="acct_"+signer;

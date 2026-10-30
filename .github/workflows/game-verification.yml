@@ -69,6 +69,9 @@ jobs:
       - name: Verify visible E interaction collects ammo on the real host
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.PickupInteractionRangeTest
+      - name: Bounded LAN initial-snapshot backpressure and slow-client isolation
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.LanOutboxTest
       - name: Host-owned LAN weather and late-join synchronization
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WeatherLanTest

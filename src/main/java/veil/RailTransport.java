@@ -139,7 +139,11 @@ public final class RailTransport {
     private boolean debit(Map<String,Integer> bill){
         for(var e:bill.entrySet())
             if(supplies.getOrDefault(e.getKey(),0)<e.getValue())return false;
-        for(var e:bill.entrySet())supplies.merge(e.getKey(),-e.getValue(),Integer::sum);
+        for(var e:bill.entrySet()){
+            int remaining=supplies.get(e.getKey())-e.getValue();
+            if(remaining==0)supplies.remove(e.getKey());
+            else supplies.put(e.getKey(),remaining);
+        }
         return true;
     }
     public synchronized Map<String,Integer> stocks(){return Map.copyOf(supplies);}

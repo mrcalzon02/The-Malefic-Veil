@@ -135,8 +135,11 @@ public final class AircraftCarrier {
         return true;
     }
     private void debit(Map<String,Integer> bill){
-        for(var line:bill.entrySet())
-            stock.merge(line.getKey(),-line.getValue(),Integer::sum);
+        for(var line:bill.entrySet()){
+            int remaining=stock.get(line.getKey())-line.getValue();
+            if(remaining==0)stock.remove(line.getKey());
+            else stock.put(line.getKey(),remaining);
+        }
     }
     /** Ocean cells must underlie the ENTIRE hull and remain miasma-free.
      * This is a water berth validation, not a magical carrier spawn on grass.

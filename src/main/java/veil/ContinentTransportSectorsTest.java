@@ -66,6 +66,18 @@ public final class ContinentTransportSectorsTest {
                         AircraftCarrier.Axis.EAST_WEST);
         check(hull>0,"Paid carrier was not placed on real water");
         var layers=new ContinentTransportSectors(infra,rail,fleet);
+        // Public sector rows are render/physics descriptors, never the
+        // source train/carrier/warehouse records with private inventory.
+        for(Class<?> viewType:List.of(
+                ContinentTransportSectors.SegmentVisual.class,
+                ContinentTransportSectors.RunwayVisual.class,
+                ContinentTransportSectors.TrainVisual.class,
+                ContinentTransportSectors.CarrierVisual.class))
+            for(var component:viewType.getRecordComponents())
+                check(!Set.of("ownerId","cargo","cargoQuantity","fuelUnits",
+                        "stock","receipt","deliveryReceipts").contains(component.getName()),
+                    "Transport sector leaked private host economy: "+component.getName());
+
         Set<String> seenSegments=new HashSet<>();
         Set<Integer> seenTrains=new HashSet<>(),seenRunways=new HashSet<>(),
             seenCarriers=new HashSet<>();

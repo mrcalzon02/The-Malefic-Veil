@@ -9,11 +9,24 @@ import java.util.*;
  * or GPU asset binding is provided by this class.
  */
 public final class ContinentTransportSectors {
+    /** Public visual descriptors never expose owner IDs, cargo, fuel,
+     * delivery receipts, workstation inventories or access permissions.
+     */
+    public record SegmentVisual(int x,int y,TransportInfrastructure.Kind kind,
+            TransportInfrastructure.Axis axis,int hp,CharacterRoster.Faction faction) {}
+    public record RunwayVisual(int id,int startX,int startY,
+            TransportInfrastructure.Axis axis,int count,int constructed,
+            CharacterRoster.Faction faction) {}
+    public record TrainVisual(int id,double x,double y,
+            TransportInfrastructure.Axis axis,int direction,int hp,int wagons,
+            CharacterRoster.Faction faction) {}
+    public record CarrierVisual(int id,double x,double y,AircraftCarrier.Axis axis,
+            int lengthParcels,int deckHp,CharacterRoster.Faction faction) {}
     public record View(ContinentSectors.Key key,
-            List<TransportInfrastructure.Segment> segments,
-            List<TransportInfrastructure.Runway> runways,
-            List<RailTransport.TrainSave> locomotives,
-            List<AircraftCarrier.Deck> carriers) {}
+            List<SegmentVisual> segments,
+            List<RunwayVisual> runways,
+            List<TrainVisual> locomotives,
+            List<CarrierVisual> carriers) {}
     private final TransportInfrastructure ground;
     private final RailTransport rail;
     private final AircraftCarrier marine;
@@ -74,25 +87,33 @@ public final class ContinentTransportSectors {
             }
         }
         int sx=key.x(),sy=key.y();
-        List<TransportInfrastructure.Segment> parts=new ArrayList<>();
+        List<SegmentVisual> parts=new ArrayList<>();
         for(var s:site.segments())
-            if(within(s.x(),s.y(),sx,sy))parts.add(s);
-        List<TransportInfrastructure.Runway> strips=new ArrayList<>();
+            if(within(s.x(),s.y(),sx,sy))
+                parts.add(new SegmentVisual(s.x(),s.y(),s.kind(),s.axis(),
+                    s.hp(),s.faction()));
+        List<RunwayVisual> strips=new ArrayList<>();
         for(var r:site.runways())
-            if(runwayOverlaps(r,sx,sy))strips.add(r);
-        List<RailTransport.TrainSave> trains=new ArrayList<>();
+            if(runwayOverlaps(r,sx,sy))
+                strips.add(new RunwayVisual(r.id(),r.startX(),r.startY(),
+                    r.axis(),r.count(),r.constructed(),r.faction()));
+        List<TrainVisual> trains=new ArrayList<>();
         for(var t:locomotives.trains()){
             int tx=(int)Math.floor(t.x()),ty=(int)Math.floor(t.y());
-            if(within(tx,ty,sx,sy))trains.add(t);
+            if(within(tx,ty,sx,sy))
+                trains.add(new TrainVisual(t.id(),t.x(),t.y(),t.axis(),
+                    t.direction(),t.hp(),t.wagons(),t.faction()));
         }
-        List<AircraftCarrier.Deck> decks=new ArrayList<>();
+        List<CarrierVisual> decks=new ArrayList<>();
         for(var d:fleet.decks())
-            if(deckOverlaps(d,sx,sy))decks.add(d);
-        parts.sort(Comparator.comparingInt(TransportInfrastructure.Segment::y)
-            .thenComparingInt(TransportInfrastructure.Segment::x));
-        strips.sort(Comparator.comparingInt(TransportInfrastructure.Runway::id));
-        trains.sort(Comparator.comparingInt(RailTransport.TrainSave::id));
-        decks.sort(Comparator.comparingInt(AircraftCarrier.Deck::id));
+            if(deckOverlaps(d,sx,sy))
+                decks.add(new CarrierVisual(d.id(),d.x(),d.y(),
+                    d.axis(),d.lengthParcels(),d.deckHp(),d.faction()));
+        parts.sort(Comparator.comparingInt(SegmentVisual::y)
+            .thenComparingInt(SegmentVisual::x));
+        strips.sort(Comparator.comparingInt(RunwayVisual::id));
+        trains.sort(Comparator.comparingInt(TrainVisual::id));
+        decks.sort(Comparator.comparingInt(CarrierVisual::id));
         return new View(key,List.copyOf(parts),List.copyOf(strips),
             List.copyOf(trains),List.copyOf(decks));
     }

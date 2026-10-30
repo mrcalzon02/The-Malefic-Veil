@@ -32,16 +32,31 @@ public final class AircraftFlight {
     private final CityMiasma miasma;
     private final Airfield airfield;
     private final int pilotId;
+    private final TransportInfrastructure physicalRunway;
+    private final int physicalRunwayId;
+    private final AircraftCarrier carrier;
+    private final int carrierDeckId;
     private double x,y,altitude,heading,speed,verticalSpeed,fuel,roll;
     private int hp;
     private boolean airborne,lastDeflection;
     private Controls controls=new Controls(0,0,0);
 
     private AircraftFlight(AirPowerCatalog.Airframe plane,
-            ContinentLayout world,CityMiasma miasma,Airfield airfield,int pilotId) {
+            ContinentLayout world,CityMiasma miasma,Airfield airfield,int pilotId,
+            TransportInfrastructure physicalRunway,int physicalRunwayId) {
+        this(plane,world,miasma,airfield,pilotId,physicalRunway,physicalRunwayId,null,-1);
+    }
+    private AircraftFlight(AirPowerCatalog.Airframe plane,
+            ContinentLayout world,CityMiasma miasma,Airfield airfield,int pilotId,
+            TransportInfrastructure physicalRunway,int physicalRunwayId,
+            AircraftCarrier carrier,int carrierDeckId) {
+        this.carrier=carrier;this.carrierDeckId=carrierDeckId;
         this.plane=plane;this.world=world;this.miasma=miasma;
         this.airfield=airfield;this.pilotId=pilotId;
-        double back=airfield.lengthMetres()/(2*PARCEL_METRES);
+        this.physicalRunway=physicalRunway;this.physicalRunwayId=physicalRunwayId;
+        // Start inside the first built slab / flight-deck panel, not exactly
+        // on the open-water boundary or beyond the runway threshold.
+        double back=Math.max(0,airfield.lengthMetres()/(2*PARCEL_METRES)-.35);
         this.x=airfield.x()-back*Math.cos(airfield.heading());
         this.y=airfield.y()-back*Math.sin(airfield.heading());
         this.heading=airfield.heading();
@@ -88,14 +103,55 @@ public final class AircraftFlight {
      * Validation is performed before consuming the paid output to avoid loss
      * on a bad pad. Pilot permission and LAN identity integration are pending.
      */
-    public static AircraftFlight commission(AirPowerCatalog.Airframe plane,
+    /** Compatibility for earlier headless contract tests only. No public
+     * release path may commission from an unbuilt abstract pad. */
+    static AircraftFlight commission(AirPowerCatalog.Airframe plane,
             AircraftWorkshop factory,ContinentLayout world,CityMiasma miasma,
             Airfield pad,int pilotId){
         if(plane==null||factory==null||pilotId<0||
            factory.faction()!=plane.faction()||
            !validAirfield(world,miasma,pad,plane))return null;
         if(!factory.withdrawCompleted(plane.modelId()))return null;
-        return new AircraftFlight(plane,world,miasma,pad,pilotId);
+        return new AircraftFlight(plane,world,miasma,pad,pilotId,null,-1);
+    }
+    /**
+     * Production commissioning requires every six-metre runway segment
+     * already built and sound, in the very same authoritative continent.
+     * No item is consumed on denied permission or incomplete/ruined paving.
+     */
+    public static AircraftFlight commission(AirPowerCatalog.Airframe plane,
+            AircraftWorkshop factory,ContinentLayout world,CityMiasma miasma,
+            TransportInfrastructure physical,int runwayId,int pilotId){
+        if(plane==null||factory==null||world==null||miasma==null||
+           physical==null||pilotId<0||
+           physical.world()!=world||physical.miasma()!=miasma||
+           physical.faction()!=plane.faction()||
+           factory.faction()!=plane.faction()||
+           !physical.operationalRunway(runwayId,plane))return null;
+        var runway=physical.runway(runwayId);
+        if(runway==null||!factory.withdrawCompleted(plane.modelId()))return null;
+        return new AircraftFlight(plane,world,miasma,runway.airfield(),pilotId,
+            physical,runwayId);
+    }
+    /** Carrier decks are real paid, intact marine surfaces. A reservation
+     * prevents another pilot commandeering the same deck. This is strictly
+     * light-aircraft capable until longer deck/catapult systems exist.
+     */
+    public static AircraftFlight commissionCarrier(AirPowerCatalog.Airframe plane,
+            AircraftWorkshop factory,ContinentLayout world,CityMiasma miasma,
+            AircraftCarrier fleet,int deckId,int shipOwnerId,int pilotId){
+        if(plane==null||factory==null||world==null||miasma==null||
+           fleet==null||pilotId<0||factory.faction()!=plane.faction()||
+           fleet.faction()!=plane.faction()||fleet.world()!=world||
+           fleet.miasma()!=miasma||!fleet.usableDeck(deckId,plane)||
+           !fleet.reserveDeck(shipOwnerId,deckId,plane))return null;
+        if(!factory.withdrawCompleted(plane.modelId())){
+            fleet.releaseDeck(shipOwnerId,deckId);
+            return null;
+        }
+        var deck=fleet.deck(deckId);
+        return new AircraftFlight(plane,world,miasma,deck.airfield(),pilotId,
+            null,-1,fleet,deckId);
     }
     public synchronized boolean controls(int callerId,Controls input){
         if(callerId!=pilotId||input==null||hp<=0)return false;
@@ -106,6 +162,10 @@ public final class AircraftFlight {
             verticalSpeed,fuel,hp,airborne,roll,lastDeflection);
     }
     private double ground(double x,double y){
+        if(carrier!=null){
+            double deck=carrier.deckElevation(carrierDeckId,x,y);
+            if(Double.isFinite(deck))return deck;
+        }
         return world.elevation((int)Math.floor(x),(int)Math.floor(y));
     }
     /** Fuel must exist in the host workshop store and is debited exactly once. */
@@ -182,20 +242,28 @@ public final class AircraftFlight {
             // No free grass/water landing outside an approved strip.
             hp=Math.max(0,hp-(int)Math.ceil(30+speed*20+
                 Math.max(0,-verticalSpeed)*8));
+            if(carrier!=null&&Double.isFinite(
+                    carrier.deckElevation(carrierDeckId,x,y)))
+                carrier.damage(carrierDeckId,60);
             altitude=ground(x,y);
             verticalSpeed=0;speed=0;controls=new Controls(0,0,0);
             airborne=false;
         }
     }
     private boolean canLand(){
-        double dx=x-airfield.x(),dy=y-airfield.y();
-        double along=Math.cos(airfield.heading())*dx+Math.sin(airfield.heading())*dy;
-        double side=-Math.sin(airfield.heading())*dx+Math.cos(airfield.heading())*dy;
-        return Math.abs(along)*PARCEL_METRES<airfield.lengthMetres()*.45&&
+        Airfield landing=carrier!=null?
+            carrier.deck(carrierDeckId).airfield():airfield;
+        double dx=x-landing.x(),dy=y-landing.y();
+        double along=Math.cos(landing.heading())*dx+Math.sin(landing.heading())*dy;
+        double side=-Math.sin(landing.heading())*dx+Math.cos(landing.heading())*dy;
+        return (physicalRunway==null||
+            physicalRunway.operationalRunway(physicalRunwayId,plane))&&
+            (carrier==null||carrier.usableDeck(carrierDeckId,plane))&&
+            Math.abs(along)*PARCEL_METRES<landing.lengthMetres()*.45&&
             Math.abs(side)<=1.0&&
-            angularDistance(heading,airfield.heading())<.48&&
+            angularDistance(heading,landing.heading())<.48&&
             speed<=plane.landingMaxSpeedParcelsPerSecond()&&
             verticalSpeed<=0&&verticalSpeed>=-3.5&&controls.throttle()<=.45&&
-            validAirfield(world,miasma,airfield,plane);
+            (carrier!=null||validAirfield(world,miasma,airfield,plane));
     }
 }

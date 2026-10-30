@@ -57,6 +57,15 @@ public final class TransportInfrastructureTest {
                 "GEAR_ASSEMBLY","ASSEMBLY_CONTROLLER","RESILIENCE_CORE",
                 "TRACKING_CIRCUIT"))
             inventory.put(id,1000);
+        // Finished transport parts are delivered by powered production plants.
+        // An identical raw-stock-only host must refuse to install the panel.
+        var rawOnly=new TransportInfrastructure(world,mist,owner,faction,inventory);
+        var denied=chooseRunway(world,mist,rawOnly,owner);
+        rawOnly.depositMeteredEnergy(50);
+        yes(!rawOnly.buildNextRunwaySection(owner,denied.id()),
+            "Raw material alone bypassed specialized paving works");
+        for(var product:TransportProduction.Product.values())
+            inventory.put(TransportProduction.item(product,faction),1000);
         var built=new TransportInfrastructure(world,mist,owner,faction,inventory);
         yes(built.planRunway(owner,0,0,
             TransportInfrastructure.Axis.EAST_WEST,13)==null,
@@ -113,8 +122,11 @@ public final class TransportInfrastructureTest {
         yes(freight.commission(owner,rs[0],rs[1],
             TransportInfrastructure.Axis.EAST_WEST,1)==-1,
             "Duplicate train on occupied siding");
-        yes(freight.load(owner,train,"METAL_STOCK",10),
-            "Rail cargo must be transferred from real stocks");
+        yes(freight.attachWagon(owner,train),
+            "Produced freight wagon cannot couple to locomotive");
+        yes(freight.state(train).wagons()==1,"Wagon count not recorded");
+        yes(freight.load(owner,train,"METAL_STOCK",60),
+            "Wagon bulk capacity not enabled by paid freight car");
         yes(!freight.load(owner,train,"METAL_STOCK",10),
             "Freight duplicate load accepted");
         yes(freight.refuel(owner,train,10),"Paid train fuel missing");
@@ -124,7 +136,7 @@ public final class TransportInfrastructureTest {
         for(int i=0;i<120;i++)freight.advance(250);
         yes(freight.state(train).x()>rs[0]+.5,
             "Train did not travel along real built track");
-        yes(freight.state(train).fuelUnits()<10,
+        yes(freight.state(train).fuelUnits()<100,
             "Train traction consumes no fuel");
         yes(freight.setBrake(owner,train,true),"Train could not brake");
         for(int i=0;i<100;i++)freight.advance(250);
@@ -163,7 +175,10 @@ public final class TransportInfrastructureTest {
 
         Map<String,Integer> shipStock=new HashMap<>();
         AircraftCarrier.buildCost(faction).forEach((k,v)->shipStock.put(k,v+10));
-        shipStock.put("CHARCOAL",40);
+        shipStock.put(TransportProduction.item(
+            TransportProduction.Product.MARINE_FUEL,faction),40);
+        shipStock.put(TransportProduction.item(
+            TransportProduction.Product.TRANSPORT_REPAIR,faction),40);
         var sea=new AircraftCarrier(world,mist,owner,faction,shipStock);
         var deck=seaSite(sea,faction,owner);
         yes(sea.usableDeck(deck.id(),needle),

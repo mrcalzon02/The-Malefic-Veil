@@ -10,14 +10,14 @@ import java.util.*;
 public final class RailTransport {
     public record TrainState(int id,int ownerId,CharacterRoster.Faction faction,
         double x,double y,double speedMetresPerSecond,double fuelUnits,int hp,
-        String cargo,int cargoQuantity,boolean brakeApplied) {}
+        String cargo,int cargoQuantity,boolean brakeApplied,int wagons) {}
     private static final class Train {
         final int id,owner;
         final CharacterRoster.Faction faction;
         final TransportInfrastructure.Axis axis;
         final int direction;
         double x,y,speed,fuel;
-        int hp=320,quantity;
+        int hp=320,quantity,wagons;
         String cargo;
         boolean brake=true;
         Train(int id,int owner,CharacterRoster.Faction faction,
@@ -27,7 +27,7 @@ public final class RailTransport {
             this.x=x+.5;this.y=y+.5;
         }
         TrainState state(){return new TrainState(id,owner,faction,x,y,speed,
-            fuel,hp,cargo,quantity,brake);}
+            fuel,hp,cargo,quantity,brake,wagons);}
     }
     private final TransportInfrastructure infra;
     private final Map<String,Integer> supplies=new HashMap<>();
@@ -42,15 +42,8 @@ public final class RailTransport {
         }
     }
     private Map<String,Integer> locomotiveBill(){
-        Map<String,Integer> out=new HashMap<>(Map.of(
-            "METAL_STOCK",12,"MACHINE_PARTS",9,
-            "GEAR_ASSEMBLY",4,"ASSEMBLY_CONTROLLER",1));
-        switch(infra.faction()){
-            case THE_UNRAVELED -> out.put("RESILIENCE_CORE",1);
-            case THE_PENITENT -> out.put("DREAD_WARD",1);
-            case THE_BEGOTTEN -> out.put("ORGAN_CORE",2);
-        }
-        return out;
+        return Map.of(TransportProduction.item(
+            TransportProduction.Product.LOCOMOTIVE,infra.faction()),1);
     }
     private boolean debit(Map<String,Integer> bill){
         for(var e:bill.entrySet())
@@ -90,7 +83,7 @@ public final class RailTransport {
         Train t=trains.get(id);
         if(t==null||t.owner!=caller||t.hp<=0||t.speed>.01||
            item==null||!item.matches("[A-Z_]{2,60}")||
-           quantity<1||quantity>40||t.cargo!=null||
+           quantity<1||quantity>40*(1+t.wagons)||t.cargo!=null||
            supplies.getOrDefault(item,0)<quantity)return false;
         if(!debit(Map.of(item,quantity)))return false;
         t.cargo=item;t.quantity=quantity;
@@ -102,12 +95,26 @@ public final class RailTransport {
         supplies.merge(t.cargo,t.quantity,Integer::sum);
         t.cargo=null;t.quantity=0;return true;
     }
-    public synchronized boolean refuel(int caller,int id,int units){
+    /** One real manufactured rail-fuel charge stores ten traction units. */
+    public synchronized boolean refuel(int caller,int id,int charges){
         Train t=trains.get(id);
         if(t==null||t.owner!=caller||t.speed>.01||
-           units<1||units>80||t.fuel+units>100||
-           !debit(Map.of("CHARCOAL",units)))return false;
-        t.fuel+=units;return true;
+           charges<1||charges>10||t.fuel+charges*10>100||
+           !debit(Map.of(TransportProduction.item(
+               TransportProduction.Product.RAIL_FUEL,infra.faction()),charges)))
+            return false;
+        t.fuel+=charges*10;return true;
+    }
+    /** Attach a produced wagon at rest. Its weight reduces maximum traction
+     * speed, but increases genuine inventory freight capacity.
+     */
+    public synchronized boolean attachWagon(int caller,int id){
+        Train t=trains.get(id);
+        if(t==null||t.owner!=caller||t.hp<=0||t.speed>.01||
+           t.wagons>=3||!debit(Map.of(TransportProduction.item(
+               TransportProduction.Product.FREIGHT_WAGON,infra.faction()),1)))
+            return false;
+        t.wagons++;return true;
     }
     public synchronized boolean setBrake(int caller,int id,boolean applied){
         Train t=trains.get(id);
@@ -121,7 +128,11 @@ public final class RailTransport {
         for(Train t:trains.values()){
             if(t.hp<=0){t.speed=0;continue;}
             if(t.brake||t.fuel<=0)t.speed=Math.max(0,t.speed-3.5*dt);
-            else t.speed=Math.min(t.cargo==null?12:8,t.speed+1.8*dt);
+            else {
+                double limit=t.cargo==null?12:8;
+                limit=Math.max(3,limit-t.wagons*1.1);
+                t.speed=Math.min(limit,t.speed+1.8*dt);
+            }
             if(t.speed<.01)continue;
             double parcels=t.speed*dt/TransportInfrastructure.PARCEL_METRES;
             double nx=t.x+(t.axis==TransportInfrastructure.Axis.EAST_WEST?

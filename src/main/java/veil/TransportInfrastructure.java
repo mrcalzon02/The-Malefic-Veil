@@ -78,24 +78,32 @@ public final class TransportInfrastructure {
         return world.buildableGround(x,y)&&!world.road(x,y)&&
             !miasma.forbidsAircraft(x+.5,y+.5,0)&&!tiles.containsKey(key(x,y));
     }
+    /** Construction consumes produced transport panels from the faction's
+     * staffed/energized industrial chain; raw ore/wood alone cannot pave.
+     */
     private static Map<String,Integer> cost(Kind kind,
             CharacterRoster.Faction faction){
-        Map<String,Integer> material=new LinkedHashMap<>();
+        var bill=new LinkedHashMap<String,Integer>();
         if(kind==Kind.RUNWAY){
-            material.put("METAL_STOCK",2);
-            material.put("MACHINE_PARTS",1);
-            material.put("FIELD_STONE",4);
+            bill.put(TransportProduction.item(
+                TransportProduction.Product.RUNWAY_PANEL,faction),1);
+            switch(faction){
+                case THE_UNRAVELED -> {
+                    bill.put("FIELD_STONE",2);bill.put("FASTENERS",1);
+                }
+                case THE_PENITENT -> bill.put("VOTIVE_INCENSE",1);
+                case THE_BEGOTTEN -> bill.put("NUTRIENT_STOCK",2);
+            }
         }else{
-            material.put("METAL_STOCK",1);
-            material.put("TIMBER",4);
-            material.put("FASTENERS",2);
+            bill.put(TransportProduction.item(
+                TransportProduction.Product.RAIL_SECTION,faction),1);
+            switch(faction){
+                case THE_UNRAVELED -> bill.put("TIMBER",2);
+                case THE_PENITENT -> bill.put("WITNESS_SEAL",1);
+                case THE_BEGOTTEN -> bill.put("GROWTH_FEED",2);
+            }
         }
-        switch(faction){
-            case THE_UNRAVELED -> material.merge("HARDENED_ALLOY",1,Integer::sum);
-            case THE_PENITENT -> material.merge("VOTIVE_INCENSE",1,Integer::sum);
-            case THE_BEGOTTEN -> material.merge("GROWN_CHITIN",1,Integer::sum);
-        }
-        return Map.copyOf(material);
+        return Map.copyOf(bill);
     }
     public static Map<String,Integer> materialCost(Kind kind,
             CharacterRoster.Faction faction){
@@ -175,8 +183,12 @@ public final class TransportInfrastructure {
     public synchronized boolean repair(int caller,int x,int y){
         Segment old=tiles.get(key(x,y));
         if(!owns(caller)||old==null||old.hp()==SEGMENT_HP||
-           !canPay(Map.of("MACHINE_PARTS",1))||energy<1)return false;
-        debit(Map.of("MACHINE_PARTS",1));energy-=1;
+           !canPay(Map.of(TransportProduction.item(
+               TransportProduction.Product.TRANSPORT_REPAIR,faction),1))||
+           energy<1)return false;
+        debit(Map.of(TransportProduction.item(
+            TransportProduction.Product.TRANSPORT_REPAIR,faction),1));
+        energy-=1;
         tiles.put(key(x,y),new Segment(x,y,old.kind(),old.axis(),
             SEGMENT_HP,old.ownerId(),old.faction()));
         return true;

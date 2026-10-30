@@ -48,21 +48,13 @@ public final class AircraftCarrier {
     public synchronized List<Deck> decks(){return List.copyOf(decks.values());}
     public synchronized Deck deck(int id){return decks.get(id);}
     public synchronized boolean activeFlight(int id){return activeFlights.contains(id);}
+    /** The carrier hull must be entirely assembled in a paid, staffed
+     * faction shipyard before it can be placed on a valid water berth.
+     * No double-billing raw metal at the shoreline or free ship spawns.
+     */
     public static Map<String,Integer> buildCost(CharacterRoster.Faction faction){
-        Map<String,Integer> cost=new LinkedHashMap<>(Map.of(
-            "METAL_STOCK",80,"MACHINE_PARTS",40,"HARDENED_ALLOY",20,
-            "PRECISION_MODULE",8,"ASSEMBLY_CONTROLLER",5));
-        switch(faction){
-            case THE_UNRAVELED -> cost.put("RESILIENCE_CORE",4);
-            case THE_PENITENT -> {
-                cost.put("DREAD_WARD",4);cost.put("RELIQUARY_PLATE",12);
-            }
-            case THE_BEGOTTEN -> {
-                cost.put("ORGAN_CORE",8);cost.put("GROWN_CHITIN",25);
-                cost.put("LIVING_MEMBRANE",16);
-            }
-        }
-        return Map.copyOf(cost);
+        return Map.of(TransportProduction.item(
+            TransportProduction.Product.CARRIER,faction),1);
     }
     private boolean canPay(Map<String,Integer> bill){
         for(var line:bill.entrySet())
@@ -112,9 +104,11 @@ public final class AircraftCarrier {
     public synchronized boolean refuel(int caller,int id,int canisters){
         Deck d=decks.get(id);
         if(caller!=ownerId||d==null||!d.atAnchor()||
-           canisters<1||canisters>20||d.fuelUnits()+canisters*25>300||
-           !canPay(Map.of("CHARCOAL",canisters)))return false;
-        debit(Map.of("CHARCOAL",canisters));
+           canisters<1||canisters>12||d.fuelUnits()+canisters*25>300||
+           !canPay(Map.of(TransportProduction.item(
+               TransportProduction.Product.MARINE_FUEL,faction),canisters)))return false;
+        debit(Map.of(TransportProduction.item(
+            TransportProduction.Product.MARINE_FUEL,faction),canisters));
         decks.put(id,new Deck(id,d.ownerId(),d.faction(),d.x(),d.y(),d.axis(),
             d.lengthParcels(),d.deckHp(),d.fuelUnits()+25*canisters,true));
         return true;
@@ -143,8 +137,10 @@ public final class AircraftCarrier {
     public synchronized boolean repair(int caller,int id){
         Deck d=decks.get(id);
         if(caller!=ownerId||d==null||d.deckHp()==MAX_HP||
-           !canPay(Map.of("MACHINE_PARTS",3,"HARDENED_ALLOY",2)))return false;
-        debit(Map.of("MACHINE_PARTS",3,"HARDENED_ALLOY",2));
+           !canPay(Map.of(TransportProduction.item(
+               TransportProduction.Product.TRANSPORT_REPAIR,faction),2)))return false;
+        debit(Map.of(TransportProduction.item(
+            TransportProduction.Product.TRANSPORT_REPAIR,faction),2));
         decks.put(id,new Deck(id,d.ownerId(),d.faction(),d.x(),d.y(),d.axis(),
             d.lengthParcels(),MAX_HP,d.fuelUnits(),true));
         return true;

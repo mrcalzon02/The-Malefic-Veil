@@ -1,5 +1,7 @@
 # The Malefic Veil — physical runways, rail freight and aircraft carriers
 
+**Manufacturing update:** The original direct-raw-material prices quoted below are historical first-slice assumptions. The new authoritative [Transport Manufacturing and Systems Requirements](TRANSPORT_MANUFACTURING_REQUIREMENTS.md) specifies live `CraftingEraRegistry` production chains: runway and rail sections are now made from faction-specific manufactured panels, locomotives and carriers from finished factory/shipyard tokens, fuels from separate industrial processes, and structural repairs from manufactured kits. **Always use the newer canonical registry and requirements for actual bills, not historical examples in this first-slice document.**
+
 **Implementation date:** 29 October 2026. Source contract for the shared six-metre transport system. The Java **host-core physics, bills, construction state, movement and tests** are implemented; live UI, multi-client persistence, terrain-proxy mesh art and continent chunk streaming remain release blockers. These are **not yet player-buildable in the current 132×132 city-only game session**.
 
 ## Core design: one map, three different industries

@@ -238,6 +238,34 @@ public final class CraftingEraRegistry {
             "aircraft-service-hangar incursion-anchor begotten-organ-lattice",
             26,28,25200,30,"METAL_STOCK",15,"MACHINE_PARTS",12,
             "EDIBLES",80,"MEDICINAL_HERBS",22);
+        // Distinct built freight and maritime industrial civilizations.
+        facility("rail-survey-office",Era.STEAM,Faction.ALL,
+            "mechanical-shaft freight-bay",10,12,2400,2,
+            "METAL_STOCK",3,"MACHINE_PARTS",2,"FIELD_STONE",16);
+        facility("rail-freight-depot",Era.AUTOMATION,Faction.ALL,
+            "rail-survey-office motor-pool",18,24,9000,14,
+            "METAL_STOCK",10,"MACHINE_PARTS",9,"FIELD_STONE",36,"GEAR_ASSEMBLY",3);
+        facility("harbor-drydock",Era.INCURSION,Faction.ALL,
+            "rail-freight-depot fuel-refinery assembly-line",30,36,21600,24,
+            "METAL_STOCK",28,"MACHINE_PARTS",20,"FIELD_STONE",100,"PRECISION_MODULE",5);
+        facility("unraveled-transport-forge",Era.INCURSION,Faction.UNRAVELED,
+            "rail-freight-depot resilience-grid unraveled-defense-works",24,26,14400,26,
+            "METAL_STOCK",18,"MACHINE_PARTS",14,"HARDENED_ALLOY",8,"ASSEMBLY_CONTROLLER",2);
+        facility("penitent-procession-works",Era.INCURSION,Faction.PENITENT,
+            "rail-freight-depot dread-works penitent-ward-sanctum",24,26,15000,26,
+            "METAL_STOCK",15,"MACHINE_PARTS",12,"RELIQUARY_PLATE",8,"DREAD_IMPRINT",8);
+        facility("begotten-transit-vat",Era.INCURSION,Faction.BEGOTTEN,
+            "rail-freight-depot incursion-anchor begotten-organ-lattice",24,26,16200,26,
+            "METAL_STOCK",12,"MACHINE_PARTS",10,"GROWN_CHITIN",12,"NUTRIENT_STOCK",12);
+        facility("unraveled-naval-yard",Era.INCURSION,Faction.UNRAVELED,
+            "harbor-drydock unraveled-transport-forge unraveled-flight-works",32,42,21600,40,
+            "METAL_STOCK",28,"MACHINE_PARTS",20,"HARDENED_ALLOY",14,"RESILIENCE_CORE",2);
+        facility("penitent-slaughter-dock",Era.INCURSION,Faction.PENITENT,
+            "harbor-drydock penitent-procession-works penitent-aerial-abattoir",32,42,24000,40,
+            "METAL_STOCK",24,"MACHINE_PARTS",18,"RELIQUARY_PLATE",14,"DREAD_IMPRINT",16);
+        facility("begotten-tidal-brood",Era.INCURSION,Faction.BEGOTTEN,
+            "harbor-drydock begotten-transit-vat begotten-sky-brood",32,42,25200,40,
+            "METAL_STOCK",20,"MACHINE_PARTS",15,"GROWN_CHITIN",20,"LIVING_MEMBRANE",12);
         // Shared extreme final recovery monument: identical 40-truck price.
         facility("monument-graveyard",Era.INCURSION,Faction.ALL,
             "research-archive infirmary signal-relay command-hall",
@@ -465,6 +493,106 @@ public final class CraftingEraRegistry {
             "begotten-sky-brood","AIRFRAME_BEGOTTEN_BEHEMOTH",1,21600,45,
             "BEGOTTEN_FLIGHT_CARAPACE",4,"SPINE_SUPPLY",8,
             "NUTRIENT_STOCK",20,"EDIBLES",60,"MACHINE_PARTS",12);
+        // Costed transport material supply: never raw-stock spawned rolling stock.
+        process("unraveled-runway-panels",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","RUNWAY_PANEL_UNRAVELED",2,600,14,
+            "HARDENED_ALLOY",2,"FIRED_BRICKS",6,"FASTENERS",2);
+        process("unraveled-rail-sections",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","RAIL_SECTION_UNRAVELED",2,720,14,
+            "HARDENED_ALLOY",2,"FASTENERS",4,"TIMBER",6);
+        process("unraveled-rail-fuel",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","RAIL_FUEL_UNRAVELED",10,540,12,
+            "CHARCOAL",10,"CLEAN_WATER",2);
+        process("unraveled-marine-fuel",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-naval-yard","MARINE_FUEL_UNRAVELED",8,900,26,
+            "CHARCOAL",12,"CLEAN_WATER",4);
+        process("unraveled-transport-repair",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","TRANSPORT_REPAIR_UNRAVELED",2,720,16,
+            "HARDENED_ALLOY",1,"MACHINE_PARTS",2,"FASTENERS",3);
+        process("unraveled-runway-light",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","RUNWAY_LIGHT_UNRAVELED",4,900,18,
+            "CONTROL_BOARD",2,"CONDUCTOR_WIRE",4,"TRACKING_CIRCUIT",1);
+        process("unraveled-rail-signal",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","RAIL_SIGNAL_UNRAVELED",2,840,18,
+            "SENSOR_HEAD",1,"CONTROL_BOARD",1,"CONDUCTOR_WIRE",4);
+        process("unraveled-locomotive",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","LOCOMOTIVE_UNRAVELED",1,5400,30,
+            "DRIVE_SHAFT",4,"HARDENED_ALLOY",8,"GEAR_ASSEMBLY",5,"RESILIENCE_CORE",1,"ASSEMBLY_CONTROLLER",2);
+        process("unraveled-freight-wagon",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-transport-forge","FREIGHT_WAGON_UNRAVELED",1,2700,26,
+            "HARDENED_ALLOY",4,"GEAR_ASSEMBLY",2,"MACHINE_PARTS",3);
+        process("unraveled-carrier-keel",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-naval-yard","CARRIER_KEEL_UNRAVELED",1,12000,42,
+            "METAL_STOCK",40,"HARDENED_ALLOY",24,"RESILIENCE_CORE",2,"PRECISION_MODULE",6);
+        process("unraveled-carrier",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-naval-yard","CARRIER_UNRAVELED",1,21600,55,
+            "CARRIER_KEEL_UNRAVELED",1,"ASSEMBLY_CONTROLLER",5,"TRACKING_CIRCUIT",6,"HARDENED_ALLOY",18);
+        process("penitent-runway-panels",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","RUNWAY_PANEL_PENITENT",2,600,14,
+            "RELIQUARY_PLATE",1,"FIRED_BRICKS",5,"VOTIVE_INCENSE",3);
+        process("penitent-rail-sections",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","RAIL_SECTION_PENITENT",2,720,14,
+            "RELIQUARY_PLATE",2,"WITNESS_SEAL",1,"METAL_BILLET",3);
+        process("penitent-rail-fuel",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","RAIL_FUEL_PENITENT",10,540,12,
+            "VOTIVE_INCENSE",3,"DREAD_IMPRINT",1,"CHARCOAL",4);
+        process("penitent-marine-fuel",Era.INCURSION,Faction.PENITENT,
+            "penitent-slaughter-dock","MARINE_FUEL_PENITENT",8,900,26,
+            "DREAD_IMPRINT",3,"CHARCOAL",10,"VOTIVE_INCENSE",6);
+        process("penitent-transport-repair",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","TRANSPORT_REPAIR_PENITENT",2,720,16,
+            "RELIQUARY_PLATE",2,"MACHINE_PARTS",1,"VOTIVE_INCENSE",4);
+        process("penitent-runway-light",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","RUNWAY_LIGHT_PENITENT",4,900,18,
+            "CHORUS_RESONANCE",1,"CONDUCTOR_WIRE",3,"WITNESS_SEAL",2);
+        process("penitent-rail-signal",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","RAIL_SIGNAL_PENITENT",2,840,18,
+            "CHOIR_SCORE",1,"WITNESS_SEAL",2,"CONTROL_BOARD",1);
+        process("penitent-locomotive",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","LOCOMOTIVE_PENITENT",1,5400,30,
+            "RELIQUARY_PLATE",8,"BRONZE_CENSER",3,"DREAD_WARD",1,"MACHINE_PARTS",8,"GEAR_ASSEMBLY",3);
+        process("penitent-freight-wagon",Era.INCURSION,Faction.PENITENT,
+            "penitent-procession-works","FREIGHT_WAGON_PENITENT",1,2700,26,
+            "RELIQUARY_PLATE",5,"GEAR_ASSEMBLY",2,"WITNESS_SEAL",4);
+        process("penitent-carrier-keel",Era.INCURSION,Faction.PENITENT,
+            "penitent-slaughter-dock","CARRIER_KEEL_PENITENT",1,12000,42,
+            "METAL_STOCK",30,"RELIQUARY_PLATE",20,"DREAD_WARD",3,"MACHINE_PARTS",20);
+        process("penitent-carrier",Era.INCURSION,Faction.PENITENT,
+            "penitent-slaughter-dock","CARRIER_PENITENT",1,21600,55,
+            "CARRIER_KEEL_PENITENT",1,"BOUND_LITURGY",8,"SACRED_SUPPLY",6,"RELIQUARY_PLATE",16);
+        process("begotten-runway-panels",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","RUNWAY_PANEL_BEGOTTEN",2,600,14,
+            "LIVING_MEMBRANE",2,"BINDING_RESIN",1,"NUTRIENT_STOCK",2);
+        process("begotten-rail-sections",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","RAIL_SECTION_BEGOTTEN",2,720,14,
+            "GROWN_CHITIN",3,"BINDING_RESIN",1,"GROWTH_FEED",3);
+        process("begotten-rail-fuel",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","RAIL_FUEL_BEGOTTEN",10,540,12,
+            "GROWTH_FEED",6,"NUTRIENT_STOCK",2,"EDIBLES",5);
+        process("begotten-marine-fuel",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-tidal-brood","MARINE_FUEL_BEGOTTEN",8,900,26,
+            "NUTRIENT_STOCK",8,"GROWTH_FEED",8,"CLEAN_WATER",6);
+        process("begotten-transport-repair",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","TRANSPORT_REPAIR_BEGOTTEN",2,720,16,
+            "BINDING_RESIN",2,"NUTRIENT_STOCK",2,"GROWN_CHITIN",2);
+        process("begotten-runway-light",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","RUNWAY_LIGHT_BEGOTTEN",4,900,18,
+            "ORGAN_CORE",1,"LIVING_MEMBRANE",3,"NUTRIENT_STOCK",2);
+        process("begotten-rail-signal",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","RAIL_SIGNAL_BEGOTTEN",2,840,18,
+            "SPORE_POD",4,"ORGAN_CORE",1,"GROWN_CHITIN",2);
+        process("begotten-locomotive",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","LOCOMOTIVE_BEGOTTEN",1,5400,30,
+            "ORGAN_CORE",5,"GROWN_CHITIN",12,"BINDING_RESIN",6,"SPINE_SUPPLY",1,"LIVING_MEMBRANE",8);
+        process("begotten-freight-wagon",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-transit-vat","FREIGHT_WAGON_BEGOTTEN",1,2700,26,
+            "GROWN_CHITIN",8,"LIVING_MEMBRANE",4,"BINDING_RESIN",3);
+        process("begotten-carrier-keel",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-tidal-brood","CARRIER_KEEL_BEGOTTEN",1,12000,42,
+            "GROWN_CHITIN",35,"LIVING_MEMBRANE",20,"ORGAN_CORE",12,"BINDING_RESIN",10);
+        process("begotten-carrier",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-tidal-brood","CARRIER_BEGOTTEN",1,21600,55,
+            "CARRIER_KEEL_BEGOTTEN",1,"SPINE_SUPPLY",8,"BREACH_SEED",2,"NUTRIENT_STOCK",30);
         validate();
     }
     private CraftingEraRegistry(){}

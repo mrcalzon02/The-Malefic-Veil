@@ -29,16 +29,16 @@ public final class LanOutboxTest {
         SlowWriter slow = new SlowWriter();
         try (Socket socket = new Socket();
              LanOutbox out = new LanOutbox(new PrintWriter(slow, true), socket)) {
-            // More than the 256-message bound, with a deliberately slower writer.
+            // More than the 1024-message bound, with a deliberately slower writer.
             // The sender must wait for space instead of losing the WELCOME or
             // late-join WEATHER frame behind the initial world inventory.
-            for (int i = 0; i < 640; i++) out.sendReliable("SNAPSHOT|" + i);
+            for (int i = 0; i < 1536; i++) out.sendReliable("SNAPSHOT|" + i);
             long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
-            while (slow.snapshot().split("\\R").length < 640 && System.nanoTime() < deadline)
+            while (slow.snapshot().split("\\R").length < 1536 && System.nanoTime() < deadline)
                 Thread.sleep(10);
             String[] lines = slow.snapshot().split("\\R");
-            check(lines.length == 640, "Initial snapshot must arrive without disconnect or drop");
-            for (int i = 0; i < 640; i++)
+            check(lines.length == 1536, "Initial snapshot must arrive without disconnect or drop");
+            for (int i = 0; i < 1536; i++)
                 check(lines[i].equals("SNAPSHOT|" + i), "FIFO snapshot ordering at " + i);
             check(!socket.isClosed(), "Slow but draining peer must stay connected");
         }
@@ -53,9 +53,9 @@ public final class LanOutboxTest {
         };
         try (Socket socket = new Socket();
              LanOutbox out = new LanOutbox(new PrintWriter(blocked, true), socket)) {
-            for (int i = 0; i < 640; i++) out.send("TICK|" + i);
+            for (int i = 0; i < 2048; i++) out.send("TICK|" + i);
             check(socket.isClosed(), "Non-draining tick output must fail closed");
         } finally { release.countDown(); }
-        System.out.println("PASS LanOutboxTest: 640 ordered snapshot frames, bounded tick overflow disconnect");
+        System.out.println("PASS LanOutboxTest: 1536 ordered snapshot frames, bounded tick overflow disconnect");
     }
 }

@@ -38,8 +38,15 @@ public final class WeatherLanTest {
                 check(late.weather().preset().equals("HEAVY_RAIN"),
                     "Late joining player receives live weather, not starting-clear");
                 host.setWeatherPreset("SNOW");
-                until(()->one.weather().preset().equals("SNOW")&&
-                    two.weather().preset().equals("SNOW")&&late.weather().preset().equals("SNOW"));
+                try {
+                    until(()->one.weather().preset().equals("SNOW")&&
+                        two.weather().preset().equals("SNOW")&&late.weather().preset().equals("SNOW"));
+                } catch (AssertionError timeout) {
+                    throw new AssertionError("Late-join SNOW update: host="+host.weatherStatus()+
+                        " one="+one.weather()+" connected="+one.connected()+
+                        " two="+two.weather()+" connected="+two.connected()+
+                        " late="+late.weather()+" connected="+late.connected(),timeout);
+                }
             }
             boolean rejected=false;
             try{host.setWeatherPreset("INVALID_ICE");}

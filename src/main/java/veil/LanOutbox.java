@@ -12,7 +12,9 @@ import java.util.concurrent.TimeUnit;
  * large initial world snapshot or an authoritative command response.
  */
 final class LanOutbox implements AutoCloseable {
-    private static final int MAX_PENDING = 256;
+    // Retain headroom for live host broadcasts during a multi-hundred-frame join.
+    // Still bounded; a peer that cannot drain its queue is disconnected.
+    private static final int MAX_PENDING = 1024;
     private static final int MAX_LINE = 16384;
     private static final int RELIABLE_WAIT_SECONDS = 4;
     private final ArrayBlockingQueue<String> pending = new ArrayBlockingQueue<>(MAX_PENDING);

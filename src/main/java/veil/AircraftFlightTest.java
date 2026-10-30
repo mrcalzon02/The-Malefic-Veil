@@ -8,6 +8,14 @@ public final class AircraftFlightTest {
     private static void check(boolean yes,String why){
         if(!yes)throw new AssertionError(why);
     }
+    private static void finish(AircraftWorkshop shop){
+        var job=shop.snapshot().job();
+        check(job!=null,"No actual production job");
+        long runs=(job.requiredMs()+59_999)/60_000;
+        for(long step=0;step<runs;step++)
+            check(shop.advance(60_000),"Metered energy must advance production");
+        check(shop.snapshot().job()==null,"Manufacture was not completed");
+    }
     private static AircraftFlight.Airfield locate(ContinentLayout world,
             CityMiasma miasma,AirPowerCatalog.Airframe plane){
         for(int y=16;y<ContinentLayout.SIZE-16;y+=2)
@@ -53,24 +61,39 @@ public final class AircraftFlightTest {
 
         var needle=all.get(0);
         var recipe=CraftingEraRegistry.process(needle.recipeId());
-        Map<String,Integer> stock=new HashMap<>(recipe.inputs());
-        stock.put(needle.fuelItem(),5);
+        var structure=CraftingEraRegistry.process("unraveled-airframe-spar");
+        var fuelRecipe=CraftingEraRegistry.process("unraveled-refine-avgas");
+        // Fund the actual component, fuel and airframe input recipes, not the
+        // already-made structural part or prefilled fuel canisters.
+        Map<String,Integer> stock=new HashMap<>();
+        for(var step:List.of(structure,fuelRecipe,recipe))
+            step.inputs().forEach((item,quantity)->{
+                if(!item.equals(structure.output()))
+                    stock.merge(item,quantity,Integer::sum);
+            });
         var sites=Set.of("airfield-runway","aircraft-service-hangar",
             "unraveled-flight-works");
         var shop=new AircraftWorkshop(needle.faction(),recipe.facility(),sites,stock);
         var before=shop.snapshot().stock();
         check(!shop.begin("penitent_shrike"),"Enemy faction manufacturing bypass");
+        check(!shop.beginProcess("penitent-distill-ichor"),
+            "Foreign faction fuel must be restricted");
         check(before.equals(shop.snapshot().stock()),"Failed queue must not debit stock");
-        check(shop.begin(needle.modelId()),"Paid airframe job should start");
+        check(shop.beginProcess(structure.id()),"Paid spar job should start");
         check(!shop.begin(needle.modelId()),"Duplicate fabrication job accepted");
         check(!before.equals(shop.snapshot().stock()),"Inputs not consumed");
         check(!shop.advance(60_000),"Powerless work must remain paused");
         check(shop.snapshot().job().elapsedMs()==0,"Unpowered job advanced");
         shop.depositMeteredEnergy(200);
-        long runs=(shop.snapshot().job().requiredMs()+59_999)/60_000;
-        for(long step=0;step<runs;step++)
-            check(shop.advance(60_000),"Metered energy should advance flight works");
-        check(shop.snapshot().job()==null,"Manufacturing job not completed");
+        finish(shop);
+        check(shop.snapshot().stock().getOrDefault(structure.output(),0)==1,
+            "Finished structural frame must appear only once");
+        check(shop.beginProcess(fuelRecipe.id()),"Host should refine paid flight fuel");
+        finish(shop);
+        check(shop.snapshot().stock().getOrDefault(needle.fuelItem(),0)==4,
+            "Fuel canisters must be manufactured from finite inputs");
+        check(shop.begin(needle.modelId()),"Paid airframe job should start");
+        finish(shop);
         check(shop.snapshot().stock().getOrDefault(recipe.output(),0)==1,
             "Finished output must appear once, never spawn for free");
         check(shop.snapshot().energyUnits()<200,"Factory must pay finite utility");

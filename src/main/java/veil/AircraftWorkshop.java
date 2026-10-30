@@ -11,7 +11,7 @@ import java.util.*;
  * settlement ownership permissions or LAN commands.
  */
 public final class AircraftWorkshop {
-    public record Job(String modelId,long elapsedMs,long requiredMs,int utilityDemand) {}
+    public record Job(String recipeId,long elapsedMs,long requiredMs,int utilityDemand) {}
     public record Snapshot(Map<String,Integer> stock,double energyUnits,Job job) {}
     private final CharacterRoster.Faction faction;
     private final String factoryId;
@@ -59,14 +59,23 @@ public final class AircraftWorkshop {
             throw new IllegalArgumentException("Invalid utility grant");
         reservedEnergyUnits+=energyUnits;
     }
-    /** Atomically debit all inputs; no free, cross-faction or duplicate jobs. */
+    /** Select one of the nine named airframes, not a client-authored output. */
     public synchronized boolean begin(String modelId){
         AirPowerCatalog.Airframe plane=AirPowerCatalog.get(modelId);
-        if(plane==null||plane.faction()!=faction||job!=null)return false;
-        var recipe=CraftingEraRegistry.process(plane.recipeId());
+        return plane!=null&&plane.faction()==faction&&beginProcess(plane.recipeId());
+    }
+    /** Faction-owned Incursion job: fuel, component OR finished airframe. */
+    public synchronized boolean beginProcess(String processId){
+        if(processId==null||job!=null)return false;
+        var recipe=CraftingEraRegistry.process(processId);
         if(recipe==null||!recipe.facility().equals(factoryId)||
            !commissionedFacilities.contains(recipe.facility())||
-           recipe.era()!=CraftingEraRegistry.Era.INCURSION)return false;
+           recipe.era()!=CraftingEraRegistry.Era.INCURSION||
+           recipe.faction()!=switch(faction){
+               case THE_UNRAVELED -> CraftingEraRegistry.Faction.UNRAVELED;
+               case THE_PENITENT -> CraftingEraRegistry.Faction.PENITENT;
+               case THE_BEGOTTEN -> CraftingEraRegistry.Faction.BEGOTTEN;
+           })return false;
         for(var part:recipe.inputs().entrySet())
             if(stock.getOrDefault(part.getKey(),0)<part.getValue())return false;
         for(var part:recipe.inputs().entrySet()){
@@ -74,7 +83,7 @@ public final class AircraftWorkshop {
             if(left==0)stock.remove(part.getKey());
             else stock.put(part.getKey(),left);
         }
-        job=new Job(modelId,0,recipe.seconds()*1000L,recipe.utilityDemand());
+        job=new Job(recipe.id(),0,recipe.seconds()*1000L,recipe.utilityDemand());
         return true;
     }
     /**
@@ -91,12 +100,11 @@ public final class AircraftWorkshop {
         reservedEnergyUnits=Math.max(0,reservedEnergyUnits-energyNeeded);
         long completed=job.elapsedMs()+step;
         if(completed==job.requiredMs()){
-            var result=CraftingEraRegistry.process(
-                AirPowerCatalog.get(job.modelId()).recipeId());
+            var result=CraftingEraRegistry.process(job.recipeId());
             String item=result.output();
             stock.merge(item,result.quantity(),Math::addExact);
             job=null;
-        }else job=new Job(job.modelId(),completed,job.requiredMs(),job.utilityDemand());
+        }else job=new Job(job.recipeId(),completed,job.requiredMs(),job.utilityDemand());
         return true;
     }
     /**

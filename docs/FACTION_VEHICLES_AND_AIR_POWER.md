@@ -119,6 +119,36 @@ Flight model: server-owned six-degree motion with clear arcade-readable controls
 
 **Support facilities:** aircraft assembly plant, hangars, repair stands, refuel/rearm depot, radar/lookout and anti-air defenses. Placeable only on validated wilderness plots, not generated city rooftops or roads. Building prerequisites cross-link existing industry/crafting era and faction facility systems.
 
+## Implemented A1 foundation (29 October 2026) — numeric production, energy and runway contract
+
+**Implementation boundary:** This milestone adds real Java production descriptors and a headless-tested, server-oriented aircraft workshop/flight core. It does **not** yet connect aircraft to a persistent LAN world object, the character's live inventory, the GPU cockpit, runtime wilderness construction, controller input, or chunk streaming. The ordinary playable build **cannot yet manufacture or fly an aircraft**. Treat the following as concrete numeric implementation, not a released flight feature.
+
+The existing `CraftingEraRegistry` now indexes five new Incursion structures: a common **airfield-runway** (32 × 12 footprint, 14 utility demand), **aircraft-service-hangar** (24 × 24, 18 utility demand), and three **separate 26 × 28 faction assembly works** demanding 30 utility units: Unraveled flight works, Penitent aerial abattoir, and Begotten sky brood. The exact advanced material costs, construction times, and prerequisite factories live in the authoritative registry. These are distinct production facilities, not skins of one crafting workstation. A future live construction operation must still validate the wilderness footprint, founder authorization, energy, labor, materials and no-collision rules.
+
+Each faction produces its **own** consumable flight-energy canisters and one specialized structural intermediate:
+
+| Faction | Flight-energy recipe | Structural ingredient | Aircraft recipes |
+|---|---|---|---|
+| Unraveled | `unraveled-refine-avgas` → `AIR_FUEL_UNRAVELED` | `UNRAVELED_AIRFRAME_SPAR` (hardened alloy, precision modules, resilience core) | `build-unraveled-needlewing`, `-harrier`, `-leviathan` |
+| Penitent | `penitent-distill-ichor` → `AIR_FUEL_PENITENT` | `PENITENT_HARVESTER_FRAME` (reliquary plates, sacred/ritual ingredients) | `build-penitent-shrike`, `-censer`, `-cathedral` |
+| Begotten | `begotten-grow-flight-feed` → `AIR_FUEL_BEGOTTEN` | `BEGOTTEN_FLIGHT_CARAPACE` (grown chitin, membranes, living organs) | `build-begotten-gnat`, `-mantis`, `-behemoth` |
+
+Production works debit exact material quantities at job start. An individual manufacturing job advances **only** while externally metered utility energy is available, and creates one *finished airframe inventory token* on completion, not a free flying vehicle. The prototype `AircraftWorkshop` implements one active job, duplicate protection, consumed stock, pause on exhausted energy, energy balance and one-time airframe withdrawal. Energy is charged as `recipe.utilityDemand × active hours` (power-units-hours), **not** a perpetual generator: for the initial Needlewing, 30 units × 2 hours = **60 metered energy units**, plus its actual consumed material bill. A canister stores 25 usable vehicle-fuel units; each fuel recipe creates four canisters at its own station, with power and ingredient consumption.
+
+The `AirPowerCatalog` numeric prototype uses the existing nine checksum-verified GLB IDs and three roles. Coordinates and horizontal speed are **six-metre continental parcels**; runway length and altitude are metres. All nine aircraft are licensed only through their own faction's Incursion process and fuel. Initial tuning envelope:
+
+| Role | Unraveled runway | Penitent runway | Begotten runway | Typical maximum speed | Takeoff speed |
+|---|---:|---:|---:|---:|---:|
+| Light | 78 m | 78 m | 72 m | 42–44 m/s | 10.5–11.1 m/s |
+| Medium | 126 m | 126 m | 120 m | 33–34 m/s | 13.5–14.1 m/s |
+| Heavy | 180 m | 180 m | 174 m | 24–25 m/s | 15.9–16.2 m/s |
+
+These are **first-pass arcade flight values** pending real-world flight telemetry, combat playtesting and performance tuning. A pad must have a continuous, reasonably graded, at least one-parcel-side-clear wilderness runway, be outside all city miasma, and avoid immutable roads and structures. The workshop output is consumed **once** on validated commissioning, with empty tanks until paid faction-energy canisters are installed. Pilot intentions are clamped; the host integrates speed, turning, energy burn, terrain-relative ascent/descent, stall, runway roll, and aligned, low-speed touchdown. Invalid/off-strip ground contact damages the craft. Tick duration is bounded and no client-supplied position, health, or fuel is accepted.
+
+`CityMiasma.deflectFlight` adds padded **solid-airspace tangent sliding** to existing high-speed swept crossing rejection. Impact does not automatically kill or teleport the pilot: it moves along the boundary to the left or right within the permitted displacement, retaining the original no-fly permission check. The future live server must still deny aerial ordnance and cargo across these airspaces.
+
+CI executes `AirPowerCatalog` and `AircraftFlightTest`: nine costed faction recipes, craft-output uniqueness, cross-faction denial, duplicate/no-energy production, fuel debit, insufficient runway no-loss, one-time commissioning, pilot authority, takeoff/landing and miasma anti-tunnelling. **Not covered yet:** live crafting transactions through `ArenaSystems`, persistent flights in `LanServer`, piloting the GPU camera, crew/seat permission and disconnection, terrain collisions beyond the coarse blueprint, true landing-pad structures, damage/repairs/AA, 3D particle clouds or air-to-air war. Release gates A1–A3 remain open.
+
 ## Two specialist anti-air towers per faction — deliberate medium-aircraft gap
 
 These are **six custom faction models**, not a reskin-only set; each faction gets exactly two equivalent mechanical roles. The defenses use wilderness-only settlement facility rules, character-owner permissions, owner-level capacity and faction friend-or-foe; they never spawn player-owned towers on immutable world roads or inside city lots.

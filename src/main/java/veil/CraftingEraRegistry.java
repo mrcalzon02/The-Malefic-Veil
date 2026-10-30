@@ -216,6 +216,28 @@ public final class CraftingEraRegistry {
         facility("begotten-organ-lattice",Era.AUTOMATION,Faction.BEGOTTEN,
             "begotten-membrane-lab nutrient-digestor",16,20,7200,16,
             "METAL_STOCK",6,"MACHINE_PARTS",6,"EDIBLES",40);
+        // Late-game air logistics. Physical world placement is restricted to
+        // verified wilderness by the authoritative construction/flight host.
+        facility("airfield-runway",Era.INCURSION,Faction.ALL,
+            "motor-pool command-hall",32,12,14400,14,
+            "METAL_STOCK",12,"MACHINE_PARTS",8,"FIELD_STONE",80,
+            "HARDENED_ALLOY",6);
+        facility("aircraft-service-hangar",Era.INCURSION,Faction.ALL,
+            "airfield-runway fuel-refinery industrial-workshop",
+            24,24,14400,18,"METAL_STOCK",16,"MACHINE_PARTS",12,
+            "HARDENED_ALLOY",6,"PRECISION_MODULE",3);
+        facility("unraveled-flight-works",Era.INCURSION,Faction.UNRAVELED,
+            "aircraft-service-hangar resilience-grid unraveled-defense-works",
+            26,28,21600,30,"METAL_STOCK",22,"MACHINE_PARTS",16,
+            "HARDENED_ALLOY",10,"CONTROL_BOARD",8);
+        facility("penitent-aerial-abattoir",Era.INCURSION,Faction.PENITENT,
+            "aircraft-service-hangar dread-works penitent-ward-sanctum",
+            26,28,24000,30,"METAL_STOCK",18,"MACHINE_PARTS",12,
+            "FIELD_STONE",70,"DREAD_IMPRINT",12);
+        facility("begotten-sky-brood",Era.INCURSION,Faction.BEGOTTEN,
+            "aircraft-service-hangar incursion-anchor begotten-organ-lattice",
+            26,28,25200,30,"METAL_STOCK",15,"MACHINE_PARTS",12,
+            "EDIBLES",80,"MEDICINAL_HERBS",22);
         // Shared extreme final recovery monument: identical 40-truck price.
         facility("monument-graveyard",Era.INCURSION,Faction.ALL,
             "research-archive infirmary signal-relay command-hall",
@@ -383,6 +405,66 @@ public final class CraftingEraRegistry {
         process("begotten-pulse-organ",Era.AUTOMATION,Faction.BEGOTTEN,
             "begotten-organ-lattice","ORGAN_CORE",1,2100,16,
             "LIVING_MEMBRANE",2,"NUTRIENT_STOCK",2,"GROWTH_FEED",2);
+        // Aircraft require real faction-specific Incursion manufacturing,
+        // not a shared recipe with three cosmetic model choices. Each output
+        // is a physical airframe token, NOT a spawned or pre-fuelled entity.
+        process("unraveled-refine-avgas",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-flight-works","AIR_FUEL_UNRAVELED",4,900,18,
+            "CHARCOAL",6,"HARDENED_ALLOY",1,"MACHINE_PARTS",1);
+        process("penitent-distill-ichor",Era.INCURSION,Faction.PENITENT,
+            "penitent-aerial-abattoir","AIR_FUEL_PENITENT",4,1080,20,
+            "VOTIVE_INCENSE",4,"DREAD_IMPRINT",2,"STERILE_WATER",2);
+        process("begotten-grow-flight-feed",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-sky-brood","AIR_FUEL_BEGOTTEN",4,1200,20,
+            "NUTRIENT_STOCK",4,"GROWTH_FEED",5,"CLEAN_WATER",3);
+        process("unraveled-airframe-spar",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-flight-works","UNRAVELED_AIRFRAME_SPAR",1,2400,25,
+            "HARDENED_ALLOY",6,"PRECISION_MODULE",3,"RESILIENCE_CORE",1,
+            "MACHINE_PARTS",5);
+        process("penitent-harvester-frame",Era.INCURSION,Faction.PENITENT,
+            "penitent-aerial-abattoir","PENITENT_HARVESTER_FRAME",1,2700,25,
+            "CONSECRATED_SHELL",2,"RELIQUARY_PLATE",4,"DREAD_WARD",1,
+            "METAL_STOCK",6);
+        process("begotten-flight-carapace",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-sky-brood","BEGOTTEN_FLIGHT_CARAPACE",1,3000,25,
+            "GROWN_CHITIN",6,"LIVING_MEMBRANE",4,"ORGAN_CORE",2,
+            "NUTRIENT_STOCK",5);
+        process("build-unraveled-needlewing",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-flight-works","AIRFRAME_UNRAVELED_NEEDLEWING",1,7200,30,
+            "UNRAVELED_AIRFRAME_SPAR",1,"BALLISTIC_SUPPLY",2,
+            "TRACKING_CIRCUIT",1,"METAL_STOCK",8,"MACHINE_PARTS",6);
+        process("build-unraveled-harrier",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-flight-works","AIRFRAME_UNRAVELED_HARRIER",1,10800,35,
+            "UNRAVELED_AIRFRAME_SPAR",2,"BALLISTIC_SUPPLY",4,
+            "TRACKING_CIRCUIT",3,"METAL_STOCK",14,"MACHINE_PARTS",10);
+        process("build-unraveled-leviathan",Era.INCURSION,Faction.UNRAVELED,
+            "unraveled-flight-works","AIRFRAME_UNRAVELED_LEVIATHAN",1,18000,45,
+            "UNRAVELED_AIRFRAME_SPAR",4,"BALLISTIC_SUPPLY",8,
+            "TRACKING_CIRCUIT",6,"METAL_STOCK",28,"MACHINE_PARTS",20);
+        process("build-penitent-shrike",Era.INCURSION,Faction.PENITENT,
+            "penitent-aerial-abattoir","AIRFRAME_PENITENT_SHRIKE",1,7800,30,
+            "PENITENT_HARVESTER_FRAME",1,"BOUND_LITURGY",2,
+            "SACRED_SUPPLY",2,"METAL_STOCK",6,"MACHINE_PARTS",4);
+        process("build-penitent-censer",Era.INCURSION,Faction.PENITENT,
+            "penitent-aerial-abattoir","AIRFRAME_PENITENT_CENSER",1,11700,35,
+            "PENITENT_HARVESTER_FRAME",2,"BOUND_LITURGY",4,
+            "SACRED_SUPPLY",4,"METAL_STOCK",12,"MACHINE_PARTS",9);
+        process("build-penitent-cathedral",Era.INCURSION,Faction.PENITENT,
+            "penitent-aerial-abattoir","AIRFRAME_PENITENT_CATHEDRAL",1,19800,45,
+            "PENITENT_HARVESTER_FRAME",4,"BOUND_LITURGY",8,
+            "SACRED_SUPPLY",8,"METAL_STOCK",24,"MACHINE_PARTS",17);
+        process("build-begotten-gnat",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-sky-brood","AIRFRAME_BEGOTTEN_GNAT",1,8400,30,
+            "BEGOTTEN_FLIGHT_CARAPACE",1,"SPINE_SUPPLY",2,
+            "NUTRIENT_STOCK",5,"EDIBLES",15,"MACHINE_PARTS",3);
+        process("build-begotten-mantis",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-sky-brood","AIRFRAME_BEGOTTEN_MANTIS",1,12600,35,
+            "BEGOTTEN_FLIGHT_CARAPACE",2,"SPINE_SUPPLY",4,
+            "NUTRIENT_STOCK",10,"EDIBLES",30,"MACHINE_PARTS",6);
+        process("build-begotten-behemoth",Era.INCURSION,Faction.BEGOTTEN,
+            "begotten-sky-brood","AIRFRAME_BEGOTTEN_BEHEMOTH",1,21600,45,
+            "BEGOTTEN_FLIGHT_CARAPACE",4,"SPINE_SUPPLY",8,
+            "NUTRIENT_STOCK",20,"EDIBLES",60,"MACHINE_PARTS",12);
         validate();
     }
     private CraftingEraRegistry(){}

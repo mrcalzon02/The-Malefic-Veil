@@ -132,7 +132,7 @@ public final class DurableRealm {
                 // Parse structurally valid legacy devices even when they sit in
                 // newly protected city plots. load() will archive and quarantine
                 // them; active city placement is never restored.
-                if(kind<0||kind>ArenaSystems.PENITENT_DREAD_WORKS||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
+                if(kind<0||kind>ArenaSystems.BEGOTTEN_INCURSION_ANCHOR||hp<0||hp>100||!Double.isFinite(x)||!Double.isFinite(y)||
                    !target.world.continent().inBounds(target.world.parcelX(x),target.world.parcelY(y))||
                    (!owner.isEmpty()&&!owner.matches("acct_[a-f0-9]{64}"))||tier<1||tier>3)
                     throw new IOException("Invalid persisted device");

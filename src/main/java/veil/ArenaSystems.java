@@ -135,7 +135,7 @@ public final class ArenaSystems {
         TERROR_COLLECTOR=50,NUTRIENT_DIGESTOR=51,
         UNRAVELED_DEFENSE_WORKS=52,PENITENT_WARD_SANCTUM=53,
         BEGOTTEN_ORGAN_LATTICE=54,UNRAVELED_RESILIENCE_GRID=55,
-        PENITENT_DREAD_WORKS=56;
+        PENITENT_DREAD_WORKS=56,BEGOTTEN_INCURSION_ANCHOR=57;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -607,11 +607,12 @@ public final class ArenaSystems {
             case BEGOTTEN_ORGAN_LATTICE -> "begotten-organ-lattice";
             case UNRAVELED_RESILIENCE_GRID -> "resilience-grid";
             case PENITENT_DREAD_WORKS -> "dread-works";
+            case BEGOTTEN_INCURSION_ANCHOR -> "incursion-anchor";
             default -> null;
         };
     }
     public static int kindForFacility(String facility){
-        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=PENITENT_DREAD_WORKS;kind++)
+        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_INCURSION_ANCHOR;kind++)
             if(java.util.Objects.equals(factionFacility(kind),facility))return kind;
         return -1;
     }
@@ -620,7 +621,7 @@ public final class ArenaSystems {
             case UNRAVELED_SCRAP_OUTPOST -> CharacterRoster.Faction.THE_UNRAVELED;
             case PENITENT_VOTIVE_ALTAR -> CharacterRoster.Faction.THE_PENITENT;
             case BEGOTTEN_BROOD_NEST,BEGOTTEN_SPORE_BASIN,BEGOTTEN_CHITIN_VAT,BEGOTTEN_MEMBRANE_LAB,
-                NUTRIENT_DIGESTOR,BEGOTTEN_ORGAN_LATTICE ->
+                NUTRIENT_DIGESTOR,BEGOTTEN_ORGAN_LATTICE,BEGOTTEN_INCURSION_ANCHOR ->
                 CharacterRoster.Faction.THE_BEGOTTEN;
             case UNRAVELED_MACHINIST_BAY ->
                 CharacterRoster.Faction.THE_UNRAVELED;
@@ -668,6 +669,7 @@ public final class ArenaSystems {
             case BEGOTTEN_ORGAN_LATTICE -> "begotten-pulse-organ";
             case UNRAVELED_RESILIENCE_GRID -> "resilience-core";
             case PENITENT_DREAD_WORKS -> "dread-ward";
+            case BEGOTTEN_INCURSION_ANCHOR -> "breach-seed";
             default -> null;
         };
     }
@@ -739,7 +741,7 @@ public final class ArenaSystems {
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>PENITENT_DREAD_WORKS)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        if(kind<0||kind>BEGOTTEN_INCURSION_ANCHOR)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
         int price=kind>=FIELD_FIRE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind>=FIELD_FIRE?0:

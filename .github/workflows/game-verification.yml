@@ -42,6 +42,9 @@ jobs:
       - name: Paid Penitent dread works and restart acceptance
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IncursionDreadWorksTest
+      - name: Paid Begotten incursion anchor and restart acceptance
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.IncursionAnchorTest
       - name: Paid dual-generator 25-load resilience-core acceptance
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IncursionDualGeneratorTest
@@ -117,6 +120,7 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.PhysicalFacilityDependencyTest
           java -Djava.awt.headless=true -cp build/classes veil.ConstructionFundingTest
           java -Djava.awt.headless=true -cp build/classes veil.IncursionDreadWorksTest
+          java -Djava.awt.headless=true -cp build/classes veil.IncursionAnchorTest
           java -Djava.awt.headless=true -cp build/classes veil.SteamEraProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.ElectricEraProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.ConveyorLogisticsTest

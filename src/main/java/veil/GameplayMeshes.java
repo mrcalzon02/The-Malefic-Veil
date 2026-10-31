@@ -36,7 +36,8 @@ public final class GameplayMeshes {
         "facility-fuel-refinery","facility-terror-collector",
         "facility-nutrient-digestor","facility-unraveled-defense-works",
         "facility-penitent-ward-sanctum","facility-begotten-organ-lattice",
-        "facility-unraveled-resilience-grid"};
+        "facility-unraveled-resilience-grid",
+        "facility-penitent-dread-works"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -563,9 +564,10 @@ public final class GameplayMeshes {
 
         // E5 has actual static, collidable, faction-distinct PSX 3D machinery,
         // not a common factory reskin or thrown deployment.
-        for(int index=41;index<=55;index++){
+        for(int index=41;index<=56;index++){
             Model machine=new Model();
-            int frame=index==53?0x635363:index==54?0x76565E:0x535D64;
+            int frame=index==53?0x635363:index==54?0x76565E:
+                index==56?0x56434C:0x535D64;
             machine.box(0,.18,0,2.62,.27,2.10,frame);
             switch(index){
                 case 41 -> { // Conveyor belt on raised driven rollers
@@ -690,6 +692,19 @@ public final class GameplayMeshes {
                     machine.box(0,1.86,0,2.16,.16,.18,0xA7C2C9);
                     machine.box(0,1.46,0,.17,.86,1.65,0xB5A76E);
                     machine.diamond(0,1.75,0,.43,.53,0x82C9DB);
+                }
+                case 56 -> { // Penitent dread works: chained ritual forge and three votive towers
+                    machine.box(0,.76,0,2.20,.76,1.65,0x58444D);
+                    machine.box(0,1.40,0,1.35,.32,1.03,0x8C6570);
+                    machine.diamond(0,1.94,0,.60,.61,0xBD6572);
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*.91,1.32,-.54,.26,1.73,.28,0x74616D);
+                        machine.diamond(side*.91,2.28,-.54,.23,.43,0xD5B17B);
+                        machine.box(side*.53,1.76,.44,.13,.16,.86,0xB7A6A1);
+                    }
+                    machine.box(0,1.42,.76,.31,1.33,.28,0x82707C);
+                    machine.diamond(0,2.17,.76,.29,.50,0xE0BA8A);
+                    machine.box(0,.93,-.87,1.85,.15,.18,0xC3A8A5);
                 }
                 default -> throw new IllegalStateException("Missing E5/Incursion industrial geometry");
             }

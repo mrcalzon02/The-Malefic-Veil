@@ -43,9 +43,10 @@ public final class IncursionDreadWorksTest {
         return cost;
     }
     private static void clean(Path dir)throws Exception{
-        try(var walk=Files.walk(dir))
+        try(var walk=Files.walk(dir)){
             for(Path file:walk.sorted(Comparator.reverseOrder()).toList())
                 Files.deleteIfExists(file);
+        }
     }
     public static void main(String[] args)throws Exception{
         final long seed=20261030L;

@@ -221,6 +221,132 @@ public final class IncursionDualGeneratorTest {
         }finally{cleanup(root);}
     }
 
+
+    /** Penitent Dread Works must use its own paid physical site and the
+     * same real 25-load dual-generator contract, not a free ritual shortcut.
+     * This exercises a finished ward across a host restart and power outage. */
+    private static void penitentDreadWard()throws Exception{
+        final long seed=20261101L;
+        final String ownerKey="acct_"+"a".repeat(64);
+        final String foreignKey="acct_"+"e".repeat(64);
+        ArenaSystems host=new ArenaSystems(seed);
+        var owner=host.join(1);
+        check(host.assignAccount(1,ownerKey)&&
+            host.enrollFaction(1,CharacterRoster.Faction.THE_PENITENT),
+            "Penitent power operator not enrolled");
+        var rival=host.join(2);
+        check(host.assignAccount(2,foreignKey)&&
+            host.enrollFaction(2,CharacterRoster.Faction.THE_PENITENT),
+            "Second Penitent account not enrolled");
+        double[] at=site(host);double x=at[0],y=at[1];
+        fixture(host,ArenaSystems.CAMP_STAKE,x-3.5,y-1,ownerKey);
+        World.Device crate=fixture(host,ArenaSystems.STORAGE_CRATE,x+1,y-2.2,ownerKey);
+        fixture(host,ArenaSystems.FORGE,x-1.7,y+2,ownerKey);
+        World.Device boiler=fixture(host,ArenaSystems.STEAM_BOILER,x-1.7,y-1,ownerKey);
+        boiler.steamMs=600_000;
+        fixture(host,ArenaSystems.TERROR_COLLECTOR,x-3.5,y+3.5,ownerKey);
+        fixture(host,ArenaSystems.ASSEMBLY_LINE,x+6,y-3.5,ownerKey);
+        World.Device works=paid(host,owner,crate,
+            ArenaSystems.PENITENT_DREAD_WORKS,x,y);
+        var process=CraftingEraRegistry.process("dread-ward");
+        check(process!=null&&process.utilityDemand()==25&&
+            process.seconds()==2400&&
+            "dread-works".equals(process.facility())&&
+            "dread-ward".equals(ArenaSystems.firstProcess(works.kind))&&
+            "facility-penitent-dread-works".equals(
+                GameplayMeshes.DEVICE[works.kind]),
+            "Penitent physical factory, art identity or 25-load recipe missing");
+        supply(crate,process.inputs());
+        Map<SurvivalCrafting.Item,Integer> staged=crate.storage.snapshot();
+        owner.x=works.x+.3;owner.y=works.y;
+        rival.x=owner.x;rival.y=owner.y;
+        check(!host.startFactionBatch(1,process.id())&&
+            !host.startFactionBatch(2,process.id())&&
+            crate.storage.snapshot().equals(staged),
+            "Unpowered or foreign Penitent start spent real inputs");
+
+        World.Device first=paid(host,owner,crate,ArenaSystems.GENERATOR,x+2.3,y+2.2);
+        World.Device bus=paid(host,owner,crate,ArenaSystems.ELECTRIC_BUS,x+3,y-1.2);
+        fuel(host,owner,first,crate);
+        owner.x=works.x+.3;owner.y=works.y;
+        check(ElectricUtility.allocation(host.world.devices,works,25,
+                Map.of(),1000).isEmpty()&&
+            !host.startFactionBatch(1,process.id())&&
+            crate.storage.snapshot().equals(staged),
+            "One 24-load generator powered the Penitent factory or spent inputs");
+        World.Device second=paid(host,owner,crate,ArenaSystems.GENERATOR,x+4.3,y+2.2);
+        fuel(host,owner,second,crate);
+        var sources=ElectricUtility.allocation(host.world.devices,works,
+            25,Map.of(),1000);
+        check(sources.size()==2&&
+            sources.values().stream().mapToInt(Integer::intValue).sum()==25&&
+            sources.values().stream().allMatch(n->n>0&&n<=ElectricUtility.CAPACITY),
+            "Two funded Penitent generators did not reserve exactly 25 load");
+        owner.x=works.x+.3;owner.y=works.y;
+        check(!host.startFactionBatch(2,process.id())&&
+            host.startFactionBatch(1,process.id())&&
+            !host.startFactionBatch(1,process.id()),
+            "Penitent owner isolation or exactly-once batch start failed");
+        for(var input:process.inputs().entrySet())
+            check(crate.storage.count(SurvivalCrafting.Item.valueOf(input.getKey()))==0,
+                "Real Penitent inputs were not debited once");
+        tick(host,600);
+        check(works.productionActive&&works.productionMs==600_000&&
+            first.electricMs==600_000&&second.electricMs==600_000,
+            "Penitent batch did not spend both real charged reserves");
+        bus.hp=0;tick(host,1);
+        check(works.productionMs==600_000&&
+            first.electricMs==600_000&&second.electricMs==600_000,
+            "Destroyed Penitent bus supplied phantom production");
+        bus.hp=100;
+
+        Path root=Files.createTempDirectory("veil-incursion-penitent-power-");
+        try{
+            HostCheckpoint.save(host,root);
+            ArenaSystems resumed=new ArenaSystems(seed);
+            check(HostCheckpoint.load(resumed,root),
+                "Penitent 25-load factory checkpoint failed");
+            resumed.join(1);
+            check(resumed.assignAccount(1,ownerKey),
+                "Restarted Penitent account could not authenticate");
+            var operator=resumed.player(1);
+            var running=one(resumed,ArenaSystems.PENITENT_DREAD_WORKS,ownerKey);
+            var stock=one(resumed,ArenaSystems.STORAGE_CRATE,ownerKey);
+            var plants=resumed.world.devices.stream().filter(d->
+                d.kind==ArenaSystems.GENERATOR&&ownerKey.equals(d.ownerKey)).toList();
+            check(plants.size()==2&&running.productionActive&&
+                running.productionMs==600_000&&
+                plants.stream().allMatch(d->d.electricMs==600_000),
+                "Restart lost Penitent generator charge or replayed work");
+            tick(resumed,600);
+            check(running.productionMs==1_200_000&&
+                plants.stream().allMatch(d->d.electricMs==0),
+                "Penitent work did not exhaust two paid generators");
+            tick(resumed,1);
+            check(running.productionMs==1_200_000&&
+                stock.storage.count(SurvivalCrafting.Item.DREAD_WARD)==0,
+                "Unpowered Penitent work minted a free dread ward");
+            fuel(resumed,operator,plants.get(0),stock);
+            fuel(resumed,operator,plants.get(1),stock);
+            tick(resumed,1200);
+            check(!running.productionActive&&running.productionMs==0&&
+                running.productionCompleted==1&&
+                stock.storage.count(SurvivalCrafting.Item.DREAD_WARD)==1,
+                "Paid Penitent 2400-second batch failed to deliver one dread ward");
+            tick(resumed,5);
+            check(stock.storage.count(SurvivalCrafting.Item.DREAD_WARD)==1,
+                "Idle Penitent factory duplicated its finished ward");
+            HostCheckpoint.save(resumed,root);
+            ArenaSystems finalWorld=new ArenaSystems(seed);
+            check(HostCheckpoint.load(finalWorld,root)&&
+                one(finalWorld,ArenaSystems.STORAGE_CRATE,ownerKey)
+                    .storage.count(SurvivalCrafting.Item.DREAD_WARD)==1&&
+                one(finalWorld,ArenaSystems.PENITENT_DREAD_WORKS,ownerKey)
+                    .productionCompleted==1,
+                "Second restart lost or duplicated the Penitent output");
+        }finally{cleanup(root);}
+    }
+
     public static void main(String[] args)throws Exception{
         final long seed=20261029L;
         final String ownerKey="acct_"+"c".repeat(64);
@@ -339,6 +465,7 @@ public final class IncursionDualGeneratorTest {
                 "Completed Incursion output duplicated or vanished after second restart");
         }finally{cleanup(root);}
         begottenBreachSeed();
-        System.out.println("PASS IncursionDualGeneratorTest: paid 25-load Unraveled and Begotten batches, owner isolation, outages, restart, real outputs");
+        penitentDreadWard();
+        System.out.println("PASS IncursionDualGeneratorTest: paid 25-load Unraveled, Begotten and Penitent batches, owner isolation, outages, restart, real outputs");
     }
 }

@@ -89,6 +89,133 @@ public final class IncursionDualGeneratorTest {
                 Files.deleteIfExists(p);
         }
     }
+
+    /** Paid Begotten factory and dual-generator network, with a genuine
+     * 3600-second breach-seed batch. Unraveled's shorter 2400-second run above
+     * cannot establish that an endgame Begotten work order finishes. */
+    private static void begottenBreachSeed()throws Exception{
+        final long seed=20261031L;
+        final String ownerKey="acct_"+"b".repeat(64);
+        final String foreignKey="acct_"+"f".repeat(64);
+        ArenaSystems host=new ArenaSystems(seed);
+        var owner=host.join(1);
+        check(host.assignAccount(1,ownerKey)&&
+            host.enrollFaction(1,CharacterRoster.Faction.THE_BEGOTTEN),
+            "Begotten power operator not enrolled");
+        var rival=host.join(2);
+        check(host.assignAccount(2,foreignKey)&&
+            host.enrollFaction(2,CharacterRoster.Faction.THE_UNRAVELED),
+            "Foreign power operator not enrolled");
+        double[] at=site(host);double x=at[0],y=at[1];
+        fixture(host,ArenaSystems.CAMP_STAKE,x-3.5,y-1,ownerKey);
+        World.Device crate=fixture(host,ArenaSystems.STORAGE_CRATE,x+1,y-2.2,ownerKey);
+        fixture(host,ArenaSystems.FORGE,x-1.7,y+2,ownerKey);
+        World.Device boiler=fixture(host,ArenaSystems.STEAM_BOILER,x-1.7,y-1,ownerKey);
+        boiler.steamMs=600_000;
+        fixture(host,ArenaSystems.NUTRIENT_DIGESTOR,x-3.5,y+3.5,ownerKey);
+        fixture(host,ArenaSystems.ASSEMBLY_LINE,x+6,y-3.5,ownerKey);
+        World.Device anchor=paid(host,owner,crate,
+            ArenaSystems.BEGOTTEN_INCURSION_ANCHOR,x,y);
+        var process=CraftingEraRegistry.process("breach-seed");
+        check(process!=null&&process.utilityDemand()==25&&
+            process.seconds()==3600&&
+            "incursion-anchor".equals(process.facility())&&
+            "breach-seed".equals(ArenaSystems.firstProcess(anchor.kind)),
+            "Begotten recipe, load or physical factory mapping changed");
+        supply(crate,process.inputs());
+        Map<SurvivalCrafting.Item,Integer> staged=crate.storage.snapshot();
+        owner.x=anchor.x+.3;owner.y=anchor.y;
+        rival.x=owner.x;rival.y=owner.y;
+        check(!host.startFactionBatch(1,process.id())&&
+            !host.startFactionBatch(2,process.id())&&
+            crate.storage.snapshot().equals(staged),
+            "Unpowered or foreign Begotten start spent real inputs");
+
+        World.Device first=paid(host,owner,crate,ArenaSystems.GENERATOR,x+2.3,y+2.2);
+        World.Device bus=paid(host,owner,crate,ArenaSystems.ELECTRIC_BUS,x+3,y-1.2);
+        fuel(host,owner,first,crate);
+        owner.x=anchor.x+.3;owner.y=anchor.y;
+        check(ElectricUtility.allocation(host.world.devices,anchor,25,
+                Map.of(),1000).isEmpty()&&
+            !host.startFactionBatch(1,process.id())&&
+            crate.storage.snapshot().equals(staged),
+            "A single 24-load generator powered Begotten or debited its stock");
+        World.Device second=paid(host,owner,crate,ArenaSystems.GENERATOR,x+4.3,y+2.2);
+        fuel(host,owner,second,crate);
+        var allocation=ElectricUtility.allocation(host.world.devices,anchor,
+            25,Map.of(),1000);
+        check(allocation.size()==2&&
+            allocation.values().stream().mapToInt(Integer::intValue).sum()==25&&
+            allocation.values().stream().allMatch(n->n>0&&n<=ElectricUtility.CAPACITY),
+            "Paid Begotten network did not split 25 load across two 24-load plants");
+        owner.x=anchor.x+.3;owner.y=anchor.y;
+        check(!host.startFactionBatch(2,process.id())&&
+            host.startFactionBatch(1,process.id())&&
+            !host.startFactionBatch(1,process.id()),
+            "Begotten batch owner or exactly-once start authorization failed");
+        for(var input:process.inputs().entrySet())
+            check(crate.storage.count(SurvivalCrafting.Item.valueOf(input.getKey()))==0,
+                "Paid Begotten inputs were not debited once");
+        tick(host,600);
+        check(anchor.productionActive&&anchor.productionMs==600_000&&
+            first.electricMs==600_000&&second.electricMs==600_000,
+            "Begotten did not debit both generator reserves");
+        bus.hp=0;tick(host,1);
+        check(anchor.productionMs==600_000&&
+            first.electricMs==600_000&&second.electricMs==600_000,
+            "Destroyed bus supplied free Begotten production");
+        bus.hp=100;
+
+        Path root=Files.createTempDirectory("veil-incursion-begotten-power-");
+        try{
+            HostCheckpoint.save(host,root);
+            ArenaSystems resumed=new ArenaSystems(seed);
+            check(HostCheckpoint.load(resumed,root),
+                "Paid Begotten grid checkpoint failed");
+            resumed.join(1);
+            check(resumed.assignAccount(1,ownerKey),
+                "Restarted Begotten owner could not authenticate");
+            var operator=resumed.player(1);
+            var running=one(resumed,ArenaSystems.BEGOTTEN_INCURSION_ANCHOR,ownerKey);
+            var stock=one(resumed,ArenaSystems.STORAGE_CRATE,ownerKey);
+            var plants=resumed.world.devices.stream().filter(d->
+                d.kind==ArenaSystems.GENERATOR&&ownerKey.equals(d.ownerKey)).toList();
+            check(plants.size()==2&&running.productionActive&&
+                running.productionMs==600_000&&
+                plants.stream().allMatch(d->d.electricMs==600_000),
+                "Restart lost a paid Begotten generator or replayed production");
+            tick(resumed,600);
+            check(running.productionMs==1_200_000&&
+                plants.stream().allMatch(d->d.electricMs==0),
+                "Begotten 25-load work did not exhaust both plants");
+            tick(resumed,1);
+            check(running.productionMs==1_200_000&&
+                stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==0,
+                "Unpowered Begotten work minted a free breach seed");
+            for(int round=1;round<=2;round++){
+                fuel(resumed,operator,plants.get(0),stock);
+                fuel(resumed,operator,plants.get(1),stock);
+                tick(resumed,1200);
+                check(running.productionMs==(1_200_000L+round*1_200_000L),
+                    "Paid Begotten generator cycle lost production progress");
+            }
+            check(!running.productionActive&&running.productionCompleted==1&&
+                stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==1,
+                "Real Begotten 3600-second batch did not yield exactly one breach seed");
+            tick(resumed,5);
+            check(stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==1,
+                "Completed Begotten output duplicated during idle ticks");
+            HostCheckpoint.save(resumed,root);
+            ArenaSystems finalWorld=new ArenaSystems(seed);
+            check(HostCheckpoint.load(finalWorld,root)&&
+                one(finalWorld,ArenaSystems.STORAGE_CRATE,ownerKey)
+                    .storage.count(SurvivalCrafting.Item.BREACH_SEED)==1&&
+                one(finalWorld,ArenaSystems.BEGOTTEN_INCURSION_ANCHOR,ownerKey)
+                    .productionCompleted==1,
+                "Restart duplicated or lost the finished Begotten breach seed");
+        }finally{cleanup(root);}
+    }
+
     public static void main(String[] args)throws Exception{
         final long seed=20261029L;
         final String ownerKey="acct_"+"c".repeat(64);
@@ -206,6 +333,7 @@ public final class IncursionDualGeneratorTest {
                     .productionCompleted==1,
                 "Completed Incursion output duplicated or vanished after second restart");
         }finally{cleanup(root);}
-        System.out.println("PASS IncursionDualGeneratorTest: paid 24+1 load, owner isolation, outage, restart, real resilience core");
+        begottenBreachSeed();
+        System.out.println("PASS IncursionDualGeneratorTest: paid 25-load Unraveled and Begotten batches, owner isolation, outages, restart, real outputs");
     }
 }

@@ -196,8 +196,13 @@ public final class IncursionDualGeneratorTest {
                 fuel(resumed,operator,plants.get(0),stock);
                 fuel(resumed,operator,plants.get(1),stock);
                 tick(resumed,1200);
-                check(running.productionMs==(1_200_000L+round*1_200_000L),
-                    "Paid Begotten generator cycle lost production progress");
+                if(round==1)
+                    check(running.productionActive&&running.productionMs==2_400_000L,
+                        "Paid Begotten generator cycle lost production progress");
+                else
+                    check(!running.productionActive&&running.productionMs==0&&
+                        running.productionCompleted==1,
+                        "Completed Begotten batch did not reset its production timer");
             }
             check(!running.productionActive&&running.productionCompleted==1&&
                 stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==1,

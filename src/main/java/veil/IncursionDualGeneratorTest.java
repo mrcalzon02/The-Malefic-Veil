@@ -70,7 +70,8 @@ public final class IncursionDualGeneratorTest {
             boolean open=true;
             for(double[] offset:new double[][]{
                 {0,0},{-3.5,-1},{1,-2.2},{-1.7,2},{-1.7,-1},
-                {2.3,2.2},{3,-1.2},{4.3,2.2}}){
+                {2.3,2.2},{3,-1.2},{4.3,2.2},
+                {6,-3.5},{-3.5,3.5}}){
                 double xx=x+offset[0],yy=y+offset[1];
                 if(!host.world.canWalk(xx,yy)||
                     host.world.worldStructureAt(xx,yy,.55)){open=false;break;}
@@ -366,7 +367,24 @@ public final class IncursionDualGeneratorTest {
         fixture(host,ArenaSystems.FORGE,x-1.7,y+2,ownerKey);
         World.Device boiler=fixture(host,ArenaSystems.STEAM_BOILER,x-1.7,y-1,ownerKey);
         boiler.steamMs=300_000;
-        World.Device grid=fixture(host,ArenaSystems.UNRAVELED_RESILIENCE_GRID,x,y,ownerKey);
+        // These E5 prerequisites are installed fixtures; the E6 factory itself
+        // must be constructed through the real paid host build path.
+        fixture(host,ArenaSystems.ASSEMBLY_LINE,x+6,y-3.5,ownerKey);
+        World.Device relay=fixture(host,ArenaSystems.SIGNAL_RELAY,x-3.5,y+3.5,ownerKey);
+        owner.x=x-1.1;owner.y=y;owner.angle=0;
+        relay.hp=0;
+        check(host.reviewBuild(1,ArenaSystems.UNRAVELED_RESILIENCE_GRID).reason()
+                .equals("MISSING_PHYSICAL_PREREQUISITE"),
+            "Destroyed relay allowed a paid Unraveled grid");
+        relay.hp=100;
+        World.Device grid=paid(host,owner,crate,
+            ArenaSystems.UNRAVELED_RESILIENCE_GRID,x,y);
+        check(grid.kind==ArenaSystems.UNRAVELED_RESILIENCE_GRID&&
+            ownerKey.equals(grid.ownerKey)&&crate.storage.snapshot().isEmpty()&&
+            "facility-unraveled-resilience-grid".equals(GameplayMeshes.DEVICE[grid.kind]),
+            "Unraveled factory was not paid, owned and physically distinct");
+        check(!host.build(1,ArenaSystems.UNRAVELED_RESILIENCE_GRID),
+            "Duplicate Unraveled grid bypassed one-per-owner construction");
         var process=CraftingEraRegistry.process("resilience-core");
         check(process!=null&&process.utilityDemand()==25&&
             ElectricUtility.CAPACITY==24&&

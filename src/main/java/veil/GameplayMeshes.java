@@ -37,7 +37,8 @@ public final class GameplayMeshes {
         "facility-nutrient-digestor","facility-unraveled-defense-works",
         "facility-penitent-ward-sanctum","facility-begotten-organ-lattice",
         "facility-unraveled-resilience-grid",
-        "facility-penitent-dread-works","facility-begotten-incursion-anchor"};
+        "facility-penitent-dread-works","facility-begotten-incursion-anchor",
+        "facility-infirmary","facility-monument-graveyard"};
     public static final String[] WEAPON={"weapon-handgun","weapon-shotgun"};
     private final Map<String,GlbMesh> meshes=new LinkedHashMap<>();
     private static final class Model {
@@ -564,7 +565,7 @@ public final class GameplayMeshes {
 
         // E5 has actual static, collidable, faction-distinct PSX 3D machinery,
         // not a common factory reskin or thrown deployment.
-        for(int index=41;index<=57;index++){
+        for(int index=41;index<=59;index++){
             Model machine=new Model();
             int frame=index==53?0x635363:index==54?0x76565E:
                 index==56?0x56434C:index==57?0x684A55:0x535D64;
@@ -719,6 +720,29 @@ public final class GameplayMeshes {
                     machine.diamond(0,2.34,0,.37,.81,0xD7A98D);
                     machine.box(0,1.35,-.73,1.63,.15,.17,0x9A6D79);
                     machine.diamond(0,1.78,-.81,.29,.54,0xE0B39B);
+                }
+                case 58 -> { // Infirmary: visible medical beds and treatment lamp
+                    machine.box(0,.62,0,2.34,.75,1.86,0x697B7C);
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*.72,1.11,.08,.63,.16,1.37,0xA6B7B1);
+                        machine.box(side*.72,1.23,-.39,.55,.12,.35,0xD3D0C3);
+                    }
+                    machine.box(0,1.72,-.73,.21,1.25,.22,0x8B9494);
+                    machine.box(0,2.38,-.73,1.25,.13,.31,0xC3D7D1);
+                    machine.diamond(0,2.28,-.69,.24,.25,0xB2E5D8);
+                }
+                case 59 -> { // Graveyard: stone memorial, not a factory reskin
+                    machine.box(0,.35,0,2.50,.56,2.08,0x555A62);
+                    machine.box(0,.70,0,1.90,.17,1.56,0x7B7F84);
+                    for(int side:new int[]{-1,1}){
+                        machine.box(side*.86,1.62,0,.35,1.78,.37,0x85858A);
+                        machine.diamond(side*.86,2.62,0,.29,.48,0xB3ADA3);
+                        machine.box(side*.82,.88,-.64,.48,.55,.30,0xA5A2A0);
+                    }
+                    machine.box(0,2.40,0,2.10,.27,.46,0x96999C);
+                    machine.diamond(0,2.93,0,.49,.79,0xD1C5A8);
+                    machine.box(0,1.19,-.73,1.21,.95,.22,0x44464D);
+                    machine.diamond(0,1.74,-.88,.26,.42,0xB1A88D);
                 }
                 default -> throw new IllegalStateException("Missing E5/Incursion industrial geometry");
             }

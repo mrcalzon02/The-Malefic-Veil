@@ -135,7 +135,8 @@ public final class ArenaSystems {
         TERROR_COLLECTOR=50,NUTRIENT_DIGESTOR=51,
         UNRAVELED_DEFENSE_WORKS=52,PENITENT_WARD_SANCTUM=53,
         BEGOTTEN_ORGAN_LATTICE=54,UNRAVELED_RESILIENCE_GRID=55,
-        PENITENT_DREAD_WORKS=56,BEGOTTEN_INCURSION_ANCHOR=57;
+        PENITENT_DREAD_WORKS=56,BEGOTTEN_INCURSION_ANCHOR=57,
+        INFIRMARY=58,MONUMENT_GRAVEYARD=59;
     public static final class Player {
         public final int id;
         public final CharacterProgression progression=new CharacterProgression();
@@ -608,11 +609,13 @@ public final class ArenaSystems {
             case UNRAVELED_RESILIENCE_GRID -> "resilience-grid";
             case PENITENT_DREAD_WORKS -> "dread-works";
             case BEGOTTEN_INCURSION_ANCHOR -> "incursion-anchor";
+            case INFIRMARY -> "infirmary";
+            case MONUMENT_GRAVEYARD -> "monument-graveyard";
             default -> null;
         };
     }
     public static int kindForFacility(String facility){
-        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=BEGOTTEN_INCURSION_ANCHOR;kind++)
+        for(int kind=UNRAVELED_SCRAP_OUTPOST;kind<=MONUMENT_GRAVEYARD;kind++)
             if(java.util.Objects.equals(factionFacility(kind),facility))return kind;
         return -1;
     }
@@ -735,13 +738,22 @@ public final class ArenaSystems {
         }
         return candidates;
     }
+    /** Commissioning a graveyard requires 30 load across actual same-owner
+     * bus/generator devices. This temporary probe is never a free world device. */
+    private Map<World.Device,Integer> graveyardCommissionPower(Player p,double x,double y){
+        World.Device probe=new World.Device(x,y,MONUMENT_GRAVEYARD);
+        probe.ownerKey=p.accountKey;
+        return ElectricUtility.allocation(world.devices,probe,
+            CraftingEraRegistry.facility("monument-graveyard").utilityDemand(),
+            Map.of(),Math.max(1,lastUtilityTickMs));
+    }
     public record BuildReview(boolean allowed,String reason,int cashCost,int suppliesCost,double x,double y){}
     /** Returns a concrete rejection without mutating inventories. */
     public synchronized BuildReview reviewBuild(int id,int kind){
         Player p=player(id);
         if(p==null||p.dead)return new BuildReview(false,"DEAD_OR_MISSING",0,0,0,0);
         if(vehicles.carDrivenBy(id)>=0)return new BuildReview(false,"IN_VEHICLE",0,0,0,0);
-        if(kind<0||kind>BEGOTTEN_INCURSION_ANCHOR)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
+        if(kind<0||kind>MONUMENT_GRAVEYARD)return new BuildReview(false,"UNKNOWN_STRUCTURE",0,0,0,0);
         int price=kind>=FIELD_FIRE?0:
             kind==CAMP_STAKE?35:kind==0?(p.classId==0?60:100):kind==1?75:kind==2?120:45;
         int supplies=kind>=FIELD_FIRE?0:
@@ -762,6 +774,8 @@ public final class ArenaSystems {
                    p.accountKey.equals(existing.ownerKey))
                     return new BuildReview(false,"ALREADY_OWNS_CAMP",price,supplies,x,y);
         }
+        if(kind==MONUMENT_GRAVEYARD&&!p.accountKey.startsWith("acct_"))
+            return new BuildReview(false,"REQUIRES_AUTHENTICATED_OWNER",price,supplies,x,y);
         if(factionFacility(kind)!=null){
             if(world.detailedCity(x,y))
                 return new BuildReview(false,"CITY_PROTECTED",price,supplies,x,y);
@@ -787,6 +801,10 @@ public final class ArenaSystems {
                     price,supplies,x,y);
             if(fundedFactoryCrates(p,x,y,kind).isEmpty())
                 return new BuildReview(false,"NEEDS_STOCKED_OWN_CRATE",
+                    price,supplies,x,y);
+            if(kind==MONUMENT_GRAVEYARD&&
+               graveyardCommissionPower(p,x,y).isEmpty())
+                return new BuildReview(false,"NEEDS_POWERED_NETWORK",
                     price,supplies,x,y);
         }
         if(kind==STORAGE_CRATE&&world.detailedCity(x,y))
@@ -863,6 +881,10 @@ public final class ArenaSystems {
         BuildReview review=reviewBuild(id,kind);
         if(!review.allowed())return new BuildOutcome(false,review,-1);
         Player p=player(id);
+        Map<World.Device,Integer> commissioning=kind==MONUMENT_GRAVEYARD?
+            graveyardCommissionPower(p,review.x(),review.y()):Map.of();
+        if(kind==MONUMENT_GRAVEYARD&&commissioning.isEmpty())
+            throw new IllegalStateException("Verified monument power changed");
         if(kind==CAMP_STAKE&&!p.survival.debit(SurvivalCrafting.Item.TENT_KIT,1))
             throw new IllegalStateException("Camp inventory changed after authoritative preflight");
         if(kind==FIELD_FIRE&&!p.survival.debit(SurvivalCrafting.Item.CAMPFIRE,1))
@@ -881,6 +903,10 @@ public final class ArenaSystems {
                     facilityMaterialCost(kind)))
                 throw new IllegalStateException("Preflighted construction stock changed");
         }
+        // Only a successful funded monument consumes this real commissioning
+        // tick from both charged generators; no power is minted on rejection.
+        for(World.Device generator:commissioning.keySet())
+            generator.electricMs-=Math.max(1,lastUtilityTickMs);
         p.cash-=review.cashCost();p.scrap-=review.suppliesCost();
         World.Device device=new World.Device(review.x(),review.y(),kind);
         device.ownerId=p.id;

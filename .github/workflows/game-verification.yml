@@ -48,6 +48,9 @@ jobs:
       - name: Paid dual-generator 25-load resilience-core acceptance
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.IncursionDualGeneratorTest
+      - name: Host-paid 384-unit graveyard monument and 30-load commissioning
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.IncursionGraveyardMonumentTest
       - name: City generation and geometry
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.WorldSelfTest
@@ -119,6 +122,7 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.SecondEraFactionProductionTest
           java -Djava.awt.headless=true -cp build/classes veil.PhysicalFacilityDependencyTest
           java -Djava.awt.headless=true -cp build/classes veil.ConstructionFundingTest
+          java -Djava.awt.headless=true -cp build/classes veil.IncursionGraveyardMonumentTest
           java -Djava.awt.headless=true -cp build/classes veil.IncursionDreadWorksTest
           java -Djava.awt.headless=true -cp build/classes veil.IncursionAnchorTest
           java -Djava.awt.headless=true -cp build/classes veil.SteamEraProductionTest

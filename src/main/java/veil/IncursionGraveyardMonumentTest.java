@@ -153,6 +153,30 @@ public final class IncursionGraveyardMonumentTest {
             !host.build(1,MONUMENT)&&snapshots(a,b,c).equals(shortage),
             "383 units partially debited or built a free monument");
         fill(a,SurvivalCrafting.Item.FIELD_STONE,1);
+
+        // A successful review is not permission to spend a crate after its
+        // ownership changes. The host must revalidate the entire 384-unit
+        // payment and must not debit another account or commissioning power.
+        check(host.reviewBuild(1,MONUMENT).allowed(),
+            "Complete owned stock was not initially eligible");
+        var beforeOwnerChange=snapshots(a,b,c);
+        int beforeOwnerChangeDevices=host.world.devices.size();
+        long beforeOwnerChangeFirstPower=first.electricMs;
+        long beforeOwnerChangeSecondPower=second.electricMs;
+        c.ownerKey=alien;
+        var foreignCrateAttempt=host.buildOutcome(1,MONUMENT);
+        check(!foreignCrateAttempt.built()&&
+            "NEEDS_STOCKED_OWN_CRATE".equals(foreignCrateAttempt.review().reason())&&
+            host.world.devices.size()==beforeOwnerChangeDevices&&
+            snapshots(a,b,c).equals(beforeOwnerChange)&&
+            first.electricMs==beforeOwnerChangeFirstPower&&
+            second.electricMs==beforeOwnerChangeSecondPower,
+            "Stale review spent foreign crate stock, power, or placed a free monument");
+        c.ownerKey=owner;
+        check(host.reviewBuild(1,MONUMENT).allowed()&&
+            snapshots(a,b,c).equals(beforeOwnerChange),
+            "Restoring ownership failed to restore the exact paid build preflight");
+
         var charge=ElectricUtility.allocation(host.world.devices,
             new World.Device(x,y,MONUMENT),30,Map.of(),100);
         // The temporary probe needs owner identity, just like the host review.

@@ -182,9 +182,14 @@ public final class IncursionGraveyardMonumentTest {
         int staleCount=host.world.devices.size();
         long staleFirstPower=first.electricMs,staleSecondPower=second.electricMs;
         var staleStock=snapshots(a,b,c);
-        double originalCrateX=c.x;
+        // Device coordinates are immutable: emulate a host move by swapping
+        // in a relocated physical crate carrying the exact same stock.
+        int crateIndex=host.world.devices.indexOf(c);
+        World.Device relocated=new World.Device(x+8,c.y,ArenaSystems.STORAGE_CRATE);
+        relocated.ownerKey=owner;
+        relocated.storage.restore(c.storage.snapshot());
         check(host.reviewBuild(1,MONUMENT).allowed(),"Moved-crate review fixture");
-        c.x=x+8;
+        host.world.devices.set(crateIndex,relocated);
         var movedCrate=host.buildOutcome(1,MONUMENT);
         check(!movedCrate.built()&&
             "NEEDS_STOCKED_OWN_CRATE".equals(movedCrate.review().reason())&&
@@ -192,7 +197,7 @@ public final class IncursionGraveyardMonumentTest {
             snapshots(a,b,c).equals(staleStock)&&
             first.electricMs==staleFirstPower&&second.electricMs==staleSecondPower,
             "Moved third crate partially paid or commissioned a monument");
-        c.x=originalCrateX;
+        host.world.devices.set(crateIndex,c);
 
         check(host.reviewBuild(1,MONUMENT).allowed(),"Destroyed-crate review fixture");
         int originalCrateHp=c.hp;

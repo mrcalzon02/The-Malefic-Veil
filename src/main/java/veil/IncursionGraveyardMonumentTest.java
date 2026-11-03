@@ -177,6 +177,51 @@ public final class IncursionGraveyardMonumentTest {
             snapshots(a,b,c).equals(beforeOwnerChange),
             "Restoring ownership failed to restore the exact paid build preflight");
 
+        // A review is advisory, not a reservation. Revalidate the same
+        // physical 384-unit bill at the instant of host commissioning.
+        int staleCount=host.world.devices.size();
+        long staleFirstPower=first.electricMs,staleSecondPower=second.electricMs;
+        var staleStock=snapshots(a,b,c);
+        double originalCrateX=c.x;
+        check(host.reviewBuild(1,MONUMENT).allowed(),"Moved-crate review fixture");
+        c.x=x+8;
+        var movedCrate=host.buildOutcome(1,MONUMENT);
+        check(!movedCrate.built()&&
+            "NEEDS_STOCKED_OWN_CRATE".equals(movedCrate.review().reason())&&
+            host.world.devices.size()==staleCount&&
+            snapshots(a,b,c).equals(staleStock)&&
+            first.electricMs==staleFirstPower&&second.electricMs==staleSecondPower,
+            "Moved third crate partially paid or commissioned a monument");
+        c.x=originalCrateX;
+
+        check(host.reviewBuild(1,MONUMENT).allowed(),"Destroyed-crate review fixture");
+        int originalCrateHp=c.hp;
+        c.hp=0;
+        var unavailableCrate=host.buildOutcome(1,MONUMENT);
+        check(!unavailableCrate.built()&&
+            "NEEDS_STOCKED_OWN_CRATE".equals(unavailableCrate.review().reason())&&
+            host.world.devices.size()==staleCount&&
+            snapshots(a,b,c).equals(staleStock)&&
+            first.electricMs==staleFirstPower&&second.electricMs==staleSecondPower,
+            "Unavailable third crate partially paid or commissioned a monument");
+        c.hp=originalCrateHp;
+
+        check(host.reviewBuild(1,MONUMENT).allowed(),"Spent-stone review fixture");
+        check(a.storage.consume(Map.of(SurvivalCrafting.Item.FIELD_STONE,1)),
+            "Could not stage post-review material consumption");
+        var depletedStock=snapshots(a,b,c);
+        var spentStone=host.buildOutcome(1,MONUMENT);
+        check(!spentStone.built()&&
+            "NEEDS_STOCKED_OWN_CRATE".equals(spentStone.review().reason())&&
+            host.world.devices.size()==staleCount&&
+            snapshots(a,b,c).equals(depletedStock)&&
+            first.electricMs==staleFirstPower&&second.electricMs==staleSecondPower,
+            "Post-review stone consumption caused a partial debit or free monument");
+        fill(a,SurvivalCrafting.Item.FIELD_STONE,1);
+        check(snapshots(a,b,c).equals(staleStock)&&
+            host.reviewBuild(1,MONUMENT).allowed(),
+            "Restored crates did not restore exact 384-unit eligibility");
+
         var charge=ElectricUtility.allocation(host.world.devices,
             new World.Device(x,y,MONUMENT),30,Map.of(),100);
         // The temporary probe needs owner identity, just like the host review.
@@ -186,24 +231,48 @@ public final class IncursionGraveyardMonumentTest {
             "Commissioning did not reserve two actual generators at 30 load");
         var review=host.reviewBuild(1,MONUMENT);
         check(review.allowed(),"Fully paid monument refused: "+review.reason());
-        int count=host.world.devices.size();
-        var built=host.buildOutcome(1,MONUMENT);
-        check(built.built()&&built.deviceIndex()==count&&
-            host.world.devices.get(count).kind==MONUMENT&&
-            owner.equals(host.world.devices.get(count).ownerKey)&&
-            a.storage.snapshot().isEmpty()&&b.storage.snapshot().isEmpty()&&
-            c.storage.snapshot().isEmpty(),"Host did not atomically pay 384 and build monument");
-        check(first.electricMs==firstPower-100&&
-            second.electricMs==ElectricUtility.MAX_CHARGE_MS-100,
-            "Monument commissioning failed to debit real generator reserves");
-        check(!host.build(1,MONUMENT)&&host.world.devices.size()==count+1,
-            "Monument duplicated without another payment");
-        builtWard.hp=0;
-        check(host.world.devices.get(count).hp>0,
-            "Existing monument incorrectly vanished with an infirmary outage");
+        // Persist the fully funded, unbuilt world first. A crash after
+        // in-memory payment but before a committed checkpoint must restore
+        // ALL stock and power with NO monument, never a torn mixture.
         Path root=Files.createTempDirectory("veil-graveyard-");
         try{
             HostCheckpoint.save(host,root);
+            int count=host.world.devices.size();
+            var built=host.buildOutcome(1,MONUMENT);
+            check(built.built()&&built.deviceIndex()==count&&
+                host.world.devices.get(count).kind==MONUMENT&&
+                owner.equals(host.world.devices.get(count).ownerKey)&&
+                a.storage.snapshot().isEmpty()&&b.storage.snapshot().isEmpty()&&
+                c.storage.snapshot().isEmpty(),
+                "Host did not atomically pay 384 and build monument");
+            check(first.electricMs==firstPower-100&&
+                second.electricMs==ElectricUtility.MAX_CHARGE_MS-100,
+                "Monument commissioning failed to debit real generator reserves");
+            check(!host.build(1,MONUMENT)&&host.world.devices.size()==count+1,
+                "Monument duplicated without another payment");
+            builtWard.hp=0;
+            check(host.world.devices.get(count).hp>0,
+                "Existing monument incorrectly vanished with an infirmary outage");
+
+            Path incomplete=Files.createDirectory(root.resolve("ledger-stage-incomplete"));
+            Files.writeString(incomplete.resolve("realm.dat"),"unfinished");
+            ArenaSystems beforeCommit=new ArenaSystems(seed);
+            check(HostCheckpoint.load(beforeCommit,root),
+                "Crash-before-commit checkpoint read failed");
+            check(beforeCommit.world.devices.stream().noneMatch(d->
+                d.kind==MONUMENT&&d.hp>0&&owner.equals(d.ownerKey))&&
+                beforeCommit.world.devices.stream().filter(d->
+                d.kind==ArenaSystems.STORAGE_CRATE&&owner.equals(d.ownerKey))
+                .mapToInt(d->d.storage.units()).sum()==384&&
+                beforeCommit.world.devices.stream().filter(d->
+                d.kind==ArenaSystems.GENERATOR&&owner.equals(d.ownerKey))
+                .mapToLong(d->d.electricMs).sum()==2*ElectricUtility.MAX_CHARGE_MS,
+                "Crash before commit restored a partly paid monument or lost stock/power");
+
+            HostCheckpoint.save(host,root);
+            // A later torn stage cannot undo or duplicate the committed
+            // construction. The pointer must still name one complete pair.
+            Files.writeString(incomplete.resolve("accounts.dat"),"unfinished");
             ArenaSystems resumed=new ArenaSystems(seed);
             check(HostCheckpoint.load(resumed,root),"Monument checkpoint read failed");
             check(resumed.world.devices.stream().filter(d->
@@ -221,6 +290,6 @@ public final class IncursionGraveyardMonumentTest {
                 2*ElectricUtility.MAX_CHARGE_MS-200,
                 "Restart refunded paid commissioning power");
         }finally{cleanup(root);}
-        System.out.println("PASS IncursionGraveyardMonumentTest: paid infirmary, 384 capped units, 30-load two-generator commissioning, owner isolation, restart");
+        System.out.println("PASS IncursionGraveyardMonumentTest: paid infirmary, 384 capped units, stale-review isolation, crash-before/after-commit, 30-load power and restart");
     }
 }

@@ -126,6 +126,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private MaleficEditorDock editorDock;
     private EditorHistory<MaleficEditorProject.Snapshot> editorTestHistory;
     private String smokeObject;
+    private String smokeWater;
     private final Set<Integer> liveHeld=new HashSet<>();
     private long firstSmokeFrames;
     private int smokeStartingAmmo=-1;
@@ -381,6 +382,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         terrain=new GpuContinentTerrain(continental);
         veil.VeilOcean seaModel=new veil.VeilOcean(world,continental);
         ocean=new GpuOcean(seaModel,continental);
+        if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
         lighting=new UrbanLighting(world);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
@@ -447,11 +449,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             gameplay.gpuSceneReady();
         }
         if(editorMode){
-            x=61.5;y=61.5;cameraHeight=13;heading=.45;cameraPitch=-.38;
+            x=61.5;y=61.5;cameraHeight=8;heading=.45;cameraPitch=-.95;
             if(editorSmoke)editorTestHistory=new EditorHistory<>(editorProject,80);
             else{
                 editorDock=new MaleficEditorDock(editorProject,
-                    ()->new MaleficEditorDock.View(x,y,heading));
+                    ()->{
+                        double wx=x+Math.cos(heading)*5,wz=y+Math.sin(heading)*5;
+                        return new MaleficEditorDock.View(x,y,heading,
+                            Math.max(0,vista.sample(wx,wz).elevation()+.25));
+                    });
                 editorDock.open();
             }
         }
@@ -1042,6 +1048,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         // Neither mode changes host physics or climate.
         boolean baselineOceanOff=gallery&&
             Boolean.getBoolean("veil.gpu.oceanBenchmark")&&frames<180;
+        if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
         if(!baselineOceanOff)
             ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10);
         // These counters are measured in the actual OpenGL viewport; CPU
@@ -1074,7 +1081,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             menu.panel(sprites,5,351,480,43);
             font.draw(sprites,"LEVEL EDITOR KIT / CITY A  F11 DOCK  CTRL+CLICK PICK",14,381);
             font.draw(sprites,"SEED "+seed+"  LAYER "+
-                editorProject.placements().size()+"  MESHES "+visibleInstances,14,364);
+                editorProject.placements().size()+"  WATER "+
+                editorProject.waterDocument().placements().size()+"  MESHES "+visibleInstances,14,364);
             menu.band(sprites,4,5,renderWidth-8,23);
             font.draw(sprites,"WASD FLY  MOUSE LOOK  SPACE UP  CTRL DOWN  F11 PALETTE",12,20);
         }else if(menu.running()&&gameplay!=null){
@@ -1339,8 +1347,21 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 try{
                     editorProject.save();
                     new MaleficEditorProject(world).get(smokeObject);
+                    var waterModel=editorProject.water();
+                    double surface=Math.max(1.5,
+                        vista.sample(65.5,62).elevation()+1.5);
+                    smokeWater=waterModel.add(65.5,surface,62,6,6);
+                    waterModel.edit("$shape","OCTAGON");
+                    editorProject.saveWater();
+                    var saved=new MaleficEditorProject(world).waterDocument();
+                    if(saved.placements().size()!=1||
+                       !saved.placements().get(0).id().equals(smokeWater)||
+                       saved.placements().get(0).shape()!=
+                           dev.mrcalzon.water.WaterPlacement.Shape.OCTAGON||
+                       !saved.revision().equals(waterModel.document().revision()))
+                        throw new IllegalStateException("Live water editor document did not roundtrip");
                 }catch(java.io.IOException bad){
-                    throw new IllegalStateException("Interchangeable editor save/reload failed",bad);
+                    throw new IllegalStateException("Editor/water save-reload failed",bad);
                 }
             }
             if(frames==65){
@@ -1350,7 +1371,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     PsxHorrorUiSource.SHA256+" sourcedDraws="+menu.sourcedDraws());
                 if(!models.containsKey(editorProject.get(smokeObject).model()))
                     throw new IllegalStateException("Editor-authored mesh never reached OpenGL");
+                if(ocean.authoredTriangles()!=8||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException(
+                        "Edited SDK water polygon never reached live GPU scene");
                 saveFrame("gpu-standalone-editor-live-viewport.png");
+                System.out.println("PASS LIVE_WATER_EDITOR_GPU_DOCUMENT seed="+seed+
+                    " water="+smokeWater+
+                    " triangles="+ocean.authoredTriangles()+
+                    " visibleBodies="+ocean.lastAuthoredDraws()+
+                    " saved="+editorProject.waterDocumentPath());
                 System.out.println("PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT seed="+seed+
                     " adapter="+editorProject.id()+
                     " saved="+editorProject.documentPath()+

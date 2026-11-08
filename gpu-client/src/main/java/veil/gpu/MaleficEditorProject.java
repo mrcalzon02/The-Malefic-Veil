@@ -1,6 +1,8 @@
 package veil.gpu;
 
 import org.beckenburg.editor.EditorProject;
+import dev.mrcalzon.water.WaterDocument;
+import dev.mrcalzon.water.WaterEditorModel;
 import veil.GGBotCarPack;
 import veil.KenneyAssetPack;
 import veil.UrbanScene;
@@ -11,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Malefic Veil adapter for the ACTUAL independently published LevelEditorKit.
@@ -31,7 +34,10 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
     private static final int MAX_PLACEMENTS=2048;
     private final long seed;
     private final Path file;
+    private final Path waterFile;
     private final Set<String> allowed;
+    private WaterEditorModel waterEditor;
+    private final AtomicReference<WaterDocument> publishedWater=new AtomicReference<>();
     private volatile List<Placement> published=List.of();
     private int nextId=1;
 
@@ -43,6 +49,7 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
         Objects.requireNonNull(world);
         this.seed=world.seed;
         file=documentFor(seed).toAbsolutePath().normalize();
+        waterFile=file.resolveSibling("city-A.water");
         Set<String> models=new TreeSet<>();
         for(String name:KenneyAssetPack.load().modelNames())
             if(name.endsWith(".glb"))models.add(name.substring(0,name.length()-4));
@@ -50,6 +57,7 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
         allowed=Set.copyOf(models);
         if(allowed.isEmpty())throw new IOException("No licensed editor source models");
         load();
+        reloadWater();
     }
     private void valid(Placement item){
         if(item==null||!item.id().matches("edit-[1-9][0-9]{0,8}")||
@@ -77,6 +85,29 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
     public String id(){return "malefic-veil/city-A/"+seed;}
     public String title(){return "The Malefic Veil — City Authoring";}
     public Path documentPath(){return file;}
+    public Path waterDocumentPath(){return waterFile;}
+    /** Immutable document publication separates Swing edits from the GL thread. */
+    public WaterDocument waterDocument(){return publishedWater.get();}
+    public WaterEditorModel water(){return waterEditor;}
+    public synchronized void reloadWater() throws IOException {
+        WaterDocument loaded;
+        if(Files.exists(waterFile)){
+            try(InputStream input=Files.newInputStream(waterFile)){
+                loaded=WaterDocument.read(input);
+            }
+        }else loaded=new WaterDocument("seed-"+seed,List.of());
+        if(!loaded.level().equals("seed-"+seed))
+            throw new IOException("Water document belongs to another world seed");
+        WaterEditorModel restored=new WaterEditorModel(loaded);
+        restored.listen(()->publishedWater.set(restored.document()));
+        waterEditor=restored;
+        publishedWater.set(loaded);
+    }
+    public synchronized void saveWater() throws IOException {
+        WaterDocument current=waterDocument();
+        current.save(waterFile);
+        if(current.equals(waterEditor.document()))waterEditor.markSaved();
+    }
     public List<Node> hierarchy(){
         List<Node> nodes=new ArrayList<>();
         nodes.add(new Node("generated-city-A","GENERATED","City A generated base (protected)",66,0,66));

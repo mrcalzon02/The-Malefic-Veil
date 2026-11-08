@@ -8,6 +8,8 @@ import veil.VeilOcean;
 import veil.WorldDayNight;
 import dev.mrcalzon.water.WaterEffects;
 import dev.mrcalzon.water.WaterModule;
+import dev.mrcalzon.water.WaterDocument;
+import dev.mrcalzon.water.WaterPlacement;
 import dev.mrcalzon.water.WaterTextures;
 import java.util.*;
 
@@ -58,7 +60,7 @@ public final class GpuOcean implements AutoCloseable {
             float shore=u_shoreAmplitude*
                 sin(6.28318530718*(a_texCoord0.x/u_shoreSlope/u_shoreWavelength-u_time/u_shorePeriod))*
                 exp(-a_texCoord0.x/.75);
-            v_world=vec3(pos.x,(rolling+chop)*u_amplitude+shore,pos.y);
+            v_world=vec3(pos.x,a_position.y+(rolling+chop)*u_amplitude+shore,pos.y);
             v_depth=a_texCoord0.x;
             v_distance=distance(u_eye,v_world);
             gl_Position=u_projView*vec4(v_world,1.0);
@@ -135,7 +137,7 @@ public final class GpuOcean implements AutoCloseable {
         }
         """;
     private static final int STEP=2, STRIDE=5;
-    private record Chunk(Mesh mesh,int indexCount,double midX,double midZ,double width){}
+    private record Chunk(Mesh mesh,int indexCount,double midX,double midY,double midZ,double width,boolean authored){}
     private record VertexKey(float x,float z,float depth){}
     /** CPU submission time is NOT GPU wall time; record geometry and upload
      * counts separately from the whole-frame diagnostics in the viewport. */
@@ -144,8 +146,14 @@ public final class GpuOcean implements AutoCloseable {
                         long allocatedStaticBytes){}
     private final ShaderProgram shader;
     private final VeilOcean water;
+    private final ContinentVista vista;
     private final Texture layerA,layerB;
     private final List<Chunk> chunks=new ArrayList<>();
+    private final List<Chunk> authoredChunks=new ArrayList<>();
+    private String authoredRevision;
+    private int authoredTriangles;
+    private int lastAuthoredDraws;
+    private long authoredBytes;
     // Reused visibility list avoids transient per-frame allocations; skip
     // shader binding, uniform uploads and texture setup when water is hidden.
     private final List<Chunk> visibleWater=new ArrayList<>();
@@ -188,7 +196,7 @@ public final class GpuOcean implements AutoCloseable {
     }
     public GpuOcean(VeilOcean water,ContinentVista vista){
         this.water=Objects.requireNonNull(water);
-        Objects.requireNonNull(vista);
+        this.vista=Objects.requireNonNull(vista);
         shader=new ShaderProgram(VERTEX,FRAGMENT);
         if(!shader.isCompiled())throw new IllegalStateException("Ocean shader: "+shader.getLog());
         layerA=upload(WaterTextures.builtin("water://ripple-a"));
@@ -242,8 +250,8 @@ public final class GpuOcean implements AutoCloseable {
                 (long)elements.length*Short.BYTES;
             unindexedReferenceBytes+=(long)elements.length*STRIDE*Float.BYTES;
             chunks.add(new Chunk(mesh,elements.length,
-                patch.left()+patch.width()*.5,patch.top()+patch.depth()*.5,
-                Math.max(patch.width(),patch.depth())));
+                patch.left()+patch.width()*.5,0,patch.top()+patch.depth()*.5,
+                Math.max(patch.width(),patch.depth()),false));
         }
         if(!chunks.isEmpty()&&staticBytes>=unindexedReferenceBytes)
             throw new IllegalStateException("Indexed ocean mesh exceeds unindexed memory");
@@ -253,6 +261,60 @@ public final class GpuOcean implements AutoCloseable {
             " rawTriangleBytes="+unindexedReferenceBytes+
             " source=seeded-coastline waves=vertex-shader color=dual-texture-gpu");
     }
+    /**
+     * Sync the real authoring document to visible SDK footprint geometry.
+     * Only document revisions rebuild GPU meshes; sea parcels are unchanged.
+     */
+    public void syncAuthored(WaterDocument document){
+        Objects.requireNonNull(document);
+        String revision=document.revision();
+        if(revision.equals(authoredRevision))return;
+        List<Chunk> prepared=new ArrayList<>();
+        long bytes=0;
+        int triangles=0;
+        try{
+            for(WaterPlacement placement:document.placements()){
+                List<WaterModule.Point> outline=placement.polygon().points();
+                int count=outline.size()+1;
+                if(count>65535)throw new IllegalArgumentException("Oversized water polygon");
+                float[] vertices=new float[count*STRIDE];
+                short[] indices=new short[outline.size()*3];
+                double cx=placement.x(),cz=placement.z(),meanY=placement.y();
+                for(int i=0;i<count;i++){
+                    double wx=i==0?cx:outline.get(i-1).x();
+                    double wz=i==0?cz:outline.get(i-1).z();
+                    float depth=(float)Math.max(.15,meanY-vista.sample(wx,wz).elevation());
+                    int at=i*STRIDE;
+                    vertices[at]=(float)wx;vertices[at+1]=(float)meanY;
+                    vertices[at+2]=(float)wz;vertices[at+3]=depth;vertices[at+4]=0f;
+                }
+                for(int i=0;i<outline.size();i++){
+                    indices[i*3]=0;
+                    indices[i*3+1]=(short)(i+1);
+                    indices[i*3+2]=(short)(i+1==outline.size()?1:i+2);
+                }
+                Mesh mesh=new Mesh(Mesh.VertexDataType.VertexBufferObjectWithVAO,true,
+                    count,indices.length,VertexAttribute.Position(),VertexAttribute.TexCoords(0));
+                try{mesh.setVertices(vertices);mesh.setIndices(indices);}
+                catch(RuntimeException failure){mesh.dispose();throw failure;}
+                prepared.add(new Chunk(mesh,indices.length,cx,meanY,cz,
+                    Math.hypot(placement.width(),placement.depth())*.5+3,true));
+                bytes+=(long)vertices.length*Float.BYTES+(long)indices.length*Short.BYTES;
+                triangles+=outline.size();
+            }
+        }catch(RuntimeException failure){
+            for(Chunk chunk:prepared)chunk.mesh.dispose();
+            throw failure;
+        }
+        for(Chunk old:authoredChunks)old.mesh.dispose();
+        authoredChunks.clear();authoredChunks.addAll(prepared);
+        authoredBytes=bytes;authoredTriangles=triangles;authoredRevision=revision;
+        System.out.println("WATER_EDITOR_GPU_REVISION id="+document.level()+
+            " revision="+revision+" bodies="+prepared.size()+
+            " triangles="+triangles+" staticBytes="+bytes);
+    }
+    public int authoredTriangles(){return authoredTriangles;}
+    public int lastAuthoredDraws(){return lastAuthoredDraws;}
     private static void tint(ShaderProgram shader,String name,int color){
         shader.setUniformf(name,((color>>>16)&255)/255f,
             ((color>>>8)&255)/255f,(color&255)/255f);
@@ -264,8 +326,10 @@ public final class GpuOcean implements AutoCloseable {
     public int render(PerspectiveCamera camera,WorldDayNight.Conditions day,
                       double seconds,String preset,float distance){
         long start=System.nanoTime();
-        visibleWater.clear();
-        for(Chunk chunk:chunks){
+        visibleWater.clear();lastAuthoredDraws=0;
+        List<Chunk> both=new ArrayList<>(chunks);
+        both.addAll(authoredChunks);
+        for(Chunk chunk:both){
             double dx=camera.position.x-chunk.midX,dz=camera.position.z-chunk.midZ;
             double limit=distance+chunk.width;
             if(dx*dx+dz*dz>limit*limit)continue;
@@ -273,12 +337,12 @@ public final class GpuOcean implements AutoCloseable {
             // never trim real visible shoreline triangles. Camera frustum
             // culling prevents water behind the player from issuing draws.
             float radius=(float)(chunk.width*.70710678119+1.0);
-            boundsCenter.set((float)chunk.midX,0,(float)chunk.midZ);
+            boundsCenter.set((float)chunk.midX,(float)chunk.midY,(float)chunk.midZ);
             if(camera.frustum.sphereInFrustum(boundsCenter,radius))
                 visibleWater.add(chunk);
         }
         if(visibleWater.isEmpty()){
-            last=new Stats(0,0,0,0,System.nanoTime()-start,staticBytes);
+            last=new Stats(0,0,0,0,System.nanoTime()-start,staticBytes+authoredBytes);
             return 0; // Inland cities have no ocean GPU work at all.
         }
         WaterEffects effects=water.effects(preset);
@@ -327,13 +391,14 @@ public final class GpuOcean implements AutoCloseable {
             for(Chunk chunk:visibleWater){
                 chunk.mesh.render(shader,GL20.GL_TRIANGLES,0,chunk.indexCount);
                 drawn++;triangles+=chunk.indexCount/3;
+                if(chunk.authored())lastAuthoredDraws++;
             }
         }finally{
             Gdx.gl.glDepthMask(true);
             Gdx.gl.glDisable(GL20.GL_BLEND);
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
         }
-        last=new Stats(drawn,triangles,drawn,0,System.nanoTime()-start,staticBytes);
+        last=new Stats(drawn,triangles,drawn,0,System.nanoTime()-start,staticBytes+authoredBytes);
         return drawn;
     }
     public Stats stats(){return last;}
@@ -342,7 +407,8 @@ public final class GpuOcean implements AutoCloseable {
     public int visibleTriangles(){return last.drawnTriangles();}
     @Override public void close(){
         for(Chunk chunk:chunks)chunk.mesh.dispose();
-        chunks.clear();
+        for(Chunk chunk:authoredChunks)chunk.mesh.dispose();
+        chunks.clear();authoredChunks.clear();
         layerA.dispose();layerB.dispose();shader.dispose();
     }
 }

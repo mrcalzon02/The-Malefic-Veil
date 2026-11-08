@@ -3,6 +3,7 @@ package veil.gpu;
 import org.beckenburg.editor.EditorHistory;
 import org.beckenburg.editor.EditorPalettePanel;
 import org.beckenburg.editor.EditorProject;
+import dev.mrcalzon.water.WaterEditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,13 +17,14 @@ import java.util.function.Supplier;
  * The live libGDX viewport is NOT duplicated in Swing.
  */
 public final class MaleficEditorDock implements AutoCloseable {
-    public record View(double x,double z,double yaw){}
+    public record View(double x,double z,double yaw,double waterY){}
     private final MaleficEditorProject project;
     private final Supplier<View> view;
     private EditorHistory<MaleficEditorProject.Snapshot> history;
     private volatile String selectedId;
     private EditorProject.Asset sourceAsset;
     private JFrame frame;
+    private WaterEditorPanel waterPanel;
     private JList<EditorProject.Node> objects;
     private DefaultListModel<EditorProject.Node> rows;
     private final JSpinner x=new JSpinner(new SpinnerNumberModel(66.0,-8192.0,8192.0,.25));
@@ -84,7 +86,8 @@ public final class MaleficEditorDock implements AutoCloseable {
         operation("Deleted",()->{history.execute(()->project.delete(id));selectedId=null;});
     }
     private void save(){
-        try{project.save();status.setText("Saved "+project.documentPath().getFileName());}
+        try{project.save();project.saveWater();
+            status.setText("Saved scene geometry and water documents");}
         catch(IOException failure){JOptionPane.showMessageDialog(frame,failure.getMessage(),
             "Cannot save editor document",JOptionPane.ERROR_MESSAGE);}
     }
@@ -93,8 +96,10 @@ public final class MaleficEditorDock implements AutoCloseable {
             "Reload scene",JOptionPane.YES_NO_OPTION);
         if(result!=JOptionPane.YES_OPTION)return;
         try{
-            project.load();selectedId=null;history=new EditorHistory<>(project,80);
-            refresh();status.setText("Reloaded authored layer");
+            project.load();project.reloadWater();selectedId=null;
+            history=new EditorHistory<>(project,80);
+            if(waterPanel!=null)waterPanel.setModel(project.water());
+            refresh();status.setText("Reloaded authored scene and water");
         }catch(IOException failure){JOptionPane.showMessageDialog(frame,
             failure.getMessage(),"Cannot reload scene",JOptionPane.ERROR_MESSAGE);}
     }
@@ -130,7 +135,21 @@ public final class MaleficEditorDock implements AutoCloseable {
                 status.setText("Selected asset: "+asset.label());
             }));
         split.setResizeWeight(.38);
-        content.add(split,BorderLayout.CENTER);
+        waterPanel=new WaterEditorPanel(project.water(),()->{
+            View camera=view.get();
+            return new WaterEditorPanel.Origin(
+                camera.x()+Math.cos(camera.yaw())*5,camera.waterY(),
+                camera.z()+Math.sin(camera.yaw())*5);
+        },()->{
+            try{project.saveWater();
+                status.setText("Saved "+project.waterDocumentPath().getFileName());
+            }catch(IOException failure){JOptionPane.showMessageDialog(frame,
+                failure.getMessage(),"Cannot save water document",JOptionPane.ERROR_MESSAGE);}
+        });
+        JTabbedPane tabs=new JTabbedPane();
+        tabs.addTab("SOURCE MODELS",split);
+        tabs.addTab("WATER SURFACES",waterPanel);
+        content.add(tabs,BorderLayout.CENTER);
         frame.add(content,BorderLayout.CENTER);
         JPanel inspector=skin.panel(new BorderLayout(3,3));
         inspector.add(fields(),BorderLayout.NORTH);

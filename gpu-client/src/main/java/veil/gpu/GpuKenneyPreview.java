@@ -127,6 +127,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private EditorHistory<MaleficEditorProject.Snapshot> editorTestHistory;
     private String smokeObject;
     private String smokeWater;
+    private int[] smokeWaterBeforePixels;
+    private String smokeWaterBeforeRevision;
     private final Set<Integer> liveHeld=new HashSet<>();
     private long firstSmokeFrames;
     private int smokeStartingAmmo=-1;
@@ -1364,6 +1366,92 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     throw new IllegalStateException("Editor/water save-reload failed",bad);
                 }
             }
+            if(frames==20){
+                if(ocean.authoredTriangles()!=8||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException("Original octagon not visible before edit");
+                smokeWaterBeforePixels=oceanSamplePixels();
+                smokeWaterBeforeRevision=editorProject.waterDocument().revision();
+                saveFrame("gpu-standalone-editor-water-before.png");
+            }
+            if(frames==32){
+                var model=editorProject.water();
+                var selected=model.selected();
+                if(selected.size()!=1||!selected.get(0).id().equals(smokeWater))
+                    throw new IllegalStateException("Original water selection was lost");
+                var original=selected.get(0);
+                boolean rejected=false;
+                try{editorProject.moveSelectedWaterTo(Double.NaN,65);}
+                catch(IllegalArgumentException expected){rejected=true;}
+                if(!rejected||!model.document().revision().equals(smokeWaterBeforeRevision))
+                    throw new IllegalStateException("Invalid water move corrupted document");
+                model.select(List.of());
+                rejected=false;
+                try{editorProject.moveSelectedWaterTo(69,65);}
+                catch(IllegalStateException expected){rejected=true;}
+                if(!rejected||!model.document().revision().equals(smokeWaterBeforeRevision))
+                    throw new IllegalStateException("Unselected water move was accepted");
+                model.select(List.of(smokeWater));
+                // This is the same camera-relocation operation exposed by the
+                // native dock; the portable inspector already edits dimensions
+                // and footprints without a second water implementation.
+                editorProject.moveSelectedWaterTo(69,65);
+                model.edit("$shape","SQUARE");
+                model.edit("$width",9.5);
+                String editedRevision=model.document().revision();
+                if(editedRevision.equals(smokeWaterBeforeRevision))
+                    throw new IllegalStateException("Existing water edit did not publish revision");
+                rejected=false;
+                try{model.edit("$width",.01);}
+                catch(IllegalArgumentException expected){rejected=true;}
+                if(!rejected||!model.document().revision().equals(editedRevision))
+                    throw new IllegalStateException("Malformed water resize corrupted document");
+                try{
+                    editorProject.saveWater();
+                    var saved=new MaleficEditorProject(world).waterDocument();
+                    if(saved.placements().size()!=1||
+                       !saved.revision().equals(editedRevision)||
+                       !saved.placements().get(0).id().equals(smokeWater)||
+                       saved.placements().get(0).shape()!=
+                           dev.mrcalzon.water.WaterPlacement.Shape.SQUARE||
+                       Math.abs(saved.placements().get(0).x()-69)>.0001||
+                       Math.abs(saved.placements().get(0).z()-65)>.0001||
+                       Math.abs(saved.placements().get(0).width()-9.5)>.0001||
+                       Math.abs(saved.placements().get(0).y()-original.y())>.0001)
+                        throw new IllegalStateException("Edited water placement failed save/reopen");
+                    // Force the live GPU renderer to consume a *cleanly reloaded*
+                    // document, not the in-memory object that happened to save.
+                    editorProject.reloadWater();
+                    if(!editedRevision.equals(editorProject.waterDocument().revision()))
+                        throw new IllegalStateException("Reload did not publish edited water");
+                }catch(java.io.IOException bad){
+                    throw new IllegalStateException("Edited water save/reopen failed",bad);
+                }
+            }
+            if(frames==48){
+                if(ocean.authoredTriangles()!=4||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException(
+                        "Edited square water mesh was not rebuilt/rendered after reload");
+                int[] after=oceanSamplePixels();
+                if(smokeWaterBeforePixels==null||
+                   after.length!=smokeWaterBeforePixels.length)
+                    throw new IllegalStateException("Missing paired water frame readback");
+                int changed=0;
+                for(int i=0;i<after.length;i++){
+                    int a=smokeWaterBeforePixels[i],b=after[i];
+                    int delta=Math.abs(((a>>>16)&255)-((b>>>16)&255))+
+                        Math.abs(((a>>>8)&255)-((b>>>8)&255))+
+                        Math.abs((a&255)-(b&255));
+                    if(delta>40)changed++;
+                }
+                if(changed<40)
+                    throw new IllegalStateException(
+                        "Edited water produced insufficient real GPU pixel change: "+changed);
+                saveFrame("gpu-standalone-editor-water-after.png");
+                System.out.println("PASS LIVE_WATER_EDITOR_GPU_EDIT water="+smokeWater+
+                    " originalTriangles=8 editedTriangles="+ocean.authoredTriangles()+
+                    " changedPixels="+changed+
+                    " savedRevision="+editorProject.waterDocument().revision());
+            }
             if(frames==65){
                 if(menu.sourcedDraws()<20)
                     throw new IllegalStateException("Editor GPU UI lacks original PSX skin");
@@ -1371,9 +1459,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     PsxHorrorUiSource.SHA256+" sourcedDraws="+menu.sourcedDraws());
                 if(!models.containsKey(editorProject.get(smokeObject).model()))
                     throw new IllegalStateException("Editor-authored mesh never reached OpenGL");
-                if(ocean.authoredTriangles()!=8||ocean.lastAuthoredDraws()<1)
+                if(ocean.authoredTriangles()!=4||ocean.lastAuthoredDraws()<1)
                     throw new IllegalStateException(
-                        "Edited SDK water polygon never reached live GPU scene");
+                        "Reloaded edited SDK water polygon never reached live GPU scene");
                 saveFrame("gpu-standalone-editor-live-viewport.png");
                 System.out.println("PASS LIVE_WATER_EDITOR_GPU_DOCUMENT seed="+seed+
                     " water="+smokeWater+

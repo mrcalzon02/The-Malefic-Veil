@@ -3,6 +3,7 @@ package veil.gpu;
 import org.beckenburg.editor.EditorProject;
 import dev.mrcalzon.water.WaterDocument;
 import dev.mrcalzon.water.WaterEditorModel;
+import dev.mrcalzon.water.WaterPlacement;
 import veil.GGBotCarPack;
 import veil.KenneyAssetPack;
 import veil.UrbanScene;
@@ -89,6 +90,22 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
     /** Immutable document publication separates Swing edits from the GL thread. */
     public WaterDocument waterDocument(){return publishedWater.get();}
     public WaterEditorModel water(){return waterEditor;}
+    /**
+     * Native editor action: move one existing selected authored water body to
+     * the live camera target without changing its ID, level, shape or height.
+     * The independent SDK owns validation, revision, history and publication.
+     */
+    public synchronized void moveSelectedWaterTo(double worldX,double worldZ){
+        if(!Double.isFinite(worldX)||!Double.isFinite(worldZ)||
+           Math.abs(worldX)>8192||Math.abs(worldZ)>8192)
+            throw new IllegalArgumentException("Invalid water target location");
+        List<WaterPlacement> selected=waterEditor.selected();
+        if(selected.size()!=1)
+            throw new IllegalStateException("Select exactly one water surface");
+        WaterPlacement anchor=selected.get(0);
+        waterEditor.transformSelected(p->p.moved(
+            worldX-anchor.x(),0,worldZ-anchor.z()));
+    }
     public synchronized void reloadWater() throws IOException {
         WaterDocument loaded;
         if(Files.exists(waterFile)){

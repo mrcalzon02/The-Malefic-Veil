@@ -252,6 +252,9 @@ jobs:
             --editor-smoke --seed=20261020 | tee build/test-visuals/editor-kit.log
           grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' build/test-visuals/editor-kit.log
           grep -q 'PASS PSX_HORROR_UI_EDITOR_RENDER' build/test-visuals/editor-kit.log
+          grep -q 'PASS LIVE_WATER_EDITOR_GPU_EDIT' build/test-visuals/editor-kit.log
+          test -s build/test-visuals/gpu-standalone-editor-water-before.png
+          test -s build/test-visuals/gpu-standalone-editor-water-after.png
           test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
           test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
       - name: Three seeded GPU worlds, ten city and exterior camera poses each
@@ -290,6 +293,8 @@ jobs:
             build/test-visuals/gpu-ocean-coastal-no-water.png
             build/test-visuals/gpu-ocean-coastal-benchmark.png
             build/test-visuals/gpu-standalone-editor-live-viewport.png
+            build/test-visuals/gpu-standalone-editor-water-before.png
+            build/test-visuals/gpu-standalone-editor-water-after.png
             build/test-visuals/editor-kit.log
             build/test-visuals/psx-source-audit.log
             build/test-visuals/gpu-psx-ui-menu.log

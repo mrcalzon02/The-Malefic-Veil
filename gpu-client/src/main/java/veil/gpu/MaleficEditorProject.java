@@ -106,6 +106,13 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
         waterEditor.transformSelected(p->p.moved(
             worldX-anchor.x(),0,worldZ-anchor.z()));
     }
+    /** Use the imported water SDK history; listeners publish each restored document to GL. */
+    public synchronized void undoWaterEdit(){
+        if(!waterEditor.undo())throw new IllegalStateException("No water edit to undo");
+    }
+    public synchronized void redoWaterEdit(){
+        if(!waterEditor.redo())throw new IllegalStateException("No water edit to redo");
+    }
     public synchronized void reloadWater() throws IOException {
         WaterDocument loaded;
         if(Files.exists(waterFile)){

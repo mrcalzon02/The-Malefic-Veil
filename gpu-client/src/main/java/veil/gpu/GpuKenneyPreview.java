@@ -128,7 +128,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private String smokeObject;
     private String smokeWater;
     private int[] smokeWaterBeforePixels;
+    private int[] smokeWaterEditedPixels;
+    private int[] smokeWaterMovedPixels;
     private String smokeWaterBeforeRevision;
+    private String smokeWaterUndoRevision;
     private final Set<Integer> liveHeld=new HashSet<>();
     private long firstSmokeFrames;
     private int smokeStartingAmmo=-1;
@@ -1446,13 +1449,105 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(changed<40)
                     throw new IllegalStateException(
                         "Edited water produced insufficient real GPU pixel change: "+changed);
+                smokeWaterEditedPixels=after;
                 saveFrame("gpu-standalone-editor-water-after.png");
                 System.out.println("PASS LIVE_WATER_EDITOR_GPU_EDIT water="+smokeWater+
                     " originalTriangles=8 editedTriangles="+ocean.authoredTriangles()+
                     " changedPixels="+changed+
                     " savedRevision="+editorProject.waterDocument().revision());
             }
-            if(frames==65){
+            if(frames==50){
+                // Move the existing reloaded water body; SDK owns history.
+                var model=editorProject.water();
+                model.select(List.of(smokeWater));
+                var selected=model.selected();
+                if(selected.size()!=1||!selected.get(0).id().equals(smokeWater))
+                    throw new IllegalStateException("Reloaded water could not be reselected");
+                smokeWaterUndoRevision=model.document().revision();
+                editorProject.moveSelectedWaterTo(65.5,62);
+                var moved=model.selected();
+                if(moved.size()!=1||!moved.get(0).id().equals(smokeWater)||
+                   Math.abs(moved.get(0).x()-65.5)>.0001||
+                   Math.abs(moved.get(0).z()-62)>.0001||
+                   Math.abs(moved.get(0).y()-selected.get(0).y())>.0001||
+                   moved.get(0).shape()!=selected.get(0).shape()||
+                   model.document().revision().equals(smokeWaterUndoRevision))
+                    throw new IllegalStateException("Water move lost identity, shape, elevation or revision");
+            }
+            if(frames==59){
+                if(ocean.authoredTriangles()!=4||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException("Moved square water not visible in GL scene");
+                smokeWaterMovedPixels=oceanSamplePixels();
+                if(smokeWaterEditedPixels==null||
+                   smokeWaterMovedPixels.length!=smokeWaterEditedPixels.length)
+                    throw new IllegalStateException("Missing moved water GPU image");
+                int changed=0;
+                for(int i=0;i<smokeWaterMovedPixels.length;i++){
+                    int a=smokeWaterEditedPixels[i],b=smokeWaterMovedPixels[i];
+                    int delta=Math.abs(((a>>>16)&255)-((b>>>16)&255))+
+                        Math.abs(((a>>>8)&255)-((b>>>8)&255))+
+                        Math.abs((a&255)-(b&255));
+                    if(delta>40)changed++;
+                }
+                if(changed<40)throw new IllegalStateException(
+                    "Water move did not alter real GPU pixels: "+changed);
+                saveFrame("gpu-standalone-editor-water-moved.png");
+            }
+            if(frames==62){
+                var model=editorProject.water();
+                editorProject.undoWaterEdit();
+                var restored=model.selected();
+                if(!model.document().revision().equals(smokeWaterUndoRevision)||
+                   restored.size()!=1||!restored.get(0).id().equals(smokeWater)||
+                   Math.abs(restored.get(0).x()-69)>.0001||
+                   Math.abs(restored.get(0).z()-65)>.0001||
+                   restored.get(0).shape()!=dev.mrcalzon.water.WaterPlacement.Shape.SQUARE)
+                    throw new IllegalStateException("Undo lost original water selection or geometry");
+                editorProject.redoWaterEdit();
+                if(model.document().revision().equals(smokeWaterUndoRevision))
+                    throw new IllegalStateException("Water redo did not reapply relocation");
+                editorProject.undoWaterEdit();
+                if(!model.document().revision().equals(smokeWaterUndoRevision))
+                    throw new IllegalStateException("Second water undo failed");
+            }
+            if(frames==74){
+                if(ocean.authoredTriangles()!=4||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException("Undone square water not visible in GL scene");
+                int[] undone=oceanSamplePixels();
+                if(smokeWaterMovedPixels==null||
+                   undone.length!=smokeWaterMovedPixels.length)
+                    throw new IllegalStateException("Missing undone water framebuffer");
+                int changed=0;
+                for(int i=0;i<undone.length;i++){
+                    int a=smokeWaterMovedPixels[i],b=undone[i];
+                    int delta=Math.abs(((a>>>16)&255)-((b>>>16)&255))+
+                        Math.abs(((a>>>8)&255)-((b>>>8)&255))+
+                        Math.abs((a&255)-(b&255));
+                    if(delta>40)changed++;
+                }
+                if(changed<40)throw new IllegalStateException(
+                    "Water undo did not restore visibly different GPU geometry: "+changed);
+                saveFrame("gpu-standalone-editor-water-undone.png");
+                try{
+                    editorProject.saveWater();
+                    var reopened=new MaleficEditorProject(world).waterDocument();
+                    if(!reopened.revision().equals(smokeWaterUndoRevision)||
+                       reopened.placements().size()!=1||
+                       !reopened.placements().get(0).id().equals(smokeWater)||
+                       Math.abs(reopened.placements().get(0).x()-69)>.0001||
+                       Math.abs(reopened.placements().get(0).z()-65)>.0001)
+                        throw new IllegalStateException("Undone water did not save/reopen");
+                    editorProject.reloadWater();
+                    if(!editorProject.waterDocument().revision().equals(smokeWaterUndoRevision))
+                        throw new IllegalStateException("Undone water not published after reload");
+                }catch(java.io.IOException bad){
+                    throw new IllegalStateException("Undo water save/reopen failed",bad);
+                }
+                System.out.println("PASS LIVE_WATER_EDITOR_GPU_UNDO water="+smokeWater+
+                    " revision="+smokeWaterUndoRevision+
+                    " undoneFramebufferChanged="+changed);
+            }
+            if(frames==86){
                 if(menu.sourcedDraws()<20)
                     throw new IllegalStateException("Editor GPU UI lacks original PSX skin");
                 System.out.println("PASS PSX_HORROR_UI_EDITOR_RENDER source="+

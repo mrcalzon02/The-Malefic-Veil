@@ -149,12 +149,18 @@ public final class MaleficEditorDock implements AutoCloseable {
         JTabbedPane tabs=new JTabbedPane();
         tabs.addTab("SOURCE MODELS",split);
         JPanel waterTab=skin.panel(new BorderLayout(4,4));
-        waterTab.add(action("Move selected water to camera",()->{
+        JPanel waterActions=skin.panel(new GridLayout(1,3,3,3));
+        waterActions.add(action("Move selected water to camera",()->{
             View camera=view.get();
             operation("Water relocated",()->project.moveSelectedWaterTo(
                 camera.x()+Math.cos(camera.yaw())*5,
                 camera.z()+Math.sin(camera.yaw())*5));
-        }),BorderLayout.NORTH);
+        }));
+        waterActions.add(action("Undo water edit",()->
+            operation("Water undo",project::undoWaterEdit)));
+        waterActions.add(action("Redo water edit",()->
+            operation("Water redo",project::redoWaterEdit)));
+        waterTab.add(waterActions,BorderLayout.NORTH);
         waterTab.add(waterPanel,BorderLayout.CENTER);
         tabs.addTab("WATER SURFACES",waterTab);
         content.add(tabs,BorderLayout.CENTER);

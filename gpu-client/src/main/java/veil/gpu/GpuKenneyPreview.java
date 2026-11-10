@@ -1547,6 +1547,75 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     " revision="+smokeWaterUndoRevision+
                     " undoneFramebufferChanged="+changed);
             }
+            if(frames==76){
+                // Native camera-copy action creates independent authored geometry
+                // through the SDK, leaving the existing selected body intact.
+                var model=editorProject.water();
+                model.select(List.of(smokeWater));
+                var source=model.selected().get(0);
+                String before=model.document().revision();
+                boolean rejected=false;
+                try{editorProject.duplicateSelectedWaterTo(Double.NaN,62);}
+                catch(IllegalArgumentException expected){rejected=true;}
+                if(!rejected||!model.document().revision().equals(before))
+                    throw new IllegalStateException("Invalid water copy mutated document");
+                model.select(List.of());
+                rejected=false;
+                try{editorProject.duplicateSelectedWaterTo(65.5,62);}
+                catch(IllegalStateException expected){rejected=true;}
+                if(!rejected||!model.document().revision().equals(before))
+                    throw new IllegalStateException("Copy without selected water was accepted");
+                model.select(List.of(smokeWater));
+                String copy=editorProject.duplicateSelectedWaterTo(65.5,62);
+                var placed=model.document().placements();
+                if(placed.size()!=2||!placed.get(0).equals(source)||
+                   !placed.get(1).id().equals(copy)||copy.equals(smokeWater)||
+                   Math.abs(placed.get(1).x()-65.5)>.0001||
+                   Math.abs(placed.get(1).z()-62)>.0001||
+                   placed.get(1).y()!=source.y()||
+                   placed.get(1).width()!=source.width()||
+                   placed.get(1).depth()!=source.depth()||
+                   placed.get(1).yaw()!=source.yaw()||
+                   placed.get(1).shape()!=source.shape()||
+                   !placed.get(1).settings().equals(source.settings())||
+                   model.document().revision().equals(before))
+                    throw new IllegalStateException("Water copy lost independent identity or settings");
+            }
+            if(frames==80){
+                if(ocean.authoredTriangles()!=8||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException("Camera-copied water not visible in GPU scene");
+                saveFrame("gpu-standalone-editor-water-copied.png");
+                editorProject.undoWaterEdit();
+                if(editorProject.waterDocument().placements().size()!=1||
+                   !editorProject.waterDocument().revision().equals(smokeWaterUndoRevision))
+                    throw new IllegalStateException("Camera water copy did not undo");
+            }
+            if(frames==83){
+                if(ocean.authoredTriangles()!=4||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException("Undone water copy remained in GPU mesh");
+                saveFrame("gpu-standalone-editor-water-copy-undone.png");
+                editorProject.redoWaterEdit();
+                var restored=editorProject.waterDocument().placements();
+                if(restored.size()!=2||!restored.get(0).id().equals(smokeWater)||
+                   restored.get(0).equals(restored.get(1)))
+                    throw new IllegalStateException("Redo failed to restore camera copy");
+                try{
+                    String revision=editorProject.waterDocument().revision();
+                    editorProject.saveWater();
+                    var reopened=new MaleficEditorProject(world).waterDocument();
+                    if(reopened.placements().size()!=2||
+                       !reopened.revision().equals(revision)||
+                       !reopened.placements().equals(restored))
+                        throw new IllegalStateException("Copied water failed saved document reopen");
+                    editorProject.reloadWater();
+                    if(!editorProject.waterDocument().revision().equals(revision))
+                        throw new IllegalStateException("Copied water not published after reload");
+                }catch(java.io.IOException bad){
+                    throw new IllegalStateException("Copied water save/reopen failed",bad);
+                }
+                System.out.println("PASS LIVE_WATER_EDITOR_GPU_COPY original="+smokeWater+
+                    " copy="+restored.get(1).id()+" triangles=8 savedBodies=2");
+            }
             if(frames==86){
                 if(menu.sourcedDraws()<20)
                     throw new IllegalStateException("Editor GPU UI lacks original PSX skin");
@@ -1554,9 +1623,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     PsxHorrorUiSource.SHA256+" sourcedDraws="+menu.sourcedDraws());
                 if(!models.containsKey(editorProject.get(smokeObject).model()))
                     throw new IllegalStateException("Editor-authored mesh never reached OpenGL");
-                if(ocean.authoredTriangles()!=4||ocean.lastAuthoredDraws()<1)
+                if(ocean.authoredTriangles()!=8||ocean.lastAuthoredDraws()<1)
                     throw new IllegalStateException(
-                        "Reloaded edited SDK water polygon never reached live GPU scene");
+                        "Reloaded source and copied water polygons never reached live GPU scene");
                 saveFrame("gpu-standalone-editor-live-viewport.png");
                 System.out.println("PASS LIVE_WATER_EDITOR_GPU_DOCUMENT seed="+seed+
                     " water="+smokeWater+

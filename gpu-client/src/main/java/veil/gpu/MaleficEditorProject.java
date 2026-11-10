@@ -106,6 +106,22 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
         waterEditor.transformSelected(p->p.moved(
             worldX-anchor.x(),0,worldZ-anchor.z()));
     }
+    /** Duplicate one authored surface at the live camera target, retaining
+     * material and shape, with an independent ID and SDK-owned undo history. */
+    public synchronized String duplicateSelectedWaterTo(double worldX,double worldZ){
+        if(!Double.isFinite(worldX)||!Double.isFinite(worldZ)||
+           Math.abs(worldX)>8192||Math.abs(worldZ)>8192)
+            throw new IllegalArgumentException("Invalid water copy target");
+        List<WaterPlacement> selected=waterEditor.selected();
+        if(selected.size()!=1)
+            throw new IllegalStateException("Select exactly one water surface to copy");
+        WaterPlacement source=selected.get(0);
+        waterEditor.duplicateSelected(worldX-source.x(),worldZ-source.z());
+        List<WaterPlacement> copies=waterEditor.selected();
+        if(copies.size()!=1||copies.get(0).id().equals(source.id()))
+            throw new IllegalStateException("Water SDK did not select a new copy");
+        return copies.get(0).id();
+    }
     /** Use the imported water SDK history; listeners publish each restored document to GL. */
     public synchronized void undoWaterEdit(){
         if(!waterEditor.undo())throw new IllegalStateException("No water edit to undo");

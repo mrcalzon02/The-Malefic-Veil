@@ -182,6 +182,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private GpuRoofExposure roofExposure;
     private final boolean weatherMaterialProof=Boolean.getBoolean("veil.gpu.weatherMaterialProof");
     private int[] weatherClearPixels;
+    private int[] weatherCoveredClearPixels,weatherOpenClearPixels;
     private PsxHorrorMenu menu;
     private final Map<String,List<GpuModel>> models=new LinkedHashMap<>();
     private final Map<String,Texture> materialTextures=new HashMap<>();
@@ -1200,6 +1201,93 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             " in scene; cannot prove model integration");
     }
 
+    /**
+     * Weather CI renders the actual seeded Kenney GLB meshes and their real
+     * instance transforms, isolated by the upward roof-ray exposure bit.
+     * Omit occluders only in this material diagnostic: the full-scene clear,
+     * rain and snow screenshots are captured separately. Identical camera,
+     * daylight, source colors, depth and host-snapshot uniforms are retained.
+     * This checks material shading, not whether a hidden roof-covered floor
+     * is visible from above in the finished scene.
+     */
+    private int[] weatherMaterialProbe(boolean sheltered,String fileName){
+        var frame=gameplay.gpuFrame();
+        if(frame==null)throw new IllegalStateException("Missing host weather probe frame");
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+        Gdx.gl.glDepthMask(true);
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+        shader.bind();
+        // The held-weapon pass deliberately clears weather uniforms; restore
+        // the actual host values before drawing the material-only probe.
+        shader.setUniformf("u_weatherRain",(float)frame.rain());
+        shader.setUniformf("u_weatherSnow",(float)frame.snow());
+        shader.setUniformf("u_fogFar",visualDistance);
+        shader.setUniformi("u_diffuse",0);
+        int actualStaticInstances=0;
+        for(var entry:visible.entrySet()){
+            if(!scene.models().containsKey(entry.getKey()))continue;
+            FloatList originals=entry.getValue();
+            float[] matched=new float[originals.size];
+            int count=0;
+            for(int i=0;i<originals.size;i+=7){
+                if((originals.values[i+6]<.5f)!=sheltered)continue;
+                System.arraycopy(originals.values,i,matched,count,7);
+                count+=7;
+            }
+            if(count==0)continue;
+            actualStaticInstances+=count/7;
+            for(GpuModel gpu:models.get(entry.getKey())){
+                gpu.mesh.setInstanceData(matched,0,count);
+                shader.setUniformi("u_textured",gpu.texture==null?0:1);
+                if(gpu.texture!=null)gpu.texture.bind(0);
+                gpu.mesh.render(shader,GL20.GL_TRIANGLES,0,gpu.vertexCount);
+            }
+        }
+        int[] pixels=readWeatherProbePixels();
+        int colored=0;
+        for(int pixel:pixels)if((pixel&0xffffff00)!=0)colored++;
+        if(actualStaticInstances==0||colored<60)
+            throw new IllegalStateException("No real "+(sheltered?"sheltered":"exposed")+
+                " city material in GPU probe: instances="+actualStaticInstances+
+                " pixels="+colored);
+        saveOceanBenchmarkFrame(fileName);
+        System.out.println("GPU_WEATHER_SOURCE_PROBE class="+
+            (sheltered?"sheltered":"exposed")+" preset="+frame.weatherPreset()+
+            " realInstances="+actualStaticInstances+" materialPixels="+colored);
+        return pixels;
+    }
+    private int[] readWeatherProbePixels(){
+        Pixmap readback=Pixmap.createFromFrameBuffer(0,0,renderWidth,HEIGHT);
+        try{
+            int[] pixels=new int[renderWidth*HEIGHT];
+            for(int py=0;py<HEIGHT;py++)
+                for(int px=0;px<renderWidth;px++)
+                    pixels[py*renderWidth+px]=readback.getPixel(px,py);
+            return pixels;
+        }finally{readback.dispose();}
+    }
+    private static int assertWeatherMaterialPixels(int[] clear,int[] weather,
+            boolean sheltered,String preset){
+        if(clear==null||weather==null||clear.length!=weather.length)
+            throw new IllegalStateException("Missing paired source material probe "+preset);
+        int materialPixels=0,changed=0;
+        for(int i=0;i<clear.length;i++){
+            if((clear[i]&0xffffff00)!=0)materialPixels++;
+            if(presentationRgbDistance(clear[i],weather[i])!=0)changed++;
+        }
+        if(materialPixels<60)
+            throw new IllegalStateException("Material proof has no real source pixels "+preset);
+        if(sheltered&&changed!=0)
+            throw new IllegalStateException("Roof-sheltered 3D material changed in "+preset+
+                ": "+changed+" RGB pixels");
+        if(!sheltered&&changed<80)
+            throw new IllegalStateException("Exposed 3D material did not visibly react to "+
+                preset+": "+changed+" RGB pixels");
+        return changed;
+    }
+
     private void saveFrame(String filename) {
         // Read back the *actual* GPU framebuffer, correcting GL's bottom-left origin.
         Pixmap pixels=Pixmap.createFromFrameBuffer(0,0,renderWidth,HEIGHT);
@@ -1700,11 +1788,32 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     throw new IllegalStateException("Weather proof did not start clear");
                 weatherClearPixels=oceanSamplePixels();
                 saveFrame("gpu-weather-material-clear.png");
+                weatherCoveredClearPixels=weatherMaterialProbe(true,
+                    "gpu-weather-material-sheltered-clear.png");
+                weatherOpenClearPixels=weatherMaterialProbe(false,
+                    "gpu-weather-material-exposed-clear.png");
+                try{
+                    javax.swing.SwingUtilities.invokeAndWait(
+                        ()->gameplay.gpuSmokeWeatherPreset("HEAVY_RAIN"));
+                }catch(Exception ex){throw new IllegalStateException("Rain test transition",ex);}
+            }else if(frames==50){
+                MaleficVeil.GpuFrame f=gameplay.gpuFrame();
+                if(f==null||f.rain()<.1||!f.weatherPreset().equals("HEAVY_RAIN"))
+                    throw new IllegalStateException("Missing authoritative rain: "+f);
+                saveFrame("gpu-weather-material-rain.png");
+                int sheltered=assertWeatherMaterialPixels(weatherCoveredClearPixels,
+                    weatherMaterialProbe(true,"gpu-weather-material-sheltered-rain.png"),
+                    true,"HEAVY_RAIN");
+                int exposed=assertWeatherMaterialPixels(weatherOpenClearPixels,
+                    weatherMaterialProbe(false,"gpu-weather-material-exposed-rain.png"),
+                    false,"HEAVY_RAIN");
+                System.out.println("PASS GPU_WEATHER_MATERIAL_SHELTER hostPreset=HEAVY_RAIN"+
+                    " shelteredChangedPixels="+sheltered+" exposedChangedPixels="+exposed);
                 try{
                     javax.swing.SwingUtilities.invokeAndWait(
                         ()->gameplay.gpuSmokeWeatherPreset("SNOW"));
-                }catch(Exception ex){throw new IllegalStateException("Weather test transition",ex);}
-            }else if(frames==50){
+                }catch(Exception ex){throw new IllegalStateException("Snow test transition",ex);}
+            }else if(frames==88){
                 MaleficVeil.GpuFrame f=gameplay.gpuFrame();
                 if(f==null||f.snow()<.1||!f.weatherPreset().equals("SNOW"))
                     throw new IllegalStateException("Missing authoritative snow: "+f);
@@ -1717,6 +1826,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(changed<80)
                     throw new IllegalStateException("GPU snow not visible: "+changed);
                 saveFrame("gpu-weather-material-snow.png");
+                int sheltered=assertWeatherMaterialPixels(weatherCoveredClearPixels,
+                    weatherMaterialProbe(true,"gpu-weather-material-sheltered-snow.png"),
+                    true,"SNOW");
+                int exposed=assertWeatherMaterialPixels(weatherOpenClearPixels,
+                    weatherMaterialProbe(false,"gpu-weather-material-exposed-snow.png"),
+                    false,"SNOW");
+                System.out.println("PASS GPU_WEATHER_MATERIAL_SHELTER hostPreset=SNOW"+
+                    " shelteredChangedPixels="+sheltered+" exposedChangedPixels="+exposed);
                 System.out.println("PASS GPU_WEATHER_MATERIAL hostPreset="+f.weatherPreset()+
                     " snow="+f.snow()+" sourceRoofs="+roofExposure.roofCount()+
                     " changedPixels="+changed+" samples="+now.length);

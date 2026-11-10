@@ -173,7 +173,7 @@ jobs:
           test -s build/test-visuals/gpu-ggbot-city-cars.png
           test -s build/test-visuals/gpu-kenney-foliage.png
           file build/test-visuals/gpu-kenney-city.png
-      - name: Real host-snapshot roof shelter and snow material framebuffer proof
+      - name: Real host-snapshot rain and snow sheltered-material framebuffer invariant
         if: runner.os == 'Linux'
         shell: bash
         env:
@@ -184,9 +184,14 @@ jobs:
             timeout 120s java -Dveil.gpu.weatherMaterialProof=true \
               -jar gpu-client/target/MaleficVeil-GPU.jar --play-smoke |
             tee build/test-visuals/gpu-weather-material.log
+          grep -q 'PASS GPU_WEATHER_MATERIAL_SHELTER hostPreset=HEAVY_RAIN shelteredChangedPixels=0' build/test-visuals/gpu-weather-material.log
+          grep -q 'PASS GPU_WEATHER_MATERIAL_SHELTER hostPreset=SNOW shelteredChangedPixels=0' build/test-visuals/gpu-weather-material.log
           grep -q 'PASS GPU_WEATHER_MATERIAL hostPreset=SNOW' build/test-visuals/gpu-weather-material.log
-          test -s build/test-visuals/gpu-weather-material-clear.png
-          test -s build/test-visuals/gpu-weather-material-snow.png
+          for weather in clear rain snow; do
+            test -s "build/test-visuals/gpu-weather-material-$weather.png"
+            test -s "build/test-visuals/gpu-weather-material-sheltered-$weather.png"
+            test -s "build/test-visuals/gpu-weather-material-exposed-$weather.png"
+          done
       - name: Coastline ocean OpenGL draw and VBO upload diagnostics
         if: runner.os == 'Linux'
         shell: bash

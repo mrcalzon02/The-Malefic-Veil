@@ -776,6 +776,17 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         game.publishGpuFrame();
         return game;
     }
+    /** CI-only change to REAL local-solo weather, not a LAN client forecast.
+     * Called on Swing EDT and immediately published as an immutable GPU frame. */
+    public void gpuSmokeWeatherPreset(String preset){
+        if(!SwingUtilities.isEventDispatchThread()||!gpuPresentation||net!=null||
+           !java.util.Set.of("CLEAR","HEAVY_RAIN","SNOW").contains(preset))
+            throw new IllegalStateException("Unauthorized weather proof");
+        weather.autoWeather(false,240,.55,65);
+        weather.setPreset(preset,0);
+        weather.tick(.1,px,py,angle,VeilWeather.exposure(world,px,py));
+        publishGpuFrame();
+    }
     /**
      * In-window frontend path. No modal dialogs or duplicate game simulation.
      * World rules are still validated/saved through WorldCreationConfig;

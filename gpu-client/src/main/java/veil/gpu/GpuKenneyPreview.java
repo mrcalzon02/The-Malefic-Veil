@@ -34,13 +34,16 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         in vec4 a_color;
         in vec2 a_texcoord;
         in vec4 a_instance;
-        in vec2 a_extra;
+        in vec3 a_extra;
+        in vec3 a_normal;
         uniform mat4 u_projView;
         uniform vec3 u_eye;
         out vec4 v_color;
         out float v_distance;
         out vec3 v_world;
         out vec2 v_texcoord;
+        out vec3 v_normal;
+        out float v_exposure;
         void main() {
             float cs=cos(a_instance.z),sn=sin(a_instance.z);
             vec3 scaled=a_position*a_instance.w;
@@ -53,6 +56,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             v_distance=length(world-u_eye);
             v_world=world;
             v_texcoord=a_texcoord;
+            v_normal=normalize(vec3(a_normal.x*cs-a_normal.z*sn,
+                a_normal.y,a_normal.x*sn+a_normal.z*cs));
+            v_exposure=a_extra.z;
         }
         """;
     static final String FRAGMENT_SHADER="""
@@ -61,6 +67,10 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         in float v_distance;
         in vec3 v_world;
         in vec2 v_texcoord;
+        in vec3 v_normal;
+        in float v_exposure;
+        uniform float u_weatherRain;
+        uniform float u_weatherSnow;
         uniform sampler2D u_diffuse;
         uniform int u_textured;
         uniform float u_fogFar;
@@ -85,6 +95,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             vec3 brightness=u_dayTint*u_ambient+vec3(1.00,0.73,0.46)*warm;
             vec3 sourceColor=v_color.rgb;
             if(u_textured!=0)sourceColor*=texture(u_diffuse,v_texcoord).rgb;
+            // The original host-published weather colors actual licensed 3D
+            // material surfaces; a roof triangle ray protects covered props.
+            float wet=clamp(u_weatherRain,0.0,1.0)*v_exposure;
+            float snow=clamp(u_weatherSnow,0.0,1.0)*v_exposure*
+                pow(max(0.0,v_normal.y),2.0);
+            sourceColor*=1.0-0.32*wet;
+            sourceColor=mix(sourceColor,vec3(.86,.90,.94),.73*snow);
             vec3 shaded=sourceColor*min(brightness,vec3(1.65));
             float fog=smoothstep(u_fogFar*.35,u_fogFar,v_distance);
             fragColor=vec4(mix(shaded,u_haze,fog),v_color.a);
@@ -105,13 +122,17 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         float[] values=new float[96];
         int size;
         void append(UrbanScene.ModelInstance instance){
-            if(size+6>values.length)values=Arrays.copyOf(values,values.length*2);
+            append(instance,0);
+        }
+        void append(UrbanScene.ModelInstance instance,float exposure){
+            if(size+7>values.length)values=Arrays.copyOf(values,values.length*2);
             values[size++]=(float)instance.x();
             values[size++]=(float)instance.y();
             values[size++]=(float)instance.heading();
             values[size++]=(float)instance.scale();
             values[size++]=(float)instance.opacity();
             values[size++]=(float)instance.heightOffset();
+            values[size++]=exposure;
         }
     }
 
@@ -158,6 +179,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private double oceanSeconds;
     private Texture cityMapTexture,continentMapTexture;
     private UrbanLighting lighting;
+    private GpuRoofExposure roofExposure;
+    private final boolean weatherMaterialProof=Boolean.getBoolean("veil.gpu.weatherMaterialProof");
+    private int[] weatherClearPixels;
     private PsxHorrorMenu menu;
     private final Map<String,List<GpuModel>> models=new LinkedHashMap<>();
     private final Map<String,Texture> materialTextures=new HashMap<>();
@@ -310,7 +334,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             List<GpuModel> geometry=new ArrayList<>();
             for(var group:groups.entrySet()){
                 int count=group.getValue().size()*3;
-                float[] vertexData=new float[count*9];
+                float[] vertexData=new float[count*12];
                 int cursor=0;
                 for(GlbMesh.Surface surface:group.getValue()){
                     GlbMesh.Triangle tri=surface.triangle();
@@ -326,6 +350,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                         tri.cx(),tri.cy(),tri.cz(),surface.cu(),
                         GlbMesh.gpuAtlasV(group.getKey(),surface.cv())
                     };
+                    float ux=tri.bx()-tri.ax(),uy=tri.by()-tri.ay(),uz=tri.bz()-tri.az();
+                    float vx=tri.cx()-tri.ax(),vy=tri.cy()-tri.ay(),vz=tri.cz()-tri.az();
+                    float nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
+                    float n=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
+                    if(n>1e-7f){nx/=n;ny/=n;nz/=n;}
+                    else {nx=0;ny=0;nz=0;}
                     for(int i=0;i<15;i+=5){
                         vertexData[cursor++]=verts[i];
                         vertexData[cursor++]=verts[i+1];
@@ -336,15 +366,19 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                         vertexData[cursor++]=1;
                         vertexData[cursor++]=verts[i+3];
                         vertexData[cursor++]=verts[i+4];
+                        vertexData[cursor++]=nx;
+                        vertexData[cursor++]=ny;
+                        vertexData[cursor++]=nz;
                     }
                 }
                 Mesh mesh=new Mesh(Mesh.VertexDataType.VertexBufferObjectWithVAO,
                     true,count,0,VertexAttribute.Position(),VertexAttribute.ColorUnpacked(),
-                    new VertexAttribute(VertexAttributes.Usage.TextureCoordinates,2,"a_texcoord"));
+                    new VertexAttribute(VertexAttributes.Usage.TextureCoordinates,2,"a_texcoord"),
+                    new VertexAttribute(VertexAttributes.Usage.Normal,3,"a_normal"));
                 mesh.setVertices(vertexData);
                 mesh.enableInstancedRendering(false,capacity,
                     new VertexAttribute(VertexAttributes.Usage.Generic,4,"a_instance"),
-                    new VertexAttribute(VertexAttributes.Usage.Generic,2,"a_extra"));
+                    new VertexAttribute(VertexAttributes.Usage.Generic,3,"a_extra"));
                 Texture texture=null;
                 if(group.getKey()!=null){
                     texture=materialTextures.get(group.getKey());
@@ -389,6 +423,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         ocean=new GpuOcean(seaModel,continental);
         if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
         lighting=new UrbanLighting(world);
+        roofExposure=new GpuRoofExposure(scene);
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
         // Mesh geometry is uploaded only once per source-material pair. A
@@ -831,10 +866,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             y+Math.sin(facing)*.65+Math.cos(facing)*.30,
             facing-Math.PI/2,.82,1,cameraHeight-.66);
         FloatList one=new FloatList();
-        one.append(held);
+        one.append(held,0);
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         shader.bind();
         shader.setUniformf("u_fogFar",280f);
+        shader.setUniformf("u_weatherRain",0f);
+        shader.setUniformf("u_weatherSnow",0f);
         for(GpuModel weapon:weapons){
             weapon.mesh.setInstanceData(one.values,0,one.size);
             shader.setUniformi("u_textured",weapon.texture==null?0:1);
@@ -955,6 +992,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 worldTimeMs=(long)(WorldDayNight.DAY_MS*f.hour()/24.0);
             }
         }
+        if(playSmoke&&weatherMaterialProof){
+            // Inspection camera, only for this GPU test; game/host pose untouched.
+            var roof=roofExposure.pointNear(66,66);
+            x=roof.x()-8;y=roof.z()-8;
+            cameraHeight=roof.y()+13;
+            heading=Math.PI/4;cameraPitch=-.86;
+            worldTimeMs=WorldDayNight.DAY_MS/2;
+        }
         environment=WorldDayNight.atElapsedMs(worldTimeMs);
         Gdx.gl.glClearColor(environment.hazeRed(),environment.hazeGreen(),environment.hazeBlue(),1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
@@ -988,7 +1033,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 dx*Math.cos(heading)+dy*Math.sin(heading)<-2)continue;
             if(visibleInstances>=MAX_VISIBLE_MODELS)break;
             if(!models.containsKey(placement.model()))continue;
-            visible.computeIfAbsent(placement.model(),ignore->new FloatList()).append(placement);
+            visible.computeIfAbsent(placement.model(),ignore->new FloatList())
+                .append(placement,roofExposure.exposure(placement,scene.models().get(placement.model())));
             visibleInstances++;
         }
         if(editorProject!=null)
@@ -996,8 +1042,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 double dx=item.x()-x,dz=item.z()-y;
                 if(dx*dx+dz*dz>visualDistance*visualDistance)continue;
                 ensureAuthoringModel(item.model());
+                var instance=item.instance();
                 visible.computeIfAbsent(item.model(),unused->new FloatList())
-                    .append(item.instance());
+                    .append(instance,roofExposure.exposure(instance,scene.models().get(item.model())));
                 visibleInstances++;
             }
         if(gameplay!=null){
@@ -1006,7 +1053,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(Math.hypot(entity.x()-x,entity.y()-y)>visualDistance)continue;
                 if(!models.containsKey(entity.model()))
                     throw new IllegalStateException("Missing live GPU actor model "+entity.model());
-                visible.computeIfAbsent(entity.model(),unused->new FloatList()).append(entity);
+                visible.computeIfAbsent(entity.model(),unused->new FloatList())
+                    .append(entity,roofExposure.exposure(entity,gameplay.gpuDynamicMeshes().get(entity.model())));
             }
         }
         shader.bind();
@@ -1017,6 +1065,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         shader.setUniformf("u_lampStrength",(float)environment.lampStrength());
         shader.setUniformf("u_dayTint",environment.sunRed(),environment.sunGreen(),environment.sunBlue());
         shader.setUniformf("u_haze",environment.hazeRed(),environment.hazeGreen(),environment.hazeBlue());
+        MaleficVeil.GpuFrame hostWeather=gameplay==null?null:gameplay.gpuFrame();
+        shader.setUniformf("u_weatherRain",hostWeather==null?0f:(float)hostWeather.rain());
+        shader.setUniformf("u_weatherSnow",hostWeather==null?0f:(float)hostWeather.snow());
         java.util.Arrays.fill(lightUniforms,0);
         var nearest=lighting.nearby(x,y,maxLights);
         activeLights=nearest.size();
@@ -1034,7 +1085,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             FloatList transforms=entry.getValue();
             if(geometry==null||transforms.size==0)continue;
             for(GpuModel gpu:geometry){
-                if(transforms.size/6>gpu.capacity)
+                if(transforms.size/7>gpu.capacity)
                     throw new IllegalStateException("Instance upload exceeds capacity "+entry.getKey());
                 gpu.mesh.setInstanceData(transforms.values,0,transforms.size);
                 shader.bind();
@@ -1077,7 +1128,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,renderWidth,HEIGHT));
         sprites.begin();
-        if(gameplay!=null&&gameplay.gpuFrame()!=null)
+        if(gameplay!=null&&gameplay.gpuFrame()!=null&&!weatherMaterialProof)
             renderGpuWeather(sprites,gameplay.gpuFrame());
         if(menuBackdrop){
             // Foreground launcher paints its own source widgets; this viewport
@@ -1641,7 +1692,37 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 framebuffer.end();Gdx.app.exit();return;
             }
         }
-        if(playSmoke){
+        if(playSmoke&&weatherMaterialProof){
+            frames++;
+            if(frames==12){
+                MaleficVeil.GpuFrame f=gameplay.gpuFrame();
+                if(f==null||f.rain()>.01||f.snow()>.01)
+                    throw new IllegalStateException("Weather proof did not start clear");
+                weatherClearPixels=oceanSamplePixels();
+                saveFrame("gpu-weather-material-clear.png");
+                try{
+                    javax.swing.SwingUtilities.invokeAndWait(
+                        ()->gameplay.gpuSmokeWeatherPreset("SNOW"));
+                }catch(Exception ex){throw new IllegalStateException("Weather test transition",ex);}
+            }else if(frames==50){
+                MaleficVeil.GpuFrame f=gameplay.gpuFrame();
+                if(f==null||f.snow()<.1||!f.weatherPreset().equals("SNOW"))
+                    throw new IllegalStateException("Missing authoritative snow: "+f);
+                int[] now=oceanSamplePixels();
+                if(weatherClearPixels==null||now.length!=weatherClearPixels.length)
+                    throw new IllegalStateException("Missing paired GL readback");
+                int changed=0;
+                for(int i=0;i<now.length;i++)
+                    if(presentationRgbDistance(now[i],weatherClearPixels[i])>24)changed++;
+                if(changed<80)
+                    throw new IllegalStateException("GPU snow not visible: "+changed);
+                saveFrame("gpu-weather-material-snow.png");
+                System.out.println("PASS GPU_WEATHER_MATERIAL hostPreset="+f.weatherPreset()+
+                    " snow="+f.snow()+" sourceRoofs="+roofExposure.roofCount()+
+                    " changedPixels="+changed+" samples="+now.length);
+                framebuffer.end();Gdx.app.exit();return;
+            }
+        }else if(playSmoke){
             frames++;
             if(frames==4){
                 MaleficVeil.GpuFrame f=gameplay.gpuFrame();

@@ -1067,7 +1067,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         // snapshots and are not static source-material evidence.
         if(gameplay!=null&&!weatherMaterialProof){
             MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
-            if(frame!=null)for(UrbanScene.ModelInstance entity:frame.dynamic(){
+            if(frame!=null)for(UrbanScene.ModelInstance entity:frame.dynamic()){
                 if(Math.hypot(entity.x()-x,entity.y()-y)>visualDistance)continue;
                 if(!models.containsKey(entity.model()))
                     throw new IllegalStateException("Missing live GPU actor model "+entity.model());

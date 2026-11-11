@@ -1141,6 +1141,11 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             MaleficVeil.GpuFrame live=gameplay.gpuFrame();
             if(live!=null)renderLiveWeapon(live);
         }
+        // Real 3D source-material acceptance cannot compare HUD notifications:
+        // host messages expire between CLEAR and RAIN while scene geometry does
+        // not. Hide ONLY the 2D HUD in this opt-in material proof; the actual
+        // city, roofs, terrain, ocean, lights and instanced depth remain drawn.
+        if(!weatherMaterialProof){
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         sprites.setProjectionMatrix(new Matrix4().setToOrtho2D(0,0,renderWidth,HEIGHT));
         sprites.begin();
@@ -1190,6 +1195,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 "ms  GPU TIME NOT MEASURED",10,HEIGHT-53);
         }
         sprites.end();
+        }
     }
 
     /** CI camera searches genuine seeded in-world props; never inserts showcase-only assets. */

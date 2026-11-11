@@ -65,6 +65,25 @@ public final class VeilOcean {
     /** Source-owned parcel footprint for native chunk meshing. No floating
      * corner sampling can incorrectly reject entire coastline sections. */
     public record SeaParcel(double west,double north,double size){}
+    /** Distance in world metres to a real dry-neighbor source parcel face.
+     * Open water returns infinity. Evaluated once during GPU mesh construction;
+     * no host collision map or wet biomes are modified.
+     */
+    public double shorelineDistance(SeaParcel parcel,double x,double z){
+        Objects.requireNonNull(parcel);
+        double west=parcel.west(),north=parcel.north(),size=parcel.size();
+        if(!Double.isFinite(x+z)||size<=0||x<west-1e-6||x>west+size+1e-6||
+            z<north-1e-6||z>north+size+1e-6)
+            throw new IllegalArgumentException("Point outside sea parcel");
+        double midX=west+size*.5,midZ=north+size*.5;
+        double nearest=Double.POSITIVE_INFINITY;
+        // Probe across SOURCE tile boundaries, not an invented coastline.
+        if(!wet(west-.125,midZ))nearest=Math.min(nearest,x-west);
+        if(!wet(west+size+.125,midZ))nearest=Math.min(nearest,west+size-x);
+        if(!wet(midX,north-.125))nearest=Math.min(nearest,z-north);
+        if(!wet(midX,north+size+.125))nearest=Math.min(nearest,north+size-z);
+        return nearest;
+    }
     public List<SeaParcel> sourceSeaParcels(double west,double north,
                                             double east,double south){
         int x0=Math.max(0,world.parcelX(west));

@@ -35,7 +35,7 @@ public final class VeilOceanTest {
         World shoreWorld=new World(887766L);
         ContinentVista coastal=new ContinentVista(shoreWorld,'C');
         VeilOcean coastalOcean=new VeilOcean(shoreWorld,coastal);
-        int coastalParcels=0;
+        int coastalParcels=0,realCoastEdges=0,joinedWaterEdges=0;
         for(ContinentVista.Patch patch:coastal.patches())
             for(VeilOcean.SeaParcel parcel:coastalOcean.sourceSeaParcels(
                 patch.left(),patch.top(),
@@ -44,9 +44,24 @@ public final class VeilOceanTest {
                 check(coastalOcean.wet(parcel.west()+parcel.size()*.5,
                         parcel.north()+parcel.size()*.5),
                     "Generated water parcel is not physically wet");
+                double midZ=parcel.north()+parcel.size()*.5;
+                double atWest=parcel.west()+.001;
+                double coast=coastalOcean.shorelineDistance(parcel,atWest,midZ);
+                if(!coastalOcean.wet(parcel.west()-.125,midZ)){
+                    check(coast<.02,
+                        "Dry-neighbor coastline has no zero-distance surf fringe");
+                    check(coastalOcean.shorelineDistance(parcel,
+                            parcel.west()+2,midZ)>1.4,
+                        "True coastal surf fringe extends too far into sea");
+                    realCoastEdges++;
+                }else{
+                    check(coast>.001,
+                        "Water-water parcel join incorrectly treated as dry shoreline");
+                    joinedWaterEdges++;
+                }
             }
-        check(coastalParcels>0,
-            "Coastal GPU test sector has no real ocean geometry to exercise");
+        check(coastalParcels>0&&realCoastEdges>0&&joinedWaterEdges>0,
+            "Coastal sector lacks both genuine surf edges and joined wet tiles");
         boolean surf=false;
         for(int x=1;x<ContinentLayout.SIZE-1&&!surf;x++)
             for(int z=1;z<ContinentLayout.SIZE-1&&!surf;z++){
@@ -96,6 +111,8 @@ public final class VeilOceanTest {
             "Original water module failed to composite real ocean pixels");
         check(!ocean.wet(vista.cityPlates().worldX(-1),vista.cityPlates().worldZ(-1)),
             "Sea renderer silently creates bodies beyond the bounded continent");
+        System.out.println("PASS SHORELINE_SOURCE_DISTANCE seaParcels="+coastalParcels+
+            " dryEdges="+realCoastEdges+" wetJoins="+joinedWaterEdges);
         System.out.println("PASS VeilOceanTest: "+found+" sea and "+dry+
             " land parcels, source coastline, waves, storm response, real optical layers");
     }

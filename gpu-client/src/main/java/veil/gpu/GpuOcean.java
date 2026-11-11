@@ -38,6 +38,7 @@ public final class GpuOcean implements AutoCloseable {
         uniform float u_shoreSlope;
         out vec3 v_world;
         out float v_depth;
+        out float v_shoreDistance;
         out float v_distance;
         float waveNoiseHash(ivec2 p){
             uint h=uint(p.x)*374761393u+uint(p.y)*668265263u+1274126177u;
@@ -62,6 +63,7 @@ public final class GpuOcean implements AutoCloseable {
                 exp(-a_texCoord0.x/.75);
             v_world=vec3(pos.x,a_position.y+(rolling+chop)*u_amplitude+shore,pos.y);
             v_depth=a_texCoord0.x;
+            v_shoreDistance=a_texCoord0.y;
             v_distance=distance(u_eye,v_world);
             gl_Position=u_projView*vec4(v_world,1.0);
         }
@@ -70,6 +72,7 @@ public final class GpuOcean implements AutoCloseable {
         #version 330 core
         in vec3 v_world;
         in float v_depth;
+        in float v_shoreDistance;
         in float v_distance;
         uniform sampler2D u_layerA;
         uniform sampler2D u_layerB;
@@ -133,12 +136,16 @@ public final class GpuOcean implements AutoCloseable {
             opacity+= (1.0-opacity)*foam*.8;
             vec3 lit=tint*mix(vec3(.56),u_sun,.44)*u_storm;
             float fog=smoothstep(u_distance*.45,u_distance,v_distance);
-            fragColor=vec4(mix(lit,u_haze,fog*.8),clamp(opacity,0.0,1.0));
+            // Feather only true wet/dry source parcel boundaries. Water-water
+            // joins remain fully covered; keep depth occlusion and SDK foam.
+            float coastCoverage=smoothstep(0.0,1.5,v_shoreDistance);
+            fragColor=vec4(mix(lit,u_haze,fog*.8),
+                clamp(opacity*coastCoverage,0.0,1.0));
         }
         """;
     private static final int STEP=2, STRIDE=5;
     private record Chunk(Mesh mesh,int indexCount,double midX,double midY,double midZ,double width,boolean authored){}
-    private record VertexKey(float x,float z,float depth){}
+    private record VertexKey(float x,float z,float depth,float shoreDistance){}
     /** CPU submission time is NOT GPU wall time; record geometry and upload
      * counts separately from the whole-frame diagnostics in the viewport. */
     public record Stats(int visibleChunks,int drawnTriangles,int drawCalls,
@@ -183,7 +190,8 @@ public final class GpuOcean implements AutoCloseable {
         double sz=Math.max(parcel.north()+.001,
             Math.min(parcel.north()+parcel.size()-.001,z));
         float depth=(float)Math.max(0.0,VeilOcean.SEA_LEVEL-water.bottom(sx,sz));
-        VertexKey key=new VertexKey((float)x,(float)z,depth);
+        float coast=(float)Math.min(3.0,water.shorelineDistance(parcel,sx,sz));
+        VertexKey key=new VertexKey((float)x,(float)z,depth,coast);
         Short existing=positions.get(key);
         if(existing!=null)return existing;
         int at=out.size/STRIDE;
@@ -191,7 +199,7 @@ public final class GpuOcean implements AutoCloseable {
         short index=(short)at;
         positions.put(key,index);
         out.add((float)x);out.add(0f);out.add((float)z);
-        out.add(depth);out.add(0f);
+        out.add(depth);out.add(coast);
         return index;
     }
     public GpuOcean(VeilOcean water,ContinentVista vista){

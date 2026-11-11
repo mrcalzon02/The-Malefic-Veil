@@ -71,6 +71,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         in float v_exposure;
         uniform float u_weatherRain;
         uniform float u_weatherSnow;
+        uniform int u_roofVisibilityAudit;
         uniform sampler2D u_diffuse;
         uniform int u_textured;
         uniform float u_fogFar;
@@ -82,6 +83,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         uniform vec3 u_dayTint;
         out vec4 fragColor;
         void main() {
+            // CI-only: render the original instanced city with its real depth
+            // occluders, encoding which source material actually wins a pixel.
+            // The normal gameplay pass always keeps this uniform at zero.
+            if(u_roofVisibilityAudit!=0){
+                fragColor=v_exposure<0.5?vec4(0.0,1.0,0.0,1.0):
+                    vec4(1.0,0.0,0.0,1.0);
+                return;
+            }
             float warm=0.0;
             for(int i=0;i<8;i++){
                 if(i>=u_lightCount)break;
@@ -183,6 +192,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final boolean weatherMaterialProof=Boolean.getBoolean("veil.gpu.weatherMaterialProof");
     private int[] weatherClearPixels;
     private int[] weatherCoveredClearPixels,weatherOpenClearPixels;
+    private int[] weatherFullClearPixels,weatherVisibilityMask;
+    private UrbanScene.ModelInstance weatherCoveredRoad,weatherOpenRoad;
     private PsxHorrorMenu menu;
     private final Map<String,List<GpuModel>> models=new LinkedHashMap<>();
     private final Map<String,Texture> materialTextures=new HashMap<>();
@@ -425,6 +436,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
         lighting=new UrbanLighting(world);
         roofExposure=new GpuRoofExposure(scene);
+        if(playSmoke&&weatherMaterialProof)chooseWeatherSceneRoads();
         shader=new ShaderProgram(VERTEX_SHADER,FRAGMENT_SHADER);
         if(!shader.isCompiled())throw new IllegalStateException("PSX GPU shader failed: "+shader.getLog());
         // Mesh geometry is uploaded only once per source-material pair. A
@@ -994,11 +1006,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             }
         }
         if(playSmoke&&weatherMaterialProof){
-            // Inspection camera, only for this GPU test; game/host pose untouched.
-            var roof=roofExposure.pointNear(66,66);
-            x=roof.x()-8;y=roof.z()-8;
-            cameraHeight=roof.y()+13;
-            heading=Math.PI/4;cameraPitch=-.86;
+            // Look outward from an existing roof-sheltered road toward a real
+            // exposed road. All city buildings, roofs and occluders remain.
+            x=weatherCoveredRoad.x();y=weatherCoveredRoad.y();
+            cameraHeight=weatherCoveredRoad.heightOffset()+1.35;
+            heading=Math.atan2(weatherOpenRoad.y()-y,weatherOpenRoad.x()-x);
+            cameraPitch=-.18;
+            visualDistance=85;
             worldTimeMs=WorldDayNight.DAY_MS/2;
         }
         environment=WorldDayNight.atElapsedMs(worldTimeMs);
@@ -1069,6 +1083,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         MaleficVeil.GpuFrame hostWeather=gameplay==null?null:gameplay.gpuFrame();
         shader.setUniformf("u_weatherRain",hostWeather==null?0f:(float)hostWeather.rain());
         shader.setUniformf("u_weatherSnow",hostWeather==null?0f:(float)hostWeather.snow());
+        shader.setUniformi("u_roofVisibilityAudit",0);
         java.util.Arrays.fill(lightUniforms,0);
         var nearest=lighting.nearby(x,y,maxLights);
         activeLights=nearest.size();
@@ -1199,6 +1214,99 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         throw new IllegalStateException("No visually reachable seeded "+modelPrefix+
             " in scene; cannot prove model integration");
+    }
+
+    /**
+     * Pick a real under-roof street and a nearby exposed street for full-scene
+     * material acceptance. A high aerial camera cannot see roofed surfaces:
+     * passing the isolated-mesh probe alone is not enough.
+     */
+    private void chooseWeatherSceneRoads(){
+        var roads=scene.instances().stream()
+            .filter(p->p.model().startsWith("road-")).toList();
+        var sheltered=roads.stream()
+            .filter(p->roofExposure.exposure(p,scene.models().get(p.model()))<.5f)
+            .sorted(java.util.Comparator.comparingDouble(p->
+                Math.hypot(p.x()-66,p.y()-66))).limit(160).toList();
+        double nearest=Double.POSITIVE_INFINITY;
+        for(var inside:sheltered)for(var outside:roads){
+            if(roofExposure.exposure(outside,scene.models().get(outside.model()))<.5f)
+                continue;
+            double distance=Math.hypot(outside.x()-inside.x(),outside.y()-inside.y());
+            if(distance>2&&distance<nearest&&distance<17){
+                weatherCoveredRoad=inside;weatherOpenRoad=outside;nearest=distance;
+            }
+        }
+        if(weatherCoveredRoad==null||weatherOpenRoad==null)
+            throw new IllegalStateException("No genuine covered-to-open urban road pair");
+        System.out.println("GPU_WEATHER_SCENE_ROADS sheltered="+weatherCoveredRoad.x()+
+            ","+weatherCoveredRoad.y()+" exposed="+weatherOpenRoad.x()+
+            ","+weatherOpenRoad.y()+" distance="+nearest);
+    }
+
+    /**
+     * Render the ACTUAL static city instance batches with their roof meshes
+     * and depth occluders retained. Green=visible sheltered material, red=
+     * visible exposed material, black/other=terrain, empty or non-city pixels.
+     * This test-only diagnostic is separate from the normal gameplay image.
+     */
+    private int[] weatherSceneVisibilityMask(){
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+        Gdx.gl.glDepthMask(true);
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+        terrain.render(camera,environment,visualDistance+10);
+        shader.bind();
+        shader.setUniformi("u_roofVisibilityAudit",1);
+        for(var entry:visible.entrySet()){
+            if(!scene.models().containsKey(entry.getKey()))continue;
+            var geometry=models.get(entry.getKey());
+            if(geometry==null)continue;
+            FloatList instances=entry.getValue();
+            for(var gpu:geometry){
+                gpu.mesh.setInstanceData(instances.values,0,instances.size);
+                gpu.mesh.render(shader,GL20.GL_TRIANGLES,0,gpu.vertexCount);
+            }
+        }
+        shader.setUniformi("u_roofVisibilityAudit",0);
+        int[] mask=readWeatherProbePixels();
+        int sheltered=0,exposed=0;
+        for(int pixel:mask){
+            if((pixel&0xffffff00)==0x00ff0000)sheltered++;
+            else if((pixel&0xffffff00)==0xff000000)exposed++;
+        }
+        saveOceanBenchmarkFrame("gpu-weather-material-scene-visibility.png");
+        if(sheltered<80||exposed<80)
+            throw new IllegalStateException("Real depth-tested urban scene lacks both "
+                +"visible material classes: sheltered="+sheltered+" exposed="+exposed);
+        System.out.println("PASS GPU_WEATHER_SCENE_VISIBILITY sheltered="+sheltered+
+            " exposed="+exposed+" realRoofs="+roofExposure.roofCount());
+        return mask;
+    }
+    private static void verifyWeatherScenePixels(int[] clear,int[] current,int[] mask,
+            String weather){
+        if(clear==null||current==null||mask==null||clear.length!=current.length||
+            mask.length!=clear.length)
+            throw new IllegalStateException("Unpaired actual scene material frames");
+        int coveredChanged=0,openChanged=0,coveredPixels=0,openPixels=0;
+        for(int i=0;i<mask.length;i++){
+            int tag=mask[i]&0xffffff00;
+            if(tag==0x00ff0000){
+                coveredPixels++;
+                if(presentationRgbDistance(clear[i],current[i])>8)coveredChanged++;
+            }else if(tag==0xff000000){
+                openPixels++;
+                if(presentationRgbDistance(clear[i],current[i])>24)openChanged++;
+            }
+        }
+        if(coveredPixels<80||openPixels<80||coveredChanged>12||openChanged<80)
+            throw new IllegalStateException("Real-scene roof/weather acceptance failed "
+                +weather+": sheltered="+coveredChanged+"/"+coveredPixels+
+                " exposed="+openChanged+"/"+openPixels);
+        System.out.println("PASS GPU_WEATHER_SCENE_MATERIAL hostPreset="+weather+
+            " shelteredChangedPixels="+coveredChanged+" exposedChangedPixels="+openChanged+
+            " shelteredVisible="+coveredPixels+" exposedVisible="+openPixels);
     }
 
     /**
@@ -1787,7 +1895,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(f==null||f.rain()>.01||f.snow()>.01)
                     throw new IllegalStateException("Weather proof did not start clear");
                 weatherClearPixels=oceanSamplePixels();
+                weatherFullClearPixels=readWeatherProbePixels();
                 saveFrame("gpu-weather-material-clear.png");
+                weatherVisibilityMask=weatherSceneVisibilityMask();
                 weatherCoveredClearPixels=weatherMaterialProbe(true,
                     "gpu-weather-material-sheltered-clear.png");
                 weatherOpenClearPixels=weatherMaterialProbe(false,
@@ -1801,6 +1911,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(f==null||f.rain()<.1||!f.weatherPreset().equals("HEAVY_RAIN"))
                     throw new IllegalStateException("Missing authoritative rain: "+f);
                 saveFrame("gpu-weather-material-rain.png");
+                verifyWeatherScenePixels(weatherFullClearPixels,readWeatherProbePixels(),
+                    weatherVisibilityMask,"HEAVY_RAIN");
                 int sheltered=assertWeatherMaterialPixels(weatherCoveredClearPixels,
                     weatherMaterialProbe(true,"gpu-weather-material-sheltered-rain.png"),
                     true,"HEAVY_RAIN");
@@ -1826,6 +1938,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 if(changed<80)
                     throw new IllegalStateException("GPU snow not visible: "+changed);
                 saveFrame("gpu-weather-material-snow.png");
+                verifyWeatherScenePixels(weatherFullClearPixels,readWeatherProbePixels(),
+                    weatherVisibilityMask,"SNOW");
                 int sheltered=assertWeatherMaterialPixels(weatherCoveredClearPixels,
                     weatherMaterialProbe(true,"gpu-weather-material-sheltered-snow.png"),
                     true,"SNOW");

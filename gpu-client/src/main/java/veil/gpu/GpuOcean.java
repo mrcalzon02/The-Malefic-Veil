@@ -294,7 +294,10 @@ public final class GpuOcean implements AutoCloseable {
                     float depth=(float)Math.max(.15,meanY-vista.sample(wx,wz).elevation());
                     int at=i*STRIDE;
                     vertices[at]=(float)wx;vertices[at+1]=(float)meanY;
-                    vertices[at+2]=(float)wz;vertices[at+3]=depth;vertices[at+4]=0f;
+                    // Authored editor polygons have their OWN footprint boundary,
+                    // not a source-biome wet/dry parcel edge: do not hide
+                    // user-authored water by the coastline-only alpha feather.
+                    vertices[at+2]=(float)wz;vertices[at+3]=depth;vertices[at+4]=3f;
                 }
                 for(int i=0;i<outline.size();i++){
                     indices[i*3]=0;

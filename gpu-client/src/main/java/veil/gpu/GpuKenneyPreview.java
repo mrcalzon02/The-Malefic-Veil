@@ -1062,9 +1062,12 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     .append(instance,roofExposure.exposure(instance,scene.models().get(item.model())));
                 visibleInstances++;
             }
-        if(gameplay!=null){
+        // Preserve the fully depth-occluded Kenney city for the weather test,
+        // but leave out walking host actors: they move between host weather
+        // snapshots and are not static source-material evidence.
+        if(gameplay!=null&&!weatherMaterialProof){
             MaleficVeil.GpuFrame frame=gameplay.gpuFrame();
-            if(frame!=null)for(UrbanScene.ModelInstance entity:frame.dynamic()){
+            if(frame!=null)for(UrbanScene.ModelInstance entity:frame.dynamic(){
                 if(Math.hypot(entity.x()-x,entity.y()-y)>visualDistance)continue;
                 if(!models.containsKey(entity.model()))
                     throw new IllegalStateException("Missing live GPU actor model "+entity.model());
@@ -1137,7 +1140,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     sea.cpuSubmitNanos()/1_000_000.0)+
                 " fps="+Gdx.graphics.getFramesPerSecond());
         }
-        if(gameplay!=null){
+        // Likewise, the first-person weapon animation is not a roofed city
+        // material; keep it on the real gameplay path, not paired proof frames.
+        if(gameplay!=null&&!weatherMaterialProof){
             MaleficVeil.GpuFrame live=gameplay.gpuFrame();
             if(live!=null)renderLiveWeapon(live);
         }

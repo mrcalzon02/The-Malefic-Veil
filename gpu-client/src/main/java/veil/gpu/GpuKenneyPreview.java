@@ -1492,13 +1492,18 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         int n=0;
         for(int py=36;py<HEIGHT-36;py+=4)
             for(int px=8;px<renderWidth-8;px+=4){
-                // OpenGL framebuffer y is bottom-up; Camera pick rays use top-down.
-                var ray=camera.getPickRay(px,HEIGHT-py,0,0,renderWidth,HEIGHT);
-                if(ray.direction.y>=-.001){n++;continue;}
-                double t=(VeilOcean.SEA_LEVEL-ray.origin.y)/ray.direction.y;
+                // Compute the ray in the OFFSCREEN framebuffer's own GL
+                // coordinates. Camera.getPickRay() uses the physical window
+                // height, which may differ from this 640x400 render target.
+                var atNear=new Vector3(
+                    2f*(px+.5f)/renderWidth-1f,
+                    2f*(py+.5f)/HEIGHT-1f,-1f).prj(camera.invProjectionView);
+                var direction=atNear.sub(camera.position).nor();
+                if(direction.y>=-.001){n++;continue;}
+                double t=(VeilOcean.SEA_LEVEL-camera.position.y)/direction.y;
                 if(t<=0||t>camera.far){n++;continue;}
-                double wx=ray.origin.x+t*ray.direction.x;
-                double wz=ray.origin.z+t*ray.direction.z;
+                double wx=camera.position.x+t*direction.x;
+                double wz=camera.position.z+t*direction.z;
                 boolean allWet=true,allDry=true;
                 for(double ox:new double[]{-2,0,2})
                     for(double oz:new double[]{-2,0,2}){

@@ -2117,10 +2117,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                             roof++;if(delta>8)roofChanged++;
                         }
                     }
+                // Save actual GPU evidence even on failure; assertion remains
+                // mandatory and no test gate is relaxed.
+                saveFrame("gpu-editor-authored-roof-refracted.png");
+                System.out.println("AUTHORED_WATER_REFRACTION_COUNTS wet="+
+                    wetChanged+"/"+wet+" roof="+roofChanged+"/"+roof);
                 if(wet<35||roof<35||wetChanged<8||roofChanged>Math.max(3,roof/40))
                     throw new IllegalStateException("Opaque-depth water refraction positive/roof-negative mismatch wet="+
                         wetChanged+"/"+wet+" roof="+roofChanged+"/"+roof);
-                saveFrame("gpu-editor-authored-roof-refracted.png");
                 System.out.println("PASS AUTHORED_WATER_DEPTH_REFRACTION"+
                     " wetChanged="+wetChanged+"/"+wet+
                     " roofBlockedChanged="+roofChanged+"/"+roof+

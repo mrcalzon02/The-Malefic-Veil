@@ -169,8 +169,14 @@ public final class GpuOcean implements AutoCloseable {
                 // The true GL depth test still rejects water BEHIND a roof.
                 if(texture(u_opaqueDepth,refractedUv).r<=gl_FragCoord.z+.000015)
                     refractedUv=uv;
+                // Contact illumination is strongest over real shallow
+                // opaque ground, not over sky or structures in front of the
+                // water. Preserve broken SDK wave texture as its modulation.
+                // A 1-2 metre authored flood must visibly scatter daylight;
+                // the old .75 m fade silently removed almost all contact.
                 float contact=opaqueDepth<.99999?
-                    (1.0-smoothstep(.08,.75,thickness))*breakup*.48:0.0;
+                    (1.0-smoothstep(.15,2.7,thickness))*
+                    (.32+.68*breakup)*.67:0.0;
                 shaded=mix(shaded,vec3(.725,.784,.769),contact);
                 vec3 behind=texture(u_opaqueColor,refractedUv).rgb;
                 // The already-sampled opaque color replaces fixed-function

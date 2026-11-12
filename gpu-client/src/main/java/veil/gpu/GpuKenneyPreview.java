@@ -173,6 +173,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final java.util.List<Double> oceanBenchmarkFrameMs=new java.util.ArrayList<>();
     private final java.util.List<Double> oceanBaselineFrameMs=new java.util.ArrayList<>();
     private int[] oceanBaselinePixels;
+    // Independent source parcel mask for the fixed-seed GPU wet/dry proof.
+    private VeilOcean coastalSource;
     private World world;
     private UrbanScene scene;
     private ShaderProgram shader;
@@ -432,6 +434,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         }
         terrain=new GpuContinentTerrain(continental);
         veil.VeilOcean seaModel=new veil.VeilOcean(world,continental);
+        coastalSource=seaModel;
         ocean=new GpuOcean(seaModel,continental);
         if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
         lighting=new UrbanLighting(world);
@@ -480,11 +483,20 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             double cx=continental.cityCenterX(focusCity);
             double cz=continental.cityCenterZ(focusCity);
             var parcels=seaModel.sourceSeaParcels(cx-180,cz-180,cx+180,cz+180);
-            var nearest=parcels.stream().min(java.util.Comparator.comparingDouble(parcel->
+            // Choose a true wet/dry border, not an arbitrary offshore parcel,
+            // so one fixed camera observes both ocean and a source-dry control.
+            var shore=parcels.stream().filter(p->{
+                double mx=p.west()+p.size()*.5,mz=p.north()+p.size()*.5;
+                return seaModel.shorelineDistance(p,p.west()+.001,mz)<.2||
+                    seaModel.shorelineDistance(p,p.west()+p.size()-.001,mz)<.2||
+                    seaModel.shorelineDistance(p,mx,p.north()+.001)<.2||
+                    seaModel.shorelineDistance(p,mx,p.north()+p.size()-.001)<.2;
+            }).toList();
+            var nearest=shore.stream().min(java.util.Comparator.comparingDouble(parcel->
                 Math.hypot(parcel.west()+parcel.size()*.5-cx,
                            parcel.north()+parcel.size()*.5-cz)))
                 .orElseThrow(()->new IllegalStateException(
-                    "Coastal benchmark city has no real water parcel"));
+                    "Coastal benchmark has no real wet/dry source border"));
             x=nearest.west()+nearest.size()*.5;
             y=nearest.north()+nearest.size()*.5;
             cameraHeight=26;cameraPitch=-1.52;heading=.32;
@@ -1468,6 +1480,35 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             return java.util.Arrays.copyOf(sampled,count);
         }finally{pixels.dispose();}
     }
+    /** Project actual framebuffer samples onto the sea-level source map.
+     * Classification uses source wet parcels, NEVER the rendered water color.
+     * The +/-2m margin keeps wave parallax and parcel edges out of controls:
+     * 1 = wholly wet, -1 = wholly dry, 0 = mixed/unusable sample.
+     * Only the deterministic near-vertical coastal benchmark invokes this.
+     */
+    private byte[] oceanSourceMask(){
+        if(coastalSource==null)throw new IllegalStateException("Missing SDK source mask");
+        byte[] mask=new byte[((HEIGHT-72+3)/4)*((renderWidth-16+3)/4)];
+        int n=0;
+        for(int py=36;py<HEIGHT-36;py+=4)
+            for(int px=8;px<renderWidth-8;px+=4){
+                // OpenGL framebuffer y is bottom-up; Camera pick rays use top-down.
+                var ray=camera.getPickRay(px,HEIGHT-py,0,0,renderWidth,HEIGHT);
+                if(ray.direction.y>=-.001){n++;continue;}
+                double t=(VeilOcean.SEA_LEVEL-ray.origin.y)/ray.direction.y;
+                if(t<=0||t>camera.far){n++;continue;}
+                double wx=ray.origin.x+t*ray.direction.x;
+                double wz=ray.origin.z+t*ray.direction.z;
+                boolean allWet=true,allDry=true;
+                for(double ox:new double[]{-2,0,2})
+                    for(double oz:new double[]{-2,0,2}){
+                        boolean wet=coastalSource.wet(wx+ox,wz+oz);
+                        allWet&=wet;allDry&=!wet;
+                    }
+                mask[n++]=(byte)(allWet?1:allDry?-1:0);
+            }
+        return mask;
+    }
     @Override public void render() {
         // Purely visual diagnostics: F8 never enters host gameplay controls
         // and never affects world simulation, purchases, or permissions.
@@ -1527,6 +1568,34 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     if(changed<200)
                         throw new IllegalStateException("Ocean was not visibly rendered: changed="+
                             changed+"/"+nowPixels.length+" sampled pixels");
+                    // Independent positive (wet) and negative (dry) controls.
+                    // Both frames used the same seed, city, camera and opaque
+                    // terrain/depth test; only actual GPU ocean draws differ.
+                    byte[] sourceMask=oceanSourceMask();
+                    if(sourceMask.length!=nowPixels.length)
+                        throw new IllegalStateException("Invalid source-pixel mask length");
+                    int wetSamples=0,drySamples=0,wetChanged=0,dryChanged=0;
+                    for(int i=0;i<sourceMask.length;i++){
+                        int a=nowPixels[i],b=oceanBaselinePixels[i];
+                        int delta=Math.abs(((a>>>24)&255)-((b>>>24)&255))+
+                            Math.abs(((a>>>16)&255)-((b>>>16)&255))+
+                            Math.abs(((a>>>8)&255)-((b>>>8)&255));
+                        if(sourceMask[i]==1){wetSamples++;if(delta>36)wetChanged++;}
+                        if(sourceMask[i]==-1){drySamples++;if(delta>36)dryChanged++;}
+                    }
+                    // The deliberately coastal camera must show both regions.
+                    // Require visible shading ON source water and preserve the
+                    // land control without pretending this proves roof occlusion
+                    // or depth-buffer refraction (separate later validations).
+                    if(wetSamples<40||drySamples<40||wetChanged<40||
+                       dryChanged>Math.max(10,drySamples/50))
+                        throw new IllegalStateException("Source-masked ocean GPU proof failed:"+
+                            " wet="+wetChanged+"/"+wetSamples+
+                            " dry="+dryChanged+"/"+drySamples);
+                    System.out.println("PASS GPU_OCEAN_SOURCE_MASK seed="+seed+
+                        " city="+focusCity+" wetChanged="+wetChanged+
+                        " wetSamples="+wetSamples+" dryChanged="+dryChanged+
+                        " drySamples="+drySamples+" (depth-tested same-pose frames)");
                     if(waterStats.visibleChunks()==0||waterStats.drawnTriangles()==0||
                        waterStats.vertexUploadBytes()!=0||
                        oceanBenchmarkFrameMs.size()<100||

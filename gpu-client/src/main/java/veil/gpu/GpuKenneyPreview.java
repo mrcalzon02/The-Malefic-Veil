@@ -162,6 +162,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private int[] smokeWaterMovedPixels;
     private String smokeWaterBeforeRevision;
     private String smokeWaterUndoRevision;
+    // Test-only controlled camera pair: a saved authored water polygon spans
+    // genuine City A roofs and pavement; sample original opaque GL depth.
+    private boolean editorRoofWaterOff;
+    private int[] editorRoofBaselinePixels;
+    private java.nio.FloatBuffer editorRoofDepth;
+    private double editorRoofWaterLevel;
+    private String editorRoofWaterId;
     private final Set<Integer> liveHeld=new HashSet<>();
     private long firstSmokeFrames;
     private int smokeStartingAmmo=-1;
@@ -1135,7 +1142,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         // Neither mode changes host physics or climate.
         boolean baselineOceanOff=gallery&&
             Boolean.getBoolean("veil.gpu.oceanBenchmark")&&frames<180;
-        if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
+        if(editorProject!=null)ocean.syncAuthored(editorSmoke&&editorRoofWaterOff?
+            new dev.mrcalzon.water.WaterDocument("seed-"+seed,List.of()):
+            editorProject.waterDocument());
         if(!baselineOceanOff)
             ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10);
         // These counters are measured in the actual OpenGL viewport; CPU
@@ -1479,6 +1488,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     sampled[count++]=pixels.getPixel(px,py);
             return java.util.Arrays.copyOf(sampled,count);
         }finally{pixels.dispose();}
+    }
+    /** Read the genuine opaque terrain/structure depth from the GL framebuffer. */
+    private java.nio.FloatBuffer editorOpaqueDepth(){
+        java.nio.ByteBuffer bytes=java.nio.ByteBuffer
+            .allocateDirect(renderWidth*HEIGHT*Float.BYTES)
+            .order(java.nio.ByteOrder.nativeOrder());
+        Gdx.gl.glReadPixels(0,0,renderWidth,HEIGHT,
+            GL20.GL_DEPTH_COMPONENT,GL20.GL_FLOAT,bytes);
+        return bytes.asFloatBuffer();
     }
     /** Project actual framebuffer samples onto the sea-level source map.
      * Classification uses source wet parcels, NEVER the rendered water color.
@@ -1970,6 +1988,93 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     " nodes="+editorProject.hierarchy().size()+
                     " palette="+editorProject.assets().size()+
                     " activeModels="+visibleInstances);
+            }
+            if(frames==87){
+                // The earlier editor assertions have finished. Replace only
+                // this isolated smoke fixture, not any game/host document.
+                var model=editorProject.water();
+                model.select(model.document().placements().stream()
+                    .map(dev.mrcalzon.water.WaterPlacement::id).toList());
+                model.deleteSelected();
+                editorRoofWaterLevel=vista.sample(66,66).elevation()+1.5;
+                editorRoofWaterId=model.add(66,editorRoofWaterLevel,66,32,32);
+                try{
+                    editorProject.saveWater();
+                    var saved=new MaleficEditorProject(world).waterDocument();
+                    var bodies=saved.placements();
+                    if(bodies.size()!=1||!bodies.get(0).id().equals(editorRoofWaterId)||
+                       bodies.get(0).shape()!=
+                           dev.mrcalzon.water.WaterPlacement.Shape.SQUARE||
+                       bodies.get(0).width()!=32||bodies.get(0).depth()!=32||
+                       !saved.revision().equals(model.document().revision()))
+                        throw new IllegalStateException("Authored polygon did not persist");
+                    editorProject.reloadWater();
+                }catch(java.io.IOException ex){
+                    throw new IllegalStateException("Authored water reload failed",ex);
+                }
+                x=66;y=66;cameraHeight=editorRoofWaterLevel+68;
+                heading=.24;cameraPitch=-1.52;visualDistance=240;
+                editorRoofWaterOff=true;
+            }
+            if(frames==96){
+                if(ocean.authoredTriangles()!=0)
+                    throw new IllegalStateException("Proof baseline drew water");
+                editorRoofBaselinePixels=oceanSamplePixels();
+                editorRoofDepth=editorOpaqueDepth();
+                saveFrame("gpu-editor-authored-roof-no-water.png");
+                editorRoofWaterOff=false;
+            }
+            if(frames==105){
+                if(ocean.authoredTriangles()!=4||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException("Saved water square not rendered");
+                int[] now=oceanSamplePixels();
+                if(editorRoofBaselinePixels==null||editorRoofDepth==null||
+                   editorRoofBaselinePixels.length!=now.length)
+                    throw new IllegalStateException("Missing paired GPU evidence");
+                int exposed=0,blocked=0,exposedChanged=0,blockedChanged=0;
+                int index=0;
+                for(int py=36;py<HEIGHT-36;py+=4)
+                    for(int px=8;px<renderWidth-8;px+=4){
+                        int before=editorRoofBaselinePixels[index],after=now[index++];
+                        float nx=2f*(px+.5f)/renderWidth-1f;
+                        float ny=2f*(py+.5f)/HEIGHT-1f;
+                        Vector3 ray=new Vector3(nx,ny,-1)
+                            .prj(camera.invProjectionView)
+                            .sub(camera.position).nor();
+                        if(ray.y>=-.001f)continue;
+                        double t=(editorRoofWaterLevel-camera.position.y)/ray.y;
+                        if(t<=0)continue;
+                        double wx=camera.position.x+ray.x*t;
+                        double wz=camera.position.z+ray.z*t;
+                        // Exclude authored polygon fringe and the HUD bands.
+                        if(Math.abs(wx-66)>14||Math.abs(wz-66)>14)continue;
+                        float opaque=editorRoofDepth.get(py*renderWidth+px);
+                        if(!Float.isFinite(opaque)||opaque<=0||opaque>1)continue;
+                        float waterDepth=(new Vector3((float)wx,
+                            (float)editorRoofWaterLevel,(float)wz)
+                            .prj(camera.combined).z+1f)*.5f;
+                        int rgb=Math.abs(((before>>>24)&255)-((after>>>24)&255))+
+                            Math.abs(((before>>>16)&255)-((after>>>16)&255))+
+                            Math.abs(((before>>>8)&255)-((after>>>8)&255));
+                        if(opaque-waterDepth>0.000009f){
+                            exposed++;if(rgb>36)exposedChanged++;
+                        }else if(waterDepth-opaque>0.000009f){
+                            blocked++;if(rgb>36)blockedChanged++;
+                        }
+                    }
+                System.out.println("AUTHORED_WATER_DEPTH_COUNTS"+
+                    " exposedChanged="+exposedChanged+"/"+exposed+
+                    " roofBlockedChanged="+blockedChanged+"/"+blocked);
+                if(exposed<35||blocked<35||exposedChanged<35||
+                   blockedChanged>Math.max(5,blocked/40))
+                    throw new IllegalStateException(
+                        "Author water failed positive/negative real GL depth control");
+                saveFrame("gpu-editor-authored-roof-with-water.png");
+                System.out.println("PASS AUTHORED_WATER_ROOF_OCCLUSION"+
+                    " seed="+seed+" water="+editorRoofWaterId+
+                    " exposedChanged="+exposedChanged+"/"+exposed+
+                    " roofBlockedChanged="+blockedChanged+"/"+blocked+
+                    " persistedRevision="+editorProject.waterDocument().revision());
                 framebuffer.end();Gdx.app.exit();return;
             }
         }

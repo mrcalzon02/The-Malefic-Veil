@@ -166,6 +166,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     // genuine City A roofs and pavement; sample original opaque GL depth.
     private boolean editorRoofWaterOff;
     private int[] editorRoofBaselinePixels;
+    private int[] editorRoofUnrefractedPixels;
+    private boolean editorRoofRefractionOff;
     private java.nio.FloatBuffer editorRoofDepth;
     private double editorRoofWaterLevel;
     private String editorRoofWaterId;
@@ -1137,6 +1139,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         String weatherPreset=gameplay!=null&&gameplay.gpuFrame()!=null?
             gameplay.gpuFrame().weatherPreset():"CLEAR";
         oceanSeconds+=Math.max(0,Math.min(.05,Gdx.graphics.getDeltaTime()));
+        // The two refraction proofs must share an identical ocean wave phase.
+        if(editorSmoke&&frames>=96&&frames<=107)oceanSeconds=0;
         // Paired diagnostic uses the SAME city, camera and seeded world;
         // stage one measures the scene without ocean draws, stage two with.
         // Neither mode changes host physics or climate.
@@ -1146,7 +1150,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             new dev.mrcalzon.water.WaterDocument("seed-"+seed,List.of()):
             editorProject.waterDocument());
         if(!baselineOceanOff)
-            ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10);
+            ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10,
+                renderWidth,HEIGHT,!editorRoofRefractionOff);
         // These counters are measured in the actual OpenGL viewport; CPU
         // submission time is explicitly NOT presented as GPU execution time.
         if((smoke||gallery||playSmoke||editorSmoke)&&frames%15==0){
@@ -2015,6 +2020,7 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 x=66;y=66;cameraHeight=editorRoofWaterLevel+68;
                 heading=.24;cameraPitch=-1.52;visualDistance=240;
                 editorRoofWaterOff=true;
+                editorRoofRefractionOff=true;
             }
             if(frames==96){
                 if(ocean.authoredTriangles()!=0)
@@ -2075,6 +2081,50 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     " exposedChanged="+exposedChanged+"/"+exposed+
                     " roofBlockedChanged="+blockedChanged+"/"+blocked+
                     " persistedRevision="+editorProject.waterDocument().revision());
+                editorRoofUnrefractedPixels=now;
+                editorRoofRefractionOff=false;
+            }
+            if(frames==106){
+                int[] refracted=oceanSamplePixels();
+                if(editorRoofUnrefractedPixels==null||
+                   editorRoofUnrefractedPixels.length!=refracted.length)
+                    throw new IllegalStateException("Missing matched un-refracted GPU water");
+                int index=0,wet=0,wetChanged=0,roof=0,roofChanged=0;
+                for(int py=36;py<HEIGHT-36;py+=4)
+                    for(int px=8;px<renderWidth-8;px+=4){
+                        int old=editorRoofUnrefractedPixels[index];
+                        int rgb=refracted[index++];
+                        float nx=2f*(px+.5f)/renderWidth-1f;
+                        float ny=2f*(py+.5f)/HEIGHT-1f;
+                        Vector3 ray=new Vector3(nx,ny,-1)
+                            .prj(camera.invProjectionView).sub(camera.position).nor();
+                        if(ray.y>=-.001f)continue;
+                        double t=(editorRoofWaterLevel-camera.position.y)/ray.y;
+                        if(t<=0)continue;
+                        double wx=camera.position.x+ray.x*t;
+                        double wz=camera.position.z+ray.z*t;
+                        if(Math.abs(wx-66)>14||Math.abs(wz-66)>14)continue;
+                        float opaque=editorRoofDepth.get(py*renderWidth+px);
+                        float waterDepth=(new Vector3((float)wx,
+                            (float)editorRoofWaterLevel,(float)wz)
+                            .prj(camera.combined).z+1f)*.5f;
+                        int delta=Math.abs(((old>>>24)&255)-((rgb>>>24)&255))+
+                            Math.abs(((old>>>16)&255)-((rgb>>>16)&255))+
+                            Math.abs(((old>>>8)&255)-((rgb>>>8)&255));
+                        if(opaque-waterDepth>.000009f){
+                            wet++;if(delta>8)wetChanged++;
+                        }else if(waterDepth-opaque>.000009f){
+                            roof++;if(delta>8)roofChanged++;
+                        }
+                    }
+                if(wet<35||roof<35||wetChanged<8||roofChanged>Math.max(3,roof/40))
+                    throw new IllegalStateException("Opaque-depth water refraction positive/roof-negative mismatch wet="+
+                        wetChanged+"/"+wet+" roof="+roofChanged+"/"+roof);
+                saveFrame("gpu-editor-authored-roof-refracted.png");
+                System.out.println("PASS AUTHORED_WATER_DEPTH_REFRACTION"+
+                    " wetChanged="+wetChanged+"/"+wet+
+                    " roofBlockedChanged="+roofChanged+"/"+roof+
+                    " sameCamera=true sameWaveTime=true");
                 framebuffer.end();Gdx.app.exit();return;
             }
         }

@@ -97,6 +97,14 @@ public final class GpuOcean implements AutoCloseable {
         uniform float u_fresnel;
         uniform float u_foamDepth;
         uniform float u_foamOpacity;
+        // Opaque scene snapshot, taken AFTER city + terrain and BEFORE ocean.
+        // Both samplers use the genuine offscreen OpenGL color/depth attachment.
+        uniform sampler2D u_opaqueColor;
+        uniform sampler2D u_opaqueDepth;
+        uniform vec2 u_targetSize;
+        uniform float u_near;
+        uniform float u_far;
+        uniform int u_useRefraction;
         uniform float u_shorePeriod;
         uniform float u_shoreWavelength;
         uniform float u_shoreSlope;
@@ -111,6 +119,9 @@ public final class GpuOcean implements AutoCloseable {
             vec2 f=fract(p); f=f*f*(3.0-2.0*f);
             return mix(mix(waveNoiseHash(cell),waveNoiseHash(cell+ivec2(1,0)),f.x),
                        mix(waveNoiseHash(cell+ivec2(0,1)),waveNoiseHash(cell+ivec2(1,1)),f.x),f.y);
+        }
+        float eyeDepth(float depth){
+            return u_near*u_far/max(.0001,u_far-depth*(u_far-u_near));
         }
         void main(){
             vec2 uvA=v_world.xz*u_layerInfoA.xy+u_time*u_layerInfoA.zw;
@@ -139,8 +150,36 @@ public final class GpuOcean implements AutoCloseable {
             // Feather only true wet/dry source parcel boundaries. Water-water
             // joins remain fully covered; keep depth occlusion and SDK foam.
             float coastCoverage=smoothstep(0.0,1.5,v_shoreDistance);
-            fragColor=vec4(mix(lit,u_haze,fog*.8),
-                clamp(opacity*coastCoverage,0.0,1.0));
+            vec3 shaded=mix(lit,u_haze,fog*.8);
+            float coverage=clamp(opacity*coastCoverage,0.0,1.0);
+            if(u_useRefraction!=0){
+                vec2 uv=gl_FragCoord.xy/u_targetSize;
+                float opaqueDepth=texture(u_opaqueDepth,uv).r;
+                float waterEye=eyeDepth(gl_FragCoord.z);
+                float thickness=max(0.0,eyeDepth(opaqueDepth)-waterEye);
+                // Pixel displacement follows two live wave layers. A finite
+                // opaque surface behind the water provides a physical water
+                // column; blank sky does not invent a seabed/contact surface.
+                float wetContact=opaqueDepth<.99999?clamp(thickness/1.8,0.0,1.0):0.0;
+                vec2 displacement=vec2(layerA-layerB,layerB-layerA)*
+                    vec2(4.5,3.4)*wetContact/u_targetSize;
+                vec2 edge=.5/u_targetSize;
+                vec2 refractedUv=clamp(uv+displacement,edge,vec2(1.0)-edge);
+                // Do not pull roofs/foreground occluders across the water edge.
+                // The true GL depth test still rejects water BEHIND a roof.
+                if(texture(u_opaqueDepth,refractedUv).r<=gl_FragCoord.z+.000015)
+                    refractedUv=uv;
+                float contact=opaqueDepth<.99999?
+                    (1.0-smoothstep(.08,.75,thickness))*breakup*.48:0.0;
+                shaded=mix(shaded,vec3(.725,.784,.769),contact);
+                vec3 behind=texture(u_opaqueColor,refractedUv).rgb;
+                // The already-sampled opaque color replaces fixed-function
+                // alpha compositing exactly once, avoiding double background.
+                fragColor=vec4(mix(behind,shaded,coverage),1.0);
+            }else{
+                // Matched legacy water reference in the real GPU smoke test.
+                fragColor=vec4(shaded,coverage);
+            }
         }
         """;
     private static final int STEP=2, STRIDE=5;
@@ -168,6 +207,46 @@ public final class GpuOcean implements AutoCloseable {
     private long staticBytes;
     private long unindexedReferenceBytes;
     private Stats last=new Stats(0,0,0,0,0,0);
+    private int opaqueColorTexture,opaqueDepthTexture;
+    private int opaqueWidth,opaqueHeight;
+
+    /** Copy the existing opaque city + terrain FBO before the water draw.
+     * Never read the color currently being written by the ocean shader.
+     * GL depth remains 24-bit on the GPU, without byte/readback truncation. */
+    private void snapshotOpaque(int width,int height){
+        if(width<=0||height<=0)
+            throw new IllegalArgumentException("Invalid opaque viewport");
+        if(width!=opaqueWidth||height!=opaqueHeight){
+            if(opaqueColorTexture!=0)Gdx.gl.glDeleteTexture(opaqueColorTexture);
+            if(opaqueDepthTexture!=0)Gdx.gl.glDeleteTexture(opaqueDepthTexture);
+            opaqueColorTexture=Gdx.gl.glGenTexture();
+            opaqueDepthTexture=Gdx.gl.glGenTexture();
+            opaqueWidth=width;opaqueHeight=height;
+            Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D,opaqueColorTexture);
+            Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_2D,0,GL20.GL_RGBA,width,height,
+                0,GL20.GL_RGBA,GL20.GL_UNSIGNED_BYTE,null);
+            Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D,opaqueDepthTexture);
+            Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_2D,0,GL30.GL_DEPTH_COMPONENT24,
+                width,height,0,GL20.GL_DEPTH_COMPONENT,GL20.GL_UNSIGNED_INT,null);
+            for(int handle:new int[]{opaqueColorTexture,opaqueDepthTexture}){
+                Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D,handle);
+                Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D,GL20.GL_TEXTURE_MIN_FILTER,GL20.GL_NEAREST);
+                Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D,GL20.GL_TEXTURE_MAG_FILTER,GL20.GL_NEAREST);
+                Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D,GL20.GL_TEXTURE_WRAP_S,GL20.GL_CLAMP_TO_EDGE);
+                Gdx.gl.glTexParameteri(GL20.GL_TEXTURE_2D,GL20.GL_TEXTURE_WRAP_T,GL20.GL_CLAMP_TO_EDGE);
+            }
+        }
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0+2);
+        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D,opaqueColorTexture);
+        Gdx.gl.glCopyTexSubImage2D(GL20.GL_TEXTURE_2D,0,0,0,0,0,width,height);
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0+3);
+        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D,opaqueDepthTexture);
+        Gdx.gl.glCopyTexSubImage2D(GL20.GL_TEXTURE_2D,0,0,0,0,0,width,height);
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+        int error=Gdx.gl.glGetError();
+        if(error!=GL20.GL_NO_ERROR)
+            throw new IllegalStateException("Opaque scene/depth copy GL error "+error);
+    }
 
     private static Texture upload(WaterModule.Texture source){
         Pixmap image=new Pixmap(source.width(),source.height(),Pixmap.Format.RGBA8888);
@@ -335,7 +414,8 @@ public final class GpuOcean implements AutoCloseable {
             (float)l.scrollX(),(float)l.scrollZ());
     }
     public int render(PerspectiveCamera camera,WorldDayNight.Conditions day,
-                      double seconds,String preset,float distance){
+                      double seconds,String preset,float distance,
+                      int targetWidth,int targetHeight,boolean useRefraction){
         long start=System.nanoTime();
         visibleWater.clear();lastAuthoredDraws=0;
         List<Chunk> both=new ArrayList<>(chunks);
@@ -358,7 +438,14 @@ public final class GpuOcean implements AutoCloseable {
         }
         WaterEffects effects=water.effects(preset);
         WaterModule.Style style=water.module().bodies().get(0).style();
+        if(useRefraction)snapshotOpaque(targetWidth,targetHeight);
         shader.bind();
+        shader.setUniformi("u_useRefraction",useRefraction?1:0);
+        shader.setUniformf("u_targetSize",(float)targetWidth,(float)targetHeight);
+        shader.setUniformf("u_near",camera.near);
+        shader.setUniformf("u_far",camera.far);
+        shader.setUniformi("u_opaqueColor",2);
+        shader.setUniformi("u_opaqueDepth",3);
         shader.setUniformMatrix("u_projView",camera.combined);
         shader.setUniformf("u_eye",camera.position);
         shader.setUniformf("u_haze",day.hazeRed(),day.hazeGreen(),day.hazeBlue());
@@ -421,5 +508,7 @@ public final class GpuOcean implements AutoCloseable {
         for(Chunk chunk:authoredChunks)chunk.mesh.dispose();
         chunks.clear();authoredChunks.clear();
         layerA.dispose();layerB.dispose();shader.dispose();
+        if(opaqueColorTexture!=0)Gdx.gl.glDeleteTexture(opaqueColorTexture);
+        if(opaqueDepthTexture!=0)Gdx.gl.glDeleteTexture(opaqueDepthTexture);
     }
 }

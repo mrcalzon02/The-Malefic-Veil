@@ -275,8 +275,10 @@ jobs:
           grep -q 'PASS LIVE_WATER_EDITOR_GPU_EDIT' build/test-visuals/editor-kit.log
           grep -q 'PASS LIVE_WATER_EDITOR_GPU_UNDO' build/test-visuals/editor-kit.log
           grep -q 'PASS AUTHORED_WATER_ROOF_OCCLUSION' build/test-visuals/editor-kit.log
+          grep -q 'PASS AUTHORED_WATER_DEPTH_REFRACTION' build/test-visuals/editor-kit.log
           test -s build/test-visuals/gpu-editor-authored-roof-no-water.png
           test -s build/test-visuals/gpu-editor-authored-roof-with-water.png
+          test -s build/test-visuals/gpu-editor-authored-roof-refracted.png
           test -s build/test-visuals/gpu-standalone-editor-water-before.png
           test -s build/test-visuals/gpu-standalone-editor-water-after.png
           test -s build/test-visuals/gpu-standalone-editor-water-moved.png
@@ -327,6 +329,7 @@ jobs:
             build/test-visuals/gpu-standalone-editor-water-undone.png
             build/test-visuals/gpu-editor-authored-roof-no-water.png
             build/test-visuals/gpu-editor-authored-roof-with-water.png
+            build/test-visuals/gpu-editor-authored-roof-refracted.png
             build/test-visuals/editor-kit.log
             build/test-visuals/psx-source-audit.log
             build/test-visuals/gpu-psx-ui-menu.log

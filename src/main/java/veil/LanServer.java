@@ -23,6 +23,8 @@ public final class LanServer implements AutoCloseable {
     private final long startup=System.currentTimeMillis();
     private final ConcurrentMap<Integer,Peer> connections=new ConcurrentHashMap<>();
     public final ArenaSystems match;
+    /** Read-only world-water geometry, loaded from this host's saved world directory. */
+    public final HostWorldWater authoredWater;
     public final ContinentSectors continentSectors;
     public final WorldHarvesting harvesting;
     public final CityLootEconomy loot;
@@ -80,6 +82,7 @@ public final class LanServer implements AutoCloseable {
         boolean active=HostRules.bind(saveDir,hardcore);
         moderation=saveDir==null?null:new HostModeration(saveDir);
         match=new ArenaSystems(seed,active);
+        authoredWater=new HostWorldWater(saveDir,seed);
         ContinentLayout continent=match.world.continent();
         continentSectors=new ContinentSectors(continent,new ContinentPopulation(continent));
         harvesting=new WorldHarvesting(match.world);

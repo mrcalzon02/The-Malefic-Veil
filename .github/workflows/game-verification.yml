@@ -232,6 +232,7 @@ jobs:
         run: |
           java -Djava.awt.headless=true -cp build/classes veil.WorldCreationConfigTest
           java -Djava.awt.headless=true -cp build/classes veil.WorldCreationEndToEndTest
+          java -Djava.awt.headless=true -cp build/classes veil.DedicatedHostWaterPersistenceTest
       - name: Assemble runnable jar
         shell: bash
         run: |

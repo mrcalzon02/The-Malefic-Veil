@@ -1789,13 +1789,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                         throw new IllegalStateException("Reload did not publish edited water");
                     // The old inspector model must be detached: its later edits
                     // cannot replace the live document consumed by the GPU.
-                    model.add(81,surface,78,3,3);
+                    model.add(81,original.y(),78,3,3);
                     if(!editedRevision.equals(editorProject.waterDocument().revision()))
                         throw new IllegalStateException("Detached water model republished old state");
                     // Simulate two genuine editor instances saving the SAME
                     // world; the first may not silently destroy newer disk work.
                     var peer=new MaleficEditorProject(world);
-                    peer.water().add(83,surface,78,3,3);
+                    peer.water().add(83,original.y(),78,3,3);
                     peer.saveWater();
                     String peerRevision=peer.waterDocument().revision();
                     boolean conflictRejected=false;

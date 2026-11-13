@@ -38,6 +38,8 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
     private final Path waterFile;
     private final Set<String> allowed;
     private WaterEditorModel waterEditor;
+    private Runnable detachWaterListener=()->{};
+    private String persistedWaterRevision;
     private final AtomicReference<WaterDocument> publishedWater=new AtomicReference<>();
     private volatile List<Placement> published=List.of();
     private int nextId=1;
@@ -131,7 +133,8 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
     }
     public synchronized void reloadWater() throws IOException {
         WaterDocument loaded;
-        if(Files.exists(waterFile)){
+        boolean exists=Files.exists(waterFile);
+        if(exists){
             try(InputStream input=Files.newInputStream(waterFile)){
                 loaded=WaterDocument.read(input);
             }
@@ -139,13 +142,36 @@ public final class MaleficEditorProject implements EditorProject<MaleficEditorPr
         if(!loaded.level().equals("seed-"+seed))
             throw new IOException("Water document belongs to another world seed");
         WaterEditorModel restored=new WaterEditorModel(loaded);
-        restored.listen(()->publishedWater.set(restored.document()));
+        // A detached inspector must not republish stale edits after reload.
+        detachWaterListener.run();
+        detachWaterListener=restored.listen(()->publishedWater.set(restored.document()));
         waterEditor=restored;
         publishedWater.set(loaded);
+        persistedWaterRevision=exists?loaded.revision():null;
     }
     public synchronized void saveWater() throws IOException {
+        saveWater(waterDocument().revision());
+    }
+    /** Reject stale UI requests and another editor's on-disk revision instead
+     * of silently clobbering a previously saved water polygon. The SDK file
+     * remains authoritative; this guard belongs to the Veil editor adapter. */
+    public synchronized void saveWater(String expectedRevision) throws IOException {
         WaterDocument current=waterDocument();
+        if(expectedRevision==null||!expectedRevision.equals(current.revision()))
+            throw new IOException("Stale water editor revision; retry from current view");
+        String onDisk=null;
+        if(Files.exists(waterFile)){
+            try(InputStream input=Files.newInputStream(waterFile)){
+                WaterDocument saved=WaterDocument.read(input);
+                if(!saved.level().equals("seed-"+seed))
+                    throw new IOException("Water document belongs to another world seed");
+                onDisk=saved.revision();
+            }
+        }
+        if(!Objects.equals(onDisk,persistedWaterRevision))
+            throw new IOException("Water document changed on disk; reload before saving");
         current.save(waterFile);
+        persistedWaterRevision=current.revision();
         if(current.equals(waterEditor.document()))waterEditor.markSaved();
     }
     public List<Node> hierarchy(){

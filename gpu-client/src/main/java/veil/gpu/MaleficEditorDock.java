@@ -86,7 +86,7 @@ public final class MaleficEditorDock implements AutoCloseable {
         operation("Deleted",()->{history.execute(()->project.delete(id));selectedId=null;});
     }
     private void save(){
-        try{project.save();project.saveWater();
+        try{project.save();project.saveWater(project.water().document().revision());
             status.setText("Saved scene geometry and water documents");}
         catch(IOException failure){JOptionPane.showMessageDialog(frame,failure.getMessage(),
             "Cannot save editor document",JOptionPane.ERROR_MESSAGE);}
@@ -141,7 +141,7 @@ public final class MaleficEditorDock implements AutoCloseable {
                 camera.x()+Math.cos(camera.yaw())*5,camera.waterY(),
                 camera.z()+Math.sin(camera.yaw())*5);
         },()->{
-            try{project.saveWater();
+            try{project.saveWater(waterPanel.model().document().revision());
                 status.setText("Saved "+project.waterDocumentPath().getFileName());
             }catch(IOException failure){JOptionPane.showMessageDialog(frame,
                 failure.getMessage(),"Cannot save water document",JOptionPane.ERROR_MESSAGE);}

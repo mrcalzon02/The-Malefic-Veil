@@ -1763,8 +1763,14 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                 catch(IllegalArgumentException expected){rejected=true;}
                 if(!rejected||!model.document().revision().equals(editedRevision))
                     throw new IllegalStateException("Malformed water resize corrupted document");
+                boolean staleSaveRejected=false;
+                try{editorProject.saveWater(smokeWaterBeforeRevision);}
+                catch(java.io.IOException expected){staleSaveRejected=true;}
+                if(!staleSaveRejected||
+                   !editorProject.waterDocument().revision().equals(editedRevision))
+                    throw new IllegalStateException("Stale UI water revision was accepted");
                 try{
-                    editorProject.saveWater();
+                    editorProject.saveWater(editedRevision);
                     var saved=new MaleficEditorProject(world).waterDocument();
                     if(saved.placements().size()!=1||
                        !saved.revision().equals(editedRevision)||
@@ -1781,6 +1787,33 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     editorProject.reloadWater();
                     if(!editedRevision.equals(editorProject.waterDocument().revision()))
                         throw new IllegalStateException("Reload did not publish edited water");
+                    // The old inspector model must be detached: its later edits
+                    // cannot replace the live document consumed by the GPU.
+                    model.add(81,surface,78,3,3);
+                    if(!editedRevision.equals(editorProject.waterDocument().revision()))
+                        throw new IllegalStateException("Detached water model republished old state");
+                    // Simulate two genuine editor instances saving the SAME
+                    // world; the first may not silently destroy newer disk work.
+                    var peer=new MaleficEditorProject(world);
+                    peer.water().add(83,surface,78,3,3);
+                    peer.saveWater();
+                    String peerRevision=peer.waterDocument().revision();
+                    boolean conflictRejected=false;
+                    try{editorProject.saveWater(editedRevision);}
+                    catch(java.io.IOException expected){conflictRejected=true;}
+                    if(!conflictRejected||
+                       !new MaleficEditorProject(world).waterDocument().revision()
+                           .equals(peerRevision))
+                        throw new IllegalStateException("Concurrent water save clobbered disk");
+                    peer.undoWaterEdit();
+                    peer.saveWater();
+                    editorProject.saveWater(editedRevision);
+                    if(!new MaleficEditorProject(world).waterDocument().revision()
+                           .equals(editedRevision))
+                        throw new IllegalStateException("Water save did not recover after conflict");
+                    System.out.println("PASS LIVE_WATER_EDITOR_REVISION_GUARD"+
+                        " staleUi=true detached=true diskConflict=true"+
+                        " restoredRevision="+editedRevision);
                 }catch(java.io.IOException bad){
                     throw new IllegalStateException("Edited water save/reopen failed",bad);
                 }

@@ -273,6 +273,7 @@ jobs:
           grep -q 'PASS EXTERNAL_EDITOR_KIT_GPU_IMPORT' build/test-visuals/editor-kit.log
           grep -q 'PASS PSX_HORROR_UI_EDITOR_RENDER' build/test-visuals/editor-kit.log
           grep -q 'PASS LIVE_WATER_EDITOR_GPU_EDIT' build/test-visuals/editor-kit.log
+          grep -q 'PASS LIVE_WATER_EDITOR_REVISION_GUARD' build/test-visuals/editor-kit.log
           grep -q 'PASS LIVE_WATER_EDITOR_GPU_UNDO' build/test-visuals/editor-kit.log
           grep -q 'PASS AUTHORED_WATER_ROOF_OCCLUSION' build/test-visuals/editor-kit.log
           grep -q 'PASS AUTHORED_WATER_DEPTH_REFRACTION' build/test-visuals/editor-kit.log

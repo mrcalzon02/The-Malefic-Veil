@@ -25,6 +25,88 @@ public final class DedicatedHostWaterPersistenceTest {
         check(snapshot.wet(wetX,65)&&!snapshot.wet(dryX,65),
             "Actual SDK wet/dry polygon boundary was lost");
     }
+
+    /** Native-editor document path into an existing, explicitly selected saved world. */
+    private static void selectedWorldHandoff()throws Exception {
+        long seed=200000L+Math.floorMod(UUID.randomUUID().getMostSignificantBits(),900000L);
+        String worldName="WaterHandoff"+UUID.randomUUID().toString().substring(0,8);
+        var world=new WorldCreationConfig(worldName,seed,false,
+            "solo","normal","normal",1,0);
+        Path editor=Path.of("worlds","editor","seed-"+seed,"city-A.water")
+            .toAbsolutePath().normalize();
+        Path destination=world.directory().resolve("city-A.water");
+        try {
+            world.saveNew();
+            Files.createDirectories(editor.getParent());
+            WaterDocument first=authored(seed,60);
+            first.save(editor); // Actual persisted native editor layout
+            try(LanServer initial=new LanServer(0,seed,world.directory())){
+                check(initial.port()>0,"Selected world did not bind a listening host");
+                initial.saveNow();
+            }
+            check(Files.isRegularFile(world.directory().resolve("host-ledger.current")),
+                "Selected host world has no durable checkpoint");
+            String empty=new WaterDocument("seed-"+seed,List.of()).revision();
+            HostWorldWater.Snapshot imported=HostWorldWater.importSavedEditorWater(
+                editor,world,first.revision(),empty);
+            checkWater(imported,first,60,66);
+            checkWater(new HostWorldWater(world.directory(),seed).snapshot(),first,60,66);
+            try(LanServer restarted=new LanServer(0,seed,world.directory())){
+                checkWater(restarted.authoredWater.snapshot(),first,60,66);
+            }
+
+            WaterDocument revised=authored(seed,84);
+            revised.save(editor);
+            String previousDisk=Files.readString(destination);
+            boolean rejected=false;
+            try{HostWorldWater.importSavedEditorWater(editor,world,first.revision(),first.revision());}
+            catch(IOException expected){rejected=true;}
+            check(rejected,"Stale editor revision overwrote selected host water");
+            rejected=false;
+            try{HostWorldWater.importSavedEditorWater(editor,world,revised.revision(),empty);}
+            catch(IOException expected){rejected=true;}
+            check(rejected,"Stale destination revision overwrote selected host water");
+            check(Files.readString(destination).equals(previousDisk),
+                "Rejected import modified the authoritative host file");
+
+            WaterDocument outsider=authored(seed,100);
+            outsider.save(destination);
+            rejected=false;
+            try{HostWorldWater.importSavedEditorWater(editor,world,revised.revision(),first.revision());}
+            catch(IOException expected){rejected=true;}
+            check(rejected,"Concurrent host water edit was overwritten");
+            check(Files.readString(destination).equals(outsider.encode()),
+                "Concurrent authoritative host file was clobbered");
+            checkWater(HostWorldWater.importSavedEditorWater(editor,world,
+                revised.revision(),outsider.revision()),revised,84,60);
+            try(LanServer finalHost=new LanServer(0,seed,world.directory())){
+                checkWater(finalHost.authoredWater.snapshot(),revised,84,60);
+            }
+
+            authored(seed+1,10).save(editor);
+            rejected=false;
+            try{HostWorldWater.importSavedEditorWater(editor,world,
+                authored(seed+1,10).revision(),revised.revision());}
+            catch(IOException expected){rejected=true;}
+            check(rejected,"Other seed editor water was accepted");
+            rejected=false;
+            try{HostWorldWater.importSavedEditorWater(destination,world,
+                revised.revision(),revised.revision());}
+            catch(IOException expected){rejected=true;}
+            check(rejected,"Host file was accepted as its own editor source");
+            check(Files.readString(destination).equals(revised.encode()),
+                "Rejected cross-seed or aliased source modified host water");
+            System.out.println("PASS SelectedWorldWaterHandoff: saved native-editor path -> "+
+                "selected durable host, revision/seed conflicts, listening restart");
+        }finally{
+            for(Path dir:List.of(world.directory(),editor.getParent())){
+                if(Files.exists(dir))try(var files=Files.walk(dir)){
+                    for(Path path:files.sorted(Comparator.reverseOrder()).toList())
+                        Files.deleteIfExists(path);
+                }
+            }
+        }
+    }
     public static void main(String[] args)throws Exception{
         long seed=92233L;
         Path directory=Files.createTempDirectory("malefic-host-authored-water-");
@@ -68,6 +150,7 @@ public final class DedicatedHostWaterPersistenceTest {
             try(LanServer wrong=new LanServer(0,seed,directory)){}
             catch(IOException expected){rejected=true;}
             check(rejected,"Host accepted another world's authored water");
+            selectedWorldHandoff();
             System.out.println("PASS DedicatedHostWaterPersistenceTest: "+
                 "real host restart, authored ID/revision/wet boundary, "+
                 "single body, external edit conflict, seed fail-closed");

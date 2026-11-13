@@ -54,6 +54,42 @@ public final class HostWorldWater {
         return validate(WaterDocument.read(Files.newInputStream(path)));
     }
 
+    /**
+     * Explicit saved-editor → selected saved-world handoff. The world configuration
+     * and both independent on-disk revisions must agree before any host overwrite.
+     * This does not hot-replicate water to clients or lock other processes.
+     */
+    public static Snapshot importSavedEditorWater(Path editorFile,
+            WorldCreationConfig selectedWorld,String expectedEditorRevision,
+            String expectedHostRevision)throws IOException {
+        if(editorFile==null||selectedWorld==null||
+           expectedEditorRevision==null||expectedHostRevision==null)
+            throw new IOException("Water import requires an explicit source, world and two revisions");
+        Path source=editorFile.toAbsolutePath().normalize();
+        Path destination=selectedWorld.directory().resolve("city-A.water").toAbsolutePath().normalize();
+        if(source.equals(destination)||source.getParent()==null||
+           !source.getFileName().toString().equals("city-A.water")||
+           !source.getParent().getFileName().toString().equals("seed-"+selectedWorld.seed()))
+            throw new IOException("Select the saved water document for this editor world");
+        if(!Files.isRegularFile(source))
+            throw new IOException("Save the editor water document before host export");
+        if(!selectedWorld.equals(WorldCreationConfig.load(selectedWorld.directory())))
+            throw new IOException("Selected host world changed; reselect before export");
+        WaterDocument authored=WaterDocument.read(Files.newInputStream(source));
+        if(!authored.level().equals("seed-"+selectedWorld.seed()))
+            throw new IOException("Editor water belongs to a different world seed");
+        if(!authored.revision().equals(expectedEditorRevision))
+            throw new IOException("Saved editor water changed; reload before export");
+        HostWorldWater host=new HostWorldWater(selectedWorld.directory(),selectedWorld.seed());
+        if(!host.snapshot().revision().equals(expectedHostRevision))
+            throw new IOException("Selected host water revision changed; confirm again");
+        // A second source read closes the ordinary edit-before-write window.
+        if(!authored.equals(WaterDocument.read(Files.newInputStream(source))))
+            throw new IOException("Editor source changed during water export");
+        host.save(authored,expectedHostRevision);
+        return host.snapshot();
+    }
+
     public Snapshot snapshot(){return current;}
 
     /** Explicit operator reload; a stale host view must not silently replace it. */

@@ -4,6 +4,10 @@ import org.beckenburg.editor.EditorHistory;
 import org.beckenburg.editor.EditorPalettePanel;
 import org.beckenburg.editor.EditorProject;
 import dev.mrcalzon.water.WaterEditorPanel;
+import veil.HostWorldWater;
+import veil.WorldCreationConfig;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,6 +95,45 @@ public final class MaleficEditorDock implements AutoCloseable {
         catch(IOException failure){JOptionPane.showMessageDialog(frame,failure.getMessage(),
             "Cannot save editor document",JOptionPane.ERROR_MESSAGE);}
     }
+    private record SavedWorld(WorldCreationConfig config){
+        public String toString(){return config.worldName()+" (seed "+config.seed()+")";}
+    }
+    /** Deliberate, revision-confirmed export. Never infer a host save from an editor path. */
+    private void exportWaterToHost(){
+        try{
+            if(project.water().dirty()||!Files.isRegularFile(project.waterDocumentPath()))
+                throw new IOException("Save authored water in the editor before exporting");
+            List<SavedWorld> worlds=WorldCreationConfig.list().stream()
+                .filter(w->("seed-"+w.seed()).equals(project.waterDocument().level()))
+                .map(SavedWorld::new).toList();
+            if(worlds.isEmpty())throw new IOException(
+                "No existing saved host world matches this editor seed");
+            Object choice=JOptionPane.showInputDialog(frame,
+                "Choose an existing saved world with the SAME seed:",
+                "Export authored water to dedicated host",JOptionPane.QUESTION_MESSAGE,
+                null,worlds.toArray(),worlds.get(0));
+            if(choice==null)return;
+            WorldCreationConfig selected=((SavedWorld)choice).config();
+            Path destination=selected.directory().resolve("city-A.water");
+            String editorRevision=project.waterDocument().revision();
+            String hostRevision=new HostWorldWater(selected.directory(),selected.seed())
+                .snapshot().revision();
+            String prompt="Source: "+project.waterDocumentPath()+"\nDestination: "+destination+
+                "\nEditor revision: "+editorRevision.substring(0,12)+
+                "\nHost revision: "+hostRevision.substring(0,12)+
+                "\nOverwrite selected host water? A running host must reload explicitly.";
+            if(JOptionPane.showConfirmDialog(frame,prompt,
+                    "Confirm host water import",JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE)!=JOptionPane.YES_OPTION)return;
+            HostWorldWater.Snapshot imported=HostWorldWater.importSavedEditorWater(
+                project.waterDocumentPath(),selected,editorRevision,hostRevision);
+            status.setText("Exported "+imported.module().bodies().size()+
+                " water surfaces to "+selected.worldName()+" (host reload required)");
+        }catch(IOException|RuntimeException failure){
+            JOptionPane.showMessageDialog(frame,failure.getMessage(),
+                "Host water export refused",JOptionPane.ERROR_MESSAGE);
+        }
+    }
     private void reload(){
         int result=JOptionPane.showConfirmDialog(frame,"Discard unsaved changes and reload?",
             "Reload scene",JOptionPane.YES_NO_OPTION);
@@ -167,6 +210,8 @@ public final class MaleficEditorDock implements AutoCloseable {
         waterActions.add(action("Redo water edit",()->
             operation("Water redo",project::redoWaterEdit)));
         waterTab.add(waterActions,BorderLayout.NORTH);
+        waterTab.add(action("Export SAVED water to selected host world",
+            this::exportWaterToHost),BorderLayout.SOUTH);
         waterTab.add(waterPanel,BorderLayout.CENTER);
         tabs.addTab("WATER SURFACES",waterTab);
         content.add(tabs,BorderLayout.CENTER);

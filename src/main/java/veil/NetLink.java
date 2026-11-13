@@ -77,6 +77,10 @@ public final class NetLink implements AutoCloseable {
     public java.util.List<ArsenalSystems.Effect> arsenalEffects(){return arsenalEffects;}
     private volatile WeatherSnapshot authoritativeWeather;
     public WeatherSnapshot weather(){return authoritativeWeather;}
+    private final HostWaterWire.Receiver waterReceiver;
+    private volatile dev.mrcalzon.water.WaterDocument authoritativeWater;
+    /** Verified host snapshot; never constructed from client editor state. */
+    public dev.mrcalzon.water.WaterDocument authoredWater(){return authoritativeWater;}
     private volatile Rpg rpg;
     private volatile boolean hardcore;
     private volatile String faction="NONE",crew="NONE",crewRole="NONE";
@@ -147,6 +151,7 @@ public final class NetLink implements AutoCloseable {
         if(transport==null)try{socket.connect(new InetSocketAddress(hbnet.Hbnet.lanAddress(host),port),4000);}catch(IOException|RuntimeException failed){try{socket.close();}catch(IOException ignored){}throw hbnet.Hbnet.failure();}
         Greeting greeting=greet(socket,host,port,transport==null);
         BufferedReader reader=greeting.reader();writer=greeting.writer();id=greeting.id();seed=greeting.seed();
+        waterReceiver=new HostWaterWire.Receiver(seed);
         Thread t=new Thread(()->{
             String line;
             try{
@@ -154,6 +159,10 @@ public final class NetLink implements AutoCloseable {
                     String[] s=line.split("\\|");
                     try{
                         switch(s[0]){
+                            case "WATER_BEGIN", "WATER_BODY", "WATER_END" -> {
+                                var full=waterReceiver.accept(line);
+                                if(full!=null)authoritativeWater=full;
+                            }
                             case "PEER" -> {
                                 if(s.length!=8)continue;
                                 int pid=Integer.parseInt(s[1]);

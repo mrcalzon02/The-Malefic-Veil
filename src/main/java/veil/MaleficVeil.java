@@ -101,6 +101,10 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     }
     /** Only immutable snapshots cross the Swing simulation / OpenGL threads. */
     public GpuFrame gpuFrame(){return gpuFrame;}
+    /** Client-side read-only copy of the joined host's verified water document. */
+    public dev.mrcalzon.water.WaterDocument gpuAuthoredWater(){
+        return net==null?null:net.authoredWater();
+    }
     /** Synthetic GPU events use original gameplay input handlers on Swing EDT. */
     public void gpuKey(int key,boolean pressed){
         SwingUtilities.invokeLater(()->{

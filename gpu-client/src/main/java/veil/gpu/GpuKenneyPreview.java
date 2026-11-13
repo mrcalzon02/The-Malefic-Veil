@@ -446,6 +446,8 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         coastalSource=seaModel;
         ocean=new GpuOcean(seaModel,continental);
         if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
+        else if(gameplay!=null&&gameplay.gpuAuthoredWater()!=null)
+            ocean.syncAuthored(gameplay.gpuAuthoredWater());
         lighting=new UrbanLighting(world);
         roofExposure=new GpuRoofExposure(scene);
         if(playSmoke&&weatherMaterialProof)chooseWeatherSceneRoads();
@@ -1149,6 +1151,13 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         if(editorProject!=null)ocean.syncAuthored(editorSmoke&&editorRoofWaterOff?
             new dev.mrcalzon.water.WaterDocument("seed-"+seed,List.of()):
             editorProject.waterDocument());
+        else if(gameplay!=null){
+            // LAN join may finish after OpenGL scene creation. Only a complete,
+            // seed/revision-checked host snapshot can replace the GPU footprint.
+            var fromHost=gameplay.gpuAuthoredWater();
+            if(fromHost!=null&&fromHost.level().equals("seed-"+seed))
+                ocean.syncAuthored(fromHost);
+        }
         if(!baselineOceanOff)
             ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10,
                 renderWidth,HEIGHT,!editorRoofRefractionOff);

@@ -365,6 +365,10 @@ public final class LanServer implements AutoCloseable {
             if(signer!=null)peer.send("AUTH_OK|acct_"+signer);
             peer.send("SERVER_MODE|"+(match.hardcore?"HARDCORE":"NORMAL"));
             peer.send(weatherPacket());
+            // Snapshot is captured from this host's validated, persisted world.
+            // Each joining client receives a complete revision-checked document.
+            for(String waterFrame:HostWaterWire.lines(authoredWater.snapshot().document()))
+                peer.send(waterFrame);
             connections.put(peer.id,peer);
             sendWorld(peer);peer.send(selfPacket(actor));syncResources(peer,actor);
             for(var c:loot.containers())

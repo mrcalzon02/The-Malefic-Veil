@@ -233,6 +233,9 @@ jobs:
           java -Djava.awt.headless=true -cp build/classes veil.WorldCreationConfigTest
           java -Djava.awt.headless=true -cp build/classes veil.WorldCreationEndToEndTest
           java -Djava.awt.headless=true -cp build/classes veil.DedicatedHostWaterPersistenceTest
+      - name: Two-client TCP host water polygon and revision boundary
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.HostWorldWaterLanTest
       - name: Assemble runnable jar
         shell: bash
         run: |

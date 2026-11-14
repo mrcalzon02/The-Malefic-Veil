@@ -348,7 +348,62 @@ public final class IncursionDualGeneratorTest {
         }finally{cleanup(root);}
     }
 
+
+    /** A 25-load Incursion order must never borrow foreign electricity,
+     * double-count a single plant through two buses, or use a plant that
+     * cannot fund the whole requested tick. This tests the real read-only
+     * allocator; the paid factory/restart tests below exercise consumption. */
+    private static void utilityIsolationAtHighLoad(){
+        String owner="acct_"+"a".repeat(64),other="acct_"+"f".repeat(64);
+        World.Device factory=new World.Device(0,0,ArenaSystems.UNRAVELED_RESILIENCE_GRID);
+        factory.ownerKey=owner;
+        World.Device nearBus=new World.Device(1,0,ArenaSystems.ELECTRIC_BUS);
+        nearBus.ownerKey=owner;
+        World.Device farBus=new World.Device(0,7,ArenaSystems.ELECTRIC_BUS);
+        farBus.ownerKey=owner;
+        World.Device first=new World.Device(2,0,ArenaSystems.GENERATOR);
+        first.ownerKey=owner;first.electricMs=1000;
+        World.Device second=new World.Device(0,13,ArenaSystems.GENERATOR);
+        second.ownerKey=owner;second.electricMs=999;
+        World.Device foreignBus=new World.Device(0,2,ArenaSystems.ELECTRIC_BUS);
+        foreignBus.ownerKey=other;
+        World.Device foreignPlant=new World.Device(2,1,ArenaSystems.GENERATOR);
+        foreignPlant.ownerKey=other;foreignPlant.electricMs=1200;
+        List<World.Device> network=List.of(
+            nearBus,farBus,first,second,foreignBus,foreignPlant);
+
+        check(ElectricUtility.CAPACITY==24&&
+            ElectricUtility.allocation(network,factory,25,Map.of(),1000).isEmpty(),
+            "A short-charge plant or foreign generator supplied a 25-load order");
+        second.electricMs=1000;
+        Map<World.Device,Integer> funded=
+            ElectricUtility.allocation(network,factory,25,Map.of(),1000);
+        check(funded.size()==2&&funded.getOrDefault(first,0)==24&&
+            funded.getOrDefault(second,0)==1&&
+            !funded.containsKey(foreignPlant)&&
+            first.electricMs==1000&&second.electricMs==1000,
+            "Two distinct same-owner charged plants did not allocate exactly 25 without debiting");
+        farBus.hp=0;
+        check(ElectricUtility.allocation(network,factory,25,Map.of(),1000).isEmpty(),
+            "A second bus path to the SAME plant counted as a second generator");
+        farBus.hp=100;
+        second.hp=0;
+        check(ElectricUtility.allocation(network,factory,25,Map.of(),1000).isEmpty(),
+            "Destroyed second generator still contributed energy");
+        second.hp=100;
+        check(ElectricUtility.allocation(network,factory,25,Map.of(first,24),1000).isEmpty(),
+            "Already reserved 24-load plant was illegally over-allocated");
+        Map<World.Device,Integer> remainder=ElectricUtility.allocation(
+            network,factory,25,Map.of(first,23),1000);
+        check(remainder.size()==2&&remainder.getOrDefault(first,0)==1&&
+            remainder.getOrDefault(second,0)==24,
+            "Partially reserved generator did not respect its remaining physical capacity");
+        check(ElectricUtility.allocation(network,factory,25,Map.of(),1001).isEmpty(),
+            "Two plants with 1000ms reserves promised more than one paid 1000ms tick");
+    }
+
     public static void main(String[] args)throws Exception{
+        utilityIsolationAtHighLoad();
         final long seed=20261029L;
         final String ownerKey="acct_"+"c".repeat(64);
         final String foreignKey="acct_"+"f".repeat(64);

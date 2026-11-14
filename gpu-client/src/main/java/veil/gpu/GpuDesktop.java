@@ -122,7 +122,9 @@ public final class GpuDesktop {
                     final long lanSeed=seed;
                     SwingUtilities.invokeAndWait(()->
                         session[0]=MaleficVeil.gpuLanWaterSmokeSession(lanSeed,left));
-                    new Lwjgl3Application(new GpuKenneyPreview(session[0],true),config());
+                    // This matched-water test is not the live-weapon input test:
+                    // that independent --play-smoke gate must retain its assertions.
+                    new Lwjgl3Application(new GpuKenneyPreview(session[0],false),config());
                 }
             }finally{
                 try(var entries=java.nio.file.Files.walk(temp)){

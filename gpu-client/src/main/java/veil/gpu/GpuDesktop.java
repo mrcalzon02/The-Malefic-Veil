@@ -112,8 +112,9 @@ public final class GpuDesktop {
                         " tcpClients=2 body="+document.placements().get(0).id()+
                         " revision="+document.revision());
                     final MaleficVeil[] session=new MaleficVeil[1];
+                    final long lanSeed=seed;
                     SwingUtilities.invokeAndWait(()->
-                        session[0]=MaleficVeil.gpuLanWaterSmokeSession(seed,left));
+                        session[0]=MaleficVeil.gpuLanWaterSmokeSession(lanSeed,left));
                     new Lwjgl3Application(new GpuKenneyPreview(session[0],true),config());
                 }
             }finally{

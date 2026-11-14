@@ -88,8 +88,8 @@ public final class GpuDesktop {
             System.setProperty("veil.gpu.lanWaterSmoke","true");
             java.nio.file.Path temp=java.nio.file.Files.createTempDirectory("malefic-host-water-gl-");
             try{
-                var city=new veil.ContinentVista(new veil.World(seed),'A');
-                double level=city.sample(66,66).elevation()+5.0;
+                var cityVista=new veil.ContinentVista(new veil.World(seed),'A');
+                double level=cityVista.sample(66,66).elevation()+5.0;
                 var document=new dev.mrcalzon.water.WaterDocument("seed-"+seed,
                     java.util.List.of(new dev.mrcalzon.water.WaterPlacement(
                         "courtyard-pool",66,level,66,32,32,0,

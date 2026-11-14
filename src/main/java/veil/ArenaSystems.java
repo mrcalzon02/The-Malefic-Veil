@@ -151,6 +151,8 @@ public final class ArenaSystems {
         public String accountKey;
         public long lastHurt=-100000,shotAt=-100000,shadeUntil,abilityAt=-100000,respawnAt=-100000,moveAt;
         public boolean dead;
+        /** Transient last-fatal-tick status, not a persisted corpse receipt. */
+        public String lastDeathGraveyardStatus="NO_DEATH";
         /** Independent host-only exposure clocks: food and water can run out at different times. */
         public long starvationMs,dehydrationMs;
         public long protectedUntil,lastSpawnAt=-100000;
@@ -336,6 +338,8 @@ public final class ArenaSystems {
         p.sanity=Math.max(0,p.sanity-Math.max(0,sanity));
         p.lastHurt=clock;
         if(p.hp==0){
+            // Never imply inventory is insured before an atomic corpse journal exists.
+            p.lastDeathGraveyardStatus=inspectGraveyardForDeath(p).reason();
             p.dead=true;p.respawnAt=clock;p.protectedUntil=0;
             p.starvationMs=0;p.dehydrationMs=0;
             if(hardcore){
@@ -746,6 +750,39 @@ public final class ArenaSystems {
         return ElectricUtility.allocation(world.devices,probe,
             CraftingEraRegistry.facility("monument-graveyard").utilityDemand(),
             Map.of(),Math.max(1,lastUtilityTickMs));
+    }
+    /** Physical graveyard prerequisite ONLY, not an escrow or item return.
+     * The durable item-instance journal, niche reservations and timed recovery
+     * channel are separate mandatory requirements before any insured death. */
+    public record GraveyardDeathGate(boolean physicalReady,String reason,int monumentIndex){}
+    private GraveyardDeathGate inspectGraveyardForDeath(Player p){
+        if(p==null||p.dead)return new GraveyardDeathGate(false,"DEAD_OR_MISSING",-1);
+        if(p.accountKey==null||!p.accountKey.matches("acct_[a-f0-9]{64}"))
+            return new GraveyardDeathGate(false,"AUTHENTICATION_REQUIRED",-1);
+        FactionGroups.Crew crew=factions.crewFor(p.accountKey);
+        if(crew==null)return new GraveyardDeathGate(false,"CREW_REQUIRED",-1);
+        boolean found=false,intact=false;
+        for(int i=0;i<world.devices.size();i++){
+            World.Device d=world.devices.get(i);
+            if(d.kind!=MONUMENT_GRAVEYARD)continue;
+            FactionGroups.Crew cryptCrew=factions.crewFor(d.ownerKey);
+            if(cryptCrew==null||!crew.id().equals(cryptCrew.id()))continue;
+            found=true;
+            if(d.hp<=0||world.detailedCity(d.x,d.y)||!world.canWalk(d.x,d.y))
+                continue;
+            intact=true;
+            if(!ElectricUtility.allocation(world.devices,d,
+                    CraftingEraRegistry.facility("monument-graveyard").utilityDemand(),
+                    Map.of(),Math.max(1,lastUtilityTickMs)).isEmpty())
+                return new GraveyardDeathGate(true,
+                    "PHYSICAL_READY_ESCROW_JOURNAL_MISSING",i);
+        }
+        return new GraveyardDeathGate(false,
+            !found?"NO_CREW_MONUMENT":!intact?"MONUMENT_DISABLED":"MONUMENT_UNPOWERED",-1);
+    }
+    /** Read-only host/crew/power check; no electric debit or corpse allocation. */
+    public synchronized GraveyardDeathGate graveyardDeathGate(int id){
+        return inspectGraveyardForDeath(player(id));
     }
     public record BuildReview(boolean allowed,String reason,int cashCost,int suppliesCost,double x,double y){}
     /** Returns a concrete rejection without mutating inventories. */

@@ -58,6 +58,18 @@ public final class IncursionGraveyardMonumentTest {
         check(host.assignAccount(2,alien)&&
             host.enrollFaction(2,CharacterRoster.Faction.THE_PENITENT),
             "Foreign account identity");
+        check(host.factions.create(owner,"Last Lantern")!=null,
+            "Paid graveyard needs a genuine owner crew");
+        String companion="acct_"+"c".repeat(64);
+        host.join(3);
+        check(host.assignAccount(3,companion)&&
+            host.enrollFaction(3,CharacterRoster.Faction.THE_UNRAVELED)&&
+            host.factions.invite(owner,companion,host.time())&&
+            host.factions.accept(companion,host.time()),
+            "Authoritative crew membership needed for graveyard preflight");
+        check("NO_CREW_MONUMENT".equals(host.graveyardDeathGate(1).reason())&&
+            "CREW_REQUIRED".equals(host.graveyardDeathGate(2).reason()),
+            "Unbuilt graveyard or foreign player granted protection");
         var spec=CraftingEraRegistry.facility("monument-graveyard");
         check(spec!=null&&spec.faction()==CraftingEraRegistry.Faction.ALL&&
             spec.utilityDemand()==30&&
@@ -294,7 +306,57 @@ public final class IncursionGraveyardMonumentTest {
                 .mapToLong(d->d.electricMs).sum()==
                 2*ElectricUtility.MAX_CHARGE_MS-200,
                 "Restart refunded paid commissioning power");
+            // A paid, persistent monument may be physically ready for its
+            // crew but MUST NOT restore items without an item-instance journal.
+            ArenaSystems.Player returned=resumed.join(7);
+            check(resumed.assignAccount(7,owner),"Recovered graveyard owner");
+            resumed.join(8);
+            check(resumed.assignAccount(8,companion),"Recovered crew member");
+            resumed.join(9);
+            check(resumed.assignAccount(9,alien),"Recovered foreign account");
+            var gate=resumed.graveyardDeathGate(7);
+            check(gate.physicalReady()&&
+                "PHYSICAL_READY_ESCROW_JOURNAL_MISSING".equals(gate.reason())&&
+                resumed.world.devices.get(gate.monumentIndex()).kind==MONUMENT&&
+                resumed.graveyardDeathGate(8).physicalReady()&&
+                !resumed.graveyardDeathGate(9).physicalReady(),
+                "Paid physical monument/crew readiness failed after restart");
+            World.Device liveBus=resumed.world.devices.stream().filter(d->
+                d.kind==ArenaSystems.ELECTRIC_BUS&&owner.equals(d.ownerKey))
+                .findFirst().orElseThrow();
+            int liveBusHp=liveBus.hp;
+            liveBus.hp=0;
+            check(!resumed.graveyardDeathGate(7).physicalReady()&&
+                "MONUMENT_UNPOWERED".equals(resumed.graveyardDeathGate(7).reason()),
+                "Unpowered monument promised protection");
+            liveBus.hp=liveBusHp;
+            check(resumed.graveyardDeathGate(7).physicalReady(),
+                "Powered monument was not physically eligible");
+
+            check(returned.survival.acquire(SurvivalCrafting.Item.FIBER,3,false)&&
+                resumed.arsenal.view(7).owned()!=0,
+                "Could not stage carried items and real arsenal");
+            resumed.damage(returned,1000,0);
+            check(returned.dead&&
+                "PHYSICAL_READY_ESCROW_JOURNAL_MISSING".equals(
+                    returned.lastDeathGraveyardStatus)&&
+                returned.survival.inventory().isEmpty()&&
+                resumed.arsenal.view(7).owned()==0&&returned.cash==0&&
+                returned.scrap==0&&returned.medkits==0,
+                "Incomplete death journal silently insured or retained physical items");
+            resumed.damage(returned,1000,0);
+            check(resumed.arsenal.view(7).owned()==0&&
+                returned.survival.inventory().isEmpty(),
+                "Repeated lethal damage replayed inventory");
+            HostCheckpoint.save(resumed,root);
+            ArenaSystems afterDeath=new ArenaSystems(seed);
+            check(HostCheckpoint.load(afterDeath,root),"Post-death checkpoint rejected");
+            ArenaSystems.Player deadAgain=afterDeath.join(10);
+            check(afterDeath.assignAccount(10,owner)&&deadAgain.dead&&
+                deadAgain.survival.inventory().isEmpty()&&
+                afterDeath.arsenal.view(10).owned()==0,
+                "Paid graveyard minted lost items after checkpoint/reconnect");
         }finally{cleanup(root);}
-        System.out.println("PASS IncursionGraveyardMonumentTest: paid infirmary, 384 capped units, stale-review isolation, crash-before/after-commit, 30-load power and restart");
+        System.out.println("PASS IncursionGraveyardMonumentTest: paid graveyard, owner/crew/power death gate, fail-closed carried gear, checkpoint/reconnect");
     }
 }

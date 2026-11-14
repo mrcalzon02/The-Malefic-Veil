@@ -98,16 +98,23 @@ public final class GpuDesktop {
                 document.save(temp.resolve("city-A.water"));
                 try(veil.LanServer host=new veil.LanServer(0,seed,temp);
                     veil.NetLink left=new veil.NetLink("127.0.0.1",host.port());
-                    veil.NetLink right=new veil.NetLink("127.0.0.1",host.port())){
+                    veil.NetLink right=new veil.NetLink("localhost",host.port())){
                     long deadline=System.nanoTime()+8_000_000_000L;
+                    // These aliases reach the same loopback server, but give
+                    // each real LAN client a separate persisted player identity.
+                    // A duplicate identity is rejected by moderated hosts.
                     while(System.nanoTime()<deadline&&
                           (!document.equals(left.authoredWater())||
-                           !document.equals(right.authoredWater())))
+                           !document.equals(right.authoredWater())||
+                           left.accountKey()==null||right.accountKey()==null))
                         Thread.sleep(20);
                     if(!document.equals(left.authoredWater())||
                        !document.equals(right.authoredWater())||
+                       !left.connected()||!right.connected()||
+                       left.accountKey()==null||right.accountKey()==null||
+                       left.accountKey().equals(right.accountKey())||
                        !document.revision().equals(host.authoredWater.snapshot().revision()))
-                        throw new IllegalStateException("Two real LAN seats did not receive selected host water");
+                        throw new IllegalStateException("Two authenticated TCP seats did not receive selected host water");
                     System.out.println("HOST_WATER_GPU_LAN seed="+seed+
                         " tcpClients=2 body="+document.placements().get(0).id()+
                         " revision="+document.revision());

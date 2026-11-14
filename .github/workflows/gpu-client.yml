@@ -286,6 +286,21 @@ jobs:
           test -s build/test-visuals/gpu-standalone-editor-water-undone.png
           test -s build/test-visuals/gpu-standalone-editor-live-viewport.png
           test -s build/test-visuals/editor-kit-smoke/seed-20261020/city-A.properties
+      - name: Host-selected octagon after two real LAN seats changes native GL pixels
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX' \
+            timeout 180s java -Dveil.weather.mute=true \
+            -jar gpu-client/target/MaleficVeil-GPU.jar \
+            --lan-water-smoke --seed=57113 | tee build/test-visuals/host-selected-water-gpu.log
+          grep -q 'HOST_WATER_GPU_LAN seed=57113 tcpClients=2' build/test-visuals/host-selected-water-gpu.log
+          grep -q 'PASS HOST_SELECTED_WATER_GPU seed=57113 clients=2' build/test-visuals/host-selected-water-gpu.log
+          test -s build/test-visuals/gpu-host-selected-water-dry.png
+          test -s build/test-visuals/gpu-host-selected-water-wet.png
       - name: Three seeded GPU worlds, ten city and exterior camera poses each
         if: runner.os == 'Linux'
         shell: bash
@@ -320,6 +335,9 @@ jobs:
             build/test-visuals/gallery-seed-*.log
             build/test-visuals/gpu-weather-material.log
             build/test-visuals/gpu-weather-material-*.png
+            build/test-visuals/host-selected-water-gpu.log
+            build/test-visuals/gpu-host-selected-water-dry.png
+            build/test-visuals/gpu-host-selected-water-wet.png
             build/test-visuals/gpu-ocean-performance.log
             build/test-visuals/gpu-ocean-coastal-no-water.png
             build/test-visuals/gpu-ocean-coastal-benchmark.png

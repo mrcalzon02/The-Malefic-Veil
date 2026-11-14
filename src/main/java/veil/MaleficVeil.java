@@ -105,6 +105,8 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
     public dev.mrcalzon.water.WaterDocument gpuAuthoredWater(){
         return net==null?null:net.authoredWater();
     }
+    /** LAN clients never substitute a local editor document for host water. */
+    public boolean gpuUsesHostWater(){return net!=null;}
     /** Synthetic GPU events use original gameplay input handlers on Swing EDT. */
     public void gpuKey(int key,boolean pressed){
         SwingUtilities.invokeLater(()->{
@@ -777,6 +779,20 @@ public final class MaleficVeil extends JPanel implements ActionListener, KeyList
         MaleficVeil game=new MaleficVeil(null,seed,0,null);
         game.gpuPresentation=true;
         game.weather.disableAudio();
+        game.publishGpuFrame();
+        return game;
+    }
+    /** Test-only real LAN gameplay session; static snapshot for matched GPU frames. */
+    public static MaleficVeil gpuLanWaterSmokeSession(long seed,NetLink client){
+        if(!SwingUtilities.isEventDispatchThread())
+            throw new IllegalStateException("LAN GPU smoke must initialize on Swing EDT");
+        if(client==null||client.seed!=seed||!client.connected()||
+           client.authoredWater()==null)
+            throw new IllegalArgumentException("Missing verified host water LAN session");
+        MaleficVeil game=new MaleficVeil(null,seed,0,client);
+        game.gpuPresentation=true;
+        game.weather.disableAudio();
+        game.timer.stop();
         game.publishGpuFrame();
         return game;
     }

@@ -52,6 +52,7 @@ public final class GpuDesktop {
     }
     public static void main(String[] args)throws Exception{
         boolean smoke=false,gallery=false,playSmoke=false,editor=false,editorSmoke=false;
+        boolean lanWaterSmoke=false;
         boolean frontendSmoke=false,frontendFlowSmoke=false;
         long seed=20261020L;
         char city='A';
@@ -59,6 +60,7 @@ public final class GpuDesktop {
             if("--smoke".equals(arg))smoke=true;
             else if("--gallery".equals(arg))gallery=true;
             else if("--play-smoke".equals(arg))playSmoke=true;
+            else if("--lan-water-smoke".equals(arg))lanWaterSmoke=true;
             else if("--frontend-smoke".equals(arg))frontendSmoke=true;
             else if("--frontend-flow-smoke".equals(arg))frontendFlowSmoke=true;
             else if("--editor".equals(arg))editor=true;
@@ -70,7 +72,8 @@ public final class GpuDesktop {
             }else throw new IllegalArgumentException("Unknown argument: "+arg);
         }
         if((smoke?1:0)+(gallery?1:0)+(playSmoke?1:0)+(editor?1:0)+
-            (editorSmoke?1:0)+(frontendSmoke?1:0)+(frontendFlowSmoke?1:0)>1)
+            (editorSmoke?1:0)+(frontendSmoke?1:0)+(frontendFlowSmoke?1:0)+
+           (lanWaterSmoke?1:0)>1)
             throw new IllegalArgumentException("Choose one smoke/gallery/play-smoke/editor mode");
         if(frontendSmoke||frontendFlowSmoke){
             new Lwjgl3Application(new GpuFrontEnd(frontendSmoke,frontendFlowSmoke),config());
@@ -79,6 +82,46 @@ public final class GpuDesktop {
             if(editorSmoke)
                 System.setProperty("veil.editor.dir","build/test-visuals/editor-kit-smoke");
             new Lwjgl3Application(GpuKenneyPreview.editableWorld(seed,editorSmoke),config());
+        }else if(lanWaterSmoke){
+            // Saved host file -> two real TCP clients -> actual gameplay GPU.
+            System.setProperty("veil.weather.mute","true");
+            System.setProperty("veil.gpu.lanWaterSmoke","true");
+            java.nio.file.Path temp=java.nio.file.Files.createTempDirectory("malefic-host-water-gl-");
+            try{
+                var city=new veil.ContinentVista(new veil.World(seed),'A');
+                double level=city.sample(66,66).elevation()+5.0;
+                var document=new dev.mrcalzon.water.WaterDocument("seed-"+seed,
+                    java.util.List.of(new dev.mrcalzon.water.WaterPlacement(
+                        "courtyard-pool",66,level,66,32,32,0,
+                        new dev.mrcalzon.water.WaterSettings(),
+                        dev.mrcalzon.water.WaterPlacement.Shape.OCTAGON)));
+                document.save(temp.resolve("city-A.water"));
+                try(veil.LanServer host=new veil.LanServer(0,seed,temp);
+                    veil.NetLink left=new veil.NetLink("127.0.0.1",host.port());
+                    veil.NetLink right=new veil.NetLink("127.0.0.1",host.port())){
+                    long deadline=System.nanoTime()+8_000_000_000L;
+                    while(System.nanoTime()<deadline&&
+                          (!document.equals(left.authoredWater())||
+                           !document.equals(right.authoredWater())))
+                        Thread.sleep(20);
+                    if(!document.equals(left.authoredWater())||
+                       !document.equals(right.authoredWater())||
+                       !document.revision().equals(host.authoredWater.snapshot().revision()))
+                        throw new IllegalStateException("Two real LAN seats did not receive selected host water");
+                    System.out.println("HOST_WATER_GPU_LAN seed="+seed+
+                        " tcpClients=2 body="+document.placements().get(0).id()+
+                        " revision="+document.revision());
+                    final MaleficVeil[] session=new MaleficVeil[1];
+                    SwingUtilities.invokeAndWait(()->
+                        session[0]=MaleficVeil.gpuLanWaterSmokeSession(seed,left));
+                    new Lwjgl3Application(new GpuKenneyPreview(session[0],true),config());
+                }
+            }finally{
+                try(var entries=java.nio.file.Files.walk(temp)){
+                    for(var file:entries.sorted(java.util.Comparator.reverseOrder()).toList())
+                        java.nio.file.Files.deleteIfExists(file);
+                }
+            }
         }else if(playSmoke){
             System.setProperty("veil.weather.mute","true");
             final MaleficVeil[] session=new MaleficVeil[1];

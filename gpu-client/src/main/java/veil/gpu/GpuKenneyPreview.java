@@ -152,6 +152,9 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
     private final MaleficVeil gameplay;
     private final boolean playSmoke;
     private final boolean editorMode,editorSmoke;
+    private final boolean lanWaterSmoke=Boolean.getBoolean("veil.gpu.lanWaterSmoke");
+    private int[] hostWaterDryPixels;
+    private double hostWaterLevel;
     private MaleficEditorProject editorProject;
     private MaleficEditorDock editorDock;
     private EditorHistory<MaleficEditorProject.Snapshot> editorTestHistory;
@@ -445,9 +448,15 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         veil.VeilOcean seaModel=new veil.VeilOcean(world,continental);
         coastalSource=seaModel;
         ocean=new GpuOcean(seaModel,continental);
-        if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
-        else if(gameplay!=null&&gameplay.gpuAuthoredWater()!=null)
-            ocean.syncAuthored(gameplay.gpuAuthoredWater());
+        if(gameplay!=null&&gameplay.gpuUsesHostWater()){
+            // Host snapshot is authoritative even with a local editor project.
+            var host=gameplay.gpuAuthoredWater();
+            if(host!=null){
+                if(!host.level().equals("seed-"+seed))
+                    throw new IllegalStateException("Wrong-world host water at GPU creation");
+                ocean.syncAuthored(host);
+            }
+        }else if(editorProject!=null)ocean.syncAuthored(editorProject.waterDocument());
         lighting=new UrbanLighting(world);
         roofExposure=new GpuRoofExposure(scene);
         if(playSmoke&&weatherMaterialProof)chooseWeatherSceneRoads();
@@ -1038,6 +1047,16 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
             visualDistance=85;
             worldTimeMs=WorldDayNight.DAY_MS/2;
         }
+        if(lanWaterSmoke){
+            var host=gameplay.gpuAuthoredWater();
+            if(host==null||host.placements().size()!=1||
+               !host.level().equals("seed-"+seed))
+                throw new IllegalStateException("LAN GPU proof lost selected host water");
+            hostWaterLevel=host.placements().get(0).y();
+            x=66;y=66;cameraHeight=hostWaterLevel+68;
+            heading=.24;cameraPitch=-1.52;visualDistance=240;
+            worldTimeMs=WorldDayNight.DAY_MS/2;
+        }
         environment=WorldDayNight.atElapsedMs(worldTimeMs);
         Gdx.gl.glClearColor(environment.hazeRed(),environment.hazeGreen(),environment.hazeBlue(),1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
@@ -1143,21 +1162,26 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
         oceanSeconds+=Math.max(0,Math.min(.05,Gdx.graphics.getDeltaTime()));
         // The two refraction proofs must share an identical ocean wave phase.
         if(editorSmoke&&frames>=96&&frames<=107)oceanSeconds=0;
+        if(lanWaterSmoke)oceanSeconds=0;
         // Paired diagnostic uses the SAME city, camera and seeded world;
         // stage one measures the scene without ocean draws, stage two with.
         // Neither mode changes host physics or climate.
         boolean baselineOceanOff=gallery&&
             Boolean.getBoolean("veil.gpu.oceanBenchmark")&&frames<180;
-        if(editorProject!=null)ocean.syncAuthored(editorSmoke&&editorRoofWaterOff?
+        if(gameplay!=null&&gameplay.gpuUsesHostWater()){
+            // No untrusted local editor fallback while LAN join is in flight.
+            // Diagnostic baseline clears only authored overlay, not sea parcels.
+            var fromHost=gameplay.gpuAuthoredWater();
+            if(lanWaterSmoke&&frames<24)
+                ocean.syncAuthored(new dev.mrcalzon.water.WaterDocument("seed-"+seed,List.of()));
+            else if(fromHost!=null){
+                if(!fromHost.level().equals("seed-"+seed))
+                    throw new IllegalStateException("Wrong-world host water reached renderer");
+                ocean.syncAuthored(fromHost);
+            }
+        }else if(editorProject!=null)ocean.syncAuthored(editorSmoke&&editorRoofWaterOff?
             new dev.mrcalzon.water.WaterDocument("seed-"+seed,List.of()):
             editorProject.waterDocument());
-        else if(gameplay!=null){
-            // LAN join may finish after OpenGL scene creation. Only a complete,
-            // seed/revision-checked host snapshot can replace the GPU footprint.
-            var fromHost=gameplay.gpuAuthoredWater();
-            if(fromHost!=null&&fromHost.level().equals("seed-"+seed))
-                ocean.syncAuthored(fromHost);
-        }
         if(!baselineOceanOff)
             ocean.render(camera,environment,oceanSeconds,weatherPreset,visualDistance+10,
                 renderWidth,HEIGHT,!editorRoofRefractionOff);
@@ -1692,6 +1716,60 @@ public final class GpuKenneyPreview extends ApplicationAdapter {
                     framebuffer.end();Gdx.app.exit();return;
                 }
                 setGalleryView(galleryViews[galleryIndex]);
+            }
+        }
+        if(lanWaterSmoke){
+            frames++;
+            if(frames==16){
+                if(ocean.authoredTriangles()!=0)
+                    throw new IllegalStateException("Host-water dry baseline has authored triangles");
+                hostWaterDryPixels=oceanSamplePixels();
+                saveOceanBenchmarkFrame("gpu-host-selected-water-dry.png");
+            }else if(frames==40){
+                var document=gameplay.gpuAuthoredWater();
+                if(document==null||document.placements().size()!=1||
+                   !document.placements().get(0).id().equals("courtyard-pool")||
+                   document.placements().get(0).shape()!=
+                       dev.mrcalzon.water.WaterPlacement.Shape.OCTAGON||
+                   !document.level().equals("seed-"+seed)||
+                   ocean.authoredTriangles()!=8||ocean.lastAuthoredDraws()<1)
+                    throw new IllegalStateException("Selected host octagon not drawn by GL");
+                int[] now=oceanSamplePixels();
+                if(hostWaterDryPixels==null||hostWaterDryPixels.length!=now.length)
+                    throw new IllegalStateException("Missing paired host-water readback");
+                int wet=0,dry=0,wetChanged=0,dryChanged=0,index=0;
+                for(int py=36;py<HEIGHT-36;py+=4)
+                    for(int px=8;px<renderWidth-8;px+=4){
+                        int delta=presentationRgbDistance(now[index],hostWaterDryPixels[index]);
+                        index++;
+                        var near=new Vector3(2f*(px+.5f)/renderWidth-1f,
+                            2f*(py+.5f)/HEIGHT-1f,-1f)
+                            .prj(camera.invProjectionView);
+                        var direction=near.sub(camera.position).nor();
+                        if(direction.y>=-.001f)continue;
+                        double t=(hostWaterLevel-camera.position.y)/direction.y;
+                        if(t<=0||t>camera.far)continue;
+                        double wx=camera.position.x+t*direction.x;
+                        double wz=camera.position.z+t*direction.z;
+                        // Conservative octagon interior/exterior; no edge pixels.
+                        if(Math.abs(wx-66)<8&&Math.abs(wz-66)<8){
+                            wet++;if(delta>36)wetChanged++;
+                        }else if(Math.abs(wx-66)>25||Math.abs(wz-66)>25){
+                            dry++;if(delta>36)dryChanged++;
+                        }
+                    }
+                saveOceanBenchmarkFrame("gpu-host-selected-water-wet.png");
+                System.out.println("HOST_SELECTED_WATER_PIXELS wet="+wetChanged+"/"+wet+
+                    " dry="+dryChanged+"/"+dry+" triangles="+ocean.authoredTriangles()+
+                    " draws="+ocean.lastAuthoredDraws());
+                if(wet<35||wetChanged<35||dry<80||
+                   dryChanged>Math.max(12,dry/50))
+                    throw new IllegalStateException("LAN host water failed GL wet/dry controls");
+                System.out.println("PASS HOST_SELECTED_WATER_GPU seed="+seed+
+                    " clients=2 water=courtyard-pool shape=OCTAGON revision="+
+                    document.revision()+" wetChanged="+wetChanged+
+                    " dryChanged="+dryChanged+" triangles=8");
+                framebuffer.end();Gdx.app.exit();return;
             }
         }
         if(editorSmoke){

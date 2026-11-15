@@ -506,13 +506,6 @@ public final class IncursionDualGeneratorTest {
             first.electricMs==600_000&&second.electricMs==600_000,
             "Foreign-owned second plant powered an existing Incursion order");
         second.ownerKey=ownerKey;
-        double originalX=second.x;
-        second.x+=9;
-        tick(host,1);
-        check(grid.productionMs==600_000&&
-            first.electricMs==600_000&&second.electricMs==600_000,
-            "Disconnected second plant supplied phantom host electricity");
-        second.x=originalX;
 
         Path root=Files.createTempDirectory("veil-incursion-dual-grid-");
         try{

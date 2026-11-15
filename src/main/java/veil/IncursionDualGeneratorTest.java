@@ -490,6 +490,29 @@ public final class IncursionDualGeneratorTest {
             second.electricMs==600_000,
             "Destroyed physical bus still delivered phantom power");
         bus.hp=100;
+        // Read-only allocation tests cover generator failure; prove the LIVE
+        // paid host order also holds its work and both energy reserves when
+        // one of the two indispensable physical plants is unavailable.
+        second.hp=0;
+        tick(host,1);
+        check(grid.productionActive&&grid.productionMs==600_000&&
+            first.electricMs==600_000&&second.electricMs==600_000&&
+            crate.storage.count(SurvivalCrafting.Item.RESILIENCE_CORE)==0,
+            "Destroyed second plant advanced a 25-load paid host order");
+        second.hp=100;
+        second.ownerKey=foreignKey;
+        tick(host,1);
+        check(grid.productionMs==600_000&&
+            first.electricMs==600_000&&second.electricMs==600_000,
+            "Foreign-owned second plant powered an existing Incursion order");
+        second.ownerKey=ownerKey;
+        double originalX=second.x;
+        second.x+=9;
+        tick(host,1);
+        check(grid.productionMs==600_000&&
+            first.electricMs==600_000&&second.electricMs==600_000,
+            "Disconnected second plant supplied phantom host electricity");
+        second.x=originalX;
 
         Path root=Files.createTempDirectory("veil-incursion-dual-grid-");
         try{

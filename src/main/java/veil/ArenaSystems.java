@@ -1,6 +1,9 @@
 package veil;
 
 import java.util.*;
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Host-owned arena state. All mutations are serialized by synchronized methods.
@@ -19,6 +22,34 @@ public final class ArenaSystems {
     private final Map<String,Profile> accountProfiles=new LinkedHashMap<>();
     private final Map<String,CharacterProgression.Snapshot> accountSkills=new LinkedHashMap<>();
     private final Map<String,SurvivalCrafting.Status> accountSurvival=new LinkedHashMap<>();
+    // One bounded permanent-loss receipt per authenticated account. This is an
+    // inventory-migration audit, NOT an item-instance escrow or retrieval key.
+    private final Map<String,DeathLossAudit> deathLossAudits=new LinkedHashMap<>();
+    public record DeathLossAudit(String eventId,long sequence,String inventoryFingerprint){}
+    public static boolean validDeathLossAudit(DeathLossAudit record){
+        return record!=null&&record.sequence()>0&&record.sequence()<Long.MAX_VALUE&&
+            record.eventId()!=null&&record.eventId().matches(
+                "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")&&
+            record.inventoryFingerprint()!=null&&record.inventoryFingerprint().matches("[0-9a-f]{64}");
+    }
+    public synchronized Map<String,DeathLossAudit> deathLossSnapshot(){
+        return Collections.unmodifiableMap(new TreeMap<>(deathLossAudits));
+    }
+    public synchronized DeathLossAudit lastDeathLoss(String account){
+        return deathLossAudits.get(account);
+    }
+    /** Restore only before sessions join, from a validated host account ledger. */
+    public synchronized void restoreDeathLossAudits(Map<String,DeathLossAudit> records){
+        if(!players.isEmpty())throw new IllegalStateException("Live death journal restore forbidden");
+        Map<String,DeathLossAudit> checked=new TreeMap<>();
+        for(var entry:records.entrySet()){
+            if(!entry.getKey().matches("acct_[a-f0-9]{64}")||
+                !validDeathLossAudit(entry.getValue()))
+                throw new IllegalArgumentException("Invalid death loss audit");
+            checked.put(entry.getKey(),entry.getValue());
+        }
+        deathLossAudits.clear();deathLossAudits.putAll(checked);
+    }
     private final java.security.SecureRandom respawnRandom=new java.security.SecureRandom();
     /** Last bounded host simulation interval. Real dedicated servers tick at
      * 100ms, while deterministic tests may advance in 1-1000ms increments.
@@ -153,6 +184,8 @@ public final class ArenaSystems {
         public boolean dead;
         /** Transient last-fatal-tick status, not a persisted corpse receipt. */
         public String lastDeathGraveyardStatus="NO_DEATH";
+        /** Host-transient event ID; only authenticated loss receipts survive a checkpoint. */
+        public String lastDeathEventId="";
         /** Independent host-only exposure clocks: food and water can run out at different times. */
         public long starvationMs,dehydrationMs;
         public long protectedUntil,lastSpawnAt=-100000;
@@ -331,6 +364,34 @@ public final class ArenaSystems {
         if(p==null||p.dead||clock<p.protectedUntil||hp<=0)return;
         applyHostDamage(p,hp,0);
     }
+    /** Canonical, read-only fingerprint of the current host-owned carried
+     * representations. This is NOT an item-instance list and cannot restore gear.
+     * It detects omitted legacy, survival and arsenal fields during migration. */
+    private String deathInventoryFingerprint(Player p){
+        ArsenalSystems.View equipped=arsenal.view(p.id);
+        if(equipped==null)throw new IllegalStateException("Absent authoritative arsenal");
+        try{
+            ByteArrayOutputStream bytes=new ByteArrayOutputStream();
+            try(DataOutputStream out=new DataOutputStream(bytes)){
+                out.writeInt(0x444c4131); // loss-audit schema 1
+                out.writeUTF(p.accountKey);
+                out.writeInt(p.cash);out.writeInt(p.scrap);out.writeInt(p.medkits);
+                out.writeInt(p.pistolReserve);out.writeInt(p.shellReserve);
+                out.writeInt(p.pistolClip);out.writeInt(p.shellClip);
+                out.writeInt(SurvivalCrafting.Item.values().length);
+                for(SurvivalCrafting.Item item:SurvivalCrafting.Item.values())
+                    out.writeInt(p.survival.count(item));
+                out.writeLong(equipped.owned());out.writeInt(equipped.selected());
+                for(int n:equipped.clip())out.writeInt(n);
+                for(int n:equipped.reserve())out.writeInt(n);
+                for(int n:equipped.materials())out.writeInt(n);
+            }
+            return HexFormat.of().formatHex(
+                MessageDigest.getInstance("SHA-256").digest(bytes.toByteArray()));
+        }catch(IOException|NoSuchAlgorithmException impossible){
+            throw new IllegalStateException("Host death inventory audit failed",impossible);
+        }
+    }
     /** Every lethal cause funnels through the same inventory, arsenal and
      * normal/hardcore XP loss. Never create an alternate survival death path. */
     private void applyHostDamage(Player p,int hp,int sanity){
@@ -338,6 +399,17 @@ public final class ArenaSystems {
         p.sanity=Math.max(0,p.sanity-Math.max(0,sanity));
         p.lastHurt=clock;
         if(p.hp==0){
+            // Take a canonical pre-wipe account inventory audit. It becomes
+            // durable ONLY after a paired HostCheckpoint commit.
+            String fingerprint=deathInventoryFingerprint(p);
+            String eventId=UUID.randomUUID().toString();
+            p.lastDeathEventId=eventId;
+            if(p.accountKey.matches("acct_[a-f0-9]{64}")){
+                DeathLossAudit previous=deathLossAudits.get(p.accountKey);
+                long sequence=previous==null?1:Math.addExact(previous.sequence(),1);
+                deathLossAudits.put(p.accountKey,
+                    new DeathLossAudit(eventId,sequence,fingerprint));
+            }
             // Never imply inventory is insured before an atomic corpse journal exists.
             p.lastDeathGraveyardStatus=inspectGraveyardForDeath(p).reason();
             p.dead=true;p.respawnAt=clock;p.protectedUntil=0;

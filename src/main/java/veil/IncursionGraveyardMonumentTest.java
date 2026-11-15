@@ -337,6 +337,11 @@ public final class IncursionGraveyardMonumentTest {
                 resumed.arsenal.view(7).owned()!=0,
                 "Could not stage carried items and real arsenal");
             resumed.damage(returned,1000,0);
+            var firstLoss=resumed.lastDeathLoss(owner);
+            check(firstLoss!=null&&firstLoss.sequence()==1&&
+                firstLoss.eventId().equals(returned.lastDeathEventId)&&
+                ArenaSystems.validDeathLossAudit(firstLoss),
+                "Fatal host event failed to issue a valid one-time loss audit");
             check(returned.dead&&
                 "PHYSICAL_READY_ESCROW_JOURNAL_MISSING".equals(
                     returned.lastDeathGraveyardStatus)&&
@@ -345,6 +350,9 @@ public final class IncursionGraveyardMonumentTest {
                 returned.scrap==0&&returned.medkits==0,
                 "Incomplete death journal silently insured or retained physical items");
             resumed.damage(returned,1000,0);
+            check(firstLoss.equals(resumed.lastDeathLoss(owner))&&
+                firstLoss.eventId().equals(returned.lastDeathEventId),
+                "Repeated lethal damage created a second loss event");
             check(resumed.arsenal.view(7).owned()==0&&
                 returned.survival.inventory().isEmpty(),
                 "Repeated lethal damage replayed inventory");
@@ -353,9 +361,27 @@ public final class IncursionGraveyardMonumentTest {
             check(HostCheckpoint.load(afterDeath,root),"Post-death checkpoint rejected");
             ArenaSystems.Player deadAgain=afterDeath.join(10);
             check(afterDeath.assignAccount(10,owner)&&deadAgain.dead&&
+                firstLoss.equals(afterDeath.lastDeathLoss(owner))&&
                 deadAgain.survival.inventory().isEmpty()&&
                 afterDeath.arsenal.view(10).owned()==0,
                 "Paid graveyard minted lost items after checkpoint/reconnect");
+            // Subsequent real death must receive a new event, even after restore.
+            check(afterDeath.respawn(10,0),"Legitimate empty respawn rejected");
+            check(deadAgain.survival.acquire(SurvivalCrafting.Item.FIBER,1,false),
+                "Could not stage different second-death inventory");
+            afterDeath.advance(9000); // let the respawn grace expire
+            afterDeath.damage(deadAgain,1000,0);
+            var secondLoss=afterDeath.lastDeathLoss(owner);
+            check(deadAgain.dead&&secondLoss!=null&&secondLoss.sequence()==2&&
+                !secondLoss.eventId().equals(firstLoss.eventId())&&
+                !secondLoss.inventoryFingerprint().equals(firstLoss.inventoryFingerprint())&&
+                deadAgain.survival.inventory().isEmpty(),
+                "Second death reused prior event or omitted changed backpack");
+            HostCheckpoint.save(afterDeath,root);
+            ArenaSystems secondRestart=new ArenaSystems(seed);
+            check(HostCheckpoint.load(secondRestart,root)&&
+                secondLoss.equals(secondRestart.lastDeathLoss(owner)),
+                "Second loss audit not preserved with paired generation");
         }finally{cleanup(root);}
         System.out.println("PASS IncursionGraveyardMonumentTest: paid graveyard, owner/crew/power death gate, fail-closed carried gear, checkpoint/reconnect");
     }

@@ -12,19 +12,22 @@ import java.util.zip.CRC32;
  * make inventory/crew/world transfers atomic across their durable domains.
  */
 public final class AccountDirectory {
-    // V1 has no physical survival inventory. V2 appends a bounded account
-    // survival ledger after crews, preserving the old fields byte-for-byte.
-    private static final int MAGIC=0x56414331,VERSION=2,MAX=2_000_000;
+    // V1 has no physical survival inventory; V2 adds survival stacks.
+    // V3 appends a bounded, non-recoverable last-death loss audit per account.
+    // All earlier fields remain in their original order for migration.
+    private static final int MAGIC=0x56414331,VERSION=3,MAX=2_000_000;
     private AccountDirectory(){}
     private record State(long seed,boolean hardcore,
         Map<String,ArenaSystems.Profile> profiles,
         Map<String,CharacterProgression.Snapshot> skills,
         FactionGroups.Snapshot groups,
-        Map<String,SurvivalCrafting.Status> survival){}
+        Map<String,SurvivalCrafting.Status> survival,
+        Map<String,ArenaSystems.DeathLossAudit> lossAudits){}
     private static boolean account(String key){return key.matches("acct_[a-f0-9]{64}");}
     private static State capture(ArenaSystems arena){
         return new State(arena.world.seed,arena.hardcore,arena.profilesSnapshot(),
-            arena.skillsSnapshot(),arena.factions.snapshot(),arena.survivalSnapshot());
+            arena.skillsSnapshot(),arena.factions.snapshot(),arena.survivalSnapshot(),
+            arena.deathLossSnapshot());
     }
     private static void profile(DataOutputStream out,ArenaSystems.Profile p)throws IOException{
         out.writeInt(p.hp());out.writeInt(p.sanity());out.writeInt(p.cash());
@@ -82,6 +85,13 @@ public final class AccountDirectory {
                     out.writeInt(item.getValue());
                 }
             }
+            out.writeInt(state.lossAudits().size());
+            for(var entry:new TreeMap<>(state.lossAudits()).entrySet()){
+                out.writeUTF(entry.getKey());
+                out.writeUTF(entry.getValue().eventId());
+                out.writeLong(entry.getValue().sequence());
+                out.writeUTF(entry.getValue().inventoryFingerprint());
+            }
         }
         CRC32 crc=new CRC32();crc.update(buffer.toByteArray());
         try(DataOutputStream out=new DataOutputStream(buffer)){out.writeLong(crc.getValue());}
@@ -104,7 +114,7 @@ public final class AccountDirectory {
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes))){
             if(in.readInt()!=MAGIC)throw new IOException("Unknown accounts signature");
             int version=in.readInt();
-            if(version!=1&&version!=VERSION)throw new IOException("Unknown accounts format");
+            if(version<1||version>VERSION)throw new IOException("Unknown accounts format");
             long seed=in.readLong();boolean hardcore=in.readBoolean();
             if(seed!=target.world.seed||hardcore!=target.hardcore)
                 throw new IOException("Account realm seed or hardcore mode mismatch");
@@ -167,6 +177,18 @@ public final class AccountDirectory {
                    survival.putIfAbsent(key,validation.status())!=null)
                     throw new IOException("Unowned or duplicate survival stock");
             }
+            Map<String,ArenaSystems.DeathLossAudit> lossAudits=new TreeMap<>();
+            Set<String> eventIds=new HashSet<>();
+            if(version>=3)for(int i=count(in,10000);i>0;i--){
+                String owner=in.readUTF();
+                var audit=new ArenaSystems.DeathLossAudit(
+                    in.readUTF(),in.readLong(),in.readUTF());
+                if(!account(owner)||!profiles.containsKey(owner)||
+                    !ArenaSystems.validDeathLossAudit(audit)||
+                    lossAudits.putIfAbsent(owner,audit)!=null||
+                    !eventIds.add(audit.eventId()))
+                    throw new IOException("Invalid or duplicate death loss audit");
+            }
             long checksum=in.readLong();
             if(checksum!=crc.getValue()||in.available()!=0)
                 throw new IOException("Account directory CRC/trailing bytes mismatch");
@@ -175,7 +197,7 @@ public final class AccountDirectory {
             try{new FactionGroups().restore(factionState);}
             catch(IllegalArgumentException bad){throw new IOException("Invalid faction crews",bad);}
             return new State(seed,hardcore,Map.copyOf(profiles),Map.copyOf(skills),
-                factionState,Map.copyOf(survival));
+                factionState,Map.copyOf(survival),Map.copyOf(lossAudits));
         }catch(EOFException invalid){throw new IOException("Truncated account directory",invalid);}
     }
     private static void write(ArenaSystems target,Path folder)throws IOException{
@@ -220,6 +242,7 @@ public final class AccountDirectory {
             arena.restoreProfiles(state.profiles());
             arena.restoreSkills(state.skills());
             arena.restoreSurvival(state.survival());
+            arena.restoreDeathLossAudits(state.lossAudits());
             arena.factions.restore(state.groups());
         }
         return true;

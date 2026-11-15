@@ -3,6 +3,8 @@
 
 **DESIGN STAGE. Not live gameplay.** The old city shooter keeps ammunition/consumables in legacy integer fields and has not yet been migrated to the unified persistent item ledger. All details below define the survival game's required authoritative behavior; do not present them as existing feature functionality.
 
+**Migration status (2026-11-14):** The host records the latest authenticated death's unique event ID, sequence and SHA-256 fingerprint covering the *existing* legacy, survival and arsenal carry representations, saved in account-directory V3 within a paired host checkpoint. This is a non-recoverable **permanent-loss audit prerequisite**, not serializable item instances, a sealed corpse, a guaranteed crash-at-death commit, niche reservation, expiry or retrieval. A crash before the next paired checkpoint can still replay the prior generation. Do not label any graveyard insurance operational.
+
 ## Inviolable death rule
 
 **Every physical object carried or equipped on the character is removed on death.** Weapons, weapon attachments, ammunition including chambered and loaded rounds, armor, equipment, tools, medical supplies, food, water, packs and bags, loose components, carried funds/currency tokens, quest objects that are genuinely physical, worn accessories and trophies—all are removed. No default weapon on respawn, no player-selectable 'keep inventory', no protected hotbar, no premium insurance, no class immunity, no items hidden in a 'secure pouch'. Unlocks, memories, appearance entitlements, recipes learned, owned crew membership, reputation and account identity are *not* physical objects and remain. Stationary base stores and externally parked truck cargo are **not** on the character and are not deleted by that character's death.

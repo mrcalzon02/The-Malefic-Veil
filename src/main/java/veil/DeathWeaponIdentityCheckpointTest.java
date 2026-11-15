@@ -13,6 +13,10 @@ public final class DeathWeaponIdentityCheckpointTest {
                 Files.deleteIfExists(p);
         }
     }
+    private static void tick(ArenaSystems arena,int milliseconds){
+        for(int left=milliseconds;left>0;left-=Math.min(1000,left))
+            arena.advance(Math.min(1000,left));
+    }
     private static ArenaSystems restore(Path root,long seed,String owner)throws Exception{
         ArenaSystems arena=new ArenaSystems(seed);
         check(HostCheckpoint.load(arena,root),"Paired checkpoint rejected");
@@ -37,7 +41,7 @@ public final class DeathWeaponIdentityCheckpointTest {
             ArenaSystems alive=restore(root,seed,owner);
             check(alive.arsenal.ownedItemInstances(1).equals(carried),
                 "Committed carried gun changed identity on restart");
-            alive.advance(3000);
+            tick(alive,3000);
             ArenaSystems.Player p=alive.player(1);
             alive.damage(p,1000,0);
             check(p.dead,"Fatal combat was not applied");
@@ -56,7 +60,7 @@ public final class DeathWeaponIdentityCheckpointTest {
             check(lost.equals(dead.lastDeathLoss(owner))&&
                 dead.arsenal.ownedItemInstances(1).isEmpty(),
                 "Paired checkpoint restored a lost gun or changed death item ID");
-            dead.advance(2000);
+            tick(dead,2000);
             check(dead.respawn(1,0),"Respawn was rejected");
             check(dead.arsenal.ownedItemInstances(1).isEmpty(),
                 "Respawn granted a free copy of the lost weapon");
@@ -73,7 +77,7 @@ public final class DeathWeaponIdentityCheckpointTest {
             Map<Integer,String> second=dead.arsenal.ownedItemInstances(1);
             check(second.size()==1&&!second.containsValue(firstId),
                 "Second physical gun recycled the permanently lost instance");
-            dead.advance(3000);
+            tick(dead,8500); // Full randomized 5–8 s respawn grace must expire.
             dead.damage(returned,1000,0);
             check(returned.dead,"Second fatal combat rejected");
             ArenaSystems.DeathLossAudit next=dead.lastDeathLoss(owner);

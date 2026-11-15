@@ -14,8 +14,9 @@ import java.util.zip.CRC32;
 public final class AccountDirectory {
     // V1 has no physical survival inventory; V2 adds survival stacks.
     // V3 appends a bounded, non-recoverable last-death loss audit per account.
+    // V4 appends lost gun instance identities to each audit; never a corpse escrow.
     // All earlier fields remain in their original order for migration.
-    private static final int MAGIC=0x56414331,VERSION=3,MAX=2_000_000;
+    private static final int MAGIC=0x56414331,VERSION=4,MAX=2_000_000;
     private AccountDirectory(){}
     private record State(long seed,boolean hardcore,
         Map<String,ArenaSystems.Profile> profiles,
@@ -91,6 +92,10 @@ public final class AccountDirectory {
                 out.writeUTF(entry.getValue().eventId());
                 out.writeLong(entry.getValue().sequence());
                 out.writeUTF(entry.getValue().inventoryFingerprint());
+                out.writeInt(entry.getValue().lostWeaponInstances().size());
+                for(var lost:new TreeMap<>(entry.getValue().lostWeaponInstances()).entrySet()){
+                    out.writeInt(lost.getKey());out.writeUTF(lost.getValue());
+                }
             }
         }
         CRC32 crc=new CRC32();crc.update(buffer.toByteArray());
@@ -178,11 +183,19 @@ public final class AccountDirectory {
                     throw new IOException("Unowned or duplicate survival stock");
             }
             Map<String,ArenaSystems.DeathLossAudit> lossAudits=new TreeMap<>();
-            Set<String> eventIds=new HashSet<>();
+            Set<String> eventIds=new HashSet<>();Set<String> lostIds=new HashSet<>();
             if(version>=3)for(int i=count(in,10000);i>0;i--){
-                String owner=in.readUTF();
+                String owner=in.readUTF(),event=in.readUTF();
+                long sequence=in.readLong();String fingerprint=in.readUTF();
+                Map<Integer,String> instances=new TreeMap<>();
+                if(version>=4)for(int j=count(in,32);j>0;j--){
+                    int weapon=in.readInt();String identity=in.readUTF();
+                    if(instances.putIfAbsent(weapon,identity)!=null||
+                       !lostIds.add(identity))
+                        throw new IOException("Duplicate lost weapon item identity");
+                }
                 var audit=new ArenaSystems.DeathLossAudit(
-                    in.readUTF(),in.readLong(),in.readUTF());
+                    event,sequence,fingerprint,instances);
                 if(!account(owner)||!profiles.containsKey(owner)||
                     !ArenaSystems.validDeathLossAudit(audit)||
                     lossAudits.putIfAbsent(owner,audit)!=null||

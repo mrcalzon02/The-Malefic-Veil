@@ -18,10 +18,28 @@ public final class ArsenalSystems {
     public static final class State {
         long owned=1,researched; int selected,faction=-1; boolean factionLocked;
         final int[] clip=new int[32],reserve=new int[32],materials=new int[9];
+        // One real gun per catalog bit; stable host-assigned identity, not a free copy.
+        final String[] weaponInstanceIds=new String[32];
         long readyAt,reloadEnd,chargeAt=-1,lastSequence,spinUntil; int reloadWeapon=-1,charging=-1,action,damage,storedScrap;
         boolean chargeAlt; double heat; long actionAt;
-        State(){clip[0]=get(0).capacity();reserve[0]=48;}
+        State(){clip[0]=get(0).capacity();reserve[0]=48;
+            weaponInstanceIds[0]=newInstanceId();}
     }
+    private static String newInstanceId(){return UUID.randomUUID().toString();}
+    private static boolean validInstanceId(String id){
+        return id!=null&&id.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")&&
+            UUID.fromString(id).toString().equals(id);
+    }
+    /** Authoritative instance identity of each currently carried gun. No client writes. */
+    public Map<Integer,String> ownedItemInstances(int id){synchronized(host){
+        State s=state(id);Map<Integer,String> result=new TreeMap<>();
+        if(s!=null)for(int w=0;w<32;w++)if(owns(s,w)){
+            if(!validInstanceId(s.weaponInstanceIds[w]))
+                throw new IllegalStateException("Owned weapon missing item instance identity");
+            result.put(w,s.weaponInstanceIds[w]);
+        }
+        return Collections.unmodifiableMap(result);
+    }}
     public record View(long owned,int selected,int faction,boolean factionLocked,int[] clip,int[] reserve,int[] materials,
                        int action,long actionAt,long reloadRemaining,long chargeRemaining,double heat,int benchTier,long researched) {
         public View {clip=clip.clone();reserve=reserve.clone();materials=materials.clone();}
@@ -63,6 +81,7 @@ public final class ArsenalSystems {
         State s=state(id);
         if(s==null)return;
         s.owned=0;
+        Arrays.fill(s.weaponInstanceIds,null);
         s.selected=0; // Safe catalog index while disarmed; owns() is mandatory.
         Arrays.fill(s.clip,0);
         Arrays.fill(s.reserve,0);
@@ -139,7 +158,7 @@ public final class ArsenalSystems {
         Result paid=pay(id,cost,false);if(!paid.ok())return paid;pay(id,cost,true);
         if(component>=0)s.materials[component]++;
         else if(recipe==40)s.reserve[w]=Math.min(get(w).capacity()*8,s.reserve[w]+get(w).capacity()*2);
-        else{s.owned|=1L<<w;s.researched|=1L<<w;s.clip[w]=get(w).capacity();s.reserve[w]=get(w).capacity();if(get(w).faction()>=0)s.factionLocked=true;}
+        else{if(!owns(s,w))s.weaponInstanceIds[w]=newInstanceId();s.owned|=1L<<w;s.researched|=1L<<w;s.clip[w]=get(w).capacity();s.reserve[w]=get(w).capacity();if(get(w).faction()>=0)s.factionLocked=true;}
         return new Result(true,"CRAFTED");
     }}
     public Result upgrade(int id){synchronized(host){
@@ -149,7 +168,7 @@ public final class ArsenalSystems {
     public Result pickup(int id,int index){synchronized(host){
         if(!alive(id)||index<0||index>=loot.size())return new Result(false,"INVALID_LOOT");Loot l=loot.get(index);ArenaSystems.Player p=host.player(id);State s=state(id);
         if(l.taken||Math.hypot(l.x-p.x,l.y-p.y)>.65||!host.clear(p.x,p.y,l.x,l.y))return new Result(false,"OUT_OF_REACH");
-        if(l.type==0){if(!get(l.value).mapSpawn())throw new IllegalStateException("Crafted weapon in map loot");if(owns(s,l.value)){if(s.reserve[l.value]>=get(l.value).capacity()*8)return new Result(false,"AMMO_FULL");s.reserve[l.value]=Math.min(get(l.value).capacity()*8,s.reserve[l.value]+get(l.value).capacity());}else{s.owned|=1L<<l.value;s.clip[l.value]=get(l.value).capacity();s.reserve[l.value]=get(l.value).capacity();}}
+        if(l.type==0){if(!get(l.value).mapSpawn())throw new IllegalStateException("Crafted weapon in map loot");if(owns(s,l.value)){if(s.reserve[l.value]>=get(l.value).capacity()*8)return new Result(false,"AMMO_FULL");s.reserve[l.value]=Math.min(get(l.value).capacity()*8,s.reserve[l.value]+get(l.value).capacity());}else{s.weaponInstanceIds[l.value]=newInstanceId();s.owned|=1L<<l.value;s.clip[l.value]=get(l.value).capacity();s.reserve[l.value]=get(l.value).capacity();}}
         else if(l.type==1){int value=l.value==0?p.scrap:s.materials[l.value];if(value>=999)return new Result(false,"STACK_FULL");if(l.value==0)p.scrap=Math.min(999,p.scrap+5);else s.materials[l.value]=Math.min(999,value+4);}
         else{int w=s.selected;if(s.reserve[w]>=get(w).capacity()*8)return new Result(false,"AMMO_FULL");s.reserve[w]=Math.min(get(w).capacity()*8,s.reserve[w]+get(w).capacity()*2);}
         l.taken=true;return new Result(true,"COLLECTED");
@@ -343,20 +362,32 @@ public final class ArsenalSystems {
     public byte[] save()throws IOException{synchronized(host){
         for(var e:active.entrySet()){ArenaSystems.Player p=host.player(e.getKey());if(p!=null)e.getValue().storedScrap=p.scrap;}
         ByteArrayOutputStream bytes=new ByteArrayOutputStream();try(DataOutputStream out=new DataOutputStream(bytes)){
-            out.writeInt(1);out.writeInt(loot.size());for(Loot l:loot)out.writeBoolean(l.taken);out.writeInt(accounts.size());
-            for(var e:accounts.entrySet()){State s=e.getValue();out.writeUTF(e.getKey());out.writeLong(s.owned);out.writeLong(s.researched);out.writeInt(s.selected);out.writeInt(s.faction);out.writeBoolean(s.factionLocked);out.writeInt(s.storedScrap);for(int n:s.materials)out.writeInt(n);for(int n:s.clip)out.writeInt(n);for(int n:s.reserve)out.writeInt(n);}
+            out.writeInt(2);out.writeInt(loot.size());for(Loot l:loot)out.writeBoolean(l.taken);out.writeInt(accounts.size());
+            for(var e:accounts.entrySet()){State s=e.getValue();out.writeUTF(e.getKey());out.writeLong(s.owned);out.writeLong(s.researched);out.writeInt(s.selected);out.writeInt(s.faction);out.writeBoolean(s.factionLocked);out.writeInt(s.storedScrap);for(int n:s.materials)out.writeInt(n);for(int n:s.clip)out.writeInt(n);for(int n:s.reserve)out.writeInt(n);for(String identity:s.weaponInstanceIds)
+                out.writeUTF(identity==null?"":identity);}
         }return bytes.toByteArray();
     }}
     public void restore(byte[] bytes,boolean apply)throws IOException{synchronized(host){
         if(bytes.length==0)return;if(bytes.length>1_000_000)throw new IOException("Arsenal save too large");
         try(DataInputStream in=new DataInputStream(new ByteArrayInputStream(bytes))){
-            if(in.readInt()!=1||in.readInt()!=loot.size())throw new IOException("Arsenal save catalog mismatch");boolean[] taken=new boolean[loot.size()];for(int i=0;i<taken.length;i++)taken[i]=in.readBoolean();
-            int count=in.readInt();if(count<0||count>2000)throw new IOException("Arsenal account cap");Map<String,State> loaded=new TreeMap<>();
+            int version=in.readInt();
+            if(version<1||version>2||in.readInt()!=loot.size())throw new IOException("Arsenal save catalog mismatch");boolean[] taken=new boolean[loot.size()];for(int i=0;i<taken.length;i++)taken[i]=in.readBoolean();
+            int count=in.readInt();if(count<0||count>2000)throw new IOException("Arsenal account cap");Map<String,State> loaded=new TreeMap<>();Set<String> uniqueIds=new HashSet<>();
             for(int i=0;i<count;i++){String key=in.readUTF();State s=new State();s.owned=in.readLong();s.researched=in.readLong();s.selected=in.readInt();s.faction=in.readInt();s.factionLocked=in.readBoolean();s.storedScrap=in.readInt();
                 if(!key.matches("acct_[a-f0-9]{64}")||loaded.containsKey(key)||(s.owned&~0xffffffffL)!=0||(s.researched&~0xffffffffL)!=0||(s.selected<0||s.selected>=32||(s.owned!=0&&!owns(s,s.selected)))||s.faction< -1||s.faction>2||s.factionLocked&&s.faction<0||s.storedScrap<0||s.storedScrap>1_000_000_000)throw new IOException("Invalid arsenal account");
                 for(int j=0;j<9;j++){s.materials[j]=in.readInt();if(s.materials[j]<0||s.materials[j]>999)throw new IOException("Invalid materials");}
                 for(int j=0;j<32;j++){s.clip[j]=in.readInt();if(s.clip[j]<0||s.clip[j]>get(j).capacity())throw new IOException("Invalid clip");}
-                for(int j=0;j<32;j++){s.reserve[j]=in.readInt();if(s.reserve[j]<0||s.reserve[j]>get(j).capacity()*8)throw new IOException("Invalid ammo");}loaded.put(key,s);
+                for(int j=0;j<32;j++){s.reserve[j]=in.readInt();if(s.reserve[j]<0||s.reserve[j]>get(j).capacity()*8)throw new IOException("Invalid ammo");}
+                Arrays.fill(s.weaponInstanceIds,null);
+                for(int j=0;j<32;j++){
+                    String identity=version==2?in.readUTF():owns(s,j)?newInstanceId():"";
+                    if(owns(s,j)){
+                        if(!validInstanceId(identity)||!uniqueIds.add(identity))
+                            throw new IOException("Invalid or duplicate carried weapon identity");
+                        s.weaponInstanceIds[j]=identity;
+                    }else if(!identity.isEmpty())throw new IOException("Unowned weapon retained instance identity");
+                }
+                loaded.put(key,s);
             }if(in.available()!=0)throw new IOException("Arsenal save trailing bytes");if(apply){if(!active.isEmpty())throw new IOException("Cannot restore live inventories");accounts.clear();accounts.putAll(loaded);for(int i=0;i<taken.length;i++)loot.get(i).taken=taken[i];}
         }
     }}

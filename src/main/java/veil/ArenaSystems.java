@@ -25,12 +25,26 @@ public final class ArenaSystems {
     // One bounded permanent-loss receipt per authenticated account. This is an
     // inventory-migration audit, NOT an item-instance escrow or retrieval key.
     private final Map<String,DeathLossAudit> deathLossAudits=new LinkedHashMap<>();
-    public record DeathLossAudit(String eventId,long sequence,String inventoryFingerprint){}
+    /** Permanent-loss audit of the latest death. IDs are evidence, not recoverable escrow. */
+    public record DeathLossAudit(String eventId,long sequence,String inventoryFingerprint,
+        Map<Integer,String> lostWeaponInstances){
+        public DeathLossAudit{lostWeaponInstances=Map.copyOf(lostWeaponInstances);}
+        public DeathLossAudit(String eventId,long sequence,String inventoryFingerprint){
+            this(eventId,sequence,inventoryFingerprint,Map.of());
+        }
+    }
     public static boolean validDeathLossAudit(DeathLossAudit record){
         return record!=null&&record.sequence()>0&&record.sequence()<Long.MAX_VALUE&&
             record.eventId()!=null&&record.eventId().matches(
                 "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")&&
-            record.inventoryFingerprint()!=null&&record.inventoryFingerprint().matches("[0-9a-f]{64}");
+            record.inventoryFingerprint()!=null&&record.inventoryFingerprint().matches("[0-9a-f]{64}")&&
+            record.lostWeaponInstances()!=null&&record.lostWeaponInstances().size()<=32&&
+            record.lostWeaponInstances().entrySet().stream().allMatch(e->
+                e.getKey()!=null&&e.getKey()>=0&&e.getKey()<32&&
+                e.getValue()!=null&&e.getValue().matches(
+                    "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"))&&
+            new HashSet<>(record.lostWeaponInstances().values()).size()==
+                record.lostWeaponInstances().size();
     }
     public synchronized Map<String,DeathLossAudit> deathLossSnapshot(){
         return Collections.unmodifiableMap(new TreeMap<>(deathLossAudits));
@@ -373,7 +387,7 @@ public final class ArenaSystems {
         try{
             ByteArrayOutputStream bytes=new ByteArrayOutputStream();
             try(DataOutputStream out=new DataOutputStream(bytes)){
-                out.writeInt(0x444c4131); // loss-audit schema 1
+                out.writeInt(0x444c4132); // loss-audit schema 2: actual gun identities
                 out.writeUTF(p.accountKey);
                 out.writeInt(p.cash);out.writeInt(p.scrap);out.writeInt(p.medkits);
                 out.writeInt(p.pistolReserve);out.writeInt(p.shellReserve);
@@ -382,6 +396,8 @@ public final class ArenaSystems {
                 for(SurvivalCrafting.Item item:SurvivalCrafting.Item.values())
                     out.writeInt(p.survival.count(item));
                 out.writeLong(equipped.owned());out.writeInt(equipped.selected());
+                Map<Integer,String> identities=arsenal.ownedItemInstances(p.id);
+                for(int w=0;w<32;w++)out.writeUTF(identities.getOrDefault(w,""));
                 for(int n:equipped.clip())out.writeInt(n);
                 for(int n:equipped.reserve())out.writeInt(n);
                 for(int n:equipped.materials())out.writeInt(n);
@@ -401,6 +417,7 @@ public final class ArenaSystems {
         if(p.hp==0){
             // Take a canonical pre-wipe account inventory audit. It becomes
             // durable ONLY after a paired HostCheckpoint commit.
+            Map<Integer,String> lostGunInstances=arsenal.ownedItemInstances(p.id);
             String fingerprint=deathInventoryFingerprint(p);
             String eventId=UUID.randomUUID().toString();
             p.lastDeathEventId=eventId;
@@ -408,7 +425,7 @@ public final class ArenaSystems {
                 DeathLossAudit previous=deathLossAudits.get(p.accountKey);
                 long sequence=previous==null?1:Math.addExact(previous.sequence(),1);
                 deathLossAudits.put(p.accountKey,
-                    new DeathLossAudit(eventId,sequence,fingerprint));
+                    new DeathLossAudit(eventId,sequence,fingerprint,lostGunInstances));
             }
             // Never imply inventory is insured before an atomic corpse journal exists.
             p.lastDeathGraveyardStatus=inspectGraveyardForDeath(p).reason();

@@ -188,6 +188,9 @@ jobs:
       - name: Full arsenal inventory loss on death, disarmed respawn and save/reconnect
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.ArsenalDeathInventoryTest
+      - name: Persistent owned-gun identity, death loss and paired checkpoint restart
+        shell: bash
+        run: java -Djava.awt.headless=true -cp build/classes veil.DeathWeaponIdentityCheckpointTest
       - name: RPG death/reset, 5-8 second grace, slow skills and protected hand crafting
         shell: bash
         run: java -Djava.awt.headless=true -cp build/classes veil.CharacterProgressionTest

@@ -23,7 +23,7 @@ public final class IncursionGraveyardMonumentTest {
         double[][] offsets={{0,0},{-1.1,0},{-3.5,0},
             {-3,3},{-1,3},{1,3},{3,3},{4,5},{-2.1,3},
             {-2.5,-2},{0,-2.5},{2.5,-2},
-            {-4.5,-2.5},{4.5,-2.5},{0,1.5},{0,-4}};
+            {-4.5,-2.5},{4.5,-2.5},{4,0.5},{0,1.5},{0,-4}};
         for(int x=-124;x<=224;x+=6)for(int y=-124;y<=224;y+=6){
             boolean good=true;
             for(double[] offset:offsets)
@@ -141,8 +141,16 @@ public final class IncursionGraveyardMonumentTest {
         fill(c,SurvivalCrafting.Item.MACHINE_PARTS,16);
         fill(c,SurvivalCrafting.Item.MEDICINAL_HERBS,30);
         fill(c,SurvivalCrafting.Item.RAW_ORE,24);
+        // An unrelated owner can have a fully stocked crate in range.
+        // Its contents must neither contribute to payment nor be debited.
+        World.Device foreignStock=fixture(host,ArenaSystems.STORAGE_CRATE,
+            x+4,y+0.5,alien);
+        fill(foreignStock,SurvivalCrafting.Item.FIELD_STONE,128);
+        var foreignBefore=foreignStock.storage.snapshot();
         check(a.storage.units()==128&&b.storage.units()==128&&c.storage.units()==128&&
-            spec.materials().get("FIELD_STONE")==140,"Incorrect capped monument bill");
+            spec.materials().get("FIELD_STONE")==140&&
+            foreignStock.storage.units()==128,
+            "Incorrect capped monument bill or foreign stock fixture");
         p.x=x-1.1;p.y=y;p.angle=0;
         rival.x=p.x;rival.y=p.y;rival.angle=0;
         check(!host.build(2,MONUMENT),"Foreign account spent owned monument resources");
@@ -260,8 +268,9 @@ public final class IncursionGraveyardMonumentTest {
                 host.world.devices.get(count).kind==MONUMENT&&
                 owner.equals(host.world.devices.get(count).ownerKey)&&
                 a.storage.snapshot().isEmpty()&&b.storage.snapshot().isEmpty()&&
-                c.storage.snapshot().isEmpty(),
-                "Host did not atomically pay 384 and build monument");
+                c.storage.snapshot().isEmpty()&&
+                foreignStock.storage.snapshot().equals(foreignBefore),
+                "Host did not atomically pay 384 while preserving foreign crate stock");
             check(first.electricMs==firstPower-100&&
                 second.electricMs==ElectricUtility.MAX_CHARGE_MS-100,
                 "Monument commissioning failed to debit real generator reserves");
@@ -301,6 +310,11 @@ public final class IncursionGraveyardMonumentTest {
                 d.kind==ArenaSystems.STORAGE_CRATE&&owner.equals(d.ownerKey))
                 .allMatch(d->d.storage.snapshot().isEmpty()),
                 "Restart refunded the spent 384 construction units");
+            check(resumed.world.devices.stream().anyMatch(d->
+                d.kind==ArenaSystems.STORAGE_CRATE&&alien.equals(d.ownerKey)&&
+                Math.hypot(d.x-(x+4),d.y-(y+0.5))<0.01&&
+                d.storage.snapshot().equals(foreignBefore)),
+                "Restart lost or modified the nearby foreign crate during monument payment");
             check(resumed.world.devices.stream().filter(d->
                 d.kind==ArenaSystems.GENERATOR&&owner.equals(d.ownerKey))
                 .mapToLong(d->d.electricMs).sum()==

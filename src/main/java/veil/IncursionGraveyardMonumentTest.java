@@ -369,7 +369,7 @@ public final class IncursionGraveyardMonumentTest {
             check(afterDeath.respawn(10,0),"Legitimate empty respawn rejected");
             check(deadAgain.survival.acquire(SurvivalCrafting.Item.FIBER,1,false),
                 "Could not stage different second-death inventory");
-            afterDeath.advance(9000); // let the respawn grace expire
+            for(int i=0;i<9;i++)afterDeath.advance(1000); // bounded real host ticks
             afterDeath.damage(deadAgain,1000,0);
             var secondLoss=afterDeath.lastDeathLoss(owner);
             check(deadAgain.dead&&secondLoss!=null&&secondLoss.sequence()==2&&

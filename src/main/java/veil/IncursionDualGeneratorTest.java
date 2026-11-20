@@ -196,22 +196,69 @@ public final class IncursionDualGeneratorTest {
             for(int round=1;round<=2;round++){
                 fuel(resumed,operator,plants.get(0),stock);
                 fuel(resumed,operator,plants.get(1),stock);
+                if(round==2){
+                    // A paid terminal batch cannot discard its output or
+                    // refund its inputs when its only owned crate is full.
+                    check(stock.storage.units()==0,
+                        "Final Begotten fuel payment left unexpected stock");
+                    check(stock.storage.delivered(SurvivalCrafting.Item.EDIBLES,
+                            CampStockpile.MAX_UNITS),
+                        "Could not fill the real output crate before completion");
+                }
                 tick(resumed,1200);
                 if(round==1)
                     check(running.productionActive&&running.productionMs==2_400_000L,
                         "Paid Begotten generator cycle lost production progress");
                 else
-                    check(!running.productionActive&&running.productionMs==0&&
-                        running.productionCompleted==1,
-                        "Completed Begotten batch did not reset its production timer");
+                    check(running.productionActive&&
+                        running.productionMs==3_600_000L&&
+                        running.productionCompleted==0&&
+                        stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==0&&
+                        "WAIT_OUTPUT".equals(running.factoryHold),
+                        "Full crate lost or fabricated a paid Begotten output");
             }
-            check(!running.productionActive&&running.productionCompleted==1&&
-                stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==1,
-                "Real Begotten 3600-second batch did not yield exactly one breach seed");
+            check(plants.stream().allMatch(d->d.electricMs==0),
+                "Blocked finished output retained unspent generator charge");
             tick(resumed,5);
-            check(stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==1,
-                "Completed Begotten output duplicated during idle ticks");
+            check(running.productionActive&&
+                running.productionMs==3_600_000L&&
+                stock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==0&&
+                plants.stream().allMatch(d->d.electricMs==0),
+                "Blocked output advanced, duplicated, or consumed free power");
             HostCheckpoint.save(resumed,root);
+            ArenaSystems blocked=new ArenaSystems(seed);
+            check(HostCheckpoint.load(blocked,root),
+                "Terminal blocked-output checkpoint was not durable");
+            World.Device waiting=one(blocked,
+                ArenaSystems.BEGOTTEN_INCURSION_ANCHOR,ownerKey);
+            World.Device pendingStock=one(blocked,ArenaSystems.STORAGE_CRATE,ownerKey);
+            var drainedPlants=blocked.world.devices.stream().filter(d->
+                d.kind==ArenaSystems.GENERATOR&&ownerKey.equals(d.ownerKey)).toList();
+            check(waiting.productionActive&&
+                waiting.productionMs==3_600_000L&&
+                waiting.productionCompleted==0&&
+                pendingStock.storage.units()==CampStockpile.MAX_UNITS&&
+                drainedPlants.size()==2&&
+                drainedPlants.stream().allMatch(d->d.electricMs==0),
+                "Restart minted output or energy from the blocked Begotten batch");
+            tick(blocked,5);
+            check(pendingStock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==0&&
+                waiting.productionCompleted==0,
+                "Full output crate minted product after checkpoint");
+            check(pendingStock.storage.consume(Map.of(
+                    SurvivalCrafting.Item.EDIBLES,CampStockpile.MAX_UNITS)),
+                "Cannot clear the real owned output warehouse");
+            tick(blocked,1);
+            check(!waiting.productionActive&&waiting.productionMs==0&&
+                waiting.productionCompleted==1&&
+                pendingStock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==1&&
+                drainedPlants.stream().allMatch(d->d.electricMs==0),
+                "Paid Begotten output was not delivered exactly once without free power");
+            tick(blocked,5);
+            check(pendingStock.storage.count(SurvivalCrafting.Item.BREACH_SEED)==1&&
+                waiting.productionCompleted==1,
+                "Unblocked Begotten output duplicated on subsequent host ticks");
+            HostCheckpoint.save(blocked,root);
             ArenaSystems finalWorld=new ArenaSystems(seed);
             check(HostCheckpoint.load(finalWorld,root)&&
                 one(finalWorld,ArenaSystems.STORAGE_CRATE,ownerKey)
@@ -219,6 +266,7 @@ public final class IncursionDualGeneratorTest {
                 one(finalWorld,ArenaSystems.BEGOTTEN_INCURSION_ANCHOR,ownerKey)
                     .productionCompleted==1,
                 "Restart duplicated or lost the finished Begotten breach seed");
+            System.out.println("PASS Incursion Begotten dual-generator WAIT_OUTPUT full-crate checkpoint and one-time delivery");
         }finally{cleanup(root);}
     }
 

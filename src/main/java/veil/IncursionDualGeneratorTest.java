@@ -431,6 +431,18 @@ public final class IncursionDualGeneratorTest {
             !funded.containsKey(foreignPlant)&&
             first.electricMs==1000&&second.electricMs==1000,
             "Two distinct same-owner charged plants did not allocate exactly 25 without debiting");
+        // Two 25-load jobs cannot both reserve the same 48 physical load
+        // units. The second proposal must fail atomically, while the 23
+        // remaining units can still serve a smaller independent job.
+        check(ElectricUtility.allocation(network,factory,25,funded,1000).isEmpty(),
+            "A second Incursion job double-booked already reserved generator capacity");
+        Map<World.Device,Integer> remaining=ElectricUtility.allocation(
+            network,factory,23,funded,1000);
+        check(remaining.size()==1&&remaining.getOrDefault(second,0)==23&&
+            !remaining.containsKey(first)&&
+            ElectricUtility.allocation(network,factory,24,funded,1000).isEmpty()&&
+            first.electricMs==1000&&second.electricMs==1000,
+            "Shared grid failed to preserve the last 23 load units without spending fuel");
         farBus.hp=0;
         check(ElectricUtility.allocation(network,factory,25,Map.of(),1000).isEmpty(),
             "A second bus path to the SAME plant counted as a second generator");

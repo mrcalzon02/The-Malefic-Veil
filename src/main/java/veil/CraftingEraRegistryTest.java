@@ -109,6 +109,7 @@ public final class CraftingEraRegistryTest {
             check(recipes.containsKey(id),"Missing farming/food throughput plan "+id);
             check(recipes.get(id).seconds() > 0, "nonpositive process time");
         }
+        CraftingEraIncursionSupplyTest.main(args);
         System.out.println("PASS CraftingEraRegistryTest: "+buildings.size()+
             " facilities "+recipes.size()+" processes "+eras.size()+
             " eras, separate all-faction logistics and guarded three-branch endgame");

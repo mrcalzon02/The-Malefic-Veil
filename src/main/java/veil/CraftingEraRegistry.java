@@ -659,6 +659,54 @@ public final class CraftingEraRegistry {
      */
     static void validateFacilitySupplyGraph(Map<String,Facility> facilities,
                                              Map<String,Process> processes){
+        require(facilities!=null&&processes!=null,"Missing facility/production graph");
+        // This entry point also validates caller-supplied registry projections.
+        // Checking only material NAMES accepts zero/negative or overflowing
+        // construction bills before the host ever has a chance to debit them.
+        for(Facility f:facilities.values()){
+            require(f!=null&&f.id()!=null&&!f.id().isBlank()&&
+                f.era()!=null&&f.faction()!=null&&f.requires()!=null&&
+                f.width()>0&&f.depth()>0&&f.seconds()>0&&f.utilityDemand()>=0,
+                "Invalid construction descriptor");
+            require(f.materials()!=null&&!f.materials().isEmpty(),
+                "Missing construction bill for "+f.id());
+            long total=0;
+            for(var part:f.materials().entrySet()){
+                require(part.getKey()!=null&&!part.getKey().isBlank()&&
+                    part.getValue()!=null&&part.getValue()>0,
+                    "Invalid construction quantity for "+f.id());
+                total+=part.getValue();
+                require(total<=Integer.MAX_VALUE,
+                    "Construction bill overflow for "+f.id());
+            }
+            if(f.id().equals("monument-graveyard")){
+                require(Integer.valueOf(24).equals(f.materials().get("METAL_STOCK"))&&
+                    Integer.valueOf(16).equals(f.materials().get("MACHINE_PARTS")),
+                    "Monument cost bypass");
+            }
+        }
+        for(Process p:processes.values()){
+            require(p!=null&&p.id()!=null&&!p.id().isBlank()&&p.era()!=null&&
+                p.faction()!=null&&p.facility()!=null&&
+                p.output()!=null&&!p.output().isBlank()&&
+                p.quantity()>0&&p.seconds()>0&&p.utilityDemand()>=0&&
+                p.inputs()!=null&&!p.inputs().isEmpty(),
+                "Invalid industrial process descriptor");
+            Facility machine=facilities.get(p.facility());
+            require(machine!=null&&machine.era()!=null&&machine.faction()!=null&&
+                machine.era().ordinal()<=p.era().ordinal()&&
+                (machine.faction()==Faction.ALL||machine.faction()==p.faction()),
+                "Unbuildable or foreign industrial station "+p.id());
+            long total=0;
+            for(var input:p.inputs().entrySet()){
+                require(input.getKey()!=null&&!input.getKey().isBlank()&&
+                    input.getValue()!=null&&input.getValue()>0,
+                    "Invalid process ingredient for "+p.id());
+                total+=input.getValue();
+                require(total<=Integer.MAX_VALUE,
+                    "Process ingredient overflow for "+p.id());
+            }
+        }
         Map<String,Process> manufactured=new HashMap<>();
         for(Process p:processes.values()){
             if(manufactured.putIfAbsent(p.output(),p)!=null)
